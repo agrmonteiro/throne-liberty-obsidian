@@ -20,6 +20,7 @@ export interface BuildStats {
   // Target
   targetDefense:        number
   targetEvasion:        number
+  targetEndurance:      number  // subtrai do crit/heavy stat antes do DR
 }
 
 export const DEFAULT_STATS: BuildStats = {
@@ -38,6 +39,7 @@ export const DEFAULT_STATS: BuildStats = {
   speciesDmgBoost:     0,
   targetDefense:       0,
   targetEvasion:       0,
+  targetEndurance:     0,
 }
 
 // ─── Stored build model ───────────────────────────────────────────────────────

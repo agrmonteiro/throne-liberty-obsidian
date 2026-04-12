@@ -37,6 +37,7 @@ const FIELDS: FieldDef[] = [
   { key: 'speciesDmgBoost',     label: 'Species Dmg Boost',    group: 'build'  },
   { key: 'targetDefense',       label: "Target's Defense",     group: 'target' },
   { key: 'targetEvasion',       label: "Target's Evasion",     group: 'target' },
+  { key: 'targetEndurance',     label: "Target's Endurance",   group: 'target', tooltip: 'Endurance do alvo — reduz a crit chance efetiva antes do DR' },
 ]
 
 // ─── Component ───────────────────────────────────────────────────────────────

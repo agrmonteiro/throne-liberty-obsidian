@@ -3,8 +3,8 @@
  * Port fiel das fórmulas Python (Maxroll / DamageCalculatorFixed).
  *
  * Fórmulas de referência:
- *   Crit chance  = stat / (stat + 1000)   → valor em [0,1]
- *   Heavy chance = stat / (stat + 1000)
+ *   Crit chance  = (stat - targetEndurance) / (stat - targetEndurance + 1000) → [0,1]
+ *   Heavy chance = stat / (stat + 1000)   → sem endurance, fórmula simples
  *   Skill damage = (weaponBase × skill% / 100) + skillFlat
  *   skillDmgBoost e bonusDmg são dividores com DR: boost / (boost + 1000)
  *   Dano médio   = baseDmg × (1 + critChance × critDmgMult)
@@ -23,14 +23,15 @@ const DR = 1000   // divisor padrão de diminishing returns
 
 // ─── Core probability formulas ────────────────────────────────────────────────
 
-export function critChanceFromStat(stat: number): number {
-  if (stat <= 0) return 0
-  return stat / (stat + DR)   // [0, 1]
+export function critChanceFromStat(stat: number, endurance = 0): number {
+  const effective = stat - endurance
+  if (effective <= 0) return 0
+  return effective / (effective + DR)   // [0, 1]
 }
 
 export function heavyChanceFromStat(stat: number): number {
   if (stat <= 0) return 0
-  return stat / (stat + DR)
+  return stat / (stat + DR)   // sem endurance — fórmula simples
 }
 
 // ─── Base skill damage (before multipliers) ───────────────────────────────────
@@ -61,7 +62,7 @@ function speciesBoostMultiplier(boost: number): number {
 // ─── Full average DPS ─────────────────────────────────────────────────────────
 
 export function calcAverageDPS(stats: BuildStats): number {
-  const critChance  = critChanceFromStat(stats.critHitChance)
+  const critChance  = critChanceFromStat(stats.critHitChance, stats.targetEndurance)
   const heavyChance = heavyChanceFromStat(stats.heavyAttackChance)
 
   // Average base (between min and max weapon)
@@ -117,7 +118,7 @@ export function calcModifiers(stats: BuildStats): { minBase: number; maxCrit: nu
 // ─── Full result ──────────────────────────────────────────────────────────────
 
 export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult {
-  const critChancePct  = critChanceFromStat(stats.critHitChance)  * 100
+  const critChancePct  = critChanceFromStat(stats.critHitChance, stats.targetEndurance) * 100
   const heavyChancePct = heavyChanceFromStat(stats.heavyAttackChance) * 100
   const { minBase, maxCrit } = calcModifiers(stats)
 
