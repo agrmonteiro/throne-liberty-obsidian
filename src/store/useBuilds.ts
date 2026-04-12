@@ -31,6 +31,8 @@ declare global {
       exportFile:            (data: unknown, name: string)        => Promise<{ ok: boolean; path?: string }>
       dir:                   ()                                   => Promise<string>
       questlogImportPython:  (url: string)                        => Promise<unknown>
+      onProgress:            (cb: (payload: { stage: 'starting' | 'extracting' | 'done' }) => void) => void
+      offProgress:           () => void
     }
   }
 }

@@ -118,39 +118,61 @@ ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown>
   return new Promise((resolve) => {
     const scriptPath = findPythonScraper()
     if (!scriptPath) {
-      resolve({ error: 'Scraper Python não encontrado. Instale throne_and_liberty_agent no mesmo diretório.' })
+      resolve({ error: 'Scraper não encontrado — verifique a instalação do throne_and_liberty_agent' })
       return
     }
 
-    // Use 'python' or 'python3' depending on platform
-    const pythonBin = process.platform === 'win32' ? 'python' : 'python3'
-    const proc = spawn(pythonBin, [scriptPath, url], { env: { ...process.env } })
+    const sender = _event.sender
+    const emitProgress = (stage: 'starting' | 'extracting' | 'done') => {
+      if (!sender.isDestroyed()) sender.send('questlog:progress', { stage })
+    }
 
+    emitProgress('starting')
+
+    const pythonBin = process.platform === 'win32' ? 'python' : 'python3'
     let stdout = ''
     let stderr = ''
-    proc.stdout.on('data', (chunk: Buffer) => { stdout += chunk.toString() })
+    let extractingEmitted = false
+
+    const proc = spawn(pythonBin, [scriptPath, url], { env: { ...process.env } })
+
+    proc.stdout.on('data', (chunk: Buffer) => {
+      stdout += chunk.toString()
+      if (!extractingEmitted && stdout.length > 0) {
+        extractingEmitted = true
+        emitProgress('extracting')
+      }
+    })
+
     proc.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString() })
 
     proc.on('close', (code) => {
       if (code !== 0) {
-        resolve({ error: `Python saiu com código ${code}. ${stderr.slice(0, 300)}` })
+        console.error('[scraper] stderr:', stderr)
+        resolve({ error: `Scraper encerrou sem dados (código ${code}) — verifique o link e tente novamente` })
         return
       }
-      // stdout may contain debug lines before the JSON block
       const jsonStart = stdout.indexOf('{')
       if (jsonStart === -1) {
-        resolve({ error: 'Scraper não retornou JSON. ' + stderr.slice(0, 200) })
+        console.error('[scraper] stdout sem JSON:', stdout.slice(0, 200))
+        resolve({ error: 'Scraper retornou dados inválidos — tente novamente ou reporte o erro' })
         return
       }
       try {
         resolve(JSON.parse(stdout.slice(jsonStart)))
       } catch (e) {
-        resolve({ error: `JSON inválido do scraper: ${String(e)}` })
+        console.error('[scraper] JSON parse error:', e)
+        resolve({ error: 'Scraper retornou dados inválidos — tente novamente ou reporte o erro' })
       }
     })
 
     proc.on('error', (err) => {
-      resolve({ error: `Falha ao iniciar Python: ${err.message}. Verifique se Python está no PATH.` })
+      console.error('[scraper] spawn error:', err)
+      if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
+        resolve({ error: 'Python não encontrado no PATH — verifique a instalação do Python' })
+      } else {
+        resolve({ error: `Scraper encerrou sem dados — verifique o link e tente novamente` })
+      }
     })
   })
 })

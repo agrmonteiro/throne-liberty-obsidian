@@ -9,6 +9,12 @@ const dataAPI = {
   exportFile:            (data: unknown, defaultName: string) => ipcRenderer.invoke('data:export-file', data, defaultName),
   dir:                   ()                                   => ipcRenderer.invoke('data:dir'),
   questlogImportPython:  (url: string)                        => ipcRenderer.invoke('questlog:import-python', url),
+  onProgress:            (cb: (payload: { stage: 'starting' | 'extracting' | 'done' }) => void) => {
+    ipcRenderer.on('questlog:progress', (_event, payload) => cb(payload))
+  },
+  offProgress:           () => {
+    ipcRenderer.removeAllListeners('questlog:progress')
+  },
 }
 
 if (process.contextIsolated) {
