@@ -196,11 +196,12 @@ export function Builds(): React.ReactElement {
   }
 
   useEffect(() => {
+    if (!window.dataAPI?.onProgress) return
     window.dataAPI.onProgress(({ stage }) => {
       if (stage === 'starting')   showStatus('⏳ Iniciando scraper...', false)
       if (stage === 'extracting') showStatus('🔍 Extraindo stats...', false)
     })
-    return () => window.dataAPI.offProgress()
+    return () => window.dataAPI.offProgress?.()
   }, [])
 
   function updateCalcField(key: StatKey, value: number) {
