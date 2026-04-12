@@ -238,8 +238,13 @@ function parseNewScraperFormat(raw: Record<string, unknown>): Build | null {
     const v = rawStatsIn[key]
     if (!v) return fallback
     // "350 ~ 853" → take first number; "78,1%" → strip %
-    const cleaned = v.replace('%', '').replace(',', '.').split('~')[0].trim()
-    return parseFloat(cleaned) || fallback
+    // Remove thousands-separator commas BEFORE treating remaining comma as decimal:
+    //   "1,985"   (English: 1985) → remove comma → "1985"   → 1985
+    //   "78,1"    (decimal)       → keep comma   → "78.1"   → 78.1
+    let s = v.replace('%', '').split('~')[0].trim()
+    s = s.replace(/,(?=\d{3}(?!\d))/g, '')  // strip thousands commas ("1,985" → "1985")
+    s = s.replace(',', '.')                   // remaining comma = decimal separator
+    return parseFloat(s) || fallback
   }
 
   const maxDmgStr = rawStatsIn['Max Damage'] ?? ''

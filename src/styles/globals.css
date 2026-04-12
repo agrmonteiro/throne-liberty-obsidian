@@ -1,0 +1,235 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif:ital,wght@0,700;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design Tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --bg:           #0b0c0e;
+  --bg-panel:     #111318;
+  --bg-card:      #161923;
+  --bg-hover:     #1d2233;
+  --bg-input:     #13161e;
+  --gold:         #d4af37;
+  --gold-l:       #f0cc55;
+  --gold-dim:     rgba(212,175,55,0.14);
+  --gold-glow:    rgba(212,175,55,0.22);
+  --violet:       #7c5cfc;
+  --violet-dim:   rgba(124,92,252,0.14);
+  --cyan:         #00d4ff;
+  --cyan-dim:     rgba(0,212,255,0.10);
+  --green:        #3dd68c;
+  --red:          #f25f5c;
+  --text:         #e2e4ec;
+  --text-soft:    #7a8099;
+  --text-muted:   #474f6b;
+  --border:       rgba(255,255,255,0.07);
+  --border-gold:  rgba(212,175,55,0.28);
+  --border-violet:rgba(124,92,252,0.28);
+}
+
+/* ── Reset / Base ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,0.4); }
+
+/* ── Selection ─────────────────────────────────────────────────────────────── */
+::selection { background: var(--gold-dim); color: var(--gold-l); }
+
+/* ── Typography ────────────────────────────────────────────────────────────── */
+h1, h2, h3, h4 {
+  font-family: 'Noto Serif', Georgia, serif;
+  color: var(--gold-l);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+/* ── Utility classes ───────────────────────────────────────────────────────── */
+.font-mono  { font-family: 'JetBrains Mono', monospace !important; }
+.font-serif { font-family: 'Noto Serif', serif !important; }
+
+/* ── Card ──────────────────────────────────────────────────────────────────── */
+.tl-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  transition: border-color 0.18s, background 0.18s;
+}
+.tl-card:hover { border-color: var(--border-gold); background: var(--bg-hover); }
+
+/* ── Stat card ─────────────────────────────────────────────────────────────── */
+.tl-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.18s, background 0.18s;
+}
+.tl-stat-card:hover { border-color: var(--border-gold); background: var(--bg-hover); }
+
+/* ── Panel ─────────────────────────────────────────────────────────────────── */
+.tl-panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+}
+
+/* ── Input ─────────────────────────────────────────────────────────────────── */
+.tl-input {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.7rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.tl-input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px var(--gold-dim);
+}
+.tl-input::-webkit-inner-spin-button { opacity: 0.4; }
+/* Número: padding extra à direita para não colidir com os botões de spin */
+input[type="number"].tl-input { padding-right: 1.5rem; }
+
+/* ── Button ────────────────────────────────────────────────────────────────── */
+.tl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-l) 100%);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  color: #0b0c0e;
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 12px var(--gold-glow);
+  transition: filter 0.18s, transform 0.18s, box-shadow 0.18s;
+  white-space: nowrap;
+}
+.tl-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+.tl-btn:active { transform: translateY(0); }
+
+.tl-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-soft);
+  font-size: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.tl-btn-ghost:hover {
+  border-color: var(--border-gold);
+  color: var(--gold-l);
+  background: var(--gold-dim);
+}
+
+/* ── Badge / Tag ───────────────────────────────────────────────────────────── */
+.tl-tag {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+.tl-tag-gold   { background: var(--gold-dim);   border: 1px solid var(--border-gold);   color: var(--gold-l); }
+.tl-tag-violet { background: var(--violet-dim); border: 1px solid var(--border-violet); color: #b9a8ff; }
+.tl-tag-cyan   { background: var(--cyan-dim);   border: 1px solid rgba(0,212,255,0.25); color: var(--cyan); }
+.tl-tag-green  { background: rgba(61,214,140,0.1); border:1px solid rgba(61,214,140,0.3); color: var(--green); }
+.tl-tag-red    { background: rgba(242,95,92,0.1);  border:1px solid rgba(242,95,92,0.3);  color: var(--red); }
+
+/* ── Label ─────────────────────────────────────────────────────────────────── */
+.tl-eyebrow {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* ── Hero header ───────────────────────────────────────────────────────────── */
+.tl-hero {
+  padding: 1.25rem 1.75rem 1rem;
+  border-bottom: 1px solid var(--border-gold);
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, rgba(212,175,55,0.03) 0%, transparent 60%);
+}
+.tl-hero h1 { font-size: 1.6rem; margin: 0 0 0.2rem; }
+.tl-hero p  { color: var(--text-soft); font-style: italic; font-size: 0.85rem; margin: 0; }
+
+/* ── Divider ───────────────────────────────────────────────────────────────── */
+.tl-divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+
+/* ── Damage number highlight ───────────────────────────────────────────────── */
+.tl-dmg {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold-l);
+}
+.tl-gain-pos { color: var(--green); font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+.tl-gain-neg { color: var(--red);   font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+.tl-gain-neu { color: var(--text-soft); font-family: 'JetBrains Mono', monospace; }
+
+/* ── Tab nav ───────────────────────────────────────────────────────────────── */
+.tl-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 1rem; }
+.tl-tab {
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  color: var(--text-soft);
+  background: transparent;
+  transition: all 0.15s;
+}
+.tl-tab:hover  { color: var(--text); background: var(--bg-card); }
+.tl-tab.active {
+  color: var(--gold-l);
+  border-color: var(--border-gold);
+  border-bottom-color: var(--bg);
+  background: var(--bg-card);
+}
+
+/* ── Recharts overrides ─────────────────────────────────────────────────────── */
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical   line { stroke: rgba(255,255,255,0.05); }
+.recharts-text { fill: #7a8099 !important; }
+.recharts-legend-item-text { color: var(--text) !important; }
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-gold) !important;
+  border-radius: 6px !important;
+}
