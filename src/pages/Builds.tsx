@@ -97,6 +97,8 @@ export function Builds(): React.ReactElement {
           importFromFile, importFromUrlPython, exportBuild, createEmpty } = useBuilds()
   const buildList = useMemo(() => Object.values(builds), [builds])
 
+  const statusTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+
   const [editId,       setEditId]       = useState<string | null>(null)
   const [editData,     setEditData]     = useState<Build | null>(null)
   const [editTab,      setEditTab]      = useState<'stats' | 'calc'>('stats')
@@ -181,9 +183,10 @@ export function Builds(): React.ReactElement {
   }
 
   function showStatus(msg: string, isError: boolean) {
+    if (statusTimerRef.current) clearTimeout(statusTimerRef.current)
     setStatus(msg)
     setStatusErr(isError)
-    setTimeout(() => setStatus(null), 5000)
+    statusTimerRef.current = setTimeout(() => setStatus(null), 5000)
   }
 
   function isValidQuestlogUrl(raw: string): boolean {
