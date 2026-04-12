@@ -5,10 +5,10 @@ import { calcResult, calcElasticity, critChanceFromStat, heavyChanceFromStat } f
 import { DEFAULT_STATS } from '../engine/types'
 import type { BuildStats } from '../engine/types'
 
+import { fmt, fmtPct } from '../engine/fmt'
+
 const COLS    = 4
 const COLORS  = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c']
-const fmt     = (n: number) => n.toLocaleString('pt-BR', { maximumFractionDigits: 0 })
-const fmtPct  = (n: number) => `${n.toFixed(2)}%`
 
 // ─── Stat field definitions ───────────────────────────────────────────────────
 
@@ -199,8 +199,8 @@ export function Calculator(): React.ReactElement {
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={gainData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
                 <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
-                <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => `${v.toFixed(1)}%`} />
-                <Tooltip formatter={(v: number) => [`${v.toFixed(2)}%`, 'Ganho vs Build 1']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
+                <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v, 1)} />
+                <Tooltip formatter={(v: number) => [fmtPct(v), 'Ganho vs Build 1']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
                 <Bar dataKey="gain" radius={[4, 4, 0, 0]}>
                   {gainData.map((d, i) => <Cell key={i} fill={d.gain > 0 ? '#3dd68c' : d.gain < 0 ? '#f25f5c' : '#474f6b'} opacity={0.85} />)}
                 </Bar>
@@ -221,7 +221,7 @@ export function Calculator(): React.ReactElement {
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={elasticChartData} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
                     <XAxis dataKey="iter" tick={{ fontSize: 10, fill: '#7a8099' }} label={{ value: 'Iteração', position: 'insideBottom', offset: -5, fill: '#7a8099', fontSize: 10 }} />
-                    <YAxis tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => `${v.toFixed(1)}%`} />
+                    <YAxis tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v, 1)} />
                     <Tooltip content={({ active, payload, label }) => {
                       if (!active || !payload?.length) return null
                       return (
@@ -232,15 +232,15 @@ export function Calculator(): React.ReactElement {
                             return (
                               <div key={p.dataKey} style={{ marginBottom: 5, paddingTop: 4, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                                 <div style={{ color: p.stroke, fontWeight: 700, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 240 }}>{p.dataKey}</div>
-                                <div style={{ color: '#3dd68c' }}>Ganho: {(p.value as number) >= 0 ? '+' : ''}{(p.value as number).toFixed(2)}%</div>
+                                <div style={{ color: '#3dd68c' }}>Ganho: {(p.value as number) >= 0 ? '+' : ''}{fmtPct(p.value as number)}</div>
                                 {s && (<>
                                   <div style={{ color: 'var(--text-soft)', marginTop: 2 }}>
                                     Crit stat: <span style={{ color: '#e2e4ec' }}>{s.critHitChance}</span>
-                                    {' → '}<span style={{ color: '#d4af37' }}>{(critChanceFromStat(s.critHitChance) * 100).toFixed(1)}%</span>
+                                    {' → '}<span style={{ color: '#d4af37' }}>{fmtPct(critChanceFromStat(s.critHitChance) * 100, 1)}</span>
                                   </div>
                                   <div style={{ color: 'var(--text-soft)' }}>
                                     Heavy stat: <span style={{ color: '#e2e4ec' }}>{s.heavyAttackChance}</span>
-                                    {' → '}<span style={{ color: '#7c5cfc' }}>{(heavyChanceFromStat(s.heavyAttackChance) * 100).toFixed(1)}%</span>
+                                    {' → '}<span style={{ color: '#7c5cfc' }}>{fmtPct(heavyChanceFromStat(s.heavyAttackChance) * 100, 1)}</span>
                                   </div>
                                   <div style={{ color: 'var(--text-soft)' }}>Crit Dmg: <span style={{ color: '#e2e4ec' }}>{s.critDmgPct}%</span></div>
                                   <div style={{ color: 'var(--text-soft)' }}>Skill Boost: <span style={{ color: '#e2e4ec' }}>{s.skillDmgBoost}</span></div>

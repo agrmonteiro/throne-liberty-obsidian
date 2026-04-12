@@ -4,8 +4,7 @@ import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engi
 import { DEFAULT_STATS } from '../engine/types'
 import type { Build, BuildStats } from '../engine/types'
 
-const fmt  = (n: number) => n.toLocaleString('pt-BR', { maximumFractionDigits: 0 })
-const fmtP = (n: number) => `${n.toFixed(1)}%`
+import { fmt, fmtP } from '../engine/fmt'
 const now  = () => new Date().toISOString()
 
 // ─── Stat groups for the full stats editor ───────────────────────────────────
