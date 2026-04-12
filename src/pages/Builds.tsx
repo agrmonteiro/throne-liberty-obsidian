@@ -99,16 +99,17 @@ export function Builds(): React.ReactElement {
 
   const statusTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const [editId,       setEditId]       = useState<string | null>(null)
-  const [editData,     setEditData]     = useState<Build | null>(null)
-  const [editTab,      setEditTab]      = useState<'stats' | 'calc'>('stats')
-  const [statsFilter,  setStatsFilter]  = useState('')
-  const [newName,      setNewName]      = useState('')
-  const [newCombo,     setNewCombo]     = useState('')
-  const [urlInput,     setUrlInput]     = useState('')
-  const [urlLoading,   setUrlLoading]   = useState(false)
-  const [status,       setStatus]       = useState<string | null>(null)
-  const [statusErr,    setStatusErr]    = useState(false)
+  const [editId,        setEditId]        = useState<string | null>(null)
+  const [editData,      setEditData]      = useState<Build | null>(null)
+  const [editTab,       setEditTab]       = useState<'stats' | 'calc'>('stats')
+  const [statsFilter,   setStatsFilter]   = useState('')
+  const [newName,       setNewName]       = useState('')
+  const [newCombo,      setNewCombo]      = useState('')
+  const [urlInput,      setUrlInput]      = useState('')
+  const [urlLoading,    setUrlLoading]    = useState(false)
+  const [status,        setStatus]        = useState<string | null>(null)
+  const [statusErr,     setStatusErr]     = useState(false)
+  const [pendingImport, setPendingImport] = useState<Build | null>(null)
 
   function startEdit(b: Build) {
     setEditId(b.id)
@@ -156,8 +157,22 @@ export function Builds(): React.ReactElement {
       showStatus(result.error, true)
     } else {
       setUrlInput('')
-      showStatus(`✅ ${result.name} importado`, false)
+      // Não salva automaticamente — abre painel de confirmação para renomear
+      setPendingImport({ ...result })
     }
+  }
+
+  async function savePendingImport() {
+    if (!pendingImport) return
+    await saveBuild(pendingImport)
+    setActive(pendingImport.id)
+    showStatus(`✅ "${pendingImport.name}" salva!`, false)
+    setPendingImport(null)
+  }
+
+  function discardPendingImport() {
+    setPendingImport(null)
+    showStatus('Importação descartada.', false)
   }
 
   async function handleDelete(id: string) {
@@ -266,6 +281,63 @@ export function Builds(): React.ReactElement {
           </div>
         )}
 
+        {/* ── Pending import confirmation ───────────────────────────── */}
+        {pendingImport && (
+          <div className="tl-panel" style={{ marginBottom: '1.25rem', border: '1px solid rgba(212,175,55,0.4)', background: 'rgba(212,175,55,0.05)' }}>
+            <div className="tl-eyebrow" style={{ marginBottom: '0.75rem', color: '#d4af37' }}>
+              ✅ Build importada — confirme o nome antes de salvar
+            </div>
+
+            {/* Save / discard — TOPO */}
+            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.9rem' }}>
+              <button
+                className="tl-btn"
+                onClick={savePendingImport}
+                style={{ background: 'rgba(212,175,55,0.15)', borderColor: 'rgba(212,175,55,0.5)', color: '#f0cc55' }}
+              >
+                💾 Salvar build
+              </button>
+              <button className="tl-btn-ghost" onClick={discardPendingImport}>Descartar</button>
+            </div>
+
+            {/* Nome + armas editáveis */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+              <div>
+                <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Nome</div>
+                <input
+                  className="tl-input"
+                  style={{ fontFamily: 'Inter,sans-serif' }}
+                  value={pendingImport.name}
+                  onChange={(e) => setPendingImport({ ...pendingImport, name: e.target.value })}
+                  onKeyDown={(e) => e.key === 'Enter' && savePendingImport()}
+                  autoFocus
+                />
+              </div>
+              <div>
+                <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Armas (ex: sword+wand)</div>
+                <input
+                  className="tl-input"
+                  style={{ fontFamily: 'Inter,sans-serif' }}
+                  placeholder="sword+wand"
+                  value={pendingImport.weaponCombo}
+                  onChange={(e) => setPendingImport({ ...pendingImport, weaponCombo: e.target.value })}
+                  onKeyDown={(e) => e.key === 'Enter' && savePendingImport()}
+                />
+              </div>
+            </div>
+
+            {/* Stats preview */}
+            {pendingImport.rawStats && Object.keys(pendingImport.rawStats).length > 0 && (
+              <div style={{ marginTop: '0.6rem', fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>
+                {Object.keys(pendingImport.rawStats).length} stats extraídos
+                {pendingImport.sourceUrl && (
+                  <span style={{ marginLeft: 8, opacity: 0.6 }}>· {pendingImport.sourceUrl.slice(0, 60)}…</span>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Questlog URL import */}
         <div className="tl-panel" style={{ marginBottom: '1.25rem' }}>
           <div className="tl-eyebrow" style={{ marginBottom: 8 }}>Importar do Questlog</div>
@@ -371,6 +443,12 @@ export function Builds(): React.ReactElement {
                   {/* ── Inline editor ──────────────────────────────────────── */}
                   {isEditing && editData && (
                     <div className="tl-panel" style={{ borderTop: 'none', borderRadius: '0 0 8px 8px', marginTop: -1 }}>
+
+                      {/* Save / cancel — TOPO */}
+                      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.9rem' }}>
+                        <button className="tl-btn" onClick={saveEdit}>💾 Salvar alterações</button>
+                        <button className="tl-btn-ghost" onClick={cancelEdit}>Cancelar</button>
+                      </div>
 
                       {/* Name / combo */}
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -530,10 +608,6 @@ export function Builds(): React.ReactElement {
                         </div>
                       )}
 
-                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                        <button className="tl-btn" onClick={saveEdit}>💾 Salvar alterações</button>
-                        <button className="tl-btn-ghost" onClick={cancelEdit}>Cancelar</button>
-                      </div>
                     </div>
                   )}
                 </div>

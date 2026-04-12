@@ -145,8 +145,7 @@ export const useBuilds = create<BuildsState>((set, get) => ({
 
       const build = parsePythonBuild(obj)
       if (!build) return { error: 'Scraper retornou dados inválidos — tente novamente ou reporte o erro' }
-      await get().saveBuild(build)
-      set({ activeBuildId: build.id })
+      // Não salva automaticamente — retorna o build para o UI confirmar e renomear
       return build
     } catch (err) {
       return { error: `Erro inesperado: ${String(err)}` }
