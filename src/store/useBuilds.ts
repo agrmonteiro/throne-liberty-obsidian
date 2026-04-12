@@ -138,8 +138,13 @@ export const useBuilds = create<BuildsState>((set, get) => ({
       if (!raw || typeof raw !== 'object') return { error: 'Resposta inválida do scraper.' }
       const obj = raw as Record<string, unknown>
       if (obj.error) return { error: String(obj.error) }
+
+      // Validação de schema antes de qualquer parse ou save (IMP-05)
+      const validationError = validateScraperOutput(obj)
+      if (validationError) return { error: validationError }
+
       const build = parsePythonBuild(obj)
-      if (!build) return { error: 'Não foi possível parsear o resultado do scraper.' }
+      if (!build) return { error: 'Scraper retornou dados inválidos — tente novamente ou reporte o erro' }
       await get().saveBuild(build)
       set({ activeBuildId: build.id })
       return build
@@ -169,6 +174,42 @@ export const useBuilds = create<BuildsState>((set, get) => ({
 // Suporta dois formatos:
 //   1. Novo scraper (questlog_scraper_standalone): { meta, attributes, stats }
 //   2. Formato antigo do questlog importer: { stats, character_name, ... }
+
+/**
+ * Valida o output do scraper antes de parsear.
+ * Retorna null se válido, ou string com mensagem de erro se inválido.
+ * Suporta ambos os formatos: novo ({ meta, stats }) e antigo ({ character_name/folder_name, stats }).
+ */
+function validateScraperOutput(obj: Record<string, unknown>): string | null {
+  // Verificar se tem stats em algum formato
+  const hasStats = obj.stats != null
+    && typeof obj.stats === 'object'
+    && !Array.isArray(obj.stats)
+    && Object.keys(obj.stats as Record<string, unknown>).length > 0
+
+  if (!hasStats) {
+    return 'Build importada com dados incompletos — campos obrigatórios ausentes'
+  }
+
+  // Formato novo: precisa de meta com character_name ou slug
+  const isNewFormat = obj.meta != null
+  if (isNewFormat) {
+    const meta = obj.meta as Record<string, unknown>
+    const hasIdentifier = Boolean(meta.character_name) || Boolean(meta.slug)
+    if (!hasIdentifier) {
+      return 'Build importada com dados incompletos — campos obrigatórios ausentes'
+    }
+    return null
+  }
+
+  // Formato antigo: precisa de character_name ou folder_name
+  const hasIdentifier = Boolean(obj.character_name) || Boolean(obj.folder_name)
+  if (!hasIdentifier) {
+    return 'Build importada com dados incompletos — campos obrigatórios ausentes'
+  }
+
+  return null // válido
+}
 
 function parsePythonBuild(raw: Record<string, unknown>): Build | null {
   try {
