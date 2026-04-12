@@ -35,75 +35,62 @@ export function heavyChanceFromStat(stat: number): number {
 }
 
 // ─── Base skill damage (before multipliers) ───────────────────────────────────
+// Python: (weapon + skillBonus) * skill%   — bonus entra ANTES do multiplicador de skill
 
 function baseSkillDamage(stats: BuildStats, useMin: boolean): number {
   const weapon = useMin ? stats.minWeaponDmg : stats.maxWeaponDmg
-  return (weapon * (stats.skillBaseDamagePct / 100)) + stats.skillBonusBaseDmg
-}
-
-// ─── Multipliers with diminishing returns ────────────────────────────────────
-
-function skillBoostMultiplier(boost: number): number {
-  // Additive inside base, then multiplied: same divisor DR
-  if (boost <= 0) return 1
-  return 1 + boost / DR
-}
-
-function bonusDmgMultiplier(bonus: number): number {
-  if (bonus <= 0) return 1
-  return 1 + bonus / DR
-}
-
-function speciesBoostMultiplier(boost: number): number {
-  if (boost <= 0) return 1
-  return 1 + boost / DR
+  return (weapon + stats.skillBonusBaseDmg) * (stats.skillBaseDamagePct / 100)
 }
 
 // ─── Full average DPS ─────────────────────────────────────────────────────────
+// Alinhado com DamageCalculatorFixed.calculate_average_total_damage()
 
 export function calcAverageDPS(stats: BuildStats): number {
   const critChance  = critChanceFromStat(stats.critHitChance, stats.targetEndurance)
   const heavyChance = heavyChanceFromStat(stats.heavyAttackChance)
 
-  // Average base (between min and max weapon)
+  // Passo 1: dano base (weapon + skillBonus) * skill%
   const minBase = baseSkillDamage(stats, true)
   const maxBase = baseSkillDamage(stats, false)
   const avgBase = (minBase + maxBase) / 2
 
-  // Skill damage boost multiplier (DR)
-  const skillBoost = skillBoostMultiplier(stats.skillDmgBoost)
+  // Passo 2: SDB com DR — SDB / (SDB + 1000)
+  const sdbMult  = stats.skillDmgBoost > 0 ? 1 + stats.skillDmgBoost / (stats.skillDmgBoost + DR) : 1
+  const afterSDB = avgBase * sdbMult
 
-  // Bonus / species (DR)
-  const bonusMult   = bonusDmgMultiplier(stats.bonusDmg)
-  const speciesMult = speciesBoostMultiplier(stats.speciesDmgBoost)
+  // Passo 3: Bonus Damage como adição flat (Python: damage_with_bonus = skill_damage + bonus)
+  const afterBonus = afterSDB + stats.bonusDmg
 
-  // Flat % buffs (no DR)
+  // Passo 4: multiplicadores % diretos (Python: monster_boost * damage_buff)
   const monsterMult = 1 + stats.monsterDmgBoostPct / 100
   const dmgBuff     = 1 + stats.dmgBuffPct / 100
+  const afterMult   = afterBonus * monsterMult * dmgBuff
 
-  // Critical damage multiplier (+100% base crit is already baked in)
-  const critMult  = stats.critDmgPct / 100  // extra on top of the 1.0 base crit
+  // Passo 5: Species Damage Boost como adição flat (Python: final += species_damage_boost)
+  const baseDmg = afterMult + stats.speciesDmgBoost
 
-  // Heavy damage: base heavy adds +100%; complement adds extra
-  // total heavy multiplier = 1 + 1.0 + heavyComp/100 = 2 + heavyComp/100
-  const heavyMult = 1 + (1.0 + stats.heavyAttackDmgComp / 100)
+  // Valores de dano por tipo de hit
+  const critDmgMult  = 1 + stats.critDmgPct / 100
+  const heavyMult    = 2.0 + stats.heavyAttackDmgComp / 100  // base 2× + complemento
 
-  // Compose damage
-  const baseDmg = avgBase * skillBoost * bonusMult * speciesMult * monsterMult * dmgBuff
+  const critDmg      = baseDmg * critDmgMult
+  const heavyDmg     = baseDmg * heavyMult
+  const critHeavyDmg = baseDmg * heavyMult * critDmgMult   // crit + heavy simultâneo
 
-  // Expected value with crit and heavy
-  //  E = baseDmg × (normalHits + critHits + heavyHits)
-  //  where P(normal) = 1 - critChance - heavyChance (clamped)
-  const totalEventChance = Math.min(critChance + heavyChance, 0.999)
-  const normalPct = 1 - totalEventChance
-  const critPct   = critChance
-  const heavyPct  = heavyChance
+  // Probabilidades independentes — 4 cenários (Python model)
+  //  P(normal)     = (1-crit) × (1-heavy)
+  //  P(crit only)  = crit × (1-heavy)
+  //  P(heavy only) = (1-crit) × heavy
+  //  P(crit+heavy) = crit × heavy
+  const normalChance    = (1 - critChance) * (1 - heavyChance)
+  const critOnlyChance  = critChance        * (1 - heavyChance)
+  const heavyOnlyChance = (1 - critChance)  * heavyChance
+  const critHeavyChance = critChance        * heavyChance
 
-  const normalDmg = baseDmg
-  const critDmgAbs   = baseDmg * (1 + critMult)
-  const heavyDmgAbs  = baseDmg * heavyMult
-
-  return normalPct * normalDmg + critPct * critDmgAbs + heavyPct * heavyDmgAbs
+  return normalChance    * baseDmg      +
+         critOnlyChance  * critDmg      +
+         heavyOnlyChance * heavyDmg     +
+         critHeavyChance * critHeavyDmg
 }
 
 // ─── Min / Max single-hit values ─────────────────────────────────────────────
