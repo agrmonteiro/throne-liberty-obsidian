@@ -1,0 +1,336 @@
+import { create } from 'zustand'
+import type { Build, BuildMap, BuildStats } from '../engine/types'
+import { DEFAULT_STATS } from '../engine/types'
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface BuildsState {
+  builds:        BuildMap
+  activeBuildId: string | null
+  loading:       boolean
+
+  // Actions
+  loadFromDisk:         ()                             => Promise<void>
+  saveBuild:            (build: Build)                 => Promise<void>
+  deleteBuild:          (id: string)                   => Promise<void>
+  setActive:            (id: string | null)            => void
+  importFromFile:       ()                             => Promise<Build | null>
+  importFromUrlPython:  (url: string)                  => Promise<Build | { error: string }>
+  exportBuild:          (id: string)                   => Promise<void>
+  createEmpty:          (name: string, combo?: string) => Build
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+declare global {
+  interface Window {
+    dataAPI: {
+      read:                  (filename: string)                   => Promise<unknown>
+      write:                 (filename: string, data: unknown)    => Promise<{ ok: boolean; error?: string }>
+      importFile:            ()                                   => Promise<unknown>
+      exportFile:            (data: unknown, name: string)        => Promise<{ ok: boolean; path?: string }>
+      dir:                   ()                                   => Promise<string>
+      questlogImportPython:  (url: string)                        => Promise<unknown>
+    }
+  }
+}
+
+const FILE = 'builds.json'
+
+async function readBuilds(): Promise<BuildMap> {
+  try {
+    const data = await window.dataAPI.read(FILE)
+    return (data as BuildMap) ?? {}
+  } catch {
+    return {}
+  }
+}
+
+async function writeBuilds(builds: BuildMap): Promise<void> {
+  await window.dataAPI.write(FILE, builds)
+}
+
+function newId(): string {
+  return `build_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
+}
+
+// ─── Store ────────────────────────────────────────────────────────────────────
+
+export const useBuilds = create<BuildsState>((set, get) => ({
+  builds:        {},
+  activeBuildId: null,
+  loading:       false,
+
+  loadFromDisk: async () => {
+    set({ loading: true })
+    const builds = await readBuilds()
+    const ids = Object.keys(builds)
+    set({
+      builds,
+      loading: false,
+      activeBuildId: ids.length > 0 ? ids[0] : null,
+    })
+  },
+
+  saveBuild: async (build: Build) => {
+    const builds = { ...get().builds, [build.id]: build }
+    set({ builds })
+    await writeBuilds(builds)
+  },
+
+  deleteBuild: async (id: string) => {
+    const builds = { ...get().builds }
+    delete builds[id]
+    const ids = Object.keys(builds)
+    set({
+      builds,
+      activeBuildId: ids.length > 0 ? ids[0] : null,
+    })
+    await writeBuilds(builds)
+  },
+
+  setActive: (id) => set({ activeBuildId: id }),
+
+  importFromFile: async () => {
+    try {
+      const raw = await window.dataAPI.importFile()
+      if (!raw) return null
+
+      // Support both a single build object and a map
+      let build: Build | null = null
+
+      if (typeof raw === 'object' && raw !== null) {
+        const obj = raw as Record<string, unknown>
+
+        if ('stats' in obj && 'name' in obj) {
+          // Direct Build object
+          build = {
+            id:          (obj.id as string) || newId(),
+            name:        (obj.name as string) || 'Importada',
+            weaponCombo: (obj.weaponCombo as string) || '',
+            stats:       (obj.stats as BuildStats) || { ...DEFAULT_STATS },
+            notes:       (obj.notes as string) || '',
+            importedAt:  new Date().toISOString(),
+            sourceUrl:   (obj.sourceUrl as string) || undefined,
+          }
+        } else {
+          // Maybe it's a Python-format build (from questlog importer)
+          build = parsePythonBuild(obj)
+        }
+      }
+
+      if (!build) return null
+
+      await get().saveBuild(build)
+      set({ activeBuildId: build.id })
+      return build
+    } catch (err) {
+      console.error('importFromFile error', err)
+      return null
+    }
+  },
+
+  importFromUrlPython: async (url: string) => {
+    try {
+      const raw = await window.dataAPI.questlogImportPython(url)
+      if (!raw || typeof raw !== 'object') return { error: 'Resposta inválida do scraper.' }
+      const obj = raw as Record<string, unknown>
+      if (obj.error) return { error: String(obj.error) }
+      const build = parsePythonBuild(obj)
+      if (!build) return { error: 'Não foi possível parsear o resultado do scraper.' }
+      await get().saveBuild(build)
+      set({ activeBuildId: build.id })
+      return build
+    } catch (err) {
+      return { error: `Erro inesperado: ${String(err)}` }
+    }
+  },
+
+  exportBuild: async (id: string) => {
+    const build = get().builds[id]
+    if (!build) return
+    const filename = `${build.name.replace(/[^a-z0-9]/gi, '_')}.json`
+    await window.dataAPI.exportFile(build, filename)
+  },
+
+  createEmpty: (name: string, combo = '') => ({
+    id:          newId(),
+    name,
+    weaponCombo: combo,
+    stats:       { ...DEFAULT_STATS },
+    notes:       '',
+    importedAt:  new Date().toISOString(),
+  }),
+}))
+
+// ─── Parser para builds do Python (questlog importer format) ─────────────────
+// Suporta dois formatos:
+//   1. Novo scraper (questlog_scraper_standalone): { meta, attributes, stats }
+//   2. Formato antigo do questlog importer: { stats, character_name, ... }
+
+function parsePythonBuild(raw: Record<string, unknown>): Build | null {
+  try {
+    // ── Detecta formato do novo scraper ──────────────────────────────────────
+    const isNewFormat = raw.meta != null && raw.attributes != null && raw.stats != null
+      && typeof raw.stats === 'object' && !Array.isArray(raw.stats)
+      && Object.values(raw.stats as Record<string, unknown>).every((v) => typeof v === 'string')
+
+    if (isNewFormat) {
+      return parseNewScraperFormat(raw)
+    }
+
+    // ── Formato antigo ────────────────────────────────────────────────────────
+    return parseOldFormat(raw)
+  } catch {
+    return null
+  }
+}
+
+/** Novo formato: { meta: { character_name, slug, ... }, attributes: { Strength: { total, display } }, stats: { "Combat Power": "5467" } } */
+function parseNewScraperFormat(raw: Record<string, unknown>): Build | null {
+  const meta = (raw.meta ?? {}) as Record<string, unknown>
+  const rawAttrs = (raw.attributes ?? {}) as Record<string, { total: number; display: string }>
+  const rawStatsIn = (raw.stats ?? {}) as Record<string, string>
+
+  function statNum(key: string, fallback = 0): number {
+    const v = rawStatsIn[key]
+    if (!v) return fallback
+    // "350 ~ 853" → take first number; "78,1%" → strip %
+    const cleaned = v.replace('%', '').replace(',', '.').split('~')[0].trim()
+    return parseFloat(cleaned) || fallback
+  }
+
+  const maxDmgStr = rawStatsIn['Max Damage'] ?? ''
+  const parts = maxDmgStr.split('~').map((p) => parseFloat(p.trim().replace(',', '.')) || 0)
+  const minWeaponDmg = parts[0] ?? 0
+  const maxWeaponDmg = parts[1] ?? minWeaponDmg
+
+  const heavyEntry = rawStatsIn['Heavy Attack Damage']
+  const heavyComp = heavyEntry != null
+    ? Math.max(0, statNum('Heavy Attack Damage'))
+    : Math.max(0, statNum('Heavy Damage', 100) - 100)
+
+  const speciesKeys = [
+    'Species Damage Boost', 'Demon Damage Boost', 'Wildkin Damage Boost',
+    'Undead Damage Boost', 'Humanoid Damage Boost', 'Construct Damage Boost', 'Magic Damage Boost',
+  ]
+  const speciesDmgBoost = speciesKeys.reduce((acc, k) => {
+    const v = statNum(k)
+    return v > acc ? v : acc
+  }, 0)
+
+  const stats: BuildStats = {
+    ...DEFAULT_STATS,
+    minWeaponDmg,
+    maxWeaponDmg,
+    critHitChance:      statNum('Magic Critical Hit Chance') || statNum('Melee Critical Hit Chance'),
+    heavyAttackChance:  statNum('Magic Heavy Attack Chance') || statNum('Melee Heavy Attack Chance'),
+    heavyAttackDmgComp: heavyComp,
+    skillDmgBoost:      statNum('Skill Damage Boost'),
+    bonusDmg:           statNum('Bonus Damage'),
+    critDmgPct:         statNum('Critical Damage'),
+    speciesDmgBoost,
+  }
+
+  // Normaliza rawAttributes para o formato padrão
+  const rawAttributes: Record<string, { total: number; display: string }> = {}
+  for (const [k, v] of Object.entries(rawAttrs)) {
+    if (v && typeof v === 'object') {
+      rawAttributes[k] = { total: v.total ?? 0, display: v.display ?? String(v.total ?? 0) }
+    }
+  }
+
+  const name = String(meta.character_name || meta.slug || 'Build importada')
+  const sourceUrl = typeof meta.source_url === 'string' ? meta.source_url : undefined
+
+  return {
+    id:            newId(),
+    name,
+    weaponCombo:   '',
+    stats,
+    notes:         '',
+    importedAt:    new Date().toISOString(),
+    sourceUrl,
+    rawStats:      rawStatsIn,
+    rawAttributes,
+  }
+}
+
+/** Formato antigo do importer Python: { stats: { "Combat Power": { value, display } }, character_name, ... } */
+function parseOldFormat(raw: Record<string, unknown>): Build | null {
+  const rawStats = (raw.stats || {}) as Record<string, unknown>
+
+  function s(key: string, fallback = 0): number {
+    const v = rawStats[key]
+    if (typeof v === 'number') return v
+    if (typeof v === 'object' && v !== null) {
+      const obj = v as Record<string, unknown>
+      const val = obj.selected_value ?? obj.value ?? obj.display ?? fallback
+      return parseFloat(String(val)) || fallback
+    }
+    return parseFloat(String(v)) || fallback
+  }
+
+  const maxDmgRaw = rawStats['Max Damage'] as Record<string, unknown> | number | undefined
+  let minW = 0, maxW = 0
+  if (typeof maxDmgRaw === 'object' && maxDmgRaw !== null) {
+    minW = parseFloat(String(maxDmgRaw.value ?? 0)) || 0
+    maxW = parseFloat(String(maxDmgRaw.selected_value ?? maxDmgRaw.value ?? 0)) || minW
+  } else if (typeof maxDmgRaw === 'number') {
+    minW = maxW = maxDmgRaw
+  }
+
+  const heavyRaw = rawStats['Heavy Attack Damage']
+  const heavyComp = heavyRaw !== undefined
+    ? Math.max(0, s('Heavy Attack Damage'))
+    : Math.max(0, s('Heavy Damage', 100) - 100)
+
+  const speciesKeys = [
+    'Species Damage Boost', 'Demon Damage Boost', 'Wildkin Damage Boost',
+    'Undead Damage Boost', 'Humanoid Damage Boost', 'Construct Damage Boost', 'Magic Damage Boost',
+  ]
+  const speciesDmgBoost = speciesKeys.reduce((acc, k) => {
+    const v = s(k)
+    return v > acc ? v : acc
+  }, 0)
+
+  const stats: BuildStats = {
+    ...DEFAULT_STATS,
+    minWeaponDmg:        minW,
+    maxWeaponDmg:        maxW,
+    critHitChance:       s('Magic Critical Hit Chance') || s('Melee Critical Hit Chance'),
+    heavyAttackChance:   s('Magic Heavy Attack Chance') || s('Melee Heavy Attack Chance'),
+    heavyAttackDmgComp:  heavyComp,
+    skillDmgBoost:       s('Skill Damage Boost'),
+    bonusDmg:            s('Bonus Damage'),
+    critDmgPct:          s('Critical Damage'),
+    speciesDmgBoost,
+  }
+
+  // Convert old stat objects to display strings for rawStats
+  const rawStatsOut: Record<string, string> = {}
+  for (const [key, val] of Object.entries(rawStats)) {
+    if (typeof val === 'string') rawStatsOut[key] = val
+    else if (typeof val === 'number') rawStatsOut[key] = String(val)
+    else if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      const display = obj.display ?? obj.selected_value ?? obj.value
+      if (display != null) rawStatsOut[key] = String(display)
+    }
+  }
+
+  const name = String(raw.character_name || raw.folder_name || raw.build_id || 'Build importada')
+  const wt = raw.weapon_types
+  const combo = Array.isArray(wt) ? wt.join('+') : String(raw.folder_name || '')
+
+  return {
+    id:          newId(),
+    name,
+    weaponCombo: combo.toLowerCase(),
+    stats,
+    notes:       '',
+    importedAt:  new Date().toISOString(),
+    sourceUrl:   typeof raw.url === 'string' ? raw.url : undefined,
+    rawStats:    rawStatsOut,
+  }
+}
