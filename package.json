@@ -1,0 +1,58 @@
+{
+  "name": "throne-liberty",
+  "version": "1.0.0-beta.1",
+  "description": "Throne & Liberty — Obsidian Command: Build Analytics Desktop App",
+  "main": "dist-electron/main/index.js",
+  "author": "Luis Monteiro",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "package": "electron-vite build && electron-builder --win",
+    "preview": "electron-vite preview"
+  },
+  "dependencies": {
+    "recharts": "^2.12.7",
+    "zustand": "^4.5.5"
+  },
+  "devDependencies": {
+    "@electron-toolkit/preload": "^3.0.1",
+    "@electron-toolkit/utils": "^3.0.0",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.19",
+    "electron": "^31.2.1",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "postcss": "^8.4.39",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^3.4.6",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.4"
+  },
+  "build": {
+    "appId": "com.thronebuilds.obsidian",
+    "productName": "Throne & Liberty",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist-electron/**",
+      "dist/**"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Throne & Liberty"
+    }
+  }
+}

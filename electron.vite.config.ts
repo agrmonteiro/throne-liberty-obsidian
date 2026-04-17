@@ -26,7 +26,7 @@ export default defineConfig({
   renderer: {
     root: resolve(__dirname, '.'),
     build: {
-      outDir: 'dist',
+      outDir: 'dist-electron/renderer',
       rollupOptions: {
         input: resolve(__dirname, 'index.html'),
       },

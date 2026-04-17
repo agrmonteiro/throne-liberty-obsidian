@@ -35,71 +35,88 @@ export function heavyChanceFromStat(stat: number): number {
 }
 
 // ─── Base skill damage (before multipliers) ───────────────────────────────────
-// Python: (weapon + skillBonus) * skill%   — bonus entra ANTES do multiplicador de skill
+// Fórmulas Maxroll/Reddit: ((Weapon * Skill%) + FlatSkillBonus)
 
-function baseSkillDamage(stats: BuildStats, useMin: boolean): number {
-  const weapon = useMin ? stats.minWeaponDmg : stats.maxWeaponDmg
-  return (weapon + stats.skillBonusBaseDmg) * (stats.skillBaseDamagePct / 100)
+function baseSkillDamage(weapon: number, stats: BuildStats): number {
+  return (weapon * (stats.skillBaseDamagePct / 100)) + stats.skillBonusBaseDmg
 }
 
 // ─── Full average DPS ─────────────────────────────────────────────────────────
-// Alinhado com DamageCalculatorFixed.calculate_average_total_damage()
+// Fórmula Oficial: ( (Base Damage * [Multipliers]) * Heavy Attack ) + Bonus Damage - Damage Reduction
 
 export function calcAverageDPS(stats: BuildStats): number {
   const critChance  = critChanceFromStat(stats.critHitChance, stats.targetEndurance)
   const heavyChance = heavyChanceFromStat(stats.heavyAttackChance)
 
-  // Passo 1: dano base (weapon + skillBonus) * skill%
-  const minBase = baseSkillDamage(stats, true)
-  const maxBase = baseSkillDamage(stats, false)
-  const avgBase = (minBase + maxBase) / 2
+  // 1. Hit Normal vs Hit Crítico exigem bases diferentes:
+  //    Hit Crítico usa SEMPRE Max Weapon Damage.
+  //    Hit Normal usa a média de (Min + Max).
+  const avgWeapon = (stats.minWeaponDmg + stats.maxWeaponDmg) / 2
+  const baseNormal = baseSkillDamage(avgWeapon, stats)
+  const baseCrit   = baseSkillDamage(stats.maxWeaponDmg, stats)
 
-  // Passo 2: SDB com DR — SDB / (SDB + 1000)
-  const sdbMult  = stats.skillDmgBoost > 0 ? 1 + stats.skillDmgBoost / (stats.skillDmgBoost + DR) : 1
-  const afterSDB = avgBase * sdbMult
+  // 2. Agrupar os Multiplicadores (Defense, SDB, Species, PvE, DmgBuff)
+  const defReduction = stats.targetDefense > 0 ? stats.targetDefense / (stats.targetDefense + 2500) : 0
+  const defMult      = 1 - defReduction
+  
+  const sdbMult      = stats.skillDmgBoost > 0 ? 1 + stats.skillDmgBoost / (stats.skillDmgBoost + DR) : 1
+  const speciesMult  = 1 + stats.speciesDmgBoost / (stats.speciesDmgBoost + DR)
+  const monsterMult  = 1 + stats.monsterDmgBoostPct / 100
+  const dmgBuff      = 1 + stats.dmgBuffPct / 100
 
-  // Passo 3: Bonus Damage como adição flat (Python: damage_with_bonus = skill_damage + bonus)
-  const afterBonus = afterSDB + stats.bonusDmg
+  // Multiplicador Global
+  const baseMult = defMult * sdbMult * speciesMult * monsterMult * dmgBuff
 
-  // Passo 4: multiplicadores % diretos (Python: monster_boost * damage_buff)
-  const monsterMult = 1 + stats.monsterDmgBoostPct / 100
-  const dmgBuff     = 1 + stats.dmgBuffPct / 100
-  const afterMult   = afterBonus * monsterMult * dmgBuff
+  // Multiplicadores adicionais por condição
+  const critDmgMult = 1 + stats.critDmgPct / 100
+  const heavyMult   = 2.0 + stats.heavyAttackDmgComp / 100
 
-  // Passo 5: Species Damage Boost como adição flat (Python: final += species_damage_boost)
-  const baseDmg = afterMult + stats.speciesDmgBoost
+  // 3. Os Quatro Cenários possíveis
+  // Cenário 1: Hit Normal
+  const dmgNormal = baseNormal * baseMult
+  
+  // Cenário 2: Crítico puro
+  const dmgCrit = baseCrit * baseMult * critDmgMult
+  
+  // Cenário 3: Heavy puro
+  const dmgHeavy = baseNormal * baseMult * heavyMult
+  
+  // Cenário 4: Crit + Heavy SIMULTÂNEOS
+  const dmgCritHeavy = baseCrit * baseMult * critDmgMult * heavyMult
 
-  // Valores de dano por tipo de hit
-  const critDmgMult  = 1 + stats.critDmgPct / 100
-  const heavyMult    = 2.0 + stats.heavyAttackDmgComp / 100  // base 2× + complemento
-
-  const critDmg      = baseDmg * critDmgMult
-  const heavyDmg     = baseDmg * heavyMult
-  const critHeavyDmg = baseDmg * heavyMult * critDmgMult   // crit + heavy simultâneo
-
-  // Probabilidades independentes — 4 cenários (Python model)
-  //  P(normal)     = (1-crit) × (1-heavy)
-  //  P(crit only)  = crit × (1-heavy)
-  //  P(heavy only) = (1-crit) × heavy
-  //  P(crit+heavy) = crit × heavy
+  // 4. Probabilidades Independentes
   const normalChance    = (1 - critChance) * (1 - heavyChance)
   const critOnlyChance  = critChance        * (1 - heavyChance)
   const heavyOnlyChance = (1 - critChance)  * heavyChance
   const critHeavyChance = critChance        * heavyChance
 
-  return normalChance    * baseDmg      +
-         critOnlyChance  * critDmg      +
-         heavyOnlyChance * heavyDmg     +
-         critHeavyChance * critHeavyDmg
+  const avgPreBonus = normalChance    * dmgNormal +
+                      critOnlyChance  * dmgCrit +
+                      heavyOnlyChance * dmgHeavy +
+                      critHeavyChance * dmgCritHeavy
+
+  // 5. Bonus Damage é adicionado pós-cálculo de todos os multiplicadores (e do Heavy Attack)
+  const finalDamage = Math.max(0, avgPreBonus + stats.bonusDmg)
+  return finalDamage
 }
 
 // ─── Min / Max single-hit values ─────────────────────────────────────────────
 
 export function calcModifiers(stats: BuildStats): { minBase: number; maxCrit: number } {
-  const minBase = baseSkillDamage(stats, true)
-  const maxBase = baseSkillDamage(stats, false)
-  const maxCrit = maxBase * (1 + stats.critDmgPct / 100)
-  return { minBase, maxCrit }
+  const defReduction = stats.targetDefense > 0 ? stats.targetDefense / (stats.targetDefense + 2500) : 0
+  const baseMult = (1 - defReduction) 
+                 * (stats.skillDmgBoost > 0 ? 1 + stats.skillDmgBoost / (stats.skillDmgBoost + DR) : 1)
+                 * (1 + stats.speciesDmgBoost / (stats.speciesDmgBoost + DR))
+                 * (1 + stats.monsterDmgBoostPct / 100)
+                 * (1 + stats.dmgBuffPct / 100)
+  
+  const minHitBase = baseSkillDamage(stats.minWeaponDmg, stats)
+  const maxHitBase = baseSkillDamage(stats.maxWeaponDmg, stats)
+  
+  const minHit = (minHitBase * baseMult) + stats.bonusDmg
+  const maxCrit = (maxHitBase * baseMult * (1 + stats.critDmgPct / 100)) + stats.bonusDmg
+  
+  return { minBase: Math.max(0, minHit), maxCrit: Math.max(0, maxCrit) }
 }
 
 // ─── Full result ──────────────────────────────────────────────────────────────

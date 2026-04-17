@@ -5,6 +5,9 @@
 
 /* ── Design Tokens ─────────────────────────────────────────────────────────── */
 :root {
+  --base-font-size: 14px;
+  
+  /* Default Theme (Dark/Obsidian) */
   --bg:           #0b0c0e;
   --bg-panel:     #111318;
   --bg-card:      #161923;
@@ -17,7 +20,7 @@
   --violet:       #7c5cfc;
   --violet-dim:   rgba(124,92,252,0.14);
   --cyan:         #00d4ff;
-  --cyan-dim:     rgba(0,212,255,0.10);
+  --cyan-dim:   rgba(0,212,255,0.10);
   --green:        #3dd68c;
   --red:          #f25f5c;
   --text:         #e2e4ec;
@@ -28,16 +31,41 @@
   --border-violet:rgba(124,92,252,0.28);
 }
 
+.theme-light {
+  --bg:           #f5f7fa;
+  --bg-panel:     #ffffff;
+  --bg-card:      #ffffff;
+  --bg-hover:     #f0f2f5;
+  --bg-input:     #ffffff;
+  --gold:         #b99000;
+  --gold-l:       #8a6d3b;
+  --gold-dim:     rgba(185,144,0,0.08);
+  --gold-glow:    rgba(185,144,0,0.12);
+  --violet:       #634cc9;
+  --violet-dim:   rgba(99,76,201,0.08);
+  --cyan:         #00a8cc;
+  --cyan-dim:     rgba(0,168,204,0.08);
+  --green:        #2ea870;
+  --red:          #cf4a48;
+  --text:         #1a1d23;
+  --text-soft:    #5e6681;
+  --text-muted:   #8a92ab;
+  --border:       rgba(0,0,0,0.08);
+  --border-gold:  rgba(185,144,0,0.25);
+  --border-violet:rgba(99,76,201,0.25);
+}
+
 /* ── Reset / Base ──────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; }
 
 html, body, #root {
   height: 100%;
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background-color: #0b0c0e; /* Fallback manual sólido */
+  background: var(--bg, #0b0c0e);
+  color: var(--text, #e2e4ec);
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 14px;
+  font-size: var(--base-font-size, 14px);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
@@ -232,4 +260,10 @@ input[type="number"].tl-input { padding-right: 1.5rem; }
   background: var(--bg-card) !important;
   border: 1px solid var(--border-gold) !important;
   border-radius: 6px !important;
+}
+
+/* ── Animations ────────────────────────────────────────────────────────────── */
+@keyframes tl-modal-slide {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

@@ -33,6 +33,12 @@ declare global {
       questlogImportPython:  (url: string)                        => Promise<unknown>
       onProgress:            (cb: (payload: { stage: 'starting' | 'extracting' | 'done' }) => void) => void
       offProgress:           () => void
+      // Combat log folder management
+      combatlogPickFolder:   ()                                   => Promise<string | null | { error: string }>
+      combatlogGetFolder:    ()                                   => Promise<string | null>
+      combatlogListFiles:    (folder: string)                     => Promise<{ name: string; path: string; sizeBytes: number; mtime: number }[]>
+      combatlogReadFile:     (filePath: string)                   => Promise<string | null>
+      combatlogDeleteFile:   (filePath: string)                   => Promise<{ ok: boolean; error?: string }>
     }
   }
 }
@@ -237,13 +243,15 @@ function parseNewScraperFormat(raw: Record<string, unknown>): Build | null {
   function statNum(key: string, fallback = 0): number {
     const v = rawStatsIn[key]
     if (!v) return fallback
-    // "350 ~ 853" → take first number; "78,1%" → strip %
-    // Remove thousands-separator commas BEFORE treating remaining comma as decimal:
-    //   "1,985"   (English: 1985) → remove comma → "1985"   → 1985
-    //   "78,1"    (decimal)       → keep comma   → "78.1"   → 78.1
     let s = v.replace('%', '').split('~')[0].trim()
-    s = s.replace(/,(?=\d{3}(?!\d))/g, '')  // strip thousands commas ("1,985" → "1985")
-    s = s.replace(',', '.')                   // remaining comma = decimal separator
+    // Remove thousands-separator dots OR commas (followed by exactly 3 digits, not followed by digit):
+    //   "1.985"   (BR/EU: 1985)  → "1985"  → 1985  ✓
+    //   "1,985"   (EN: 1985)     → "1985"  → 1985  ✓
+    //   "78,5"    (BR decimal)   → stays   → "78.5" after next line → 78.5 ✓
+    //   "78.5"    (EN decimal)   → stays   → 78.5  ✓
+    //   "1.234.567" (BR millions)→ "1234567"✓
+    s = s.replace(/[,.](\d{3})(?!\d)/g, '$1')  // strip thousands separators (dot OR comma)
+    s = s.replace(',', '.')                      // remaining comma = decimal separator → dot
     return parseFloat(s) || fallback
   }
 

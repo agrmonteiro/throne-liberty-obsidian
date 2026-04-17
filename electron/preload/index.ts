@@ -15,6 +15,12 @@ const dataAPI = {
   offProgress:           () => {
     ipcRenderer.removeAllListeners('questlog:progress')
   },
+  // Combat log folder management
+  combatlogPickFolder:   ()                                   => ipcRenderer.invoke('combatlog:pick-folder'),
+  combatlogGetFolder:    ()                                   => ipcRenderer.invoke('combatlog:get-folder'),
+  combatlogListFiles:    (folder: string)                     => ipcRenderer.invoke('combatlog:list-files', folder),
+  combatlogReadFile:     (filePath: string)                   => ipcRenderer.invoke('combatlog:read-file', filePath),
+  combatlogDeleteFile:   (filePath: string)                   => ipcRenderer.invoke('combatlog:delete-file', filePath),
 }
 
 if (process.contextIsolated) {

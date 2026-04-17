@@ -25,12 +25,52 @@ function ensureDataDir(): void {
   }
 }
 
+// ─── Security helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Resolve `filePath` and assert it is inside `baseDir`.
+ * Throws if the resolved path escapes the base (path traversal guard).
+ */
+function assertInsideDir(baseDir: string, filePath: string): string {
+  const resolvedBase = path.resolve(baseDir)
+  const resolvedFile = path.resolve(filePath)
+  if (!resolvedFile.startsWith(resolvedBase + path.sep) && resolvedFile !== resolvedBase) {
+    throw new Error(`Acesso negado: caminho fora do diretório autorizado.`)
+  }
+  return resolvedFile
+}
+
+/**
+ * Read the saved combat-log folder from settings (main-process side, no renderer input).
+ */
+function getSavedCombatLogFolder(): string | null {
+  try {
+    const settingsPath = path.join(DATA_DIR, 'settings.json')
+    if (!fs.existsSync(settingsPath)) return null
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
+    return typeof settings.combatLogFolder === 'string' ? settings.combatLogFolder : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Sanitize a filename: reject anything with path separators or '..'
+ */
+function sanitizeDataFilename(filename: string): string {
+  if (!filename || /[/\\]|\.\./.test(filename)) {
+    throw new Error(`Nome de arquivo inválido: "${filename}"`)
+  }
+  return filename
+}
+
 // ─── IPC Handlers ─────────────────────────────────────────────────────────────
 
 // Read a JSON file from data dir
 ipcMain.handle('data:read', (_event, filename: string) => {
   try {
-    const filePath = path.join(DATA_DIR, filename)
+    const safe = sanitizeDataFilename(filename)
+    const filePath = path.join(DATA_DIR, safe)
     if (!fs.existsSync(filePath)) return null
     const raw = fs.readFileSync(filePath, 'utf-8')
     return JSON.parse(raw)
@@ -43,14 +83,22 @@ ipcMain.handle('data:read', (_event, filename: string) => {
 // Write a JSON file to data dir
 ipcMain.handle('data:write', (_event, filename: string, data: unknown) => {
   try {
-    const filePath = path.join(DATA_DIR, filename)
+    const safe = sanitizeDataFilename(filename)
+    // SEC-03: validate payload structure for known files
+    if (safe === 'builds.json') {
+      if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+        return { ok: false, error: 'Payload inválido para builds.json' }
+      }
+    }
+    const filePath = path.join(DATA_DIR, safe)
     const tmp = filePath + '.tmp'
     fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf-8')
     fs.renameSync(tmp, filePath)
     return { ok: true }
   } catch (err) {
     console.error('data:write error', err)
-    return { ok: false, error: String(err) }
+    // SEC-04: never expose internal error details to renderer
+    return { ok: false, error: 'Erro ao salvar arquivo — tente novamente' }
   }
 })
 
@@ -89,6 +137,102 @@ ipcMain.handle('data:export-file', async (_event, data: unknown, defaultName: st
 // Get data directory path (for display)
 ipcMain.handle('data:dir', () => DATA_DIR)
 
+// ─── Combat Log folder management ────────────────────────────────────────────
+
+// Let user pick a folder (returns the path or null)
+ipcMain.handle('combatlog:pick-folder', async (event) => {
+  try {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const result = await dialog.showOpenDialog(win || undefined as any, {
+      title: 'Selecionar pasta de Combat Logs do T&L',
+      properties: ['openDirectory'],
+    })
+    if (result.canceled || result.filePaths.length === 0) return null
+    const folder = result.filePaths[0]
+
+    // Persist in settings.json
+    const settingsPath = path.join(DATA_DIR, 'settings.json')
+    let settings: any = {}
+    if (fs.existsSync(settingsPath)) {
+      try {
+        const raw = fs.readFileSync(settingsPath, 'utf-8')
+        settings = JSON.parse(raw)
+      } catch (e) { settings = {} }
+    }
+    
+    settings.combatLogFolder = folder
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2), 'utf-8')
+    return folder
+  } catch (err: any) {
+    console.error('combatlog:pick-folder error', err)
+    return { error: err.message || String(err) }
+  }
+})
+
+// Get the saved combat log folder from settings
+ipcMain.handle('combatlog:get-folder', () => {
+  try {
+    const settingsPath = path.join(DATA_DIR, 'settings.json')
+    if (!fs.existsSync(settingsPath)) return null
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
+    return settings.combatLogFolder ?? null
+  } catch {
+    return null
+  }
+})
+
+// List .txt/.log files in the combat log folder
+// NOTE: ignora o folder enviado pelo renderer — usa sempre o salvo em settings.json
+ipcMain.handle('combatlog:list-files', (_event, _folder: string) => {
+  try {
+    const folder = getSavedCombatLogFolder()
+    if (!folder || !fs.existsSync(folder)) return []
+    const entries = fs.readdirSync(folder, { withFileTypes: true })
+    return entries
+      .filter(e => e.isFile() && (e.name.endsWith('.txt') || e.name.endsWith('.log')))
+      .map(e => {
+        const fullPath = path.join(folder, e.name)
+        const stat = fs.statSync(fullPath)
+        return { name: e.name, path: fullPath, sizeBytes: stat.size, mtime: stat.mtimeMs }
+      })
+      .sort((a, b) => b.mtime - a.mtime) // newest first
+  } catch (err) {
+    console.error('combatlog:list-files error', err)
+    return []
+  }
+})
+
+// Read a combat log file — valida que está dentro da pasta autorizada
+ipcMain.handle('combatlog:read-file', (_event, filePath: string) => {
+  try {
+    const folder = getSavedCombatLogFolder()
+    if (!folder) return null
+    const safe = assertInsideDir(folder, filePath)
+    if (!fs.existsSync(safe)) return null
+    return fs.readFileSync(safe, 'utf-8')
+  } catch (err) {
+    console.error('combatlog:read-file error', err)
+    return null
+  }
+})
+
+// Delete a combat log file — valida que está dentro da pasta autorizada
+ipcMain.handle('combatlog:delete-file', (_event, filePath: string) => {
+  try {
+    const folder = getSavedCombatLogFolder()
+    if (!folder) return { ok: false, error: 'Pasta de combat log não configurada.' }
+    const safe = assertInsideDir(folder, filePath)
+    if (!fs.existsSync(safe)) return { ok: false, error: 'Arquivo não encontrado.' }
+    if (!fs.statSync(safe).isFile()) return { ok: false, error: 'Caminho não é um arquivo.' }
+    fs.unlinkSync(safe)
+    return { ok: true }
+  } catch (err: any) {
+    console.error('combatlog:delete-file error', err)
+    // SEC-04: never expose internal error details to renderer
+    return { ok: false, error: 'Erro ao deletar arquivo — tente novamente' }
+  }
+})
+
 // ─── Python scraper import ────────────────────────────────────────────────────
 // Calls questlog_scraper_standalone.py from throne_and_liberty_agent project.
 // The script prints debug to stderr and JSON result to stdout.
@@ -116,6 +260,13 @@ function findPythonScraper(): string | null {
 
 ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown> => {
   return new Promise((resolve) => {
+    // SEC-01: validate URL before spawning subprocess — only questlog.gg allowed
+    const QUESTLOG_URL_RE = /^https:\/\/questlog\.gg\//
+    if (!url || !QUESTLOG_URL_RE.test(url.trim())) {
+      resolve({ error: 'URL inválida — apenas links de https://questlog.gg/ são aceitos' })
+      return
+    }
+
     const scriptPath = findPythonScraper()
     if (!scriptPath) {
       resolve({ error: 'Scraper não encontrado — verifique a instalação do throne_and_liberty_agent' })
@@ -212,9 +363,17 @@ function createWindow(): void {
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
+    console.log('[Main] Loading Dev URL:', process.env['ELECTRON_RENDERER_URL'])
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    const indexPath = join(__dirname, '../renderer/index.html')
+    console.log('[Main] Loading Production Path:', indexPath)
+    if (!fs.existsSync(indexPath)) {
+      console.error('[Main] CRITICAL: index.html not found at', indexPath)
+    }
+    mainWindow.loadFile(indexPath).catch(err => {
+      console.error('[Main] Failed to load index.html:', err)
+    })
   }
 }
 
