@@ -14,15 +14,23 @@ import { useSettings } from './store/useSettings'
 type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings'
 
 export default function App(): React.ReactElement {
-  const [page, setPage]         = useState<Page>('dashboard')
+  const [page, setPage]                     = useState<Page>('dashboard')
   const [splitLogReader, setSplitLogReader] = useState(false)
-  const { loadFromDisk }        = useBuilds()
+  const [scraperMissing, setScraperMissing] = useState(false)
+  const { loadFromDisk }                    = useBuilds()
 
   useEffect(() => {
     if (page !== 'logreader') setSplitLogReader(false)
   }, [page])
 
   useEffect(() => { loadFromDisk() }, [])
+
+  // Check scraper on first load
+  useEffect(() => {
+    window.dataAPI.scraperDetect().then((result: any) => {
+      if (!result?.scraperFound || !result?.pythonOk) setScraperMissing(true)
+    }).catch(() => {})
+  }, [])
 
   const PageComponent = {
     dashboard:   Dashboard,
@@ -64,7 +72,34 @@ export default function App(): React.ReactElement {
       }} />
 
       <Sidebar active={page} onChange={setPage} />
-      <main style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: page === 'logreader' && splitLogReader ? 'row' : 'column' }}>
+      <main style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        {/* Banner de setup do scraper */}
+        {scraperMissing && page !== 'settings' && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '1rem',
+            padding: '0.6rem 1.25rem', background: 'rgba(212,175,55,0.1)',
+            borderBottom: '1px solid rgba(212,175,55,0.25)', flexShrink: 0
+          }}>
+            <span style={{ fontSize: '0.82rem', color: '#f0cc55' }}>
+              ⚠ Importador não configurado — builds do Questlog não estão disponíveis.
+            </span>
+            <button
+              onClick={() => { setPage('settings'); setScraperMissing(false) }}
+              style={{
+                padding: '0.3rem 0.9rem', borderRadius: 5, border: '1px solid var(--gold)',
+                background: 'rgba(212,175,55,0.15)', color: 'var(--gold)',
+                cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap'
+              }}
+            >
+              Configurar agora →
+            </button>
+            <button
+              onClick={() => setScraperMissing(false)}
+              style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '1rem' }}
+            >×</button>
+          </div>
+        )}
+        <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: page === 'logreader' && splitLogReader ? 'row' : 'column' }}>
         {page === 'logreader' ? (
           <>
             <div style={{ flex: 1, overflow: 'hidden', minWidth: 0 }}>
@@ -79,6 +114,7 @@ export default function App(): React.ReactElement {
         ) : (
           <PageComponent />
         )}
+        </div>
       </main>
     </div>
   )

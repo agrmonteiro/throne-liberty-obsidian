@@ -12,13 +12,28 @@ Partindo de uma base Electron funcional com motor de cálculo e importação via
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Simplificação do Importador** - Importador unificado exclusivamente via scraper Python, sem caminho tRPC
-- [ ] **Phase 2: Modelo de Dados Estendido** - Build armazena `sourceUrl` e metadata `_edited` por campo, com migração graciosa
-- [ ] **Phase 3: Preview & Edição Pré-save** - Tela de preview com dados extraídos, nome e stats editáveis antes de salvar
-- [ ] **Phase 4: Qualidade de Extração** - Timeout configurável, separação stdout/stderr, validação dual-format, log persistente
-- [ ] **Phase 5: Trigger de Re-importação** - Botão "Atualizar build" para builds com `sourceUrl`, re-executa scraper com URL armazenada
-- [ ] **Phase 6: Diff Visual no Update** - Tela de diff com aceitar/rejeitar por campo, campos `_edited` destacados com explicação
-- [ ] **Phase 7: Fonte Global de UI** - Base 16px, tabelas nunca abaixo de 14px, hierarquia tipográfica preservada
+- [x] **Phase 1: Simplificação do Importador** - Importador unificado exclusivamente via scraper Python, sem caminho tRPC
+- [x] **Phase 2: Modelo de Dados Estendido** - Build armazena `sourceUrl` e metadata `_edited` por campo, com migração graciosa
+- [x] **Phase 3: Preview & Edição Pré-save** - Tela de preview com dados extraídos, nome e stats editáveis antes de salvar
+- [x] **Phase 4: Qualidade de Extração** - Timeout configurável, separação stdout/stderr, validação dual-format, log persistente
+- [x] **Phase 5: Trigger de Re-importação** - Botão "Atualizar build" para builds com `sourceUrl`, re-executa scraper com URL armazenada
+- [x] **Phase 6: Diff Visual no Update** - Tela de diff com aceitar/rejeitar por campo, campos `_edited` destacados com explicação
+- [x] **Phase 7: Fonte Global de UI** - Base 16px, tabelas nunca abaixo de 14px, hierarquia tipográfica preservada
+
+---
+
+## Milestone: v2.0 Game Intelligence
+
+**Goal:** Transformar o app de importador de build em ferramenta completa de otimização de personagem — análise de logs, gerador de rotação com dados reais de skills, scoring de gear com ML e pipeline de dados sustentável.
+
+### v2.0 Phase Checklist
+
+- [ ] **Phase 8: IPC Security** - Hardening de todos os handlers IPC com validação Zod, URL check antes de subprocess e sanitização de paths
+- [ ] **Phase 9: Skill Importer** - Script standalone produz `skillsDB.json` carregado em runtime, substituindo o TypeScript hardcoded
+- [ ] **Phase 10: Log Parser Split View** - Usuário abre dois logs simultaneamente e compara DPS e métricas lado a lado
+- [ ] **Phase 11: Rotation Builder** - Autocomplete de skills do `skillsDB.json` e visualização side-by-side de duas rotações com DPS
+- [ ] **Phase 12: Gear Scorer UI** - Página GearScorer com ranking por slot usando o engine `rankItemUpgrades` existente
+- [ ] **Phase 13: Gear Scorer ML** - Pipeline sklearn → ONNX, inference via subprocess Python, ciclo de retreinamento documentado
 
 ## Phase Details
 
@@ -32,12 +47,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Durante a execução do scraper, o usuário vê estados de progresso: iniciando → extraindo → concluído (ou erro)
   4. Quando o scraper falha, a mensagem exibida identifica a causa (URL inválida, scraper não encontrado, timeout, parse falhou)
   5. Builds com output inválido do scraper são rejeitadas com erro explícito — nunca salvas silenciosamente com dados corrompidos
-**Plans**: TBD
+**Plans**: 3 planos
 
 Plans:
-- [ ] 01-01: Remover código tRPC do main process (handler IPC `questlog:import-url`) e da store
-- [ ] 01-02: Validação de URL no renderer antes de disparar IPC + feedback de progresso via eventos IPC
-- [ ] 01-03: Classificação de erros do scraper em categorias acionáveis + validação de schema no output
+- [x] 01-01-PLAN.md — Remover bloco tRPC do main, preload e store (IMP-01)
+- [x] 01-02-PLAN.md — Validação de URL no renderer + eventos de progresso IPC (IMP-02, IMP-03)
+- [x] 01-03-PLAN.md — Classificação de erros no handler + validateScraperOutput na store (IMP-04, IMP-05)
 **UI hint**: yes
 
 ### Phase 2: Modelo de Dados Estendido
@@ -141,7 +156,81 @@ Plans:
 - [ ] 07-02: Auditar e corrigir todos os componentes de tabela para garantir mínimo de 14px em valores
 **UI hint**: yes
 
+---
+
+### Phase 8: IPC Security
+**Goal**: Todos os handlers IPC existentes e futuros validam entradas com Zod, URLs de subprocess são verificadas no main process e respostas de erro nunca vazam dados internos para o renderer
+**Depends on**: Nothing (v2.0 first phase — hardening de código existente)
+**Requirements**: SEC-01, SEC-02, SEC-03, SEC-04
+**Success Criteria** (what must be TRUE):
+  1. Passar uma URL que não comece com `https://questlog.gg/` ao handler de importação retorna erro imediato sem spawnar nenhum processo Python
+  2. Uma tentativa de path traversal (ex: `../../etc/passwd`) em qualquer handler de file I/O é rejeitada com erro — nenhum arquivo fora de `AppData/Roaming/throne-liberty/` é lido ou escrito
+  3. Enviar um payload malformado ao handler `data:write` (ex: objeto arbitrário em vez de array de builds) retorna erro de validação sem gravar nada em disco
+  4. Forçar um erro em qualquer handler IPC produz uma resposta de erro genérica no renderer — nenhum stack trace, nenhum caminho de filesystem, nenhum detalhe interno é exposto
+**Plans**: TBD
+**UI hint**: no
+
+### Phase 9: Skill Importer
+**Goal**: Um script standalone scrapa fontes web, produz `skillsDB.json` com metadados completos por skill, e o app carrega esse arquivo em runtime como fonte de verdade — eliminando o TypeScript hardcoded
+**Depends on**: Phase 8 (novos handlers devem nascer já seguindo os padrões de segurança estabelecidos)
+**Requirements**: SKI-01, SKI-02, SKI-03, SKI-04
+**Success Criteria** (what must be TRUE):
+  1. Rodar o script standalone produz um `skillsDB.json` com nome, arma, categoria, cooldown, damage% e hits para cada skill — sem intervenção manual
+  2. O app carrega `skillsDB.json` do userData em runtime; se o arquivo não existe, usa o bundle compilado como fallback sem erro
+  3. Quando o script detecta dados divergentes para a mesma skill em fontes diferentes, ele reporta o conflito com skill ID, fontes e valores em conflito — sem resolver silenciosamente
+  4. Rodar o script uma segunda vez sem mudanças nas fontes completa em menos tempo que o run inicial — apenas skills novas ou modificadas são reprocessadas
+**Plans**: TBD
+
+### Phase 10: Log Parser Split View
+**Goal**: O usuário pode abrir dois combat logs simultaneamente e comparar DPS, timeline de dano e métricas por skill lado a lado na mesma tela
+**Depends on**: Nothing (v2.0, self-contained — Log Parser base já existe)
+**Requirements**: LOG-01
+**Success Criteria** (what must be TRUE):
+  1. A página de Log Reader exibe dois painéis independentes, cada um com seu próprio seletor de arquivo de log
+  2. Com dois logs carregados, o usuário vê DPS total de cada log exibido simultaneamente na mesma tela
+  3. As métricas por skill (dano, hits, DPS) de ambos os logs são exibidas lado a lado, permitindo comparação visual imediata
+  4. Carregar um log em apenas um dos painéis não causa erro — o painel vazio permanece inativo sem quebrar a UI
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 11: Rotation Builder
+**Goal**: O Rotation Builder usa skills reais do `skillsDB.json` com autocomplete e stats pré-preenchidos, e o usuário pode comparar duas rotações side-by-side com DPS de cada exibido simultaneamente
+**Depends on**: Phase 9 (skillsDB.json enriquecido é prerequisito para autocomplete e stats reais)
+**Requirements**: ROT-01, ROT-02
+**Success Criteria** (what must be TRUE):
+  1. Ao digitar o nome de uma skill no campo do builder, uma lista de sugestões aparece com skills reais do `skillsDB.json` — não dados hardcoded
+  2. Selecionar uma skill pelo autocomplete preenche automaticamente cooldown, damage% e hits sem que o usuário precise digitar esses valores
+  3. O usuário pode criar duas rotações distintas e visualizá-las side-by-side na mesma tela com o DPS calculado de cada uma exibido simultaneamente
+  4. Trocar a build ativa na comparação recalcula o DPS de ambas as rotações sem recarregar a página
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 12: Gear Scorer UI
+**Goal**: O app tem uma página GearScorer funcional que exibe recomendações de upgrade organizadas por slot usando o engine determinístico `rankItemUpgrades` já implementado
+**Depends on**: Phase 8 (handler `gearscore:infer` deve nascer com validação Zod)
+**Requirements**: GS-01, GS-02
+**Success Criteria** (what must be TRUE):
+  1. Há uma página GearScorer acessível pela navegação do app que aceita uma build ativa e lista de itens candidatos como entrada
+  2. A página exibe itens candidatos ordenados por DPS delta (maior ganho primeiro) usando o engine `rankItemUpgrades`
+  3. As recomendações são agrupadas por slot (head, chest, hands, legs, feet, acessórios, armas) — o usuário pode filtrar por slot específico
+  4. Quando nenhum modelo ML está disponível, um banner visível informa "Usando scorer determinístico" — sem crash, sem tela em branco
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 13: Gear Scorer ML
+**Goal**: Um pipeline completo de dados → treino → inference está operacional: script coleta builds do Questlog, produz artefato ONNX versionado, app spawna subprocess Python para inference e ciclo de retreinamento está documentado para cada patch do jogo
+**Depends on**: Phase 12 (UI e interface IPC estabelecidos), Phase 8 (handler de inference deve seguir padrões de segurança)
+**Requirements**: ML-01, ML-02, ML-03, ML-04
+**Success Criteria** (what must be TRUE):
+  1. Rodar o script de coleta produz um corpus de builds públicas do Questlog com patch ID registrado por lote — sem dados de treino misturados entre versões do jogo
+  2. Rodar o script de treino sobre o corpus produz um arquivo `.onnx` versionado (ex: `gear_v1.3.2.onnx`) com menos de 10 MB que pode ser carregado pelo runtime ONNX
+  3. A página GearScorer com modelo disponível exibe scores vindos do subprocess Python — o app spawna o processo, envia build via stdin JSON e recebe scores via stdout JSON dentro de 30 segundos
+  4. O documento de retreinamento descreve os passos exatos: coletar dados → treinar → exportar ONNX → substituir artefato — executável por um dev sem conhecimento prévio do pipeline
+**Plans**: TBD
+
 ## Progress
+
+### v1.0 — Importador Confiável
 
 **Execution Order:**
 Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
@@ -149,10 +238,25 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Simplificação do Importador | 0/3 | Not started | - |
-| 2. Modelo de Dados Estendido | 0/3 | Not started | - |
-| 3. Preview & Edição Pré-save | 0/3 | Not started | - |
-| 4. Qualidade de Extração | 0/3 | Not started | - |
-| 5. Trigger de Re-importação | 0/2 | Not started | - |
-| 6. Diff Visual no Update | 0/3 | Not started | - |
-| 7. Fonte Global de UI | 0/2 | Not started | - |
+| 1. Simplificação do Importador | 3/3 | Complete | 2026-04-15 |
+| 2. Modelo de Dados Estendido | 3/3 | Complete | 2026-04-15 |
+| 3. Preview & Edição Pré-save | 3/3 | Complete | 2026-04-15 |
+| 4. Qualidade de Extração | 3/3 | Complete | 2026-04-15 |
+| 5. Trigger de Re-importação | 2/2 | Complete | 2026-04-15 |
+| 6. Diff Visual no Update | 3/3 | Complete | 2026-04-15 |
+| 7. Fonte Global de UI | 2/2 | Complete | 2026-04-15 |
+
+### v2.0 — Game Intelligence
+
+**Execution Order:**
+8 → 9 → 11 (Phase 9 must precede 11; Phase 10 is independent; Phase 12 must precede 13)
+Phase 10 can run in parallel with 9 or 11.
+
+| Phase | Plans Complete | Status | Completed |
+|-------|----------------|--------|-----------|
+| 8. IPC Security | 0/TBD | Not started | - |
+| 9. Skill Importer | 0/TBD | Not started | - |
+| 10. Log Parser Split View | 0/TBD | Not started | - |
+| 11. Rotation Builder | 0/TBD | Not started | - |
+| 12. Gear Scorer UI | 0/TBD | Not started | - |
+| 13. Gear Scorer ML | 0/TBD | Not started | - |

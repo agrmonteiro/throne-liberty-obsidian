@@ -21,6 +21,11 @@ const dataAPI = {
   combatlogListFiles:    (folder: string)                     => ipcRenderer.invoke('combatlog:list-files', folder),
   combatlogReadFile:     (filePath: string)                   => ipcRenderer.invoke('combatlog:read-file', filePath),
   combatlogDeleteFile:   (filePath: string)                   => ipcRenderer.invoke('combatlog:delete-file', filePath),
+  // Scraper setup
+  scraperGetPath:        ()                                   => ipcRenderer.invoke('scraper:get-path'),
+  scraperSetPath:        (p: string)                          => ipcRenderer.invoke('scraper:set-path', p),
+  scraperPickFile:       ()                                   => ipcRenderer.invoke('scraper:pick-file'),
+  scraperDetect:         ()                                   => ipcRenderer.invoke('scraper:detect'),
 }
 
 if (process.contextIsolated) {

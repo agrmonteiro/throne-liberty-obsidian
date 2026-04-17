@@ -39,6 +39,11 @@ declare global {
       combatlogListFiles:    (folder: string)                     => Promise<{ name: string; path: string; sizeBytes: number; mtime: number }[]>
       combatlogReadFile:     (filePath: string)                   => Promise<string | null>
       combatlogDeleteFile:   (filePath: string)                   => Promise<{ ok: boolean; error?: string }>
+      // Scraper setup
+      scraperGetPath:        ()                                   => Promise<string | null>
+      scraperSetPath:        (p: string)                          => Promise<{ ok: boolean; error?: string }>
+      scraperPickFile:       ()                                   => Promise<string | null>
+      scraperDetect:         ()                                   => Promise<{ scraperFound: boolean; scraperPath: string | null; pythonOk: boolean; pythonVersion: string }>
     }
   }
 }

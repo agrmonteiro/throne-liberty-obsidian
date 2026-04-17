@@ -3,7 +3,7 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import fs from 'fs'
 import path from 'path'
-import { spawn } from 'child_process'
+import { spawn, execSync } from 'child_process'
 
 // ─── Data directory (AppData/Roaming/throne-liberty/data) ─────────────────────
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
@@ -242,21 +242,110 @@ const PYTHON_SCRAPER = path.join(
   'throne_and_liberty_agent', 'scraper', 'questlog_scraper_standalone.py'
 )
 
-// Resolve script path relative to project roots — tries a few locations
+// Resolve script path — checks settings.json first, then fallbacks
 function findPythonScraper(): string | null {
-  const candidates = [
-    // Sibling project (dev: both under Documentos/python/)
-    path.join(path.dirname(process.cwd()), 'throne_and_liberty_agent', 'scraper', 'questlog_scraper_standalone.py'),
-    // Same parent as app exe (packaged)
+  const candidates: string[] = []
+
+  // 1. User-configured path saved in settings.json (highest priority)
+  try {
+    const settingsPath = path.join(DATA_DIR, 'settings.json')
+    if (fs.existsSync(settingsPath)) {
+      const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
+      if (settings.scraperPath) candidates.push(settings.scraperPath)
+    }
+  } catch { /* ignore */ }
+
+  // 2. Env var override
+  if (process.env['TL_SCRAPER_PATH']) candidates.push(process.env['TL_SCRAPER_PATH'])
+
+  // 3. Auto-detect: common locations
+  const home = app.getPath('home')
+  const scraperFile = path.join('throne_and_liberty_agent', 'scraper', 'questlog_scraper_standalone.py')
+  candidates.push(
+    path.join(home, 'Documents', 'python', scraperFile),
+    path.join(home, 'Documents', scraperFile),
+    path.join(home, 'Desktop', scraperFile),
+    path.join(home, scraperFile),
+    path.join(path.dirname(process.cwd()), scraperFile),
     PYTHON_SCRAPER,
-    // Explicit env var override
-    process.env['TL_SCRAPER_PATH'] ?? '',
-  ]
+  )
+
   for (const p of candidates) {
     if (p && fs.existsSync(p)) return p
   }
   return null
 }
+
+// ─── Scraper setup IPC handlers ───────────────────────────────────────────────
+
+// Get current scraper path (from settings)
+ipcMain.handle('scraper:get-path', () => {
+  try {
+    const settingsPath = path.join(DATA_DIR, 'settings.json')
+    if (!fs.existsSync(settingsPath)) return null
+    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
+    return settings.scraperPath ?? null
+  } catch { return null }
+})
+
+// Save a scraper path to settings
+ipcMain.handle('scraper:set-path', (_event, scraperPath: string) => {
+  try {
+    if (!scraperPath || !fs.existsSync(scraperPath)) return { ok: false, error: 'Arquivo não encontrado' }
+    const settingsPath = path.join(DATA_DIR, 'settings.json')
+    let settings: Record<string, unknown> = {}
+    if (fs.existsSync(settingsPath)) {
+      try { settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8')) } catch { /* ignore */ }
+    }
+    settings.scraperPath = scraperPath
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2), 'utf-8')
+    return { ok: true }
+  } catch {
+    return { ok: false, error: 'Erro ao salvar configuração' }
+  }
+})
+
+// Open file picker to locate the scraper .py
+ipcMain.handle('scraper:pick-file', async (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender)
+  const result = await dialog.showOpenDialog(win ?? ({} as BrowserWindow), {
+    title: 'Localizar questlog_scraper_standalone.py',
+    filters: [{ name: 'Python Script', extensions: ['py'] }],
+    properties: ['openFile'],
+  })
+  if (result.canceled || !result.filePaths[0]) return null
+  const picked = result.filePaths[0]
+  // Auto-save
+  const settingsPath = path.join(DATA_DIR, 'settings.json')
+  let settings: Record<string, unknown> = {}
+  try { if (fs.existsSync(settingsPath)) settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8')) } catch { /* ignore */ }
+  settings.scraperPath = picked
+  fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2), 'utf-8')
+  return picked
+})
+
+// Auto-detect scraper and Python, return status
+ipcMain.handle('scraper:detect', () => {
+  const scraperPath = findPythonScraper()
+
+  // Check Python
+  let pythonOk = false
+  let pythonVersion = ''
+  for (const bin of ['python', 'python3', 'py']) {
+    try {
+      pythonVersion = execSync(`${bin} --version`, { timeout: 5000, encoding: 'utf-8' }).trim()
+      pythonOk = true
+      break
+    } catch { /* try next */ }
+  }
+
+  return {
+    scraperFound: !!scraperPath,
+    scraperPath: scraperPath ?? null,
+    pythonOk,
+    pythonVersion,
+  }
+})
 
 ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown> => {
   return new Promise((resolve) => {

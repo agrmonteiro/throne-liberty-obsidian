@@ -1,6 +1,6 @@
 {
   "name": "throne-liberty",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Throne & Liberty — Obsidian Command: Build Analytics Desktop App",
   "main": "dist-electron/main/index.js",
   "author": "Luis Monteiro",
