@@ -2,7 +2,21 @@
 
 ## What This Is
 
-App desktop Electron para análise e comparação de builds do Throne & Liberty. Importa builds via scraper Python a partir de links do Questlog, exibe preview editável antes de salvar, armazena o link de origem para re-importação futura com diff visual. Motor de cálculo de dano puro e determinístico alimenta páginas de análise (Calculator, Comparator, Sensitivity, Dashboard).
+App desktop Electron para análise e otimização de personagens do Throne & Liberty. Importa builds via scraper Python a partir de links do Questlog, exibe preview editável antes de salvar, armazena o link de origem para re-importação futura com diff visual. Motor de cálculo de dano puro e determinístico alimenta páginas de análise (Calculator, Comparator, Sensitivity, Dashboard). Scoring de gear com ML (modelo treinado sobre builds do Questlog, inference via subprocess Python), gerador assistido de rotação de skills e parser de combat logs completam a suite de otimização.
+
+## Current Milestone: v2.0 Game Intelligence
+
+**Goal:** Adicionar análise de combate ao vivo, gerador de rotação assistido e scoring de gear com ML — transformando o app de importador de build em ferramenta completa de otimização de personagem.
+
+**Target features:**
+- Rotation Builder — banco de skills T&L, seleção interativa, rotação otimizada (`rotation-builder` agent)
+- Gear Scorer ML — scraping em massa do Questlog → treinamento de modelo (sklearn/ONNX) → inference via Python subprocess; ciclo de retreinamento a cada update do jogo (`gear-scorer` agent)
+- Log Parser — parsing de combat logs, timeline de dano, métricas por skill (`log-parser` agent)
+- IPC Security — auditoria e hardening dos handlers IPC (`ipc-security` agent, fase dedicada)
+
+**Key decisions:**
+- Gear Scorer usa ML: dados do Questlog → modelo serializado vai a produção → subprocess Python faz inference (mesmo padrão do scraper existente)
+- Retreinamento é parte do ciclo de dev: nova versão do jogo = novos dados + possível retreinamento do modelo
 
 ## Core Value
 
@@ -77,4 +91,4 @@ Este documento evolui a cada transição de fase e milestone.
 4. Atualizar Context com estado atual
 
 ---
-*Last updated: 2026-04-11 após inicialização*
+*Last updated: 2026-04-17 — Milestone v2.0 iniciado*
