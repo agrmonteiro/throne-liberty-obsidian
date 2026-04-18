@@ -1,6 +1,6 @@
 {
   "name": "throne-liberty",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.4",
   "description": "Throne & Liberty — Obsidian Command: Build Analytics Desktop App",
   "main": "dist-electron/main/index.js",
   "author": "Luis Monteiro",
@@ -13,6 +13,7 @@
     "preview": "electron-vite preview"
   },
   "dependencies": {
+    "electron-updater": "^6.8.3",
     "recharts": "^2.12.7",
     "zustand": "^4.5.5"
   },
@@ -27,6 +28,7 @@
     "electron": "^31.2.1",
     "electron-builder": "^24.13.3",
     "electron-vite": "^2.3.0",
+    "png-to-ico": "^3.0.1",
     "postcss": "^8.4.39",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -44,15 +46,29 @@
       "dist-electron/**",
       "dist/**"
     ],
+    "extraResources": [
+      {
+        "from": "resources/questlog_scraper.exe",
+        "to": "questlog_scraper.exe"
+      }
+    ],
+    "icon": "build/icon.ico",
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Throne & Liberty"
+      "shortcutName": "Throne & Liberty",
+      "include": "build/uninstall-cleanup.nsh"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "agrmonteiro",
+      "repo": "throne-liberty-obsidian"
     }
   }
 }

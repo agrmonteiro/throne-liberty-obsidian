@@ -1,6 +1,8 @@
 import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
+import electronUpdaterPkg from 'electron-updater'
+const { autoUpdater } = electronUpdaterPkg
 import fs from 'fs'
 import path from 'path'
 import { spawn, execSync } from 'child_process'
@@ -577,9 +579,47 @@ ipcMain.handle('questlog:cancel', () => {
   return { ok: !killFailed }
 })
 
+// ─── Auto-updater ─────────────────────────────────────────────────────────────
+
+function setupAutoUpdater(win: BrowserWindow): void {
+  autoUpdater.autoDownload = true
+  autoUpdater.autoInstallOnAppQuit = true
+
+  autoUpdater.on('update-available', (info) => {
+    win.webContents.send('update:available', { version: info.version })
+  })
+
+  autoUpdater.on('update-not-available', () => {
+    win.webContents.send('update:not-available')
+  })
+
+  autoUpdater.on('download-progress', (progress) => {
+    win.webContents.send('update:progress', { percent: Math.round(progress.percent) })
+  })
+
+  autoUpdater.on('update-downloaded', (info) => {
+    win.webContents.send('update:downloaded', { version: info.version })
+  })
+
+  autoUpdater.on('error', (err) => {
+    console.error('[updater] error:', err)
+  })
+
+  // Verifica update 5 segundos após iniciar (deixa o app renderizar primeiro)
+  setTimeout(() => {
+    autoUpdater.checkForUpdates().catch((err) => {
+      console.error('[updater] checkForUpdates failed:', err)
+    })
+  }, 5000)
+}
+
+ipcMain.on('update:install', () => {
+  autoUpdater.quitAndInstall()
+})
+
 // ─── Window ────────────────────────────────────────────────────────────────────
 
-function createWindow(): void {
+function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
     width:           1280,
     height:          800,
@@ -624,6 +664,8 @@ function createWindow(): void {
       console.error('[Main] Failed to load index.html:', err)
     })
   }
+
+  return mainWindow
 }
 
 // ─── App lifecycle ─────────────────────────────────────────────────────────────
@@ -634,7 +676,8 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
   ensureDataDir()
-  createWindow()
+  const mainWindow = createWindow()
+  if (!is.dev) setupAutoUpdater(mainWindow)
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

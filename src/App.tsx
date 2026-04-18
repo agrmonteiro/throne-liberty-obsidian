@@ -8,8 +8,9 @@ import { Builds }      from './pages/Builds'
 import { LogReader }   from './pages/LogReader'
 import { Rotation }    from './pages/Rotation'
 import { Settings }    from './pages/Settings'
-import { useBuilds }   from './store/useBuilds'
-import { useSettings } from './store/useSettings'
+import { useBuilds }       from './store/useBuilds'
+import { useSettings }     from './store/useSettings'
+import { UpdateNotifier }  from './components/UpdateNotifier'
 
 type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings'
 
@@ -73,6 +74,7 @@ export default function App(): React.ReactElement {
 
       <Sidebar active={page} onChange={setPage} />
       <main style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        <UpdateNotifier />
         {/* Banner de setup do scraper */}
         {scraperMissing && page !== 'settings' && (
           <div style={{

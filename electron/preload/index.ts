@@ -48,10 +48,44 @@ const dataAPI = {
   scraperReadLog:        ()                                   => ipcRenderer.invoke('scraper:read-log'),
 }
 
+// ─── Update API ───────────────────────────────────────────────────────────────
+type UpdateAvailablePayload  = { version: string }
+type UpdateProgressPayload   = { percent: number }
+type UpdateDownloadedPayload = { version: string }
+let _updateAvailableCb:  ((_e: Electron.IpcRendererEvent, p: UpdateAvailablePayload)  => void) | null = null
+let _updateProgressCb:   ((_e: Electron.IpcRendererEvent, p: UpdateProgressPayload)   => void) | null = null
+let _updateDownloadedCb: ((_e: Electron.IpcRendererEvent, p: UpdateDownloadedPayload) => void) | null = null
+let _updateNotAvailableCb: ((_e: Electron.IpcRendererEvent) => void) | null = null
+
+const updateAPI = {
+  onAvailable: (cb: (p: UpdateAvailablePayload) => void) => {
+    if (_updateAvailableCb) ipcRenderer.removeListener('update:available', _updateAvailableCb)
+    _updateAvailableCb = (_e, p) => cb(p)
+    ipcRenderer.on('update:available', _updateAvailableCb)
+  },
+  onNotAvailable: (cb: () => void) => {
+    if (_updateNotAvailableCb) ipcRenderer.removeListener('update:not-available', _updateNotAvailableCb)
+    _updateNotAvailableCb = (_e) => cb()
+    ipcRenderer.on('update:not-available', _updateNotAvailableCb)
+  },
+  onProgress: (cb: (p: UpdateProgressPayload) => void) => {
+    if (_updateProgressCb) ipcRenderer.removeListener('update:progress', _updateProgressCb)
+    _updateProgressCb = (_e, p) => cb(p)
+    ipcRenderer.on('update:progress', _updateProgressCb)
+  },
+  onDownloaded: (cb: (p: UpdateDownloadedPayload) => void) => {
+    if (_updateDownloadedCb) ipcRenderer.removeListener('update:downloaded', _updateDownloadedCb)
+    _updateDownloadedCb = (_e, p) => cb(p)
+    ipcRenderer.on('update:downloaded', _updateDownloadedCb)
+  },
+  install: () => ipcRenderer.send('update:install'),
+}
+
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('dataAPI', dataAPI)
+    contextBridge.exposeInMainWorld('updateAPI', updateAPI)
   } catch (error) {
     console.error(error)
   }
