@@ -242,37 +242,43 @@ const PYTHON_SCRAPER = path.join(
   'throne_and_liberty_agent', 'scraper', 'questlog_scraper_standalone.py'
 )
 
-// Resolve script path — checks settings.json first, then fallbacks
+// Resolve scraper — bundled exe first, then .py fallbacks
 function findPythonScraper(): string | null {
-  const candidates: string[] = []
+  // 1. Bundled exe in app resources (packaged production)
+  const bundledExe = path.join(process.resourcesPath ?? '', 'questlog_scraper.exe')
+  if (fs.existsSync(bundledExe)) return bundledExe
 
-  // 1. User-configured path saved in settings.json (highest priority)
+  // 2. Dev: sibling resources folder
+  const devExe = path.join(process.cwd(), 'resources', 'questlog_scraper.exe')
+  if (fs.existsSync(devExe)) return devExe
+
+  // 3. User-configured .py path in settings.json
   try {
     const settingsPath = path.join(DATA_DIR, 'settings.json')
     if (fs.existsSync(settingsPath)) {
       const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'))
-      if (settings.scraperPath) candidates.push(settings.scraperPath)
+      if (settings.scraperPath && fs.existsSync(settings.scraperPath)) return settings.scraperPath
     }
   } catch { /* ignore */ }
 
-  // 2. Env var override
-  if (process.env['TL_SCRAPER_PATH']) candidates.push(process.env['TL_SCRAPER_PATH'])
+  // 4. Env var override
+  const envPath = process.env['TL_SCRAPER_PATH']
+  if (envPath && fs.existsSync(envPath)) return envPath
 
-  // 3. Auto-detect: common locations
+  // 5. Auto-detect .py in common locations
   const home = app.getPath('home')
-  const scraperFile = path.join('throne_and_liberty_agent', 'scraper', 'questlog_scraper_standalone.py')
-  candidates.push(
-    path.join(home, 'Documents', 'python', scraperFile),
-    path.join(home, 'Documents', scraperFile),
-    path.join(home, 'Desktop', scraperFile),
-    path.join(home, scraperFile),
-    path.join(path.dirname(process.cwd()), scraperFile),
-    PYTHON_SCRAPER,
-  )
-
-  for (const p of candidates) {
-    if (p && fs.existsSync(p)) return p
+  const pyFile = path.join('throne_and_liberty_agent', 'scraper', 'questlog_scraper_standalone.py')
+  for (const base of [
+    path.join(home, 'Documents', 'python'),
+    path.join(home, 'Documents'),
+    path.join(home, 'Desktop'),
+    home,
+    path.dirname(process.cwd()),
+  ]) {
+    const p = path.join(base, pyFile)
+    if (fs.existsSync(p)) return p
   }
+
   return null
 }
 
@@ -347,11 +353,52 @@ ipcMain.handle('scraper:detect', () => {
   }
 })
 
+// Active scraper process + resolve ref — allows cancel from renderer
+let activeScraperProc:    ReturnType<typeof spawn> | null = null
+let activeScraperResolve: ((val: unknown) => void) | null = null
+let activeScraperTimeout: ReturnType<typeof setTimeout> | null = null
+
+const SCRAPER_LOG_FILE = path.join(DATA_DIR, 'scraper.log')
+
+function writeScraperLog(lines: string): void {
+  try {
+    fs.appendFileSync(SCRAPER_LOG_FILE, lines, 'utf-8')
+  } catch { /* ignore — log failure must not crash the import */ }
+}
+
+ipcMain.handle('scraper:open-log', () => {
+  try {
+    if (!fs.existsSync(SCRAPER_LOG_FILE)) {
+      fs.writeFileSync(SCRAPER_LOG_FILE, '(sem logs ainda)\n', 'utf-8')
+    }
+    shell.openPath(SCRAPER_LOG_FILE)
+    return { ok: true }
+  } catch (err) {
+    return { ok: false, error: String(err) }
+  }
+})
+
+ipcMain.handle('scraper:read-log', () => {
+  try {
+    if (!fs.existsSync(SCRAPER_LOG_FILE)) return ''
+    return fs.readFileSync(SCRAPER_LOG_FILE, 'utf-8').slice(-8000)
+  } catch { return '' }
+})
+
 ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown> => {
   return new Promise((resolve) => {
+    // Guard: reject concurrent imports — prevents activeScraperResolve being overwritten
+    if (activeScraperProc) {
+      resolve({ error: 'Já existe uma importação em andamento — aguarde ou cancele.' })
+      return
+    }
+
+    activeScraperResolve = resolve
+
     // SEC-01: validate URL before spawning subprocess — only questlog.gg allowed
     const QUESTLOG_URL_RE = /^https:\/\/questlog\.gg\//
-    if (!url || !QUESTLOG_URL_RE.test(url.trim())) {
+    const trimmedUrl = url?.trim() ?? ''
+    if (!trimmedUrl || !QUESTLOG_URL_RE.test(trimmedUrl)) {
       resolve({ error: 'URL inválida — apenas links de https://questlog.gg/ são aceitos' })
       return
     }
@@ -363,38 +410,113 @@ ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown>
     }
 
     const sender = _event.sender
-    const emitProgress = (stage: 'starting' | 'extracting' | 'done') => {
+    const emitProgress = (stage: 'starting' | 'downloading-browser' | 'extracting' | 'done') => {
       if (!sender.isDestroyed()) sender.send('questlog:progress', { stage })
     }
 
     emitProgress('starting')
 
-    const pythonBin = process.platform === 'win32' ? 'python' : 'python3'
+    // Run .exe directly (bundled) or via python interpreter (dev)
+    const isExe = scriptPath.endsWith('.exe')
+    const [cmd, spawnArgs] = isExe
+      ? [scriptPath, [trimmedUrl]]
+      : [process.platform === 'win32' ? 'python' : 'python3', [scriptPath, trimmedUrl]]
+
+    const logHeader = `\n${'─'.repeat(60)}\n[${new Date().toISOString()}] cmd=${cmd}\nargs=${JSON.stringify(spawnArgs)}\n${'─'.repeat(60)}\n`
+    writeScraperLog(logHeader)
+
     let stdout = ''
     let stderr = ''
     let extractingEmitted = false
+    let cancelled = false
 
-    const proc = spawn(pythonBin, [scriptPath, url], { env: { ...process.env } })
+    // Auto-timeout: kill process if it doesn't finish within 3 minutes
+    const TIMEOUT_MS = 3 * 60 * 1000
+    const timeoutHandle = activeScraperTimeout = setTimeout(() => {
+      if (!activeScraperResolve) return // already resolved
+      console.warn('[scraper] timeout after 3 minutes — killing process')
+      const proc2  = activeScraperProc
+      const res2   = activeScraperResolve
+      activeScraperProc    = null
+      activeScraperResolve = null
+      try {
+        if (process.platform === 'win32' && proc2?.pid) {
+          execSync(`taskkill /F /T /PID ${proc2.pid}`, { stdio: 'ignore' })
+        } else {
+          proc2?.kill('SIGKILL')
+        }
+      } catch { /* ignore */ }
+      writeScraperLog('[TIMEOUT] Processo encerrado após 3 minutos.\n')
+      res2({ error: 'Tempo limite excedido (3 min) — o site pode estar lento ou bloqueando o acesso.' })
+      if (!sender.isDestroyed()) sender.send('questlog:progress', { stage: 'done' })
+    }, TIMEOUT_MS)
+
+    // Strip ANSI escape codes from subprocess output lines
+    const stripAnsi = (s: string) => s.replace(/\x1b\[[0-9;]*[a-zA-Z]/g, '').replace(/\r/g, '')
+
+    const emitLog = (raw: string) => {
+      const lines = stripAnsi(raw).split('\n')
+      for (const line of lines) {
+        const trimmed = line.trim()
+        if (trimmed && !sender.isDestroyed()) {
+          sender.send('questlog:log', { line: trimmed })
+        }
+      }
+    }
+
+    const proc = spawn(cmd, spawnArgs, { env: { ...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' } })
+    activeScraperProc = proc
 
     proc.stdout.on('data', (chunk: Buffer) => {
-      stdout += chunk.toString()
+      const text = chunk.toString()
+      stdout += text
+      writeScraperLog(`[stdout] ${stripAnsi(text)}`)
+
+      // First-run: Chromium download in progress
+      if (text.includes('[SETUP]') && text.includes('baixando')) {
+        if (!sender.isDestroyed()) sender.send('questlog:progress', { stage: 'downloading-browser' })
+        emitLog(text)
+        return
+      }
+
+      emitLog(text)
+
       if (!extractingEmitted && stdout.length > 0) {
         extractingEmitted = true
         emitProgress('extracting')
       }
     })
 
-    proc.stderr.on('data', (chunk: Buffer) => { stderr += chunk.toString() })
+    proc.stderr.on('data', (chunk: Buffer) => {
+      const text = chunk.toString()
+      stderr += text
+      writeScraperLog(`[stderr] ${stripAnsi(text)}`)
+      emitLog(text)  // relay stderr live (playwright download progress goes here)
+    })
 
     proc.on('close', (code) => {
+      // Already resolved by cancel/timeout handler — ignore
+      if (!activeScraperResolve) return
+      clearTimeout(timeoutHandle)
+      activeScraperProc    = null
+      activeScraperResolve = null
+
+      writeScraperLog(`[exit] code=${code}\n`)
+
+      if (cancelled) {
+        resolve({ error: 'cancelled' })
+        return
+      }
       if (code !== 0) {
         console.error('[scraper] stderr:', stderr)
+        writeScraperLog(`[ERRO] código ${code}\nstderr:\n${stderr}\n`)
         resolve({ error: `Scraper encerrou sem dados (código ${code}) — verifique o link e tente novamente` })
         return
       }
       const jsonStart = stdout.indexOf('{')
       if (jsonStart === -1) {
         console.error('[scraper] stdout sem JSON:', stdout.slice(0, 200))
+        writeScraperLog(`[ERRO] stdout sem JSON:\n${stdout.slice(0, 500)}\n`)
         resolve({ error: 'Scraper retornou dados inválidos — tente novamente ou reporte o erro' })
         return
       }
@@ -402,19 +524,57 @@ ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown>
         resolve(JSON.parse(stdout.slice(jsonStart)))
       } catch (e) {
         console.error('[scraper] JSON parse error:', e)
+        writeScraperLog(`[ERRO] JSON parse: ${e}\nstdout:\n${stdout.slice(0, 500)}\n`)
         resolve({ error: 'Scraper retornou dados inválidos — tente novamente ou reporte o erro' })
       }
     })
 
     proc.on('error', (err) => {
+      if (!activeScraperResolve) return
+      clearTimeout(timeoutHandle)
+      activeScraperProc    = null
+      activeScraperResolve = null
       console.error('[scraper] spawn error:', err)
+      writeScraperLog(`[ERRO] spawn: ${err}\n`)
       if ((err as NodeJS.ErrnoException).code === 'ENOENT') {
-        resolve({ error: 'Python não encontrado no PATH — verifique a instalação do Python' })
+        resolve({ error: isExe
+          ? 'Scraper não encontrado — reinstale o aplicativo'
+          : 'Python não encontrado no PATH — verifique a instalação do Python'
+        })
       } else {
         resolve({ error: `Scraper encerrou sem dados — verifique o link e tente novamente` })
       }
     })
   })
+})
+
+ipcMain.handle('questlog:cancel', () => {
+  const proc    = activeScraperProc
+  const resolveImport = activeScraperResolve
+  if (!proc) return { ok: false }
+
+  // Clear refs before killing so close/timeout events ignore the signal
+  activeScraperProc    = null
+  activeScraperResolve = null
+  if (activeScraperTimeout) { clearTimeout(activeScraperTimeout); activeScraperTimeout = null }
+
+  let killFailed = false
+  try {
+    if (process.platform === 'win32' && proc.pid) {
+      // taskkill /F /T kills the entire process tree on Windows
+      execSync(`taskkill /F /T /PID ${proc.pid}`, { stdio: 'ignore' })
+    } else {
+      proc.kill('SIGKILL')
+    }
+  } catch (e) {
+    // Log the error — process may have already exited, or kill failed (permissions, etc.)
+    console.error('[scraper] taskkill failed:', e)
+    killFailed = true
+  }
+
+  // Resolve the pending IPC promise immediately — don't wait for close event
+  resolveImport?.({ error: killFailed ? 'Não foi possível cancelar — o processo pode continuar em background' : 'cancelled' })
+  return { ok: !killFailed }
 })
 
 // ─── Window ────────────────────────────────────────────────────────────────────

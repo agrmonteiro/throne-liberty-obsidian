@@ -45,8 +45,8 @@ function baseSkillDamage(weapon: number, stats: BuildStats): number {
 // Fórmula Oficial: ( (Base Damage * [Multipliers]) * Heavy Attack ) + Bonus Damage - Damage Reduction
 
 export function calcAverageDPS(stats: BuildStats): number {
-  const critChance  = critChanceFromStat(stats.critHitChance, stats.targetEndurance)
-  const heavyChance = heavyChanceFromStat(stats.heavyAttackChance)
+  const critChance  = critChanceFromStat(stats.critHitChance + (stats.bossCritChance ?? 0), stats.targetEndurance)
+  const heavyChance = heavyChanceFromStat(stats.heavyAttackChance + (stats.bossHeavyChance ?? 0))
 
   // 1. Hit Normal vs Hit Crítico exigem bases diferentes:
   //    Hit Crítico usa SEMPRE Max Weapon Damage.
@@ -122,13 +122,15 @@ export function calcModifiers(stats: BuildStats): { minBase: number; maxCrit: nu
 // ─── Full result ──────────────────────────────────────────────────────────────
 
 export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult {
-  const critChancePct  = critChanceFromStat(stats.critHitChance, stats.targetEndurance) * 100
-  const heavyChancePct = heavyChanceFromStat(stats.heavyAttackChance) * 100
+  const totalCrit  = stats.critHitChance  + (stats.bossCritChance  ?? 0)
+  const totalHeavy = stats.heavyAttackChance + (stats.bossHeavyChance ?? 0)
+  const critChancePct  = critChanceFromStat(totalCrit, stats.targetEndurance) * 100
+  const heavyChancePct = heavyChanceFromStat(totalHeavy) * 100
   const { minBase, maxCrit } = calcModifiers(stats)
 
   const tgtEv  = stats.targetEvasion
   const missChancePct = tgtEv > 0
-    ? Math.max(0, Math.min(95, (tgtEv / (tgtEv + Math.max(1, stats.critHitChance))) * 100))
+    ? Math.max(0, Math.min(95, (tgtEv / (tgtEv + Math.max(1, totalCrit))) * 100))
     : 0
 
   const avgDamage = calcAverageDPS(stats)

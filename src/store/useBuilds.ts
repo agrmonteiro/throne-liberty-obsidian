@@ -31,8 +31,11 @@ declare global {
       exportFile:            (data: unknown, name: string)        => Promise<{ ok: boolean; path?: string }>
       dir:                   ()                                   => Promise<string>
       questlogImportPython:  (url: string)                        => Promise<unknown>
-      onProgress:            (cb: (payload: { stage: 'starting' | 'extracting' | 'done' }) => void) => void
+      questlogCancel:        ()                                   => Promise<{ ok: boolean }>
+      onProgress:            (cb: (payload: { stage: 'starting' | 'downloading-browser' | 'extracting' | 'done' }) => void) => void
       offProgress:           () => void
+      onLog:                 (cb: (payload: { line: string }) => void) => void
+      offLog:                () => void
       // Combat log folder management
       combatlogPickFolder:   ()                                   => Promise<string | null | { error: string }>
       combatlogGetFolder:    ()                                   => Promise<string | null>
@@ -44,6 +47,8 @@ declare global {
       scraperSetPath:        (p: string)                          => Promise<{ ok: boolean; error?: string }>
       scraperPickFile:       ()                                   => Promise<string | null>
       scraperDetect:         ()                                   => Promise<{ scraperFound: boolean; scraperPath: string | null; pythonOk: boolean; pythonVersion: string }>
+      scraperOpenLog:        ()                                   => Promise<{ ok: boolean; error?: string }>
+      scraperReadLog:        ()                                   => Promise<string>
     }
   }
 }
@@ -121,7 +126,7 @@ export const useBuilds = create<BuildsState>((set, get) => ({
             id:          (obj.id as string) || newId(),
             name:        (obj.name as string) || 'Importada',
             weaponCombo: (obj.weaponCombo as string) || '',
-            stats:       (obj.stats as BuildStats) || { ...DEFAULT_STATS },
+            stats:       { ...DEFAULT_STATS, ...(obj.stats as Partial<BuildStats>) },
             notes:       (obj.notes as string) || '',
             importedAt:  new Date().toISOString(),
             sourceUrl:   (obj.sourceUrl as string) || undefined,

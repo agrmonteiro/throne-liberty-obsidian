@@ -10,6 +10,8 @@ export interface BuildStats {
   // Offensive
   critHitChance:        number  // raw stat (not %)
   heavyAttackChance:    number  // raw stat (not %)
+  bossCritChance:       number  // added to critHitChance before DR
+  bossHeavyChance:      number  // added to heavyAttackChance before DR
   heavyAttackDmgComp:   number  // complement over 100% base (e.g. 14 means game shows 114%)
   skillDmgBoost:        number
   monsterDmgBoostPct:   number
@@ -30,6 +32,8 @@ export const DEFAULT_STATS: BuildStats = {
   maxWeaponDmg:        0,
   critHitChance:       0,
   heavyAttackChance:   0,
+  bossCritChance:      0,
+  bossHeavyChance:     0,
   heavyAttackDmgComp:  0,
   skillDmgBoost:       0,
   monsterDmgBoostPct:  0,

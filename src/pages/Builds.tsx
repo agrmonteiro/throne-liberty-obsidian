@@ -75,7 +75,9 @@ const CALC_FIELDS: Array<{ key: StatKey; label: string; group: string }> = [
   { key: 'minWeaponDmg',       label: 'Min Weapon Dmg',      group: 'Arma'      },
   { key: 'maxWeaponDmg',       label: 'Max Weapon Dmg',      group: 'Arma'      },
   { key: 'critHitChance',      label: 'Crit Hit Chance',     group: 'Ofensivos' },
+  { key: 'bossCritChance',     label: 'Boss Crit Chance',    group: 'Ofensivos' },
   { key: 'heavyAttackChance',  label: 'Heavy Attack Chance', group: 'Ofensivos' },
+  { key: 'bossHeavyChance',    label: 'Boss Heavy Chance',   group: 'Ofensivos' },
   { key: 'heavyAttackDmgComp', label: 'Heavy Dmg Compl.',    group: 'Ofensivos' },
   { key: 'critDmgPct',         label: 'Crit Damage %',       group: 'Ofensivos' },
   { key: 'skillDmgBoost',      label: 'Skill Dmg Boost',     group: 'Ofensivos' },
@@ -96,7 +98,8 @@ export function Builds(): React.ReactElement {
           importFromFile, importFromUrlPython, exportBuild, createEmpty } = useBuilds()
   const buildList = useMemo(() => Object.values(builds), [builds])
 
-  const statusTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const statusTimerRef    = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const importGeneration  = React.useRef(0)
 
   const [editId,        setEditId]        = useState<string | null>(null)
   const [editData,      setEditData]      = useState<Build | null>(null)
@@ -108,6 +111,8 @@ export function Builds(): React.ReactElement {
   const [urlLoading,    setUrlLoading]    = useState(false)
   const [status,        setStatus]        = useState<string | null>(null)
   const [statusErr,     setStatusErr]     = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [lastLog,       setLastLog]       = useState<string | null>(null)
   const [pendingImport, setPendingImport] = useState<Build | null>(null)
 
   function startEdit(b: Build) {
@@ -148,12 +153,24 @@ export function Builds(): React.ReactElement {
       return
     }
 
+    // Generation token: if handleCancel fires and a new import starts before this
+    // Promise resolves, we skip the stale state updates to avoid clobbering the new import
+    const gen = ++importGeneration.current
     setUrlLoading(true)
     const result = await importFromUrlPython(url)
+
+    // Stale check — this import was superseded by a cancel + new import
+    if (gen !== importGeneration.current) return
+
     setUrlLoading(false)
+    setIsDownloading(false)
 
     if ('error' in result) {
-      showStatus(result.error, true)
+      if (result.error === 'cancelled') {
+        showStatus('Importação cancelada.', false)
+      } else {
+        showStatus(result.error, true)
+      }
     } else {
       setUrlInput('')
       // Não salva automaticamente — abre painel de confirmação para renomear
@@ -196,11 +213,13 @@ export function Builds(): React.ReactElement {
     showStatus(`Build "${name}" criada.`, false)
   }
 
-  function showStatus(msg: string, isError: boolean) {
+  function showStatus(msg: string, isError: boolean, duration = 5000) {
     if (statusTimerRef.current) clearTimeout(statusTimerRef.current)
     setStatus(msg)
     setStatusErr(isError)
-    statusTimerRef.current = setTimeout(() => setStatus(null), 5000)
+    if (duration !== Infinity) {
+      statusTimerRef.current = setTimeout(() => setStatus(null), duration)
+    }
   }
 
   function isValidQuestlogUrl(raw: string): boolean {
@@ -212,18 +231,99 @@ export function Builds(): React.ReactElement {
     }
   }
 
+  function handleCancel() {
+    // Invalida o import em andamento — handleUrlImport vai ignorar a Promise ao resolver
+    importGeneration.current++
+    // Reseta UI imediatamente — não espera a Promise do import resolver
+    setUrlLoading(false)
+    setIsDownloading(false)
+    showStatus('Importação cancelada.', false)
+    // Kill do processo (taskkill /F /T no Windows, SIGKILL no Unix)
+    window.dataAPI.questlogCancel?.().then((res) => {
+      if (res && !res.ok) showStatus('Não foi possível cancelar — o processo pode continuar em background.', true)
+    }).catch(() => {/* ignore */})
+  }
+
   useEffect(() => {
     if (!window.dataAPI?.onProgress) return
     window.dataAPI.onProgress(({ stage }) => {
-      if (stage === 'starting')   showStatus('⏳ Iniciando scraper...', false)
-      if (stage === 'extracting') showStatus('🔍 Extraindo stats...', false)
+      if (stage === 'starting') {
+        setIsDownloading(false)
+        showStatus('⏳ Iniciando...', false)
+      }
+      if (stage === 'downloading-browser') {
+        setIsDownloading(true)
+        // Sem auto-clear: o download pode levar vários minutos
+        showStatus('📥 Baixando recursos — apenas na primeira vez, aguarde...', false, Infinity)
+      }
+      if (stage === 'extracting') {
+        setIsDownloading(false)
+        showStatus('🔍 Extraindo stats...', false)
+      }
     })
     return () => window.dataAPI.offProgress?.()
   }, [])
 
+  useEffect(() => {
+    if (!window.dataAPI?.onLog) return
+    window.dataAPI.onLog(({ line }) => setLastLog(line))
+    return () => window.dataAPI.offLog?.()
+  }, [])
+
+  // Clear lastLog when import finishes or is cancelled
+  useEffect(() => {
+    if (!urlLoading) setLastLog(null)
+  }, [urlLoading])
+
   function updateCalcField(key: StatKey, value: number) {
     if (!editData) return
     setEditData({ ...editData, stats: { ...editData.stats, [key]: value } })
+  }
+
+  function replicateFromQuestlog() {
+    if (!editData?.rawStats) return
+    const raw = editData.rawStats
+
+    const n = (k: string, fallback = 0): number => {
+      const v = raw[k]
+      if (v == null) return fallback
+      let s = String(v).replace('%', '').split('~')[0].trim()
+      s = s.replace(/[,.](\d{3})(?!\d)/g, '$1').replace(',', '.')
+      return parseFloat(s) || fallback
+    }
+    const maxOf = (...keys: string[]) => Math.max(0, ...keys.map((k) => n(k)))
+
+    // Max Damage range → min/max weapon
+    const maxDmgStr = raw['Max Damage'] ?? ''
+    const dmgParts  = String(maxDmgStr).split('~').map((p) => parseFloat(p.trim().replace(',', '.')) || 0)
+    const minWeaponDmg = dmgParts[0] ?? editData.stats.minWeaponDmg
+    const maxWeaponDmg = dmgParts[1] ?? dmgParts[0] ?? editData.stats.maxWeaponDmg
+
+    const heavyEntry = raw['Heavy Attack Damage']
+    const heavyAttackDmgComp = heavyEntry != null
+      ? Math.max(0, n('Heavy Attack Damage'))
+      : Math.max(0, n('Heavy Damage', 100) - 100)
+
+    const speciesDmgBoost = maxOf(
+      'Species Damage Boost', 'Demon Damage Boost', 'Wildkin Damage Boost',
+      'Undead Damage Boost', 'Humanoid Damage Boost', 'Construct Damage Boost', 'Magic Damage Boost',
+    )
+
+    const updated: BuildStats = {
+      ...editData.stats,
+      minWeaponDmg:       minWeaponDmg || editData.stats.minWeaponDmg,
+      maxWeaponDmg:       maxWeaponDmg || editData.stats.maxWeaponDmg,
+      critHitChance:      n('Magic Critical Hit Chance') || n('Melee Critical Hit Chance') || editData.stats.critHitChance,
+      bossCritChance:     maxOf('Boss Melee Critical Hit Chance', 'Boss Ranged Critical Hit Chance', 'Boss Magic Critical Hit Chance'),
+      heavyAttackChance:  n('Magic Heavy Attack Chance') || n('Melee Heavy Attack Chance') || editData.stats.heavyAttackChance,
+      bossHeavyChance:    maxOf('Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance'),
+      heavyAttackDmgComp,
+      skillDmgBoost:      n('Skill Damage Boost') || editData.stats.skillDmgBoost,
+      bonusDmg:           n('Bonus Damage') || editData.stats.bonusDmg,
+      critDmgPct:         n('Critical Damage') || editData.stats.critDmgPct,
+      speciesDmgBoost:    speciesDmgBoost || editData.stats.speciesDmgBoost,
+    }
+    setEditData({ ...editData, stats: updated })
   }
 
   function updateRawStat(key: string, value: string) {
@@ -275,8 +375,72 @@ export function Builds(): React.ReactElement {
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.75rem 2rem' }}>
         {/* Status bar */}
         {status && (
-          <div style={{ padding: '0.5rem 1rem', background: statusBg, border: `1px solid ${statusBorder}`, borderRadius: 6, color: statusColor, fontSize: '0.82rem', marginBottom: '1rem', fontFamily: 'JetBrains Mono, monospace' }}>
-            {status}
+          <div style={{ padding: '0.6rem 1rem', background: statusBg, border: `1px solid ${statusBorder}`, borderRadius: 6, marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span style={{ color: statusColor, fontSize: '0.82rem', fontFamily: 'JetBrains Mono, monospace', flex: 1 }}>
+                {status}
+              </span>
+              {statusErr && !urlLoading && (
+                <button
+                  onClick={() => window.dataAPI.scraperOpenLog?.()}
+                  style={{
+                    padding: '0.2rem 0.65rem',
+                    fontSize: '0.75rem',
+                    background: 'rgba(212,175,55,0.1)',
+                    border: '1px solid rgba(212,175,55,0.3)',
+                    borderRadius: 4,
+                    color: '#d4af37',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                  }}
+                >
+                  Ver log
+                </button>
+              )}
+              {urlLoading && (
+                <button
+                  onClick={handleCancel}
+                  style={{
+                    padding: '0.2rem 0.65rem',
+                    fontSize: '0.75rem',
+                    background: 'rgba(242,95,92,0.15)',
+                    border: '1px solid rgba(242,95,92,0.4)',
+                    borderRadius: 4,
+                    color: '#f25f5c',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                  }}
+                >
+                  ✕ Cancelar
+                </button>
+              )}
+            </div>
+            {isDownloading && (
+              <div style={{ marginTop: '0.45rem', height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
+                <div style={{
+                  height: '100%',
+                  width: '40%',
+                  borderRadius: 2,
+                  background: '#d4af37',
+                  animation: 'tl-indeterminate 1.4s ease-in-out infinite',
+                }} />
+              </div>
+            )}
+            {urlLoading && lastLog && (
+              <div style={{
+                marginTop: '0.4rem',
+                fontSize: '0.72rem',
+                fontFamily: 'JetBrains Mono, monospace',
+                color: 'rgba(255,255,255,0.45)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}>
+                {lastLog}
+              </div>
+            )}
           </div>
         )}
 
@@ -588,8 +752,20 @@ export function Builds(): React.ReactElement {
                       {/* ── TAB: Calculadora DPS ──────────────────────────── */}
                       {editTab === 'calc' && (
                         <div>
-                          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-                            Campos usados pelo motor de cálculo de DPS. Preenchidos automaticamente ao importar.
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', flex: 1 }}>
+                              Campos usados pelo motor de cálculo de DPS. Preenchidos automaticamente ao importar.
+                            </span>
+                            {editData.rawStats && (
+                              <button
+                                className="tl-btn-ghost"
+                                onClick={replicateFromQuestlog}
+                                style={{ fontSize: '0.72rem', whiteSpace: 'nowrap' }}
+                                title="Relê todos os campos possíveis dos rawStats do Questlog e preenche a calculadora"
+                              >
+                                ⟳ Replicar Stats do Questlog
+                              </button>
+                            )}
                           </div>
                           {calcGroups.map((group) => (
                             <div key={group}>
