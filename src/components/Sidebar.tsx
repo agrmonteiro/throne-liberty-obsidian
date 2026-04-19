@@ -44,12 +44,12 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
       {/* Logo */}
       <div style={{ padding: '1.25rem 1rem 0.75rem' }}>
         <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#474f6b', marginBottom: 4 }}>
-          The Obsidian Archive
+          AgrMonteiro · Tier2
         </div>
         <div style={{ fontFamily: 'Noto Serif, serif', fontSize: '1rem', color: '#f0cc55', fontWeight: 700, lineHeight: 1.2 }}>
-          Throne &amp; Liberty
+          Command Lab
         </div>
-        <div style={{ fontSize: '0.65rem', color: '#474f6b', marginTop: 2 }}>Build Command Center</div>
+        <div style={{ fontSize: '0.65rem', color: '#474f6b', marginTop: 2 }}>Análise de elite, na palma da sua mão</div>
       </div>
 
       <div style={{ borderTop: '1px solid rgba(124,92,252,0.18)', margin: '0.5rem 0' }} />

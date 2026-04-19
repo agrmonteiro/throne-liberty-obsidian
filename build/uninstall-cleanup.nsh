@@ -7,8 +7,8 @@
     "Deseja remover todos os dados do app (builds salvas, configurações)?$\nEsta ação é irreversível." \
     IDNO skip_appdata
 
-  ; Remove AppData\Roaming\throne-liberty
-  RMDir /r "$APPDATA\throne-liberty"
+  ; Remove AppData\Roaming\Tier2 Command Lab
+  RMDir /r "$APPDATA\Tier2 Command Lab"
 
   skip_appdata:
 
@@ -18,7 +18,7 @@
     IDNO skip_localdata
 
   ; Remove local app storage
-  RMDir /r "$LOCALAPPDATA\Throne & Liberty"
+  RMDir /r "$LOCALAPPDATA\Tier2 Command Lab"
 
   skip_localdata:
 !macroend

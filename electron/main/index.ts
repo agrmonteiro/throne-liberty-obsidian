@@ -7,7 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import { spawn, execSync } from 'child_process'
 
-// ─── Data directory (AppData/Roaming/throne-liberty/data) ─────────────────────
+// ─── Data directory (AppData/Roaming/Tier2 Command Lab/data) ──────────────────
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
 
 function ensureDataDir(): void {

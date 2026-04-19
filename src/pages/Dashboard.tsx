@@ -30,7 +30,7 @@ export function Dashboard(): React.ReactElement {
       {/* Hero */}
       <div className="tl-hero">
         <h1>War Room</h1>
-        <p>Painel central de análise — DPS estimado, stats e comparação de builds salvas.</p>
+        <p>Painel central do Tier2 Command Lab — DPS estimado, stats e comparação de builds salvas.</p>
       </div>
 
       {/* KPIs */}
