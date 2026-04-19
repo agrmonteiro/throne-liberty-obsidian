@@ -68,7 +68,7 @@ function fmtFull(v: number) {
 }
 
 function fmtPct(v: number) {
-  return (v * 100).toFixed(1) + '%'
+  return (v * 100).toFixed(2) + '%'
 }
 
 function fmtDuration(ms: number) {
@@ -1071,7 +1071,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                           <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(w.value)}</div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', marginTop: 2 }}>
                             <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(dps)} DPS</span>
-                            <span style={{ fontSize: '0.6rem', color: `${color}cc` }}>{ratio.toFixed(1)}%</span>
+                            <span style={{ fontSize: '0.6rem', color: `${color}cc` }}>{ratio.toFixed(2)}%</span>
                           </div>
                         </div>
                       )
@@ -1229,7 +1229,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                               if (active && payload && payload.length) {
                                 const data = payload[0];
                                 const color = data.payload.fill || '#fff';
-                                const percent = ((data.value / stats.totalDmg) * 100).toFixed(1);
+                                const percent = ((data.value / stats.totalDmg) * 100).toFixed(2);
                                 return (
                                   <div style={{ 
                                     background: '#0a0b0f', 
@@ -1254,7 +1254,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                       {stats.weaponDist.map((w) => (
                         <div key={w.name} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.58rem', marginBottom: 2 }}>
                           <span style={{ color: 'var(--text-soft)' }}>{w.name}</span>
-                          <span style={{ color: '#fff', fontWeight: 700 }}>{((w.value / stats.totalDmg) * 100).toFixed(1)}%</span>
+                          <span style={{ color: '#fff', fontWeight: 700 }}>{((w.value / stats.totalDmg) * 100).toFixed(2)}%</span>
                         </div>
                       ))}
                     </div>
@@ -1538,7 +1538,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', fontFamily: 'JetBrains Mono', color: 'var(--text-soft)' }}>{fmt(s.damage / durationSec)}</td>
                               <td style={{ padding: '0.6rem 1rem', textAlign: 'right' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
-                                  <span style={{ fontSize: '0.65rem' }}>{ratio.toFixed(1)}%</span>
+                                  <span style={{ fontSize: '0.65rem' }}>{ratio.toFixed(2)}%</span>
                                   <div style={{ width: 40, height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2 }}>
                                     <div style={{ height: '100%', width: `${ratio}%`, background: ratio > 20 ? 'var(--gold)' : '#7c5cfc', borderRadius: 2 }} />
                                   </div>
@@ -1548,9 +1548,9 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#22d3ee', fontFamily: 'JetBrains Mono' }}>
                                 {(() => { const v = avgCastInterval(s.timestamps); return v != null ? `${v.toFixed(2)}s` : '—' })()}
                               </td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#3dd68c' }}>{critP.toFixed(1)}%</td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#7c5cfc' }}>{heavyP.toFixed(1)}%</td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: 'var(--gold-l)' }}>{combP.toFixed(1)}%</td>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#3dd68c' }}>{critP.toFixed(2)}%</td>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#7c5cfc' }}>{heavyP.toFixed(2)}%</td>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: 'var(--gold-l)' }}>{combP.toFixed(2)}%</td>
                             </tr>
                           )
                         })}

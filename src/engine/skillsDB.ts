@@ -130,6 +130,7 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Decay Touch",           pt: "Toque em Degradação",     weapon: "Item/Proc",  category: 'proc' },
   { en: "Destructive Spear",     pt: "Lança Destruidora",        weapon: "Item/Proc",  category: 'mastery' },
   { en: "Mortal Viper",           pt: "Víbora Mortal",            weapon: "Item/Proc",  category: 'mastery' },
+  { en: "Clockwork Bomb",         pt: "Bomba Relógio",            weapon: "Item/Proc",  category: 'mastery' },
 
   { en: "Basic Shot",            pt: "Disparo Básico",          weapon: "Longbow",    category: 'active' },
 ]

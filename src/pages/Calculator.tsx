@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer, LineChart, Line, Legend } from 'recharts'
 import { useBuilds } from '../store/useBuilds'
-import { calcResult, calcElasticity, critChanceFromStat, heavyChanceFromStat } from '../engine/calculator'
+import { calcResult, calcElasticity, critChanceFromStat, heavyChanceFromStat, effectiveCastTime, effectiveCooldown } from '../engine/calculator'
+import type { ElasticityTest } from '../engine/calculator'
 import { DEFAULT_STATS } from '../engine/types'
 import type { BuildStats } from '../engine/types'
 
@@ -10,26 +11,64 @@ import { fmt, fmtPct } from '../engine/fmt'
 const COLS    = 4
 const COLORS  = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c']
 
+const ADDITIVE_OPTS: Array<{ key: StatKey; label: string; defaultStep: number }> = [
+  { key: 'critHitChance',     label: 'Crit Chance',      defaultStep: 100 },
+  { key: 'heavyAttackChance', label: 'Heavy Chance',     defaultStep: 100 },
+  { key: 'maxWeaponDmg',      label: 'Max Weapon Dmg',   defaultStep: 10  },
+  { key: 'skillDmgBoost',     label: 'Skill Dmg Boost',  defaultStep: 50  },
+  { key: 'cdrPct',            label: 'Cooldown Speed %', defaultStep: 5   },
+  { key: 'attackSpeedPct',    label: 'Attack Speed %',   defaultStep: 5   },
+]
+
+const ELASTIC_STAT_OPTS: Array<{ key: StatKey; label: string }> = [
+  { key: 'critHitChance',      label: 'Crit Hit Chance'     },
+  { key: 'bossCritChance',     label: 'Boss Crit Chance'    },
+  { key: 'heavyAttackChance',  label: 'Heavy Attack Chance' },
+  { key: 'bossHeavyChance',    label: 'Boss Heavy Chance'   },
+  { key: 'critDmgPct',         label: 'Crit Damage %'       },
+  { key: 'maxWeaponDmg',       label: 'Max Weapon Dmg'      },
+  { key: 'minWeaponDmg',       label: 'Min Weapon Dmg'      },
+  { key: 'skillDmgBoost',      label: 'Skill Dmg Boost'     },
+  { key: 'bonusDmg',           label: 'Bonus Damage'        },
+  { key: 'speciesDmgBoost',    label: 'Species Dmg Boost'   },
+  { key: 'monsterDmgBoostPct', label: 'Monster Dmg Boost %' },
+  { key: 'dmgBuffPct',         label: 'Damage Buff %'       },
+  { key: 'cdrPct',             label: 'Cooldown Speed %'    },
+  { key: 'attackSpeedPct',     label: 'Attack Speed %'      },
+]
+
+interface SwapConfig {
+  fromStat: StatKey
+  fromStep: number
+  toStat:   StatKey
+  toStep:   number
+}
+
 // ─── Stat field definitions ───────────────────────────────────────────────────
 
 type StatKey = keyof BuildStats
 
 interface FieldDef {
-  key:     StatKey
-  label:   string
-  group:   'skill' | 'build' | 'target'
+  key:      StatKey
+  label:    string
+  group:    'skill' | 'build' | 'target'
   tooltip?: string
+  max?:     number
 }
 
 const FIELDS: FieldDef[] = [
   { key: 'skillBaseDamagePct',  label: 'Skill Base Damage %',  group: 'skill'  },
   { key: 'skillBonusBaseDmg',   label: 'Skill Bonus Base Dmg', group: 'skill'  },
+  { key: 'skillCooldown',       label: 'Cooldown Base (s)',     group: 'skill', tooltip: 'Cooldown base da skill em segundos' },
+  { key: 'skillCastTime',       label: 'Tempo de Cast (s)',     group: 'skill', tooltip: 'Tempo de cast da skill em segundos' },
   { key: 'minWeaponDmg',        label: 'Min Weapon Base Dmg',  group: 'build'  },
   { key: 'maxWeaponDmg',        label: 'Max Weapon Base Dmg',  group: 'build'  },
+  { key: 'cdrPct',              label: 'Cooldown Speed %',     group: 'build', tooltip: 'Redução de cooldown em % — hard cap: 120%', max: 120 },
+  { key: 'attackSpeedPct',     label: 'Attack Speed %',       group: 'build', tooltip: 'Velocidade de ataque adicional em % — hard cap: 150%', max: 150 },
   { key: 'critHitChance',       label: 'Crit Hit Chance',      group: 'build'  },
-  { key: 'bossCritChance',      label: 'Boss Crit Chance',     group: 'build', tooltip: 'Somado ao Crit Hit Chance antes do DR' },
+  { key: 'bossCritChance',      label: 'Boss Crit Chance',     group: 'build', tooltip: 'Bônus EXTRA vs Chefe — inserir apenas a diferença (quest log boss − crit normal). Ex: quest log mostra 700 boss e 500 normal → inserir 200.' },
   { key: 'heavyAttackChance',   label: 'Heavy Attack Chance',  group: 'build'  },
-  { key: 'bossHeavyChance',     label: 'Boss Heavy Chance',    group: 'build', tooltip: 'Somado ao Heavy Attack Chance antes do DR' },
+  { key: 'bossHeavyChance',     label: 'Boss Heavy Chance',    group: 'build', tooltip: 'Bônus EXTRA vs Chefe — inserir apenas a diferença (quest log boss − heavy normal). Ex: quest log mostra 400 boss e 300 normal → inserir 100.' },
   { key: 'heavyAttackDmgComp',  label: 'Heavy Dmg Compl. *',  group: 'build', tooltip: 'Só o complemento acima de +100% (ex: jogo 114% → inserir 14)' },
   { key: 'skillDmgBoost',       label: 'Skill Damage Boost',   group: 'build'  },
   { key: 'monsterDmgBoostPct',  label: 'Monster Dmg Boost %',  group: 'build'  },
@@ -58,6 +97,13 @@ export function Calculator(): React.ReactElement {
   const [selPoint, setSelPoint] = useState<{ title: string; buildName: string; text: string; color: string } | null>(null)
   const [showLabels, setShowLabels] = useState(false)
   const [showFormula, setShowFormula] = useState(false)
+
+  const [addSteps, setAddSteps] = useState<Record<string, number>>(
+    Object.fromEntries(ADDITIVE_OPTS.map((o) => [o.key, o.defaultStep]))
+  )
+  const [swaps, setSwaps] = useState<SwapConfig[]>([
+    { fromStat: 'critHitChance', fromStep: 100, toStat: 'heavyAttackChance', toStep: 100 },
+  ])
 
   // Compute results
   const results = useMemo(() => {
@@ -127,8 +173,39 @@ export function Calculator(): React.ReactElement {
     setSources(['', 'Var: +100 Crit', 'Var: +100 Heavy', 'Var: +1% CritDmg'])
   }
 
+  function updateSwap(idx: number, field: keyof SwapConfig, value: StatKey | number) {
+    setSwaps((prev) => prev.map((s, i) => i === idx ? { ...s, [field]: value } : s))
+  }
+  function addSwap() {
+    setSwaps((prev) => [...prev, { fromStat: 'heavyAttackChance', fromStep: 100, toStat: 'critHitChance', toStep: 100 }])
+  }
+  function removeSwap(idx: number) {
+    setSwaps((prev) => prev.filter((_, i) => i !== idx))
+  }
+
   function runElasticity() {
-    setElastic(calcElasticity(colStats[0], iterations))
+    const customTests: ElasticityTest[] = [
+      ...ADDITIVE_OPTS.map((opt) => ({
+        key:   `add_${opt.key}`,
+        label: `${opt.label} (+${addSteps[opt.key]}/iter)`,
+        run:   (b: BuildStats, i: number) => ({ ...b, [opt.key]: (b[opt.key] as number) + addSteps[opt.key] * i }),
+      })),
+      ...swaps.map((sw, idx) => {
+        const fromLabel = ELASTIC_STAT_OPTS.find((o) => o.key === sw.fromStat)?.label ?? sw.fromStat
+        const toLabel   = ELASTIC_STAT_OPTS.find((o) => o.key === sw.toStat)?.label ?? sw.toStat
+        return {
+          key:   `swap_${idx}`,
+          label: `${fromLabel} ▸ ${toLabel}`,
+          stopWhen: (base: BuildStats, i: number) => (base[sw.fromStat] as number) - sw.fromStep * i <= 0,
+          run:   (b: BuildStats, i: number) => ({
+            ...b,
+            [sw.fromStat]: Math.max(0, (b[sw.fromStat] as number) - sw.fromStep * i),
+            [sw.toStat]:   (b[sw.toStat]   as number) + sw.toStep   * i,
+          }),
+        }
+      }),
+    ]
+    setElastic(calcElasticity(colStats[0], iterations, customTests))
     setActiveTab('elastic')
   }
 
@@ -141,9 +218,14 @@ export function Calculator(): React.ReactElement {
   const groups = ['skill', 'build', 'target'] as const
   const groupLabels = { skill: '🗡 Skill', build: '⚔ Build Stats', target: '🎯 Alvo' }
 
-  // Chart data
-  const barData  = results.map((r, i) => ({ id: `Build ${i+1}`, name: `Build ${i+1}`, dps: r.avgDamage }))
-  const gainData = results.map((r, i) => ({ id: `Build ${i+1}`, name: `Build ${i+1}`, gain: r.gainPct }))
+  // Chart data — usando trueDps (dano médio / ciclo) como métrica principal
+  const barData  = results.map((r, i) => ({ id: `Build ${i+1}`, name: `Build ${i+1}`, dps: r.trueDps }))
+  const baseTrueDps = results[0]?.trueDps ?? 0
+  const gainData = results.map((r, i) => ({
+    id: `Build ${i+1}`,
+    name: `Build ${i+1}`,
+    gain: i === 0 ? 0 : baseTrueDps > 0 ? ((r.trueDps - baseTrueDps) / baseTrueDps) * 100 : 0,
+  }))
 
   // Elasticity chart data
   const elasticChartData = useMemo(() => {
@@ -187,14 +269,14 @@ export function Calculator(): React.ReactElement {
         <BarChart data={barData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
           <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
           <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} />
-          <Tooltip formatter={(v: number) => [fmt(v), 'DPS']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
+          <Tooltip formatter={(v: number) => [fmt(v), 'DPS Real (/s)']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
           <Legend formatter={(value) => <span style={{ fontSize: '0.72rem' }}>Clique no Card (Build 1, 2...) para ocultar barras</span>} iconSize={0} />
           <Bar
             dataKey="dps"
             radius={[4, 4, 0, 0]}
             label={showLabels ? { position: 'top', fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmt(v) } : undefined}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onClick={(d: any, i: number) => setSelPoint({ title: 'Dano Absoluto', buildName: d.name, text: fmt(d.dps), color: COLORS[i] })}
+            onClick={(d: any, i: number) => setSelPoint({ title: 'DPS Real (/s)', buildName: d.name, text: fmt(d.dps), color: COLORS[i] })}
             style={{ cursor: 'pointer' }}
           >
             {barData.map((d, i) => <Cell key={i} fill={COLORS[i]} opacity={hidden.has(d.id) ? 0.1 : 0.85} />)}
@@ -209,7 +291,7 @@ export function Calculator(): React.ReactElement {
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={gainData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
           <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
-          <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v, 1)} />
+          <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
           <Tooltip formatter={(v: number) => [fmtPct(v), 'Ganho vs Build 1']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
           <Legend formatter={(value) => <span style={{ fontSize: '0.72rem' }}>Clique no Card (Build 1, 2...) para ocultar barras</span>} iconSize={0} />
           <Bar
@@ -235,13 +317,13 @@ export function Calculator(): React.ReactElement {
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={elasticChartData} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
           <XAxis dataKey="iter" tick={{ fontSize: 10, fill: '#7a8099' }} label={{ value: 'Iteração', position: 'insideBottom', offset: -5, fill: '#7a8099', fontSize: 10 }} />
-          <YAxis tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v, 1)} />
+          <YAxis tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
           <Tooltip content={({ active, payload, label }) => {
             if (!active || !payload?.length) return null
             return (
               <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 10, padding: '8px 12px', maxWidth: 270 }}>
                 <div style={{ color: '#d4af37', fontWeight: 700, marginBottom: 6, fontSize: 11 }}>Iteração {label}</div>
-                {payload.map((p: any) => {
+                {[...(payload ?? [])].sort((a: any, b: any) => (b.value as number) - (a.value as number)).map((p: any) => {
                   const s = elasticPointDetails[p.dataKey]?.[label as number]
                   return (
                     <div key={p.dataKey} style={{ marginBottom: 5, paddingTop: 4, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
@@ -249,15 +331,48 @@ export function Calculator(): React.ReactElement {
                       <div style={{ color: '#3dd68c' }}>Ganho: {(p.value as number) >= 0 ? '+' : ''}{fmtPct(p.value as number)}</div>
                       {s && (<>
                         <div style={{ color: 'var(--text-soft)', marginTop: 2 }}>
-                          Crit stat: <span style={{ color: '#e2e4ec' }}>{s.critHitChance}</span>
-                          {' → '}<span style={{ color: '#d4af37' }}>{fmtPct(critChanceFromStat(s.critHitChance) * 100, 1)}</span>
+                          {(() => {
+                            const tc = s.critHitChance + (s.bossCritChance ?? 0)
+                            const zero = tc <= 0
+                            return <>
+                              Crit stat: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{tc}</span>
+                              {(s.bossCritChance ?? 0) > 0 && <span style={{ color: '#8a9bbf', fontSize: 9 }}> ({s.critHitChance}+{s.bossCritChance}b)</span>}
+                              {' → '}<span style={{ color: '#d4af37' }}>{fmtPct(critChanceFromStat(tc, s.targetEndurance) * 100)}</span>
+                            </>
+                          })()}
                         </div>
                         <div style={{ color: 'var(--text-soft)' }}>
-                          Heavy stat: <span style={{ color: '#e2e4ec' }}>{s.heavyAttackChance}</span>
-                          {' → '}<span style={{ color: '#7c5cfc' }}>{fmtPct(heavyChanceFromStat(s.heavyAttackChance) * 100, 1)}</span>
+                          {(() => {
+                            const th = s.heavyAttackChance + (s.bossHeavyChance ?? 0)
+                            const zero = th <= 0
+                            return <>
+                              Heavy stat: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{th}</span>
+                              {(s.bossHeavyChance ?? 0) > 0 && <span style={{ color: '#8a9bbf', fontSize: 9 }}> ({s.heavyAttackChance}+{s.bossHeavyChance}b)</span>}
+                              {' → '}<span style={{ color: '#7c5cfc' }}>{fmtPct(heavyChanceFromStat(th) * 100)}</span>
+                            </>
+                          })()}
                         </div>
                         <div style={{ color: 'var(--text-soft)' }}>Crit Dmg: <span style={{ color: '#e2e4ec' }}>{s.critDmgPct}%</span></div>
                         <div style={{ color: 'var(--text-soft)' }}>Skill Boost: <span style={{ color: '#e2e4ec' }}>{s.skillDmgBoost}</span></div>
+                        {((s.cdrPct ?? 0) > 0 || (s.attackSpeedPct ?? 0) > 0) && (
+                          <div style={{ marginTop: 3, paddingTop: 3, borderTop: '1px dashed rgba(255,255,255,0.08)' }}>
+                            {(s.cdrPct ?? 0) > 0 && (
+                              <div style={{ color: 'var(--text-soft)' }}>
+                                CDR: <span style={{ color: '#e2e4ec' }}>{s.cdrPct}%</span>
+                                {' → CD '}<span style={{ color: '#f0965a' }}>{effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0).toFixed(2)}s</span>
+                              </div>
+                            )}
+                            {(s.attackSpeedPct ?? 0) > 0 && (
+                              <div style={{ color: 'var(--text-soft)' }}>
+                                Atk Speed: <span style={{ color: '#e2e4ec' }}>{s.attackSpeedPct}%</span>
+                                {' → cast '}<span style={{ color: '#00d4ff' }}>{effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0).toFixed(2)}s</span>
+                              </div>
+                            )}
+                            <div style={{ color: 'var(--text-soft)' }}>
+                              Ciclo: <span style={{ color: '#d4af37', fontWeight: 700 }}>{Math.max(effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0), effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0)).toFixed(2)}s</span>
+                            </div>
+                          </div>
+                        )}
                       </>)}
                     </div>
                   )
@@ -275,7 +390,7 @@ export function Calculator(): React.ReactElement {
               strokeWidth={2}
               dot={false}
               hide={hidden.has(label)}
-              label={showLabels ? { position: 'top', fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmtPct(v, 1) } : undefined}
+              label={showLabels ? { position: 'top', fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmtPct(v) } : undefined}
               activeDot={{
                 onClick: (e: any, payload: any) => setSelPoint({ title: 'Elasticidade', buildName: `Iteração ${payload.payload.iter} — ${label}`, text: fmtPct(payload.value), color: elasticColors[i % elasticColors.length] }),
                 style: { cursor: 'pointer' }
@@ -337,7 +452,7 @@ export function Calculator(): React.ReactElement {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexShrink: 0 }}>
             <div className="tl-eyebrow" style={{ fontSize: '0.78rem' }}>
-              {maximized === 'bar' ? '📊 Dano Absoluto' : maximized === 'gain' ? '📈 Ganho %' : '⚙ Elasticidade'}
+              {maximized === 'bar' ? '📊 DPS Real (/s)' : maximized === 'gain' ? '📈 Ganho DPS Real %' : '⚙ Elasticidade — DPS Real'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <button className="tl-btn-ghost" onClick={() => setMaximized(null)} style={{ padding: '0.3rem 0.9rem' }}>
@@ -447,7 +562,19 @@ export function Calculator(): React.ReactElement {
                   {bId}{isBest ? <span className="tl-tag tl-tag-gold" style={{ marginLeft: 6 }}>BEST</span> : null}
                   {isHid  && <span className="tl-tag" style={{ marginLeft: 6, background: 'rgba(255,255,255,0.04)', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: '0.6rem' }}>oculto</span>}
                 </div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: 2 }}>dano por cast</div>
                 <div className="tl-dmg">{r.avgDamage > 0 ? fmt(r.avgDamage) : '—'}</div>
+                {r.totalDmg60s > 0 && (
+                  <div style={{ marginTop: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                    <div style={{ fontSize: '0.67rem', color: 'var(--text-muted)' }}>
+                      60s total: <span style={{ color: '#3dd68c', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}>{fmt(r.totalDmg60s)}</span>
+                    </div>
+                    <div style={{ fontSize: '0.67rem', color: 'var(--text-muted)' }}>
+                      DPS/s: <span style={{ color: '#00d4ff', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(r.trueDps)}</span>
+                      {' · '}{r.casts60s.toFixed(2)}× · {r.cycleTime.toFixed(2)}s
+                    </div>
+                  </div>
+                )}
                 <div style={{ marginTop: 6, fontSize: '0.72rem', color: 'var(--text-soft)', display: 'flex', flexDirection: 'column', gap: 2 }}>
                   <span>Ganho: <span className={r.gainPct > 0 ? 'tl-gain-pos' : r.gainPct < 0 ? 'tl-gain-neg' : 'tl-gain-neu'}>{i === 0 ? 'BASE' : r.gainPct > 0 ? `+${fmtPct(r.gainPct)}` : fmtPct(r.gainPct)}</span></span>
                   <span>Crit: <span className="font-mono">{fmtPct(r.critChancePct)}</span></span>
@@ -480,7 +607,7 @@ export function Calculator(): React.ReactElement {
             <div className="tl-tabs" style={{ marginBottom: 0, borderBottom: 'none' }}>
               {(['bar', 'gain', 'elastic'] as const).map((t) => (
                 <button key={t} className={`tl-tab${activeTab === t ? ' active' : ''}`} onClick={() => setActiveTab(t)}>
-                  {t === 'bar' ? '📊 Dano Absoluto' : t === 'gain' ? '📈 Ganho %' : '⚙ Elasticidade'}
+                  {t === 'bar' ? '📊 DPS Real (/s)' : t === 'gain' ? '📈 Ganho DPS %' : '⚙ Elasticidade'}
                 </button>
               ))}
             </div>
@@ -511,6 +638,89 @@ export function Calculator(): React.ReactElement {
                 <button className="tl-btn" style={{ marginTop: 20 }} onClick={runElasticity}>▶ Calcular</button>
               </div>
               {renderElastic(300)}
+
+              {/* ── Controles de iteração ──────────────────────────────────── */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 3fr', gap: '1rem', marginTop: '1rem' }}>
+
+                {/* Bloco 1: Aditivas */}
+                <div style={{ background: 'var(--bg)', borderRadius: 8, padding: '0.75rem', border: '1px solid var(--border)' }}>
+                  <div className="tl-eyebrow" style={{ marginBottom: '0.65rem', fontSize: '0.68rem' }}>Entradas Aditivas</div>
+                  {ADDITIVE_OPTS.map((opt) => (
+                    <div key={opt.key} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                      <span style={{ flex: 1, fontSize: '0.75rem', color: 'var(--text-soft)' }}>{opt.label}</span>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>+</span>
+                      <input
+                        type="number"
+                        className="tl-input"
+                        style={{ width: 84, textAlign: 'right' }}
+                        min={1}
+                        value={addSteps[opt.key]}
+                        onChange={(e) => setAddSteps((p) => ({ ...p, [opt.key]: Math.max(1, parseInt(e.target.value) || 1) }))}
+                      />
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', width: 28, flexShrink: 0 }}>/iter</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Bloco 2: Permuta */}
+                <div style={{ background: 'var(--bg)', borderRadius: 8, padding: '0.75rem', border: '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.65rem' }}>
+                    <div className="tl-eyebrow" style={{ fontSize: '0.68rem' }}>Permuta</div>
+                    <button className="tl-btn-ghost" style={{ padding: '0.1rem 0.45rem', fontSize: '0.68rem' }} onClick={addSwap}>+ Adicionar</button>
+                  </div>
+                  {swaps.map((sw, idx) => (
+                    <div key={idx} style={{ marginBottom: '0.5rem', padding: '0.45rem 0.55rem', background: 'rgba(255,255,255,0.02)', borderRadius: 6, border: '1px solid var(--border)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)' }}>Troca {idx + 1}</span>
+                        {swaps.length > 1 && (
+                          <button className="tl-btn-ghost" style={{ padding: '0.05rem 0.3rem', fontSize: '0.65rem' }} onClick={() => removeSwap(idx)}>✕</button>
+                        )}
+                      </div>
+                      {/* Stat reduzido */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
+                        <span style={{ fontSize: '0.72rem', color: '#f25f5c', width: 14, textAlign: 'center', flexShrink: 0 }}>−</span>
+                        <select
+                          className="tl-input"
+                          style={{ flex: 1, fontSize: '0.71rem', fontFamily: 'Inter,sans-serif' }}
+                          value={sw.fromStat}
+                          onChange={(e) => updateSwap(idx, 'fromStat', e.target.value as StatKey)}
+                        >
+                          {ELASTIC_STAT_OPTS.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+                        </select>
+                        <input
+                          type="number"
+                          className="tl-input"
+                          style={{ width: 120, textAlign: 'right', fontSize: '0.71rem', flexShrink: 0 }}
+                          min={1}
+                          value={sw.fromStep}
+                          onChange={(e) => updateSwap(idx, 'fromStep', Math.max(1, parseInt(e.target.value) || 1))}
+                        />
+                      </div>
+                      {/* Stat aumentado */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontSize: '0.72rem', color: '#3dd68c', width: 14, textAlign: 'center', flexShrink: 0 }}>+</span>
+                        <select
+                          className="tl-input"
+                          style={{ flex: 1, fontSize: '0.71rem', fontFamily: 'Inter,sans-serif' }}
+                          value={sw.toStat}
+                          onChange={(e) => updateSwap(idx, 'toStat', e.target.value as StatKey)}
+                        >
+                          {ELASTIC_STAT_OPTS.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
+                        </select>
+                        <input
+                          type="number"
+                          className="tl-input"
+                          style={{ width: 120, textAlign: 'right', fontSize: '0.71rem', flexShrink: 0 }}
+                          min={1}
+                          value={sw.toStep}
+                          onChange={(e) => updateSwap(idx, 'toStep', Math.max(1, parseInt(e.target.value) || 1))}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+              </div>
             </div>
           )}
         </div>
@@ -544,26 +754,50 @@ export function Calculator(): React.ReactElement {
                         style={{ textAlign: 'right', borderColor: i === 0 ? 'rgba(212,175,55,0.2)' : undefined }}
                         value={s[field.key] as number}
                         step={1}
-                        onChange={(e) => updateField(i, field.key, parseFloat(e.target.value) || 0)}
+                        max={field.max}
+                        onChange={(e) => {
+                          const raw = parseFloat(e.target.value) || 0
+                          updateField(i, field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
+                        }}
                       />
                     ))}
                   </div>
-                  {field.key === 'critHitChance' && (
+                  {field.key === 'skillCastTime' && (
                     <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
-                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ Crit %</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ Cast efetivo (s)</div>
                       {colStats.map((s, i) => (
-                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#d4af37', padding: '3px 8px', background: 'rgba(212,175,55,0.05)', borderRadius: 4 }}>
-                          {fmtPct(critChanceFromStat(s.critHitChance) * 100)}
+                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#00d4ff', padding: '3px 8px', background: 'rgba(0,212,255,0.05)', borderRadius: 4 }}>
+                          {effectiveCastTime(s.skillCastTime, s.attackSpeedPct).toFixed(2)}s
                         </div>
                       ))}
                     </div>
                   )}
-                  {field.key === 'heavyAttackChance' && (
+                  {field.key === 'skillCooldown' && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ CD efetivo (s)</div>
+                      {colStats.map((s, i) => (
+                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#f0965a', padding: '3px 8px', background: 'rgba(240,150,90,0.05)', borderRadius: 4 }}>
+                          {effectiveCooldown(s.skillCooldown, s.cdrPct).toFixed(2)}s
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {field.key === 'bossCritChance' && (
+                    <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ Crit %</div>
+                      {colStats.map((s, i) => (
+                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#d4af37', padding: '3px 8px', background: 'rgba(212,175,55,0.05)', borderRadius: 4 }}>
+                          {fmtPct(critChanceFromStat(s.critHitChance + (s.bossCritChance ?? 0), s.targetEndurance) * 100)}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {field.key === 'bossHeavyChance' && (
                     <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ Heavy %</div>
                       {colStats.map((s, i) => (
                         <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#7c5cfc', padding: '3px 8px', background: 'rgba(124,92,252,0.05)', borderRadius: 4 }}>
-                          {fmtPct(heavyChanceFromStat(s.heavyAttackChance) * 100)}
+                          {fmtPct(heavyChanceFromStat(s.heavyAttackChance + (s.bossHeavyChance ?? 0)) * 100)}
                         </div>
                       ))}
                     </div>

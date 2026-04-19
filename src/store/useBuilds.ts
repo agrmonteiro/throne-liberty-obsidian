@@ -81,7 +81,12 @@ export const useBuilds = create<BuildsState>((set, get) => ({
 
   loadFromDisk: async () => {
     set({ loading: true })
-    const builds = await readBuilds()
+    const raw = await readBuilds()
+    // Migração: garante que todos os campos de DEFAULT_STATS existam nas builds antigas
+    const builds: BuildMap = {}
+    for (const [id, build] of Object.entries(raw)) {
+      builds[id] = { ...build, stats: { ...DEFAULT_STATS, ...build.stats } }
+    }
     const ids = Object.keys(builds)
     set({
       builds,
@@ -284,17 +289,29 @@ function parseNewScraperFormat(raw: Record<string, unknown>): Build | null {
     return v > acc ? v : acc
   }, 0)
 
+  // Boss Crit/Heavy no quest log já incluem o valor base → guardar só o delta extra
+  const critHitChance     = statNum('Magic Critical Hit Chance') || statNum('Melee Critical Hit Chance')
+  const heavyAttackChance = statNum('Magic Heavy Attack Chance') || statNum('Melee Heavy Attack Chance')
+  const rawBossCrit  = Math.max(0, statNum('Boss Magic Critical Hit Chance'), statNum('Boss Melee Critical Hit Chance'), statNum('Boss Ranged Critical Hit Chance'))
+  const rawBossHeavy = Math.max(0, statNum('Boss Magic Heavy Attack Chance'), statNum('Boss Melee Heavy Attack Chance'), statNum('Boss Ranged Heavy Attack Chance'))
+  const bossCritChance  = Math.max(0, rawBossCrit  - critHitChance)
+  const bossHeavyChance = Math.max(0, rawBossHeavy - heavyAttackChance)
+
   const stats: BuildStats = {
     ...DEFAULT_STATS,
     minWeaponDmg,
     maxWeaponDmg,
-    critHitChance:      statNum('Magic Critical Hit Chance') || statNum('Melee Critical Hit Chance'),
-    heavyAttackChance:  statNum('Magic Heavy Attack Chance') || statNum('Melee Heavy Attack Chance'),
+    critHitChance,
+    bossCritChance,
+    heavyAttackChance,
+    bossHeavyChance,
     heavyAttackDmgComp: heavyComp,
     skillDmgBoost:      statNum('Skill Damage Boost'),
     bonusDmg:           statNum('Bonus Damage'),
     critDmgPct:         statNum('Critical Damage'),
     speciesDmgBoost,
+    cdrPct:             statNum('Cooldown Speed'),
+    attackSpeedPct:     statNum('Attack Speed'),
   }
 
   // Normaliza rawAttributes para o formato padrão
@@ -359,17 +376,29 @@ function parseOldFormat(raw: Record<string, unknown>): Build | null {
     return v > acc ? v : acc
   }, 0)
 
+  // Boss Crit/Heavy no quest log já incluem o valor base → guardar só o delta extra
+  const critHitChanceOld     = s('Magic Critical Hit Chance') || s('Melee Critical Hit Chance')
+  const heavyAttackChanceOld = s('Magic Heavy Attack Chance') || s('Melee Heavy Attack Chance')
+  const rawBossCritOld  = Math.max(0, s('Boss Magic Critical Hit Chance'), s('Boss Melee Critical Hit Chance'), s('Boss Ranged Critical Hit Chance'))
+  const rawBossHeavyOld = Math.max(0, s('Boss Magic Heavy Attack Chance'), s('Boss Melee Heavy Attack Chance'), s('Boss Ranged Heavy Attack Chance'))
+  const bossCritChanceOld  = Math.max(0, rawBossCritOld  - critHitChanceOld)
+  const bossHeavyChanceOld = Math.max(0, rawBossHeavyOld - heavyAttackChanceOld)
+
   const stats: BuildStats = {
     ...DEFAULT_STATS,
     minWeaponDmg:        minW,
     maxWeaponDmg:        maxW,
-    critHitChance:       s('Magic Critical Hit Chance') || s('Melee Critical Hit Chance'),
-    heavyAttackChance:   s('Magic Heavy Attack Chance') || s('Melee Heavy Attack Chance'),
+    critHitChance:       critHitChanceOld,
+    bossCritChance:      bossCritChanceOld,
+    heavyAttackChance:   heavyAttackChanceOld,
+    bossHeavyChance:     bossHeavyChanceOld,
     heavyAttackDmgComp:  heavyComp,
     skillDmgBoost:       s('Skill Damage Boost'),
     bonusDmg:            s('Bonus Damage'),
     critDmgPct:          s('Critical Damage'),
     speciesDmgBoost,
+    cdrPct:              s('Cooldown Speed'),
+    attackSpeedPct:      s('Attack Speed'),
   }
 
   // Convert old stat objects to display strings for rawStats

@@ -64,12 +64,12 @@ function calcStatScore(stats: ItemStats): number {
 
 /** Texto explicativo do upgrade */
 function buildReason(item: EquippedItem, dpsDelta: number, baseDps: number): string {
-  const pct = baseDps > 0 ? ((dpsDelta / baseDps) * 100).toFixed(1) : '0.0'
+  const pct = baseDps > 0 ? ((dpsDelta / baseDps) * 100).toFixed(2) : '0.00'
   const statLines = (Object.keys(item.stats) as Array<keyof ItemStats>)
     .filter(k => (item.stats[k] ?? 0) !== 0)
     .map(k => `+${item.stats[k]} ${k}`)
     .join(', ')
-  return `+${dpsDelta.toFixed(0)} DPS (+${pct}%)${statLines ? ` via ${statLines}` : ''}`
+  return `+${dpsDelta.toFixed(2)} DPS (+${pct}%)${statLines ? ` via ${statLines}` : ''}`
 }
 
 // ─── API pública ──────────────────────────────────────────────────────────────

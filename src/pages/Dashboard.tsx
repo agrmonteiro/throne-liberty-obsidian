@@ -64,7 +64,7 @@ export function Dashboard(): React.ReactElement {
                 <XAxis type="number" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} />
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} width={130} />
                 <Tooltip
-                  formatter={(v: number) => [fmt(v), 'DPS']}
+                  formatter={(v: number) => [fmt(v), 'DPS Real (/s)']}
                   contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 12 }}
                   labelStyle={{ color: 'var(--gold-l)' }}
                 />

@@ -4,9 +4,14 @@ export interface BuildStats {
   // Skill
   skillBaseDamagePct:   number  // e.g. 595
   skillBonusBaseDmg:    number  // e.g. 602
+  skillCooldown:        number  // cooldown base em segundos (ex: 12)
+  skillCastTime:        number  // tempo de cast em segundos (ex: 2)
   // Weapon
   minWeaponDmg:         number
   maxWeaponDmg:         number
+  // Speed
+  cdrPct:               number  // cooldown speed % (ex: 10 = -10% cooldown)
+  attackSpeedPct:       number  // attack speed % adicional (ex: 20 = +20%)
   // Offensive
   critHitChance:        number  // raw stat (not %)
   heavyAttackChance:    number  // raw stat (not %)
@@ -28,6 +33,10 @@ export interface BuildStats {
 export const DEFAULT_STATS: BuildStats = {
   skillBaseDamagePct:  595,
   skillBonusBaseDmg:   602,
+  skillCooldown:       12,
+  skillCastTime:       2,
+  cdrPct:              0,
+  attackSpeedPct:      0,
   minWeaponDmg:        0,
   maxWeaponDmg:        0,
   critHitChance:       0,
@@ -287,13 +296,17 @@ export interface ItemUpgradeSuggestion {
 // ─── Calc result ──────────────────────────────────────────────────────────────
 
 export interface DamageResult {
-  avgDamage:      number
+  avgDamage:      number   // dano médio por cast
   minDamage:      number
   maxCritDamage:  number
   critChancePct:  number
   heavyChancePct: number
   missChancePct:  number
   gainPct:        number   // vs baseline (Build 1)
+  cycleTime:      number   // max(castEfetivo, CDEfetivo) em segundos
+  casts60s:       number   // quantas vezes a skill é castada em 60s
+  totalDmg60s:    number   // dano total da skill em 60s
+  trueDps:        number   // DPS real = avgDamage / cycleTime
 }
 
 // ─── Sensitivity ──────────────────────────────────────────────────────────────

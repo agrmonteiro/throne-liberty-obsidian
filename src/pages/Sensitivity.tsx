@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer } from 'recharts'
 import { useBuilds } from '../store/useBuilds'
-import { calcSensitivity, calcAverageDPS } from '../engine/calculator'
+import { calcSensitivity, calcTrueDps } from '../engine/calculator'
 import { DEFAULT_STATS } from '../engine/types'
 import type { BuildStats } from '../engine/types'
 
@@ -22,7 +22,7 @@ export function Sensitivity(): React.ReactElement {
   }, [sourceId, builds])
 
   const sensitivity = useMemo(() => calcSensitivity(activeStats), [activeStats])
-  const baseDps     = useMemo(() => calcAverageDPS(activeStats), [activeStats])
+  const baseDps     = useMemo(() => calcTrueDps(activeStats), [activeStats])
   const best        = sensitivity[0]
 
   const barData = sensitivity.map((s) => ({
@@ -82,7 +82,7 @@ export function Sensitivity(): React.ReactElement {
                 <div className="tl-eyebrow" style={{ marginBottom: 8 }}>📊 Impacto por Stat (% do ganho total)</div>
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={barData} layout="vertical" margin={{ left: 8, right: 50, top: 4, bottom: 4 }}>
-                    <XAxis type="number" tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v, 0)} />
+                    <XAxis type="number" tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
                     <YAxis type="category" dataKey="label" tick={{ fontSize: 10, fill: '#e2e4ec' }} width={150} />
                     <Tooltip
                       formatter={(v: number, _: string, entry: { payload?: { delta?: number } }) => [
@@ -93,7 +93,7 @@ export function Sensitivity(): React.ReactElement {
                       labelStyle={{ color: 'var(--gold-l)' }}
                     />
                     <Bar dataKey="weight" radius={[0, 4, 4, 0]}
-                      label={{ position: 'right', fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmtPct(v, 1) }}>
+                      label={{ position: 'right', fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmtPct(v) }}>
                       {barData.map((_, i) => <Cell key={i} fill={RANK_COLORS[i % RANK_COLORS.length]} opacity={0.85} />)}
                     </Bar>
                   </BarChart>

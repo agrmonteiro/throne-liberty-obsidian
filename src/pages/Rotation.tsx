@@ -275,7 +275,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.cdrPct, v => onChange({ cdrPct: v }), { step: 0.1, error: cdrOver })}
               <span style={{ fontSize: '0.7rem', color: cdrOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
-                → {cdrEff.toFixed(1)}%{cdrOver ? ' ⚠ cap 120' : ''}
+                → {cdrEff.toFixed(2)}%{cdrOver ? ' ⚠ cap 120' : ''}
               </span>
             </div>
           </div>
@@ -285,7 +285,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.attackSpeedPct, v => onChange({ attackSpeedPct: v }), { step: 0.1, error: asOver })}
               <span style={{ fontSize: '0.7rem', color: asOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
-                → {asEff.toFixed(1)}%{asOver ? ' ⚠ cap 150' : ''}
+                → {asEff.toFixed(2)}%{asOver ? ' ⚠ cap 150' : ''}
               </span>
             </div>
           </div>
@@ -295,7 +295,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.advDurPct, v => onChange({ advDurPct: v }), { step: 0.1, error: advOver })}
               <span style={{ fontSize: '0.7rem', color: advOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
-                → {advEff.toFixed(1)}%{advOver ? ' ⚠ cap 150' : ''}
+                → {advEff.toFixed(2)}%{advOver ? ' ⚠ cap 150' : ''}
               </span>
             </div>
           </div>
@@ -309,7 +309,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
               {numInput(char.critChanceBase, v => onChange({ critChanceBase: v }), { width: 88 })}
               <span style={{ color: '#474f6b', fontSize: '0.8rem' }}>+</span>
               {numInput(char.critChanceBoss, v => onChange({ critChanceBoss: v }), { width: 88 })}
-              <span style={{ fontSize: '0.72rem', color: '#a78bfa', whiteSpace: 'nowrap', marginLeft: 2 }}>= {critPct.toFixed(1)}%</span>
+              <span style={{ fontSize: '0.72rem', color: '#a78bfa', whiteSpace: 'nowrap', marginLeft: 2 }}>= {critPct.toFixed(2)}%</span>
             </div>
           </div>
           <div>
@@ -323,7 +323,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
               {numInput(char.heavyChanceBase, v => onChange({ heavyChanceBase: v }), { width: 88 })}
               <span style={{ color: '#474f6b', fontSize: '0.8rem' }}>+</span>
               {numInput(char.heavyChanceBoss, v => onChange({ heavyChanceBoss: v }), { width: 88 })}
-              <span style={{ fontSize: '0.72rem', color: '#a78bfa', whiteSpace: 'nowrap', marginLeft: 2 }}>= {heavyPct.toFixed(1)}%</span>
+              <span style={{ fontSize: '0.72rem', color: '#a78bfa', whiteSpace: 'nowrap', marginLeft: 2 }}>= {heavyPct.toFixed(2)}%</span>
             </div>
           </div>
           <div>

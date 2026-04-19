@@ -23,6 +23,18 @@ const DR = 1000   // divisor padrão de diminishing returns
 
 // ─── Core probability formulas ────────────────────────────────────────────────
 
+/** Cast time efetivo após redução pelo Attack Speed (cap 150%) */
+export function effectiveCastTime(baseCastTime: number, attackSpeedPct: number): number {
+  const capped = Math.min(attackSpeedPct, 150)
+  return baseCastTime / (1 + capped / 100)
+}
+
+/** Cooldown efetivo após CDR com cap 120% */
+export function effectiveCooldown(baseCooldown: number, cdrPct: number): number {
+  const capped = Math.min(cdrPct, 120)
+  return baseCooldown / (1 + capped / 100)
+}
+
 export function critChanceFromStat(stat: number, endurance = 0): number {
   const effective = stat - endurance
   if (effective <= 0) return 0
@@ -119,6 +131,17 @@ export function calcModifiers(stats: BuildStats): { minBase: number; maxCrit: nu
   return { minBase: Math.max(0, minHit), maxCrit: Math.max(0, maxCrit) }
 }
 
+// ─── True DPS (por ciclo de skill) ───────────────────────────────────────────
+// DPS real = avgDamage / max(castEfetivo, CDEfetivo)
+
+export function calcTrueDps(stats: BuildStats): number {
+  const avg       = calcAverageDPS(stats)
+  const castEf    = effectiveCastTime(stats.skillCastTime ?? 2,  stats.attackSpeedPct ?? 0)
+  const cdEf      = effectiveCooldown(stats.skillCooldown  ?? 12, stats.cdrPct        ?? 0)
+  const cycleTime = Math.max(castEf, cdEf)
+  return cycleTime > 0 ? avg / cycleTime : 0
+}
+
 // ─── Full result ──────────────────────────────────────────────────────────────
 
 export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult {
@@ -136,6 +159,14 @@ export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult
   const avgDamage = calcAverageDPS(stats)
   const gainPct = baselineAvg > 0 ? ((avgDamage - baselineAvg) / baselineAvg) * 100 : 0
 
+  // ── Dano em 60s ──────────────────────────────────────────────────────────
+  const castEfetivo = effectiveCastTime(stats.skillCastTime ?? 2, stats.attackSpeedPct ?? 0)
+  const cdEfetivo   = effectiveCooldown(stats.skillCooldown ?? 12, stats.cdrPct ?? 0)
+  const cycleTime   = Math.max(castEfetivo, cdEfetivo)
+  const casts60s    = cycleTime > 0 ? 60 / cycleTime : 0
+  const totalDmg60s = casts60s * avgDamage
+  const trueDps     = cycleTime > 0 ? avgDamage / cycleTime : 0
+
   return {
     avgDamage,
     minDamage:     minBase,
@@ -144,6 +175,10 @@ export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult
     heavyChancePct,
     missChancePct,
     gainPct,
+    cycleTime,
+    casts60s,
+    totalDmg60s,
+    trueDps,
   }
 }
 
@@ -151,21 +186,23 @@ export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult
 
 const SENSITIVITY_DELTAS: Array<[keyof BuildStats, string, number]> = [
   ['critHitChance',       'Crit Hit Chance',       100],
-  ['critDmgPct',          'Crit Damage %',          1],
+  ['critDmgPct',          'Crit Damage %',           1],
   ['heavyAttackChance',   'Heavy Attack Chance',    100],
-  ['heavyAttackDmgComp',  'Heavy Damage Compl.',    1],
+  ['heavyAttackDmgComp',  'Heavy Damage Compl.',     1],
   ['skillDmgBoost',       'Skill Dmg Boost',        100],
-  ['bonusDmg',            'Bonus Damage',           10],
-  ['speciesDmgBoost',     'Species Dmg Boost',      10],
+  ['bonusDmg',            'Bonus Damage',            10],
+  ['speciesDmgBoost',     'Species Dmg Boost',       10],
+  ['cdrPct',              'Cooldown Speed %',         1],
+  ['attackSpeedPct',      'Attack Speed %',           1],
 ]
 
 export function calcSensitivity(stats: BuildStats): SensitivityEntry[] {
-  const baseDmg = calcAverageDPS(stats)
+  const baseDmg = calcTrueDps(stats)
   if (baseDmg <= 0) return SENSITIVITY_DELTAS.map(([attr, label, delta]) => ({ attr, label, weight: 0, delta }))
 
   const raw = SENSITIVITY_DELTAS.map(([attr, label, delta]) => {
     const variant = { ...stats, [attr]: (stats[attr] as number) + delta }
-    const newDmg  = calcAverageDPS(variant)
+    const newDmg  = calcTrueDps(variant)
     const sens    = Math.abs((newDmg - baseDmg) / delta)
     return { attr, label, sens, delta }
   })
@@ -181,10 +218,11 @@ export function calcSensitivity(stats: BuildStats): SensitivityEntry[] {
 
 // ─── Elasticity ───────────────────────────────────────────────────────────────
 
-type ElasticityTest = {
-  key:   string
-  label: string
-  run:   (base: BuildStats, i: number) => BuildStats
+export type ElasticityTest = {
+  key:       string
+  label:     string
+  run:       (base: BuildStats, i: number) => BuildStats
+  stopWhen?: (base: BuildStats, i: number) => boolean
 }
 
 const ELASTICITY_TESTS: ElasticityTest[] = [
@@ -228,13 +266,16 @@ const ELASTICITY_TESTS: ElasticityTest[] = [
   },
 ]
 
-export function calcElasticity(stats: BuildStats, iterations: number): ElasticityPoint[] {
-  const baseDmg  = calcAverageDPS(stats)
+export function calcElasticity(stats: BuildStats, iterations: number, tests: ElasticityTest[] = ELASTICITY_TESTS): ElasticityPoint[] {
+  const baseDmg  = calcTrueDps(stats)
   const rows: ElasticityPoint[] = []
+  const stopped = new Set<string>()
   for (let i = 0; i <= Math.max(1, iterations); i++) {
-    for (const test of ELASTICITY_TESTS) {
+    for (const test of tests) {
+      if (stopped.has(test.key)) continue
+      if (test.stopWhen?.(stats, i)) { stopped.add(test.key); continue }
       const variant = test.run(stats, i)
-      const avg     = calcAverageDPS(variant)
+      const avg     = calcTrueDps(variant)
       const gainPct = baseDmg > 0 ? ((avg - baseDmg) / baseDmg) * 100 : 0
       rows.push({
         iter:      i,

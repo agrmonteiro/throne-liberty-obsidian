@@ -71,7 +71,7 @@ const ATTRIBUTE_NAMES = ['Strength', 'Dexterity', 'Wisdom', 'Perception', 'Forti
 // ─── Calculator fields (subset used for DPS engine) ──────────────────────────
 
 type StatKey = keyof BuildStats
-const CALC_FIELDS: Array<{ key: StatKey; label: string; group: string }> = [
+const CALC_FIELDS: Array<{ key: StatKey; label: string; group: string; max?: number }> = [
   { key: 'minWeaponDmg',       label: 'Min Weapon Dmg',      group: 'Arma'      },
   { key: 'maxWeaponDmg',       label: 'Max Weapon Dmg',      group: 'Arma'      },
   { key: 'critHitChance',      label: 'Crit Hit Chance',     group: 'Ofensivos' },
@@ -83,10 +83,14 @@ const CALC_FIELDS: Array<{ key: StatKey; label: string; group: string }> = [
   { key: 'skillDmgBoost',      label: 'Skill Dmg Boost',     group: 'Ofensivos' },
   { key: 'bonusDmg',           label: 'Bonus Damage',        group: 'Ofensivos' },
   { key: 'speciesDmgBoost',    label: 'Species Boost',       group: 'Ofensivos' },
+  { key: 'cdrPct',             label: 'Cooldown Speed %',    group: 'Ofensivos', max: 120 },
+  { key: 'attackSpeedPct',     label: 'Attack Speed %',      group: 'Ofensivos', max: 150 },
   { key: 'monsterDmgBoostPct', label: 'Monster Dmg Boost %', group: 'Buffs'     },
   { key: 'dmgBuffPct',         label: 'Damage Buff %',       group: 'Buffs'     },
   { key: 'skillBaseDamagePct', label: 'Skill Base Dmg %',    group: 'Skill'     },
   { key: 'skillBonusBaseDmg',  label: 'Skill Bonus Dmg',     group: 'Skill'     },
+  { key: 'skillCooldown',      label: 'Cooldown Base (s)',   group: 'Skill'     },
+  { key: 'skillCastTime',      label: 'Tempo de Cast (s)',   group: 'Skill'     },
   { key: 'targetDefense',      label: "Target's Defense",    group: 'Alvo'      },
   { key: 'targetEvasion',      label: "Target's Evasion",    group: 'Alvo'      },
 ]
@@ -202,6 +206,32 @@ export function Builds(): React.ReactElement {
     showStatus('Arquivo exportado!', false)
   }
 
+  async function handleReimport(id: string) {
+    const build = builds[id]
+    if (!build?.sourceUrl) return
+    const gen = ++importGeneration.current
+    setUrlLoading(true)
+    showStatus(`⏳ Reimportando "${build.name}"...`, false, Infinity)
+    const result = await importFromUrlPython(build.sourceUrl)
+    if (gen !== importGeneration.current) return
+    setUrlLoading(false)
+    setIsDownloading(false)
+    if ('error' in result) {
+      showStatus(result.error === 'cancelled' ? 'Cancelado.' : result.error, true)
+      return
+    }
+    // Preserva id, nome, armas e notas — atualiza stats e rawStats
+    await saveBuild({
+      ...build,
+      stats:         result.stats,
+      rawStats:      result.rawStats,
+      rawAttributes: result.rawAttributes,
+      importedAt:    new Date().toISOString(),
+      sourceUrl:     build.sourceUrl,
+    })
+    showStatus(`✅ "${build.name}" reimportada com sucesso!`, false)
+  }
+
   async function handleCreate() {
     const name = newName.trim()
     if (!name) return
@@ -309,19 +339,29 @@ export function Builds(): React.ReactElement {
       'Undead Damage Boost', 'Humanoid Damage Boost', 'Construct Damage Boost', 'Magic Damage Boost',
     )
 
+    // Boss Crit/Heavy do quest log já somam o valor base → extrair só o delta extra
+    const critHitChance      = n('Magic Critical Hit Chance') || n('Melee Critical Hit Chance') || editData.stats.critHitChance
+    const heavyAttackChance  = n('Magic Heavy Attack Chance') || n('Melee Heavy Attack Chance') || editData.stats.heavyAttackChance
+    const rawBossCrit        = maxOf('Boss Melee Critical Hit Chance', 'Boss Ranged Critical Hit Chance', 'Boss Magic Critical Hit Chance')
+    const rawBossHeavy       = maxOf('Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance')
+    const bossCritChance     = Math.max(0, rawBossCrit  - critHitChance)
+    const bossHeavyChance    = Math.max(0, rawBossHeavy - heavyAttackChance)
+
     const updated: BuildStats = {
       ...editData.stats,
       minWeaponDmg:       minWeaponDmg || editData.stats.minWeaponDmg,
       maxWeaponDmg:       maxWeaponDmg || editData.stats.maxWeaponDmg,
-      critHitChance:      n('Magic Critical Hit Chance') || n('Melee Critical Hit Chance') || editData.stats.critHitChance,
-      bossCritChance:     maxOf('Boss Melee Critical Hit Chance', 'Boss Ranged Critical Hit Chance', 'Boss Magic Critical Hit Chance'),
-      heavyAttackChance:  n('Magic Heavy Attack Chance') || n('Melee Heavy Attack Chance') || editData.stats.heavyAttackChance,
-      bossHeavyChance:    maxOf('Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance'),
+      critHitChance,
+      bossCritChance,
+      heavyAttackChance,
+      bossHeavyChance,
       heavyAttackDmgComp,
       skillDmgBoost:      n('Skill Damage Boost') || editData.stats.skillDmgBoost,
       bonusDmg:           n('Bonus Damage') || editData.stats.bonusDmg,
       critDmgPct:         n('Critical Damage') || editData.stats.critDmgPct,
       speciesDmgBoost:    speciesDmgBoost || editData.stats.speciesDmgBoost,
+      cdrPct:             n('Cooldown Speed')  || editData.stats.cdrPct,
+      attackSpeedPct:     n('Attack Speed')    || editData.stats.attackSpeedPct,
     }
     setEditData({ ...editData, stats: updated })
   }
@@ -580,12 +620,33 @@ export function Builds(): React.ReactElement {
                           <span>Heavy <b style={{ color: '#7c5cfc' }}>{fmtP(heavy)}</b></span>
                           {attrCount > 0 && <span style={{ color: 'var(--text-muted)' }}>{attrCount} atributos</span>}
                           <span style={{ color: 'var(--text-muted)' }}>{new Date(b.importedAt).toLocaleDateString('pt-BR')}</span>
+                          {b.sourceUrl && (
+                            <a
+                              href="#"
+                              onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(b.sourceUrl!); showStatus('🔗 URL copiada!', false, 2000) }}
+                              style={{ color: 'var(--text-muted)', textDecoration: 'none', maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}
+                              title={`Clique para copiar: ${b.sourceUrl}`}
+                            >
+                              🔗 {b.sourceUrl.replace('https://questlog.gg/', 'questlog.gg/')}
+                            </a>
+                          )}
                         </div>
                       </div>
 
                       <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
                         {!isActive && <button className="tl-btn-ghost" onClick={() => { setActive(b.id); showStatus(`✅ Build "${b.name}" ativa.`, false) }}>Ativar</button>}
                         <button className="tl-btn-ghost" onClick={() => isEditing ? cancelEdit() : startEdit(b)}>{isEditing ? 'Fechar' : '✏ Editar'}</button>
+                        {b.sourceUrl && (
+                          <button
+                            className="tl-btn-ghost"
+                            onClick={() => handleReimport(b.id)}
+                            disabled={urlLoading}
+                            title={b.sourceUrl}
+                            style={{ opacity: urlLoading ? 0.5 : 1 }}
+                          >
+                            ⟳ Reimportar
+                          </button>
+                        )}
                         <button className="tl-btn-ghost" onClick={() => handleExport(b.id)}>⬇ Export</button>
                         <button className="tl-btn-ghost" style={{ borderColor: 'rgba(242,95,92,0.3)', color: '#f25f5c' }} onClick={() => handleDelete(b.id)}>🗑</button>
                       </div>
@@ -773,8 +834,18 @@ export function Builds(): React.ReactElement {
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.5rem' }}>
                                 {CALC_FIELDS.filter((f) => f.group === group).map((field) => (
                                   <div key={field.key}>
-                                    <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{field.label}</div>
-                                    <input type="number" className="tl-input" value={editData.stats[field.key] as number} step={1} onChange={(e) => updateCalcField(field.key, parseFloat(e.target.value) || 0)} />
+                                    <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{field.label}{field.max !== undefined && <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: 4 }}>/ {field.max}</span>}</div>
+                                    <input
+                                      type="number"
+                                      className="tl-input"
+                                      value={editData.stats[field.key] as number}
+                                      step={1}
+                                      max={field.max}
+                                      onChange={(e) => {
+                                        const raw = parseFloat(e.target.value) || 0
+                                        updateCalcField(field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
+                                      }}
+                                    />
                                   </div>
                                 ))}
                               </div>
