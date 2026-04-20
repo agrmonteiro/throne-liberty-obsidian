@@ -649,6 +649,7 @@ function createWindow(): BrowserWindow {
     show:            false,
     autoHideMenuBar: true,
     backgroundColor: '#0b0c0e',
+    icon:            join(__dirname, '../../build/icon.ico'),
     titleBarStyle:   'hidden',
     titleBarOverlay: {
       color:        '#0b0c0e',
