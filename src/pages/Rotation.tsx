@@ -3,7 +3,7 @@ import { useRotation } from '../store/useRotation'
 import { useBuilds }   from '../store/useBuilds'
 import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
-import { calcRotationResult, effectiveCDRPct, calcSkillDps, calcDotResult } from '../engine/rotationEngine'
+import { calcRotationResult, effectiveCDRPct, calcSkillAvgDamage, calcDotResult } from '../engine/rotationEngine'
 import type {
   RotationCharacter,
   RotationSkill,
@@ -396,7 +396,7 @@ const SKILL_HEADERS: Array<{ label: string; title?: string }> = [
   { label: 'Hits', title: 'Número de hits por cast' },
   { label: 'Mob %', title: 'Bônus inerente da skill vs monstros (ex: 120 = +120%)' },
   { label: '+ Dano %', title: 'Bônus condicional (ex: 40 = +40% quando condição ativa)' },
-  { label: 'DPS', title: 'Dano por segundo considerando cooldown com CDR' },
+  { label: 'Dano Simples', title: 'Dano médio por cast — 4 cenários crit/heavy independentes (fórmula Maxroll)' },
   { label: '' },
 ]
 
@@ -444,7 +444,7 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
               </tr>
             )}
             {skills.map((sk, idx) => {
-              const dps = calcSkillDps(sk, char)
+              const avgDmg = calcSkillAvgDamage(sk, char)
               return (
                 <tr key={sk.id}
                   draggable
@@ -480,8 +480,8 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
                   <td style={td}>{numInput(sk.hits,         v => updateSkill(rotId, sk.id, { hits:         v }), { width: 55             })}</td>
                   <td style={td}>{numInput(sk.monsterBonus * 100, v => updateSkill(rotId, sk.id, { monsterBonus: v / 100 }), { width: 68, step: 1 })}</td>
                   <td style={td}>{numInput(sk.dmgBonus * 100,     v => updateSkill(rotId, sk.id, { dmgBonus:     v / 100 }), { width: 68, step: 1 })}</td>
-                  <td style={{ ...td, color: dps > 0 ? '#f0cc55' : '#474f6b', fontWeight: 600, whiteSpace: 'nowrap', minWidth: 60 }}>
-                    {dps > 0 ? fmt(dps) : '—'}
+                  <td style={{ ...td, color: avgDmg > 0 ? '#f0cc55' : '#474f6b', fontWeight: 600, whiteSpace: 'nowrap', minWidth: 60 }}>
+                    {avgDmg > 0 ? fmt(avgDmg) : '—'}
                   </td>
                   <td style={{ ...td, width: 52 }}>
                     <button onClick={() => updateSkill(rotId, sk.id, { enabled: !sk.enabled })}

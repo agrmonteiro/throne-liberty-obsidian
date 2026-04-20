@@ -54,11 +54,13 @@ function weaponStats(char: RotationCharacter, weapon: 'main' | 'off'): { avg: nu
   }
 }
 
-/** Multiplicadores globais do personagem (SDB + Species + dmgBoost) */
+/** Multiplicadores globais do personagem (Defense + SDB + Species + dmgBoost) */
 function charMultipliers(char: RotationCharacter): number {
-  const sdbMult     = char.skillDmgBoost   > 0 ? 1 + char.skillDmgBoost   / (char.skillDmgBoost   + DR) : 1
-  const speciesMult = char.speciesDmgBoost > 0 ? 1 + char.speciesDmgBoost / (char.speciesDmgBoost + DR) : 1
-  return sdbMult * speciesMult * (1 + char.dmgBoost)
+  const defReduction = char.targetDefense > 0 ? char.targetDefense / (char.targetDefense + 2500) : 0
+  const defMult      = 1 - defReduction
+  const sdbMult      = char.skillDmgBoost   > 0 ? 1 + char.skillDmgBoost   / (char.skillDmgBoost   + DR) : 1
+  const speciesMult  = char.speciesDmgBoost > 0 ? 1 + char.speciesDmgBoost / (char.speciesDmgBoost + DR) : 1
+  return defMult * sdbMult * speciesMult * (1 + char.dmgBoost)
 }
 
 /** Crit e Heavy chances efetivos */
@@ -80,22 +82,27 @@ function chancesFromChar(char: RotationCharacter): {
   }
 }
 
-// ─── Skill DPS ────────────────────────────────────────────────────────────────
+// ─── Dano Simples por cast (alinhado com calcAverageDPS do calculator.ts) ────
 
-export function calcSkillDps(skill: RotationSkill, char: RotationCharacter): number {
-  if (!skill.enabled || skill.cooldown <= 0 || skill.hits <= 0) return 0
+/**
+ * Calcula o dano médio por cast da skill — "Dano Simples".
+ * Fórmula idêntica ao calcAverageDPS: 4 cenários crit/heavy independentes,
+ * bonusDamage somado UMA VEZ por cast (não por hit), defMult incluído.
+ */
+export function calcSkillAvgDamage(skill: RotationSkill, char: RotationCharacter): number {
+  if (!skill.enabled || skill.hits <= 0) return 0
 
   const { avg: wAvg, max: wMax } = weaponStats(char, skill.weapon)
   const { critChance, heavyChance, critDmgMult, heavyMult } = chancesFromChar(char)
-  const charMult = charMultipliers(char)
+  const charMult = charMultipliers(char)  // já inclui defMult
 
   const pct = skill.skillDmgPct / 100
 
-  // Base de dano por hit: non-crit usa média, crit usa MAX (confirmado na planilha)
+  // Base por hit: non-crit usa média, crit usa MAX
   const baseNonCrit = wAvg * pct + skill.bonusBaseDmg
   const baseCrit    = wMax * pct + skill.bonusBaseDmg
 
-  // Multiplicadores de skill
+  // Multiplicadores de skill (condicionais + char)
   const skillMult = (1 + skill.dmgBonus) * (1 + skill.monsterBonus) * charMult
 
   // 4 cenários independentes
@@ -108,18 +115,24 @@ export function calcSkillDps(skill: RotationSkill, char: RotationCharacter): num
     normalChance    * (baseNonCrit * skillMult) +
     critOnlyChance  * (baseCrit    * skillMult * critDmgMult) +
     heavyOnlyChance * (baseNonCrit * skillMult * heavyMult) +
-    critHeavyChance * (baseCrit    * skillMult * critDmgMult * heavyMult) +
-    char.bonusDamage  // true damage entra após todos os multiplicadores
+    critHeavyChance * (baseCrit    * skillMult * critDmgMult * heavyMult)
 
-  const dmgPerCast = Math.max(0, avgPerHit) * skill.hits
-  const cd = applyCD(skill.cooldown, char.cdrPct)
-  return dmgPerCast / cd
+  // bonusDamage somado UMA VEZ por cast (após todos os multiplicadores e hits)
+  return Math.max(0, avgPerHit * skill.hits) + char.bonusDamage
 }
 
-export function calcSkillDmgPerCast(skill: RotationSkill, char: RotationCharacter): number {
-  if (!skill.enabled || skill.hits <= 0) return 0
+// ─── Skill DPS (dano por segundo) ────────────────────────────────────────────
+
+export function calcSkillDps(skill: RotationSkill, char: RotationCharacter): number {
+  if (!skill.enabled || skill.cooldown <= 0) return 0
+  const dmgPerCast = calcSkillAvgDamage(skill, char)
   const cd = applyCD(skill.cooldown, char.cdrPct)
-  return calcSkillDps(skill, char) * cd
+  return cd > 0 ? dmgPerCast / cd : 0
+}
+
+/** @deprecated Use calcSkillAvgDamage diretamente */
+export function calcSkillDmgPerCast(skill: RotationSkill, char: RotationCharacter): number {
+  return calcSkillAvgDamage(skill, char)
 }
 
 // ─── DoT total damage ────────────────────────────────────────────────────────
