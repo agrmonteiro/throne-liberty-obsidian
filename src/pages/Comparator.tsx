@@ -4,6 +4,7 @@ import { useBuilds } from '../store/useBuilds'
 import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engine/calculator'
 import type { Build } from '../engine/types'
 import { fmt, fmtP, fmtPct, fmtDec } from '../engine/fmt'
+import { useT } from '../i18n/useT'
 
 const COLORS = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c', '#f25f5c', '#f0965a']
 
@@ -55,6 +56,7 @@ interface SelPoint {
 
 export function Comparator(): React.ReactElement {
   const { builds } = useBuilds()
+  const t = useT()
   const buildList  = useMemo(() => Object.values(builds), [builds])
 
   const [selected,  setSelected]  = useState<string[]>([])
@@ -214,7 +216,7 @@ export function Comparator(): React.ReactElement {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexShrink: 0 }}>
             <div className="tl-eyebrow" style={{ fontSize: '0.78rem' }}>
-              {maximized === 'stats' ? '📊 Stats Comparados — normalizado 0–100' : '📊 DPS Comparativo'}
+              {maximized === 'stats' ? t('comparator.charts.stats') : t('comparator.charts.dps')}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>Esc para fechar</div>
@@ -229,15 +231,9 @@ export function Comparator(): React.ReactElement {
 
       {/* ── Page header ─────────────────────────────────────────────────────── */}
       <div className="tl-hero" style={{ flexShrink: 0 }}>
-        <h1>Comparador de Builds</h1>
+        <h1>{t('comparator.title')}</h1>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <p>
-            Selecione até 6 builds ·{' '}
-            <span style={{ color: 'var(--gold)' }}>legenda</span> ou{' '}
-            <span style={{ color: 'var(--gold)' }}>card</span> para ocultar série ·{' '}
-            <span style={{ color: 'var(--gold)' }}>barra</span> para detalhes ·{' '}
-            <span style={{ color: 'var(--gold)' }}>ícone expand</span> para maximizar
-          </p>
+          <p>{t('comparator.subtitle')}</p>
           <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--text-soft)', border: '1px solid var(--border)', padding: '0.3rem 0.6rem', borderRadius: 6, background: 'var(--bg-card)' }}>
             <input type="checkbox" checked={showLabels} onChange={(e) => setShowLabels(e.target.checked)} />
             Exibir valores nos gráficos
@@ -249,10 +245,10 @@ export function Comparator(): React.ReactElement {
 
         {/* Build selector */}
         <div className="tl-panel" style={{ marginBottom: '1rem' }}>
-          <div className="tl-eyebrow" style={{ marginBottom: 8 }}>Selecionar Builds</div>
+          <div className="tl-eyebrow" style={{ marginBottom: 8 }}>{t('comparator.select')}</div>
           {buildList.length === 0 ? (
             <div style={{ color: 'var(--text-soft)', fontSize: '0.85rem' }}>
-              Nenhuma build salva. Vá em <b>Builds</b> para importar.
+              {t('comparator.noBuilds')}
             </div>
           ) : (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -283,7 +279,7 @@ export function Comparator(): React.ReactElement {
 
         {selBuilds.length < 2 ? (
           <div className="tl-panel" style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--text-soft)' }}>
-            Selecione pelo menos 2 builds para comparar.
+            {t('comparator.needTwo')}
           </div>
         ) : (
           <>
@@ -369,7 +365,7 @@ export function Comparator(): React.ReactElement {
             <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1rem', marginBottom: '1.25rem' }}>
               <div className="tl-panel">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <div className="tl-eyebrow">📊 Stats Comparados (normalizado 0–100)</div>
+                  <div className="tl-eyebrow">{t('comparator.charts.stats')}</div>
                   <button
                     className="tl-btn-ghost"
                     title="Maximizar gráfico (Esc para fechar)"
@@ -387,7 +383,7 @@ export function Comparator(): React.ReactElement {
 
               <div className="tl-panel">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <div className="tl-eyebrow">📊 DPS Comparativo</div>
+                  <div className="tl-eyebrow">{t('comparator.charts.dps')}</div>
                   <button
                     className="tl-btn-ghost"
                     title="Maximizar gráfico (Esc para fechar)"
@@ -406,7 +402,7 @@ export function Comparator(): React.ReactElement {
 
             {/* Stat table ────────────────────────────────────────────────── */}
             <div className="tl-panel">
-              <div className="tl-eyebrow" style={{ marginBottom: 12 }}>📋 Tabela Detalhada</div>
+              <div className="tl-eyebrow" style={{ marginBottom: 12 }}>{t('comparator.table')}</div>
               {([
                 { label: 'DPS Estimado',    fn: (b: Build) => fmt(calcAverageDPS(b.stats)) },
                 { label: 'Crit Chance %',   fn: (b: Build) => fmtP(critChanceFromStat(b.stats.critHitChance) * 100) },

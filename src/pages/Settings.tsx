@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useSettings, Theme } from '../store/useSettings'
+import { useLocale } from '../store/useLocale'
+import { useT } from '../i18n/useT'
+import type { Lang } from '../i18n/translations'
 
 interface ScraperStatus {
   scraperFound: boolean
@@ -10,6 +13,8 @@ interface ScraperStatus {
 
 export function Settings(): React.ReactElement {
   const { theme, fontSize, setTheme, setFontSize } = useSettings()
+  const { lang, setLang } = useLocale()
+  const t = useT()
 
   const [scraper, setScraper]     = useState<ScraperStatus | null>(null)
   const [detecting, setDetecting] = useState(false)
@@ -41,8 +46,8 @@ export function Settings(): React.ReactElement {
   return (
     <div style={{ flex: 1, overflowY: 'auto', background: 'var(--bg)', padding: '2rem' }}>
       <div className="tl-hero" style={{ padding: 0, borderBottom: 'none', marginBottom: '2.5rem' }}>
-        <h1>Configurações</h1>
-        <p>Personalize sua experiência e configure o importador de builds.</p>
+        <h1>{t('settings.title')}</h1>
+        <p>{t('settings.subtitle')}</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', maxWidth: 1000 }}>
@@ -164,6 +169,33 @@ export function Settings(): React.ReactElement {
               </ol>
             </div>
           )}
+        </section>
+
+        {/* ── Language ──────────────────────────────────────────────── */}
+        <section className="tl-panel">
+          <h2 style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>{t('settings.languageLabel')}</h2>
+          <p style={{ fontSize: '0.8rem', color: 'var(--text-soft)', marginBottom: '1.5rem' }}>
+            {t('settings.language')}
+          </p>
+          <div style={{ display: 'flex', gap: '1rem' }}>
+            {(['pt-BR', 'en'] as Lang[]).map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                style={{
+                  flex: 1, padding: '1.25rem', borderRadius: 8, border: '2px solid',
+                  borderColor: lang === l ? 'var(--gold)' : 'var(--border)',
+                  background: lang === l ? 'rgba(212,175,55,0.05)' : 'rgba(0,0,0,0.2)',
+                  cursor: 'pointer', transition: 'all 0.15s', textAlign: 'center'
+                }}
+              >
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.4rem' }}>{l === 'pt-BR' ? '🇧🇷' : '🇺🇸'}</div>
+                <div style={{ fontWeight: 700, fontSize: '0.85rem', color: lang === l ? 'var(--gold)' : 'var(--text-soft)' }}>
+                  {l === 'pt-BR' ? 'Português (pt-BR)' : 'English (en)'}
+                </div>
+              </button>
+            ))}
+          </div>
         </section>
 
         {/* ── Theme ─────────────────────────────────────────────────── */}

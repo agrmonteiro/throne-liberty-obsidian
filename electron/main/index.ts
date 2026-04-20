@@ -10,6 +10,27 @@ import { spawn, execSync } from 'child_process'
 // ─── Data directory (AppData/Roaming/Tier2 Command Lab/data) ──────────────────
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
 
+// ─── Data migration (Throne & Liberty → Tier2 Command Lab) ────────────────────
+function migrateOldDataDir(): void {
+  const oldDir = path.join(app.getPath('appData'), 'Throne & Liberty', 'data')
+  if (fs.existsSync(oldDir) && !fs.existsSync(DATA_DIR)) {
+    try {
+      fs.mkdirSync(DATA_DIR, { recursive: true })
+      for (const file of fs.readdirSync(oldDir)) {
+        const src  = path.join(oldDir, file)
+        const dest = path.join(DATA_DIR, file)
+        if (fs.statSync(src).isFile()) {
+          fs.copyFileSync(src, dest)
+          console.log(`[migration] Migrated: ${file}`)
+        }
+      }
+      console.log('[migration] Data migrated from Throne & Liberty → Tier2 Command Lab')
+    } catch (err) {
+      console.error('[migration] Migration failed:', err)
+    }
+  }
+}
+
 function ensureDataDir(): void {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true })
@@ -675,6 +696,7 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
+  migrateOldDataDir()
   ensureDataDir()
   const mainWindow = createWindow()
   if (!is.dev) setupAutoUpdater(mainWindow)

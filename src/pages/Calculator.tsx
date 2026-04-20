@@ -269,14 +269,14 @@ export function Calculator(): React.ReactElement {
         <BarChart data={barData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
           <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
           <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} />
-          <Tooltip formatter={(v: number) => [fmt(v), 'DPS Real (/s)']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
+          <Tooltip formatter={(v: number) => [fmt(v), 'Dano Simples (/s)']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
           <Legend formatter={(value) => <span style={{ fontSize: '0.72rem' }}>Clique no Card (Build 1, 2...) para ocultar barras</span>} iconSize={0} />
           <Bar
             dataKey="dps"
             radius={[4, 4, 0, 0]}
             label={showLabels ? { position: 'top', fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmt(v) } : undefined}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onClick={(d: any, i: number) => setSelPoint({ title: 'DPS Real (/s)', buildName: d.name, text: fmt(d.dps), color: COLORS[i] })}
+            onClick={(d: any, i: number) => setSelPoint({ title: 'Dano Simples (/s)', buildName: d.name, text: fmt(d.dps), color: COLORS[i] })}
             style={{ cursor: 'pointer' }}
           >
             {barData.map((d, i) => <Cell key={i} fill={COLORS[i]} opacity={hidden.has(d.id) ? 0.1 : 0.85} />)}
@@ -452,7 +452,7 @@ export function Calculator(): React.ReactElement {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexShrink: 0 }}>
             <div className="tl-eyebrow" style={{ fontSize: '0.78rem' }}>
-              {maximized === 'bar' ? '📊 DPS Real (/s)' : maximized === 'gain' ? '📈 Ganho DPS Real %' : '⚙ Elasticidade — DPS Real'}
+              {maximized === 'bar' ? '📊 Dano Simples (/s)' : maximized === 'gain' ? '📈 Ganho Dano Simples %' : '⚙ Elasticidade — Dano Simples'}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <button className="tl-btn-ghost" onClick={() => setMaximized(null)} style={{ padding: '0.3rem 0.9rem' }}>
@@ -607,7 +607,7 @@ export function Calculator(): React.ReactElement {
             <div className="tl-tabs" style={{ marginBottom: 0, borderBottom: 'none' }}>
               {(['bar', 'gain', 'elastic'] as const).map((t) => (
                 <button key={t} className={`tl-tab${activeTab === t ? ' active' : ''}`} onClick={() => setActiveTab(t)}>
-                  {t === 'bar' ? '📊 DPS Real (/s)' : t === 'gain' ? '📈 Ganho DPS %' : '⚙ Elasticidade'}
+                  {t === 'bar' ? '📊 Dano Simples (/s)' : t === 'gain' ? '📈 Ganho Dano Simples %' : '⚙ Elasticidade'}
                 </button>
               ))}
             </div>

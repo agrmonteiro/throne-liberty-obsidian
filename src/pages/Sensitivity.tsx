@@ -4,6 +4,7 @@ import { useBuilds } from '../store/useBuilds'
 import { calcSensitivity, calcTrueDps } from '../engine/calculator'
 import { DEFAULT_STATS } from '../engine/types'
 import type { BuildStats } from '../engine/types'
+import { useT } from '../i18n/useT'
 
 import { fmt, fmtPct } from '../engine/fmt'
 const fmtP = fmtPct
@@ -12,6 +13,7 @@ const RANK_COLORS = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c', '#f25f5c', '#f0
 
 export function Sensitivity(): React.ReactElement {
   const { builds, activeBuildId } = useBuilds()
+  const t = useT()
   const buildList = useMemo(() => Object.values(builds), [builds])
 
   const [sourceId, setSourceId] = useState<string>(activeBuildId ?? '')
@@ -35,23 +37,23 @@ export function Sensitivity(): React.ReactElement {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       <div className="tl-hero" style={{ flexShrink: 0 }}>
-        <h1>Análise de Sensibilidade</h1>
-        <p>Descubra qual stat aumenta mais o DPS por unidade investida. Ranking automático com pesos normalizados.</p>
+        <h1>{t('sensitivity.title')}</h1>
+        <p>{t('sensitivity.subtitle')}</p>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.75rem 2rem' }}>
         {/* Source selector */}
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.25rem' }}>
           <div>
-            <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Build de referência</div>
+            <div className="tl-eyebrow" style={{ marginBottom: 4 }}>{t('sensitivity.source')}</div>
             <select className="tl-input" style={{ fontFamily: 'Inter,sans-serif', width: 240 }} value={sourceId} onChange={(e) => setSourceId(e.target.value)}>
-              <option value="">Manual (DEFAULT)</option>
+              <option value="">{t('sensitivity.manual')}</option>
               {buildList.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
             </select>
           </div>
           {baseDps > 0 && (
             <div className="tl-stat-card" style={{ padding: '0.6rem 1rem' }}>
-              <div className="tl-eyebrow" style={{ marginBottom: 2 }}>DPS base</div>
+              <div className="tl-eyebrow" style={{ marginBottom: 2 }}>{t('sensitivity.dpsBase')}</div>
               <div className="font-mono" style={{ fontSize: '1.1rem', color: '#f0cc55', fontWeight: 700 }}>{fmt(baseDps)}</div>
             </div>
           )}
@@ -66,9 +68,9 @@ export function Sensitivity(): React.ReactElement {
             {/* Best stat callout */}
             {best && (
               <div className="tl-panel" style={{ marginBottom: '1.25rem', borderColor: 'var(--border-gold)', background: 'rgba(212,175,55,0.04)' }}>
-                <div className="tl-eyebrow" style={{ marginBottom: 6 }}>Recomendação</div>
+                <div className="tl-eyebrow" style={{ marginBottom: 6 }}>{t('sensitivity.recommendation')}</div>
                 <div style={{ fontFamily: 'Noto Serif, serif', color: '#f0cc55', fontSize: '1.1rem', fontWeight: 700 }}>
-                  ↑ Priorizar: {best.label}
+                  {t('sensitivity.prioritize')} {best.label}
                 </div>
                 <div style={{ color: 'var(--text-soft)', fontSize: '0.82rem', marginTop: 4 }}>
                   Stat com maior ganho de DPS por unidade investida. Peso relativo: <span className="font-mono" style={{ color: '#3dd68c', fontWeight: 600 }}>{fmtP(best.weight)}</span> do total de ganho simulado.
@@ -79,7 +81,7 @@ export function Sensitivity(): React.ReactElement {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               {/* Bar chart */}
               <div className="tl-panel">
-                <div className="tl-eyebrow" style={{ marginBottom: 8 }}>📊 Impacto por Stat (% do ganho total)</div>
+                <div className="tl-eyebrow" style={{ marginBottom: 8 }}>{t('sensitivity.chart')}</div>
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={barData} layout="vertical" margin={{ left: 8, right: 50, top: 4, bottom: 4 }}>
                     <XAxis type="number" tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
@@ -102,7 +104,7 @@ export function Sensitivity(): React.ReactElement {
 
               {/* Ranked list */}
               <div className="tl-panel">
-                <div className="tl-eyebrow" style={{ marginBottom: 10 }}>🏆 Ranking de Prioridade</div>
+                <div className="tl-eyebrow" style={{ marginBottom: 10 }}>{t('sensitivity.ranking')}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   {sensitivity.map((s, i) => {
                     const barW = Math.max(4, s.weight)
@@ -129,7 +131,7 @@ export function Sensitivity(): React.ReactElement {
 
                 {/* Delta info */}
                 <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--bg-input)', borderRadius: 6, fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                  <div style={{ color: 'var(--text-soft)', fontWeight: 600, marginBottom: 4 }}>Incrementos usados na simulação:</div>
+                  <div style={{ color: 'var(--text-soft)', fontWeight: 600, marginBottom: 4 }}>{t('sensitivity.deltas')}</div>
                   {sensitivity.map((s) => (
                     <div key={s.attr} style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span>{s.label}</span>

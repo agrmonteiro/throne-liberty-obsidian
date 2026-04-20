@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { useBuilds } from '../store/useBuilds'
 import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engine/calculator'
+import { useT } from '../i18n/useT'
 
 const COLORS = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c', '#f25f5c', '#f0965a']
 
@@ -9,6 +10,7 @@ import { fmt, fmtP } from '../engine/fmt'
 
 export function Dashboard(): React.ReactElement {
   const { builds, activeBuildId, setActive } = useBuilds()
+  const t = useT()
 
   const buildList = useMemo(() => Object.values(builds), [builds])
 
@@ -29,18 +31,18 @@ export function Dashboard(): React.ReactElement {
     <div style={{ padding: '0 1.75rem 2rem', overflowY: 'auto', height: '100%' }}>
       {/* Hero */}
       <div className="tl-hero">
-        <h1>War Room</h1>
-        <p>Painel central do Tier2 Command Lab — DPS estimado, stats e comparação de builds salvas.</p>
+        <h1>{t('dashboard.title')}</h1>
+        <p>{t('dashboard.subtitle')}</p>
       </div>
 
       {/* KPIs */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.75rem', marginBottom: '1.5rem' }}>
         {[
-          { label: 'Builds salvas',  value: buildList.length.toString(), color: '#7c5cfc' },
-          { label: 'Melhor DPS',     value: best ? fmt(best.dps) : '—',   color: '#f0cc55' },
-          { label: 'Crit (ativo)',   value: fmtP(activeCrit),             color: '#d4af37' },
-          { label: 'Heavy (ativo)',  value: fmtP(activeHeavy),            color: '#7c5cfc' },
-          { label: 'DPS (ativo)',    value: activeDps > 0 ? fmt(activeDps) : '—', color: '#00d4ff' },
+          { label: t('dashboard.kpi.savedBuilds'), value: buildList.length.toString(), color: '#7c5cfc' },
+          { label: t('dashboard.kpi.bestDps'),     value: best ? fmt(best.dps) : '—',   color: '#f0cc55' },
+          { label: t('dashboard.kpi.critActive'),  value: fmtP(activeCrit),             color: '#d4af37' },
+          { label: t('dashboard.kpi.heavyActive'), value: fmtP(activeHeavy),            color: '#7c5cfc' },
+          { label: t('dashboard.kpi.dpsActive'),   value: activeDps > 0 ? fmt(activeDps) : '—', color: '#00d4ff' },
         ].map((k) => (
           <div key={k.label} className="tl-stat-card">
             <div className="tl-eyebrow" style={{ marginBottom: 6 }}>{k.label}</div>
@@ -53,10 +55,10 @@ export function Dashboard(): React.ReactElement {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: '1rem' }}>
         {/* Bar chart */}
         <div className="tl-panel">
-          <div className="tl-eyebrow" style={{ marginBottom: 8 }}>DPS Estimado por Build</div>
+          <div className="tl-eyebrow" style={{ marginBottom: 8 }}>{t('dashboard.chart')}</div>
           {dpsData.length === 0 ? (
             <div style={{ color: 'var(--text-soft)', fontSize: '0.85rem', padding: '2rem 0', textAlign: 'center' }}>
-              Nenhuma build salva. Vá em <b>Builds</b> para importar.
+              {t('common.noBuilds')}
             </div>
           ) : (
             <ResponsiveContainer width="100%" height={Math.max(160, dpsData.length * 44)}>
@@ -80,7 +82,7 @@ export function Dashboard(): React.ReactElement {
 
         {/* Active build panel */}
         <div className="tl-panel" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          <div className="tl-eyebrow">Build Ativa</div>
+          <div className="tl-eyebrow">{t('dashboard.activeBuild')}</div>
           {active ? (
             <>
               <div style={{ fontFamily: 'Noto Serif, serif', color: '#f0cc55', fontSize: '1rem', fontWeight: 700, lineHeight: 1.2 }}>
@@ -106,7 +108,7 @@ export function Dashboard(): React.ReactElement {
             </>
           ) : (
             <div style={{ color: 'var(--text-soft)', fontSize: '0.82rem', textAlign: 'center', paddingTop: '1.5rem' }}>
-              Selecione uma build em <b>Builds</b>
+              {t('dashboard.noBuild')}
             </div>
           )}
 
@@ -114,14 +116,14 @@ export function Dashboard(): React.ReactElement {
           {buildList.length > 0 && (
             <>
               <hr className="tl-divider" />
-              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Trocar build ativa</div>
+              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>{t('dashboard.switchBuild')}</div>
               <select
                 className="tl-input"
                 value={activeBuildId ?? ''}
                 onChange={(e) => setActive(e.target.value || null)}
                 style={{ fontFamily: 'Inter, sans-serif' }}
               >
-                <option value="">Selecione...</option>
+                <option value="">{t('common.selectBuild')}...</option>
                 {buildList.map((b) => (
                   <option key={b.id} value={b.id}>{b.name}</option>
                 ))}
@@ -135,14 +137,14 @@ export function Dashboard(): React.ReactElement {
       <hr className="tl-divider" style={{ marginTop: '1.5rem' }} />
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
         {[
-          { icon: '⚔', title: 'Calculadora PvE', sub: 'Compare 4 builds com fórmulas Maxroll. Crit, Heavy e Elasticidade.' },
-          { icon: '🕷', title: 'Comparador',       sub: 'Radar spider-chart normalizado entre builds salvas.' },
-          { icon: '📡', title: 'Sensibilidade',    sub: 'Qual stat dá mais DPS por unidade? Ranking e barras de impacto.' },
+          { icon: '⚔', titleKey: 'dashboard.features.calc', subKey: 'dashboard.features.calcSub' },
+          { icon: '🕷', titleKey: 'dashboard.features.comp', subKey: 'dashboard.features.compSub' },
+          { icon: '📡', titleKey: 'dashboard.features.sens', subKey: 'dashboard.features.sensSub' },
         ].map((f) => (
-          <div key={f.title} className="tl-panel">
+          <div key={f.titleKey} className="tl-panel">
             <div style={{ fontSize: '1.2rem', marginBottom: 6 }}>{f.icon}</div>
-            <div style={{ fontFamily: 'Noto Serif, serif', color: '#f0cc55', fontSize: '0.95rem', fontWeight: 700, marginBottom: 6 }}>{f.title}</div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-soft)' }}>{f.sub}</div>
+            <div style={{ fontFamily: 'Noto Serif, serif', color: '#f0cc55', fontSize: '0.95rem', fontWeight: 700, marginBottom: 6 }}>{t(f.titleKey)}</div>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-soft)' }}>{t(f.subKey)}</div>
           </div>
         ))}
       </div>

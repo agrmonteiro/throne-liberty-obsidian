@@ -14,11 +14,13 @@
 
   ; Ask user if they want to remove local app storage (cache/logs)
   MessageBox MB_YESNO|MB_ICONQUESTION \
-    "Deseja remover o cache local do app em $LOCALAPPDATA\Throne & Liberty?$\nVocê pode manter para agilizar uma reinstalação futura." \
+    "Deseja remover o cache local do Tier2 Command Lab?$\nVocê pode manter para agilizar uma reinstalação futura." \
     IDNO skip_localdata
 
   ; Remove local app storage
   RMDir /r "$LOCALAPPDATA\Tier2 Command Lab"
+  ; Remove auto-updater cache
+  RMDir /r "$LOCALAPPDATA\throne-liberty-updater"
 
   skip_localdata:
 !macroend
