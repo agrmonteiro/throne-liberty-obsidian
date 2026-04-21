@@ -1,6 +1,6 @@
 {
   "name": "throne-liberty",
-  "version": "1.0.0-beta.8",
+  "version": "1.0.0-beta.9",
   "description": "Tier2 Command Lab — Análise de builds e maximização de personagens por AgrMonteiro",
   "main": "dist-electron/main/index.js",
   "author": "Luis Monteiro",
