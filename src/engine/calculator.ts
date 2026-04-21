@@ -138,7 +138,7 @@ export function calcTrueDps(stats: BuildStats): number {
   const avg       = calcAverageDPS(stats)
   const castEf    = effectiveCastTime(stats.skillCastTime ?? 2,  stats.attackSpeedPct ?? 0)
   const cdEf      = effectiveCooldown(stats.skillCooldown  ?? 12, stats.cdrPct        ?? 0)
-  const cycleTime = Math.max(castEf, cdEf)
+  const cycleTime = castEf + cdEf   // CD começa após o cast terminar
   return cycleTime > 0 ? avg / cycleTime : 0
 }
 
@@ -162,7 +162,7 @@ export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult
   // ── Dano em 60s ──────────────────────────────────────────────────────────
   const castEfetivo = effectiveCastTime(stats.skillCastTime ?? 2, stats.attackSpeedPct ?? 0)
   const cdEfetivo   = effectiveCooldown(stats.skillCooldown ?? 12, stats.cdrPct ?? 0)
-  const cycleTime   = Math.max(castEfetivo, cdEfetivo)
+  const cycleTime   = castEfetivo + cdEfetivo   // CD começa após o cast terminar
   const casts60s    = cycleTime > 0 ? 60 / cycleTime : 0
   const totalDmg60s = casts60s * avgDamage
   const trueDps     = cycleTime > 0 ? avgDamage / cycleTime : 0

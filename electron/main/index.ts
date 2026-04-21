@@ -638,6 +638,12 @@ ipcMain.on('update:install', () => {
   autoUpdater.quitAndInstall()
 })
 
+ipcMain.on('update:check', () => {
+  autoUpdater.checkForUpdates().catch((err) => {
+    console.error('[updater] manual checkForUpdates failed:', err)
+  })
+})
+
 // ─── Window ────────────────────────────────────────────────────────────────────
 
 function createWindow(): BrowserWindow {

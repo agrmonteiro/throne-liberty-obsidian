@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useT } from '../i18n/useT'
 
 type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings'
@@ -46,8 +46,28 @@ interface Props {
   onChange: (page: Page) => void
 }
 
+type CheckState = 'idle' | 'checking' | 'upToDate'
+
 export function Sidebar({ active, onChange }: Props): React.ReactElement {
   const t = useT()
+  const [checkState, setCheckState] = useState<CheckState>('idle')
+
+  useEffect(() => {
+    if (!window.updateAPI) return
+    window.updateAPI.onNotAvailable(() => {
+      setCheckState('upToDate')
+      setTimeout(() => setCheckState('idle'), 3000)
+    })
+    window.updateAPI.onAvailable(() => {
+      setCheckState('idle')
+    })
+  }, [])
+
+  function handleCheckUpdate() {
+    if (checkState === 'checking') return
+    setCheckState('checking')
+    window.updateAPI?.checkNow()
+  }
 
   return (
     <aside
@@ -74,6 +94,29 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
       </div>
 
       <div style={{ borderTop: '1px solid rgba(124,92,252,0.18)', margin: '0.5rem 0' }} />
+
+      {/* Botão verificar atualização */}
+      <div style={{ padding: '0 0.6rem 0.5rem' }}>
+        <button
+          onClick={handleCheckUpdate}
+          disabled={checkState === 'checking'}
+          style={{
+            width: '100%', padding: '0.45rem 0.75rem',
+            display: 'flex', alignItems: 'center', gap: '0.5rem',
+            borderRadius: 6, cursor: checkState === 'checking' ? 'default' : 'pointer',
+            fontSize: '0.75rem', fontWeight: 600,
+            border: `1px solid ${checkState === 'upToDate' ? 'rgba(61,214,140,0.4)' : 'rgba(212,175,55,0.25)'}`,
+            background: checkState === 'upToDate' ? 'rgba(61,214,140,0.08)' : 'rgba(212,175,55,0.06)',
+            color: checkState === 'upToDate' ? '#3dd68c' : checkState === 'checking' ? '#7a8099' : '#d4af37',
+            transition: 'all 0.2s',
+          }}
+        >
+          <span style={{ fontSize: '0.85rem' }}>
+            {checkState === 'checking' ? '⏳' : checkState === 'upToDate' ? '✓' : '↑'}
+          </span>
+          {checkState === 'checking' ? 'Verificando…' : checkState === 'upToDate' ? 'Atualizado' : 'Verificar atualização'}
+        </button>
+      </div>
 
       {/* Nav */}
       <nav style={{ flex: 1, overflowY: 'auto', padding: '0 0 1rem' }}>

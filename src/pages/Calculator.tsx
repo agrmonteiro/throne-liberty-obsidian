@@ -15,7 +15,7 @@ const COLORS  = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c']
 const ADDITIVE_OPTS: Array<{ key: StatKey; label: string; defaultStep: number }> = [
   { key: 'critHitChance',     label: 'Crit Chance',      defaultStep: 100 },
   { key: 'heavyAttackChance', label: 'Heavy Chance',     defaultStep: 100 },
-  { key: 'maxWeaponDmg',      label: 'Max Weapon Dmg',   defaultStep: 10  },
+  { key: 'maxWeaponDmg',      label: 'Max Weapon Dmg',   defaultStep: 50  },
   { key: 'skillDmgBoost',     label: 'Skill Dmg Boost',  defaultStep: 50  },
   { key: 'cdrPct',            label: 'Cooldown Speed %', defaultStep: 5   },
   { key: 'attackSpeedPct',    label: 'Attack Speed %',   defaultStep: 5   },
@@ -107,10 +107,14 @@ export function Calculator(): React.ReactElement {
     { fromStat: 'critHitChance', fromStep: 100, toStat: 'heavyAttackChance', toStep: 100 },
   ])
 
-  // Compute results
+  // Compute results — gainPct baseado em totalDmg60s da Build 1
   const results = useMemo(() => {
-    const baseline = calcResult(colStats[0], 0).avgDamage
-    return colStats.map((s) => calcResult(s, baseline))
+    const raw = colStats.map((s) => calcResult(s, 0))
+    const base60s = raw[0].totalDmg60s
+    return raw.map((r) => ({
+      ...r,
+      gainPct: base60s > 0 ? ((r.totalDmg60s - base60s) / base60s) * 100 : 0,
+    }))
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colStats, refreshKey])
 
@@ -372,7 +376,7 @@ export function Calculator(): React.ReactElement {
                               </div>
                             )}
                             <div style={{ color: 'var(--text-soft)' }}>
-                              Ciclo: <span style={{ color: '#d4af37', fontWeight: 700 }}>{Math.max(effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0), effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0)).toFixed(2)}s</span>
+                              Ciclo: <span style={{ color: '#d4af37', fontWeight: 700 }}>{(effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0) + effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0)).toFixed(2)}s</span>
                             </div>
                           </div>
                         )}

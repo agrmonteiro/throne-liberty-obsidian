@@ -78,7 +78,8 @@ const updateAPI = {
     _updateDownloadedCb = (_e, p) => cb(p)
     ipcRenderer.on('update:downloaded', _updateDownloadedCb)
   },
-  install: () => ipcRenderer.send('update:install'),
+  install:   () => ipcRenderer.send('update:install'),
+  checkNow:  () => ipcRenderer.send('update:check'),
 }
 
 if (process.contextIsolated) {
