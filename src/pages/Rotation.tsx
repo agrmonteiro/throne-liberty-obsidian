@@ -4,7 +4,7 @@ import { useBuilds }   from '../store/useBuilds'
 import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
 import { calcRotationResult, effectiveCDRPct, calcSkillAvgDamage, calcDotResult } from '../engine/rotationEngine'
-import { parsePtBR } from '../engine/fmt'
+import { NumericInput } from '../components/NumericInput'
 import type {
   RotationCharacter,
   RotationSkill,
@@ -86,14 +86,9 @@ function numInput(
   opts: { width?: number; step?: number; error?: boolean } = {},
 ): React.ReactElement {
   return (
-    <input
-      type="number"
-      value={val || ''}
-      step={opts.step ?? 1}
-      onChange={e => {
-        const raw = parsePtBR(e.target.value)
-        if (!isNaN(raw)) onChange(raw)
-      }}
+    <NumericInput
+      value={val}
+      onChange={onChange}
       style={{
         ...baseInput,
         width: opts.width ?? 94,

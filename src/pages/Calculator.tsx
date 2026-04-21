@@ -7,7 +7,8 @@ import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartSty
 import { DEFAULT_STATS } from '../engine/types'
 import type { BuildStats } from '../engine/types'
 
-import { fmt, fmtPct, parsePtBR } from '../engine/fmt'
+import { fmt, fmtPct } from '../engine/fmt'
+import { NumericInput } from '../components/NumericInput'
 
 const COLS    = 4
 const COLORS  = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c']
@@ -652,7 +653,7 @@ export function Calculator(): React.ReactElement {
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <div>
                   <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Iterações</div>
-                  <input type="number" className="tl-input" style={{ width: 80 }} min={1} max={100} value={iterations} onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) setIter(Math.max(1, Math.min(100, v))) }} />
+                  <NumericInput integer className="tl-input" style={{ width: 80 }} min={1} max={100} value={iterations} onChange={(v) => setIter(v)} />
                 </div>
                 <button className="tl-btn" style={{ marginTop: 20 }} onClick={runElasticity}>▶ Calcular</button>
               </div>
@@ -668,13 +669,12 @@ export function Calculator(): React.ReactElement {
                     <div key={opt.key} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
                       <span style={{ flex: 1, fontSize: '0.75rem', color: 'var(--text-soft)' }}>{opt.label}</span>
                       <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>+</span>
-                      <input
-                        type="number"
+                      <NumericInput integer
                         className="tl-input"
                         style={{ width: 84, textAlign: 'right' }}
                         min={1}
                         value={addSteps[opt.key]}
-                        onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) setAddSteps((p) => ({ ...p, [opt.key]: Math.max(1, Math.min(100, v)) })) }}
+                        onChange={(v) => setAddSteps((p) => ({ ...p, [opt.key]: v }))}
                       />
                       <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', width: 28, flexShrink: 0 }}>/iter</span>
                     </div>
@@ -706,13 +706,12 @@ export function Calculator(): React.ReactElement {
                         >
                           {ELASTIC_STAT_OPTS.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
                         </select>
-                        <input
-                          type="number"
+                        <NumericInput integer
                           className="tl-input"
                           style={{ width: 120, textAlign: 'right', fontSize: '0.71rem', flexShrink: 0 }}
                           min={1}
                           value={sw.fromStep}
-                          onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) updateSwap(idx, 'fromStep', Math.max(1, v)) }}
+                          onChange={(v) => updateSwap(idx, 'fromStep', v)}
                         />
                       </div>
                       {/* Stat aumentado */}
@@ -726,13 +725,12 @@ export function Calculator(): React.ReactElement {
                         >
                           {ELASTIC_STAT_OPTS.map((o) => <option key={o.key} value={o.key}>{o.label}</option>)}
                         </select>
-                        <input
-                          type="number"
+                        <NumericInput integer
                           className="tl-input"
                           style={{ width: 120, textAlign: 'right', fontSize: '0.71rem', flexShrink: 0 }}
                           min={1}
                           value={sw.toStep}
-                          onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) updateSwap(idx, 'toStep', Math.max(1, v)) }}
+                          onChange={(v) => updateSwap(idx, 'toStep', v)}
                         />
                       </div>
                     </div>
@@ -766,18 +764,13 @@ export function Calculator(): React.ReactElement {
                   <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.2rem', alignItems: 'center' }}>
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-soft)' }} title={field.tooltip}>{field.label}</div>
                     {colStats.map((s, i) => (
-                      <input
+                      <NumericInput
                         key={i}
-                        type="number"
                         className="tl-input"
                         style={{ textAlign: 'right', borderColor: i === 0 ? 'rgba(212,175,55,0.2)' : undefined }}
                         value={s[field.key] as number}
-                        step={1}
                         max={field.max}
-                        onChange={(e) => {
-                          const raw = parsePtBR(e.target.value)
-                          if (!isNaN(raw)) updateField(i, field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
-                        }}
+                        onChange={(v) => updateField(i, field.key, v)}
                       />
                     ))}
                   </div>

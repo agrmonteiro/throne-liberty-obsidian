@@ -4,7 +4,8 @@ import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engi
 import { DEFAULT_STATS } from '../engine/types'
 import type { Build, BuildStats } from '../engine/types'
 import { useT } from '../i18n/useT'
-import { fmt, fmtPct, parsePtBR } from '../engine/fmt'
+import { fmt, fmtPct } from '../engine/fmt'
+import { NumericInput } from '../components/NumericInput'
 const now  = () => new Date().toISOString()
 
 // ─── Stat groups for the full stats editor ───────────────────────────────────
@@ -826,12 +827,10 @@ export function Builds(): React.ReactElement {
                                 {ATTRIBUTE_NAMES.map((a) => (
                                   <div key={a}>
                                     <div className="tl-eyebrow" style={{ marginBottom: 2 }}>{a}</div>
-                                    <input
-                                      type="number"
+                                    <NumericInput integer
                                       className="tl-input"
-                                      value={editData.rawAttributes?.[a]?.total ?? ''}
-                                      step={1}
-                                      onChange={(e) => updateRawAttr(a, e.target.value)}
+                                      value={editData.rawAttributes?.[a]?.total ?? 0}
+                                      onChange={(v) => updateRawAttr(a, String(v))}
                                       style={{ fontFamily: 'JetBrains Mono, monospace' }}
                                     />
                                   </div>
@@ -944,16 +943,11 @@ export function Builds(): React.ReactElement {
                                 {CALC_FIELDS.filter((f) => f.group === group).map((field) => (
                                   <div key={field.key}>
                                     <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{field.label}{field.max !== undefined && <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: 4 }}>/ {field.max}</span>}</div>
-                                    <input
-                                      type="number"
+                                    <NumericInput
                                       className="tl-input"
                                       value={editData.stats[field.key] as number}
-                                      step={1}
                                       max={field.max}
-                                      onChange={(e) => {
-                                        const raw = parsePtBR(e.target.value)
-                                        if (!isNaN(raw)) updateCalcField(field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
-                                      }}
+                                      onChange={(v) => updateCalcField(field.key, v)}
                                     />
                                   </div>
                                 ))}

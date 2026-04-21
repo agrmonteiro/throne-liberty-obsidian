@@ -136,9 +136,7 @@ h1, h2, h3, h4 {
   border-color: var(--gold);
   box-shadow: 0 0 0 2px var(--gold-dim);
 }
-.tl-input::-webkit-inner-spin-button { opacity: 0.4; }
-/* Número: padding extra à direita para não colidir com os botões de spin */
-input[type="number"].tl-input { padding-right: 1.5rem; }
+.tl-input::-webkit-inner-spin-button { display: none; }
 
 /* ── Button ────────────────────────────────────────────────────────────────── */
 .tl-btn {
