@@ -26,6 +26,30 @@ export default function App(): React.ReactElement {
 
   useEffect(() => { loadFromDisk() }, [])
 
+  // Selecionar conteúdo ao focar + aceitar vírgula como decimal
+  useEffect(() => {
+    function onFocus(e: FocusEvent) {
+      const el = e.target as HTMLInputElement
+      if (el.tagName === 'INPUT' && el.type !== 'checkbox' && el.type !== 'radio' && el.type !== 'number') {
+        setTimeout(() => el.select(), 0)
+      }
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      const el = e.target as HTMLInputElement
+      if (el.tagName !== 'INPUT') return
+      if (e.key === ',') {
+        e.preventDefault()
+        document.execCommand('insertText', false, '.')
+      }
+    }
+    document.addEventListener('focus', onFocus, true)
+    document.addEventListener('keydown', onKeyDown, true)
+    return () => {
+      document.removeEventListener('focus', onFocus, true)
+      document.removeEventListener('keydown', onKeyDown, true)
+    }
+  }, [])
+
   // Check scraper on first load
   useEffect(() => {
     window.dataAPI.scraperDetect().then((result: any) => {

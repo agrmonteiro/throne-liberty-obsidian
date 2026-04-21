@@ -185,15 +185,16 @@ export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult
 // ─── Sensitivity (weight) ────────────────────────────────────────────────────
 
 const SENSITIVITY_DELTAS: Array<[keyof BuildStats, string, number]> = [
-  ['critHitChance',       'Crit Hit Chance',       100],
-  ['critDmgPct',          'Crit Damage %',           1],
-  ['heavyAttackChance',   'Heavy Attack Chance',    100],
-  ['heavyAttackDmgComp',  'Heavy Damage Compl.',     1],
-  ['skillDmgBoost',       'Skill Dmg Boost',        100],
-  ['bonusDmg',            'Bonus Damage',            10],
-  ['speciesDmgBoost',     'Species Dmg Boost',       10],
-  ['cdrPct',              'Cooldown Speed %',         1],
-  ['attackSpeedPct',      'Attack Speed %',           1],
+  ['critHitChance',       'Chance de Acerto Crítico',      100],
+  ['critDmgPct',          'Dano Crítico %',                  1],
+  ['heavyAttackChance',   'Chance de Ataque Pesado',        100],
+  ['heavyAttackDmgComp',  'Dano de Ataque Pesado',           1],
+  ['skillDmgBoost',       'Ampliação de Dano de Habilidade',100],
+  ['bonusDmg',            'Bônus de Dano',                  10],
+  ['speciesDmgBoost',     'Bônus por Espécie',              10],
+  ['maxWeaponDmg',        'Dano Máximo da Arma',            10],
+  ['cdrPct',              'Velocidade de Recarga %',         1],
+  ['attackSpeedPct',      'Velocidade de Ataque %',          1],
 ]
 
 export function calcSensitivity(stats: BuildStats): SensitivityEntry[] {
@@ -228,27 +229,27 @@ export type ElasticityTest = {
 const ELASTICITY_TESTS: ElasticityTest[] = [
   {
     key:   'crit_chance',
-    label: 'Crit Chance (+100/iter)',
+    label: 'Chance de Acerto Crítico (+100/iter)',
     run:   (b, i) => ({ ...b, critHitChance: b.critHitChance + 100 * i }),
   },
   {
     key:   'heavy_chance',
-    label: 'Heavy Chance (+100/iter)',
+    label: 'Chance de Ataque Pesado (+100/iter)',
     run:   (b, i) => ({ ...b, heavyAttackChance: b.heavyAttackChance + 100 * i }),
   },
   {
     key:   'max_weapon',
-    label: 'Max Weapon Dmg (+10/iter)',
+    label: 'Dano Máximo de Arma (+10/iter)',
     run:   (b, i) => ({ ...b, maxWeaponDmg: b.maxWeaponDmg + 10 * i }),
   },
   {
     key:   'skill_boost',
-    label: 'Skill Dmg Boost (+50/iter)',
+    label: 'Ampliação de Dano de Habilidade (+50/iter)',
     run:   (b, i) => ({ ...b, skillDmgBoost: b.skillDmgBoost + 50 * i }),
   },
   {
     key:   'crit_over_heavy',
-    label: 'Crit > Heavy (swap)',
+    label: 'Crítico > Pesado (permuta)',
     run:   (b, i) => ({
       ...b,
       critHitChance:      Math.max(0, b.critHitChance + 100 * i),
@@ -257,7 +258,7 @@ const ELASTICITY_TESTS: ElasticityTest[] = [
   },
   {
     key:   'heavy_over_crit',
-    label: 'Heavy > Crit (swap)',
+    label: 'Pesado > Crítico (permuta)',
     run:   (b, i) => ({
       ...b,
       heavyAttackChance:  Math.max(0, b.heavyAttackChance + 100 * i),

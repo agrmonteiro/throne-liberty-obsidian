@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer, LineCh
 import { useBuilds } from '../store/useBuilds'
 import { calcResult, calcElasticity, critChanceFromStat, heavyChanceFromStat, effectiveCastTime, effectiveCooldown } from '../engine/calculator'
 import type { ElasticityTest } from '../engine/calculator'
+import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartStyles'
 import { DEFAULT_STATS } from '../engine/types'
 import type { BuildStats } from '../engine/types'
 
@@ -95,8 +96,9 @@ export function Calculator(): React.ReactElement {
   const [maximized, setMaximized] = useState<'bar' | 'gain' | 'elastic' | null>(null)
   const [hidden, setHidden] = useState<Set<string>>(new Set())
   const [selPoint, setSelPoint] = useState<{ title: string; buildName: string; text: string; color: string } | null>(null)
-  const [showLabels, setShowLabels] = useState(false)
+  const [showLabels, setShowLabels] = useState(true)
   const [showFormula, setShowFormula] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0)
 
   const [addSteps, setAddSteps] = useState<Record<string, number>>(
     Object.fromEntries(ADDITIVE_OPTS.map((o) => [o.key, o.defaultStep]))
@@ -109,7 +111,8 @@ export function Calculator(): React.ReactElement {
   const results = useMemo(() => {
     const baseline = calcResult(colStats[0], 0).avgDamage
     return colStats.map((s) => calcResult(s, baseline))
-  }, [colStats])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colStats, refreshKey])
 
   function applySource(colIdx: number, buildId: string) {
     const next = [...sources]
@@ -269,7 +272,7 @@ export function Calculator(): React.ReactElement {
         <BarChart data={barData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
           <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
           <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} />
-          <Tooltip formatter={(v: number) => [fmt(v), 'Dano Simples (/s)']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
+          <Tooltip formatter={(v: number) => [fmt(v), 'Dano Simples (/s)']} contentStyle={TOOLTIP_CONTENT} labelStyle={TOOLTIP_LABEL} itemStyle={TOOLTIP_ITEM} />
           <Legend formatter={(value) => <span style={{ fontSize: '0.72rem' }}>Clique no Card (Build 1, 2...) para ocultar barras</span>} iconSize={0} />
           <Bar
             dataKey="dps"
@@ -292,7 +295,7 @@ export function Calculator(): React.ReactElement {
         <BarChart data={gainData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
           <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
           <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
-          <Tooltip formatter={(v: number) => [fmtPct(v), 'Ganho vs Build 1']} contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }} labelStyle={{ color: 'var(--gold-l)' }} />
+          <Tooltip formatter={(v: number) => [fmtPct(v), 'Ganho vs Build 1']} contentStyle={TOOLTIP_CONTENT} labelStyle={TOOLTIP_LABEL} itemStyle={TOOLTIP_ITEM} />
           <Legend formatter={(value) => <span style={{ fontSize: '0.72rem' }}>Clique no Card (Build 1, 2...) para ocultar barras</span>} iconSize={0} />
           <Bar
             dataKey="gain"
@@ -321,7 +324,7 @@ export function Calculator(): React.ReactElement {
           <Tooltip content={({ active, payload, label }) => {
             if (!active || !payload?.length) return null
             return (
-              <div style={{ background: 'var(--bg-card)', border: '1px solid rgba(212,175,55,0.4)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 10, padding: '8px 12px', maxWidth: 270 }}>
+              <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-gold)', borderRadius: 8, boxShadow: '0 4px 24px rgba(0,0,0,0.55), 0 0 12px var(--gold-glow)', fontFamily: 'JetBrains Mono, monospace', fontSize: 10, padding: '8px 12px', maxWidth: 270 }}>
                 <div style={{ color: '#d4af37', fontWeight: 700, marginBottom: 6, fontSize: 11 }}>Iteração {label}</div>
                 {[...(payload ?? [])].sort((a: any, b: any) => (b.value as number) - (a.value as number)).map((p: any) => {
                   const s = elasticPointDetails[p.dataKey]?.[label as number]
@@ -482,6 +485,18 @@ export function Calculator(): React.ReactElement {
             </p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
+            <button
+              className="tl-btn-ghost"
+              title="Forçar recálculo dos cards e gráficos"
+              onClick={() => setRefreshKey((k) => k + 1)}
+              style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', gap: '4px' }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 5 }}>
+                <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+              </svg>
+              Atualizar
+            </button>
             <button className="tl-btn-ghost" onClick={() => setShowFormula(true)} style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', gap: '4px' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle' }}>
                 <circle cx="12" cy="12" r="10" />
@@ -508,20 +523,20 @@ export function Calculator(): React.ReactElement {
                 <span style={{ textTransform: 'uppercase' }}>Build {i + 1}</span>
                 <div style={{ display: 'flex', gap: '4px' }}>
                   {i > 0 && (
-                    <button 
-                      className="tl-btn-ghost" 
-                      title="Replicar estatísticas da coluna esquerda" 
-                      onClick={() => copyPrevious(i)} 
-                      style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    <button
+                      className="tl-btn-ghost"
+                      title="Replicar estatísticas da coluna esquerda"
+                      onClick={() => copyPrevious(i)}
+                      style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00d4ff', borderColor: 'rgba(0,212,255,0.35)', background: 'rgba(0,212,255,0.07)' }}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
                     </button>
                   )}
-                  <button 
-                    className="tl-btn-ghost" 
-                    title="Salvar como nova Build (Manual)" 
+                  <button
+                    className="tl-btn-ghost"
+                    title="Salvar como nova Build (Manual)"
                     onClick={() => handleSaveStats(i)}
-                    style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3dd68c', borderColor: 'rgba(61,214,140,0.35)', background: 'rgba(61,214,140,0.07)' }}
                   >
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                   </button>

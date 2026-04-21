@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer } from 
 import { useBuilds } from '../store/useBuilds'
 import { calcSensitivity, calcTrueDps } from '../engine/calculator'
 import { DEFAULT_STATS } from '../engine/types'
+import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartStyles'
 import type { BuildStats } from '../engine/types'
 import { useT } from '../i18n/useT'
 
@@ -91,8 +92,9 @@ export function Sensitivity(): React.ReactElement {
                         fmtPct(v),
                         `Peso (delta: +${entry?.payload?.delta ?? '?'})`,
                       ]}
-                      contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}
-                      labelStyle={{ color: 'var(--gold-l)' }}
+                      contentStyle={TOOLTIP_CONTENT}
+                      labelStyle={TOOLTIP_LABEL}
+                      itemStyle={TOOLTIP_ITEM}
                     />
                     <Bar dataKey="weight" radius={[0, 4, 4, 0]}
                       label={{ position: 'right', fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmtPct(v) }}>
