@@ -648,7 +648,7 @@ export function Calculator(): React.ReactElement {
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '0.75rem' }}>
                 <div>
                   <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Iterações</div>
-                  <input type="number" className="tl-input" style={{ width: 80 }} min={1} max={100} value={iterations} onChange={(e) => setIter(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))} />
+                  <input type="number" className="tl-input" style={{ width: 80 }} min={1} max={100} value={iterations} onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) setIter(Math.max(1, Math.min(100, v))) }} />
                 </div>
                 <button className="tl-btn" style={{ marginTop: 20 }} onClick={runElasticity}>▶ Calcular</button>
               </div>
@@ -670,7 +670,7 @@ export function Calculator(): React.ReactElement {
                         style={{ width: 84, textAlign: 'right' }}
                         min={1}
                         value={addSteps[opt.key]}
-                        onChange={(e) => setAddSteps((p) => ({ ...p, [opt.key]: Math.max(1, parseInt(e.target.value) || 1) }))}
+                        onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) setAddSteps((p) => ({ ...p, [opt.key]: Math.max(1, Math.min(100, v)) })) }}
                       />
                       <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', width: 28, flexShrink: 0 }}>/iter</span>
                     </div>
@@ -708,7 +708,7 @@ export function Calculator(): React.ReactElement {
                           style={{ width: 120, textAlign: 'right', fontSize: '0.71rem', flexShrink: 0 }}
                           min={1}
                           value={sw.fromStep}
-                          onChange={(e) => updateSwap(idx, 'fromStep', Math.max(1, parseInt(e.target.value) || 1))}
+                          onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) updateSwap(idx, 'fromStep', Math.max(1, v)) }}
                         />
                       </div>
                       {/* Stat aumentado */}
@@ -728,7 +728,7 @@ export function Calculator(): React.ReactElement {
                           style={{ width: 120, textAlign: 'right', fontSize: '0.71rem', flexShrink: 0 }}
                           min={1}
                           value={sw.toStep}
-                          onChange={(e) => updateSwap(idx, 'toStep', Math.max(1, parseInt(e.target.value) || 1))}
+                          onChange={(e) => { const v = parseInt(e.target.value); if (!isNaN(v)) updateSwap(idx, 'toStep', Math.max(1, v)) }}
                         />
                       </div>
                     </div>
@@ -771,8 +771,8 @@ export function Calculator(): React.ReactElement {
                         step={1}
                         max={field.max}
                         onChange={(e) => {
-                          const raw = parseFloat(e.target.value) || 0
-                          updateField(i, field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
+                          const raw = parseFloat(e.target.value.replace(',', '.'))
+                          if (!isNaN(raw)) updateField(i, field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
                         }}
                       />
                     ))}

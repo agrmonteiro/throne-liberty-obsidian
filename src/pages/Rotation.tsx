@@ -23,13 +23,13 @@ const panel: React.CSSProperties = {
   background: 'var(--bg-panel)',
   border: '1px solid rgba(124,92,252,0.18)',
   borderRadius: 8,
-  padding: '1rem',
+  padding: '0.75rem',
 }
 
 const sectionDivider: React.CSSProperties = {
   borderTop: '1px solid rgba(255,255,255,0.06)',
-  paddingTop: '0.65rem',
-  marginTop: '0.25rem',
+  paddingTop: '0.4rem',
+  marginTop: '0.15rem',
 }
 
 const sectionLabel: React.CSSProperties = {
@@ -38,7 +38,7 @@ const sectionLabel: React.CSSProperties = {
   textTransform: 'uppercase',
   letterSpacing: '0.12em',
   fontWeight: 700,
-  marginBottom: '0.4rem',
+  marginBottom: '0.25rem',
 }
 
 const fieldLabel: React.CSSProperties = {
@@ -46,7 +46,7 @@ const fieldLabel: React.CSSProperties = {
   color: '#7a8099',
   textTransform: 'uppercase',
   letterSpacing: '0.06em',
-  marginBottom: 3,
+  marginBottom: 2,
 }
 
 const baseInput: React.CSSProperties = {
@@ -89,7 +89,10 @@ function numInput(
       type="number"
       value={val || ''}
       step={opts.step ?? 1}
-      onChange={e => onChange(parseFloat(e.target.value) || 0)}
+      onChange={e => {
+        const raw = parseFloat(e.target.value.replace(',', '.'))
+        if (!isNaN(raw)) onChange(raw)
+      }}
       style={{
         ...baseInput,
         width: opts.width ?? 94,

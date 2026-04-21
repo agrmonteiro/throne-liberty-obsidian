@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell
 import { useBuilds } from '../store/useBuilds'
 import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engine/calculator'
 import type { Build } from '../engine/types'
+import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartStyles'
 import { fmt, fmtP, fmtPct, fmtDec } from '../engine/fmt'
 import { useT } from '../i18n/useT'
 
@@ -63,7 +64,7 @@ export function Comparator(): React.ReactElement {
   const [hidden,    setHidden]    = useState<Set<string>>(new Set())
   const [maximized, setMaximized] = useState<'stats' | 'dps' | null>(null)
   const [selPoint,  setSelPoint]  = useState<SelPoint | null>(null)
-  const [showLabels, setShowLabels] = useState(false)
+  const [showLabels, setShowLabels] = useState(true)
 
   // ── Selection helpers ───────────────────────────────────────────────────────
   function toggleSelect(id: string) {
@@ -142,8 +143,9 @@ export function Comparator(): React.ReactElement {
             tickFormatter={(v: number) => `${v}`}
           />
           <Tooltip
-            contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}
-            labelStyle={{ color: 'var(--gold-l)' }}
+            contentStyle={TOOLTIP_CONTENT}
+            labelStyle={TOOLTIP_LABEL}
+            itemStyle={TOOLTIP_ITEM}
             formatter={(v: number, name: string) => [`${fmtDec(v, 1)}/100`, name]}
           />
           <Legend
@@ -179,8 +181,9 @@ export function Comparator(): React.ReactElement {
           <YAxis type="category" dataKey="name" tick={{ fontSize: 10, fill: '#e2e4ec' }} width={100} />
           <Tooltip
             formatter={(v: number) => [fmt(v), 'DPS']}
-            contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 11 }}
-            labelStyle={{ color: 'var(--gold-l)' }}
+            contentStyle={TOOLTIP_CONTENT}
+            labelStyle={TOOLTIP_LABEL}
+            itemStyle={TOOLTIP_ITEM}
           />
           <Bar
             dataKey="dps"

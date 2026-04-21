@@ -3,6 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import { useBuilds } from '../store/useBuilds'
 import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engine/calculator'
 import { useT } from '../i18n/useT'
+import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartStyles'
 
 const COLORS = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c', '#f25f5c', '#f0965a']
 
@@ -67,8 +68,9 @@ export function Dashboard(): React.ReactElement {
                 <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} width={130} />
                 <Tooltip
                   formatter={(v: number) => [fmt(v), 'DPS Real (/s)']}
-                  contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border-gold)', borderRadius: 6, fontFamily: 'JetBrains Mono, monospace', fontSize: 12 }}
-                  labelStyle={{ color: 'var(--gold-l)' }}
+                  contentStyle={TOOLTIP_CONTENT}
+                  labelStyle={TOOLTIP_LABEL}
+                  itemStyle={TOOLTIP_ITEM}
                 />
                 <Bar dataKey="dps" radius={[0, 4, 4, 0]} label={{ position: 'right', fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmt(v) }}>
                   {dpsData.map((entry, i) => (

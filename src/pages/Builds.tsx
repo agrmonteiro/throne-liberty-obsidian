@@ -3,7 +3,7 @@ import { useBuilds } from '../store/useBuilds'
 import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engine/calculator'
 import { DEFAULT_STATS } from '../engine/types'
 import type { Build, BuildStats } from '../engine/types'
-
+import { useT } from '../i18n/useT'
 import { fmt, fmtP } from '../engine/fmt'
 const now  = () => new Date().toISOString()
 
@@ -98,6 +98,7 @@ const CALC_FIELDS: Array<{ key: StatKey; label: string; group: string; max?: num
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function Builds(): React.ReactElement {
+  const t = useT()
   const { builds, saveBuild, deleteBuild, setActive, activeBuildId,
           importFromFile, importFromUrlPython, exportBuild, createEmpty } = useBuilds()
   const buildList = useMemo(() => Object.values(builds), [builds])
@@ -118,6 +119,9 @@ export function Builds(): React.ReactElement {
   const [isDownloading, setIsDownloading] = useState(false)
   const [lastLog,       setLastLog]       = useState<string | null>(null)
   const [pendingImport, setPendingImport] = useState<Build | null>(null)
+  const [queueIds,     setQueueIds]     = useState<string[]>([])
+  const [queueStatus,  setQueueStatus]  = useState<Record<string, 'pending' | 'running' | 'done' | 'error'>>({})
+  const [queueRunning, setQueueRunning] = useState(false)
 
   function startEdit(b: Build) {
     setEditId(b.id)
@@ -241,6 +245,8 @@ export function Builds(): React.ReactElement {
     setNewName('')
     setNewCombo('')
     showStatus(`Build "${name}" criada.`, false)
+    startEdit(build)
+    setEditTab('calc')
   }
 
   function showStatus(msg: string, isError: boolean, duration = 5000) {
@@ -272,6 +278,59 @@ export function Builds(): React.ReactElement {
     window.dataAPI.questlogCancel?.().then((res) => {
       if (res && !res.ok) showStatus('Não foi possível cancelar — o processo pode continuar em background.', true)
     }).catch(() => {/* ignore */})
+  }
+
+  // ── Fila de reimportação ────────────────────────────────────────────────────
+
+  function addToQueue(id: string) {
+    if (queueIds.includes(id)) return
+    setQueueIds(prev => [...prev, id])
+    setQueueStatus(prev => ({ ...prev, [id]: 'pending' }))
+  }
+
+  function removeFromQueue(id: string) {
+    setQueueIds(prev => prev.filter(x => x !== id))
+    setQueueStatus(prev => { const s = { ...prev }; delete s[id]; return s })
+  }
+
+  function clearQueue() {
+    setQueueIds([])
+    setQueueStatus({})
+    setQueueRunning(false)
+  }
+
+  async function runQueue() {
+    if (queueRunning) return
+    const pending = queueIds.filter(id => queueStatus[id] === 'pending')
+    if (pending.length === 0) return
+    setQueueRunning(true)
+    for (const id of pending) {
+      const build = builds[id]
+      if (!build?.sourceUrl) { setQueueStatus(prev => ({ ...prev, [id]: 'error' })); continue }
+      setQueueStatus(prev => ({ ...prev, [id]: 'running' }))
+      const gen = ++importGeneration.current
+      const result = await importFromUrlPython(build.sourceUrl)
+      if (gen !== importGeneration.current) { setQueueStatus(prev => ({ ...prev, [id]: 'error' })); break }
+      if ('error' in result) {
+        setQueueStatus(prev => ({ ...prev, [id]: 'error' }))
+        if (result.error === 'cancelled') break
+        continue
+      }
+      await saveBuild({ ...build, stats: result.stats, rawStats: result.rawStats, rawAttributes: result.rawAttributes, importedAt: new Date().toISOString(), sourceUrl: build.sourceUrl })
+      setQueueStatus(prev => ({ ...prev, [id]: 'done' }))
+    }
+    setQueueRunning(false)
+  }
+
+  function cancelQueue() {
+    importGeneration.current++
+    setQueueRunning(false)
+    window.dataAPI.questlogCancel?.().catch(() => {/* ignore */})
+    setQueueStatus(prev => {
+      const next = { ...prev }
+      Object.keys(next).forEach(k => { if (next[k] === 'running' || next[k] === 'pending') next[k] = 'pending' })
+      return next
+    })
   }
 
   useEffect(() => {
@@ -582,6 +641,41 @@ export function Builds(): React.ReactElement {
           </div>
         </div>
 
+        {/* ── Painel de fila de reimportação ──────────────────────────────── */}
+        {queueIds.length > 0 && (
+          <div className="tl-panel" style={{ marginBottom: '1.25rem', borderColor: 'var(--border-gold)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: 10 }}>
+              <span style={{ fontWeight: 700, color: 'var(--gold-l)', fontSize: '0.85rem' }}>
+                ⟳ Fila de Reimportação — {queueIds.length} build{queueIds.length !== 1 ? 's' : ''}
+              </span>
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.4rem' }}>
+                {!queueRunning
+                  ? <button className="tl-btn" style={{ fontSize: '0.72rem', padding: '0.3rem 0.8rem' }} onClick={runQueue} disabled={queueIds.filter(id => queueStatus[id] === 'pending').length === 0}>▶ Iniciar</button>
+                  : <button className="tl-btn-ghost" style={{ fontSize: '0.72rem' }} onClick={cancelQueue}>⏹ Pausar</button>
+                }
+                <button className="tl-btn-ghost" style={{ fontSize: '0.72rem' }} onClick={clearQueue} disabled={queueRunning}>✕ Limpar</button>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {queueIds.map(id => {
+                const b = builds[id]
+                const st = queueStatus[id]
+                const icon = st === 'done' ? '✅' : st === 'error' ? '❌' : st === 'running' ? '⏳' : '•'
+                const color = st === 'done' ? 'var(--green)' : st === 'error' ? 'var(--red)' : st === 'running' ? 'var(--gold-l)' : 'var(--text-soft)'
+                return (
+                  <div key={id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', fontFamily: 'JetBrains Mono, monospace' }}>
+                    <span style={{ color, minWidth: 16 }}>{icon}</span>
+                    <span style={{ color: 'var(--text)', flex: 1 }}>{b?.name ?? id}</span>
+                    {st === 'pending' && !queueRunning && (
+                      <button className="tl-btn-ghost" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }} onClick={() => removeFromQueue(id)}>✕</button>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
         {buildList.length === 0 ? (
           <div className="tl-panel" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-soft)' }}>
             Nenhuma build salva. Cole uma URL do Questlog acima para começar.
@@ -600,7 +694,7 @@ export function Builds(): React.ReactElement {
               return (
                 <div key={b.id}>
                   {/* ── Build card ─────────────────────────────────────────── */}
-                  <div className="tl-card" style={{ borderColor: isActive ? 'var(--border-gold)' : undefined }}>
+                  <div className="tl-card" style={{ borderColor: isActive ? 'var(--border-gold)' : undefined, cursor: 'default' }} onDoubleClick={() => { if (!isEditing) startEdit(b) }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
@@ -640,11 +734,21 @@ export function Builds(): React.ReactElement {
                           <button
                             className="tl-btn-ghost"
                             onClick={() => handleReimport(b.id)}
-                            disabled={urlLoading}
+                            disabled={urlLoading || queueRunning}
                             title={b.sourceUrl}
-                            style={{ opacity: urlLoading ? 0.5 : 1 }}
+                            style={{ opacity: (urlLoading || queueRunning) ? 0.5 : 1 }}
                           >
                             ⟳ Reimportar
+                          </button>
+                        )}
+                        {b.sourceUrl && (
+                          <button
+                            className="tl-btn-ghost"
+                            onClick={() => queueIds.includes(b.id) ? removeFromQueue(b.id) : addToQueue(b.id)}
+                            title={queueIds.includes(b.id) ? 'Remover da fila' : 'Adicionar à fila de reimportação'}
+                            style={{ borderColor: queueIds.includes(b.id) ? 'var(--border-gold)' : undefined, color: queueIds.includes(b.id) ? 'var(--gold-l)' : undefined }}
+                          >
+                            {queueIds.includes(b.id) ? '✓ Na fila' : '⊕ Fila'}
                           </button>
                         )}
                         <button className="tl-btn-ghost" onClick={() => handleExport(b.id)}>⬇ Export</button>
@@ -821,7 +925,7 @@ export function Builds(): React.ReactElement {
                               <button
                                 className="tl-btn-ghost"
                                 onClick={replicateFromQuestlog}
-                                style={{ fontSize: '0.72rem', whiteSpace: 'nowrap' }}
+                                style={{ fontSize: '0.72rem', whiteSpace: 'nowrap', background: '#ca8a04', color: '#000', borderColor: '#ca8a04' }}
                                 title="Relê todos os campos possíveis dos rawStats do Questlog e preenche a calculadora"
                               >
                                 ⟳ Replicar Stats do Questlog
@@ -831,6 +935,11 @@ export function Builds(): React.ReactElement {
                           {calcGroups.map((group) => (
                             <div key={group}>
                               <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0.75rem 0 0.4rem', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>{group}</div>
+                              {group === 'Ofensivos' && (
+                                <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', fontStyle: 'italic', marginBottom: '0.5rem', lineHeight: 1.5 }}>
+                                  {t('builds.weaponHint')}
+                                </div>
+                              )}
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.5rem' }}>
                                 {CALC_FIELDS.filter((f) => f.group === group).map((field) => (
                                   <div key={field.key}>
@@ -842,8 +951,8 @@ export function Builds(): React.ReactElement {
                                       step={1}
                                       max={field.max}
                                       onChange={(e) => {
-                                        const raw = parseFloat(e.target.value) || 0
-                                        updateCalcField(field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
+                                        const raw = parseFloat(e.target.value.replace(',', '.'))
+                                        if (!isNaN(raw)) updateCalcField(field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
                                       }}
                                     />
                                   </div>
