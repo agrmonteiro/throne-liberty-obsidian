@@ -18,3 +18,9 @@ export const fmtP = (n: number): string => fmtPct(n, 2)
 /** Número decimal com N casas (sem símbolo %): 0.333 → "0,33" */
 export const fmtDec = (n: number, decimals = 2): string =>
   n.toLocaleString('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+
+/** Parseia entrada do usuário em pt-BR: remove pontos (milhar), converte vírgula → ponto. */
+export function parsePtBR(raw: string): number {
+  const cleaned = raw.replace(/\./g, '').replace(',', '.')
+  return parseFloat(cleaned)
+}

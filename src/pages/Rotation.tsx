@@ -4,6 +4,7 @@ import { useBuilds }   from '../store/useBuilds'
 import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
 import { calcRotationResult, effectiveCDRPct, calcSkillAvgDamage, calcDotResult } from '../engine/rotationEngine'
+import { parsePtBR } from '../engine/fmt'
 import type {
   RotationCharacter,
   RotationSkill,
@@ -90,7 +91,7 @@ function numInput(
       value={val || ''}
       step={opts.step ?? 1}
       onChange={e => {
-        const raw = parseFloat(e.target.value.replace(',', '.'))
+        const raw = parsePtBR(e.target.value)
         if (!isNaN(raw)) onChange(raw)
       }}
       style={{

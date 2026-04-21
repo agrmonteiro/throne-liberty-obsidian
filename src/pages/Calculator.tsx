@@ -7,7 +7,7 @@ import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartSty
 import { DEFAULT_STATS } from '../engine/types'
 import type { BuildStats } from '../engine/types'
 
-import { fmt, fmtPct } from '../engine/fmt'
+import { fmt, fmtPct, parsePtBR } from '../engine/fmt'
 
 const COLS    = 4
 const COLORS  = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c']
@@ -771,7 +771,7 @@ export function Calculator(): React.ReactElement {
                         step={1}
                         max={field.max}
                         onChange={(e) => {
-                          const raw = parseFloat(e.target.value.replace(',', '.'))
+                          const raw = parsePtBR(e.target.value)
                           if (!isNaN(raw)) updateField(i, field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
                         }}
                       />

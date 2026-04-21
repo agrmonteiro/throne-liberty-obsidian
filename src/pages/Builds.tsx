@@ -4,7 +4,7 @@ import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engi
 import { DEFAULT_STATS } from '../engine/types'
 import type { Build, BuildStats } from '../engine/types'
 import { useT } from '../i18n/useT'
-import { fmt, fmtP } from '../engine/fmt'
+import { fmt, fmtPct, parsePtBR } from '../engine/fmt'
 const now  = () => new Date().toISOString()
 
 // ─── Stat groups for the full stats editor ───────────────────────────────────
@@ -710,8 +710,8 @@ export function Builds(): React.ReactElement {
                         </div>
                         <div style={{ display: 'flex', gap: '1rem', marginTop: 6, fontSize: '0.72rem', color: 'var(--text-soft)', fontFamily: 'JetBrains Mono, monospace' }}>
                           <span>DPS <b style={{ color: '#f0cc55' }}>{dps > 0 ? fmt(dps) : '—'}</b></span>
-                          <span>Crit <b style={{ color: '#d4af37' }}>{fmtP(crit)}</b></span>
-                          <span>Heavy <b style={{ color: '#7c5cfc' }}>{fmtP(heavy)}</b></span>
+                          <span>Crit <b style={{ color: '#d4af37' }}>{fmtPct(crit)}</b></span>
+                          <span>Heavy <b style={{ color: '#7c5cfc' }}>{fmtPct(heavy)}</b></span>
                           {attrCount > 0 && <span style={{ color: 'var(--text-muted)' }}>{attrCount} atributos</span>}
                           <span style={{ color: 'var(--text-muted)' }}>{new Date(b.importedAt).toLocaleDateString('pt-BR')}</span>
                           {b.sourceUrl && (
@@ -951,7 +951,7 @@ export function Builds(): React.ReactElement {
                                       step={1}
                                       max={field.max}
                                       onChange={(e) => {
-                                        const raw = parseFloat(e.target.value.replace(',', '.'))
+                                        const raw = parsePtBR(e.target.value)
                                         if (!isNaN(raw)) updateCalcField(field.key, field.max !== undefined ? Math.min(raw, field.max) : raw)
                                       }}
                                     />

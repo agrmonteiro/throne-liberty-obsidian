@@ -4,6 +4,7 @@ import {
   PieChart, Pie, Cell
 } from 'recharts'
 import { getWeaponBySkill, getSkillInfo } from '../engine/skillsDB'
+import { fmt, fmtPct } from '../engine/fmt'
 import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
 
@@ -58,17 +59,13 @@ function parseTLLogTime(str: string): number {
   return new Date(y, M, d, h, m, s, ms).getTime()
 }
 
-function fmt(v: number) {
+function fmtCompact(v: number) {
   if (v >= 1000000) return (v / 1000000).toFixed(2) + 'M'
   return Math.round(v).toLocaleString('pt-BR')
 }
 
 function fmtFull(v: number) {
   return Math.round(v).toLocaleString('pt-BR')
-}
-
-function fmtPct(v: number) {
-  return (v * 100).toFixed(2) + '%'
 }
 
 function fmtDuration(ms: number) {
@@ -685,7 +682,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
         </div>
         <div>
           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>DPS</div>
-          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#e2e4ec' }}>{fmt(data.dps)}</div>
+          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#e2e4ec' }}>{fmtCompact(data.dps)}</div>
         </div>
         <div style={{ gridColumn: 'span 2', marginTop: 4 }}>
           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>Average</div>
@@ -908,7 +905,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                         <div style={{ fontSize: '0.8rem', fontWeight: 700, color: selPullId === p.id ? 'var(--gold)' : '#e2e4ec' }}>Pull #{p.id}</div>
-                        <div style={{ fontSize: '0.7rem', fontFamily: 'JetBrains Mono, monospace', color: selPullId === p.id ? '#f0cc55' : '#a8b5d4' }}>{fmt(p.dps)} DPS</div>
+                        <div style={{ fontSize: '0.7rem', fontFamily: 'JetBrains Mono, monospace', color: selPullId === p.id ? '#f0cc55' : '#a8b5d4' }}>{fmtCompact(p.dps)} DPS</div>
                       </div>
                       {p.weapons.length > 0 && (
                         <div style={{ fontSize: '0.6rem', marginTop: 2, opacity: 0.9 }}>
@@ -921,7 +918,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                         </div>
                       )}
                       <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 3 }}>
-                        <span style={{ color: '#e2e4ec' }}>{fmt(p.damage)}</span> dmg · <span style={{ color: '#e2e4ec' }}>{fmtDuration(p.endTime - p.startTime)}</span>
+                        <span style={{ color: '#e2e4ec' }}>{fmtCompact(p.damage)}</span> dmg · <span style={{ color: '#e2e4ec' }}>{fmtDuration(p.endTime - p.startTime)}</span>
                       </div>
                       {selPullId === p.id && (
                         <button
@@ -978,15 +975,15 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
                         <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6, padding: '0.5rem' }}>
                           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginBottom: 4 }}>Antes · 0s → {Math.round(splitOffsetSec)}s</div>
-                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(befDmg)}</div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(befDps)} DPS</div>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(befDmg)}</div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(befDps)} DPS</div>
                           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 2 }}>{bef.length} hits</div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', color: 'rgba(212,175,55,0.6)', fontSize: '1.2rem', padding: '0 0.25rem' }}>✂</div>
                         <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6, padding: '0.5rem' }}>
                           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginBottom: 4 }}>{Math.round(splitOffsetSec)}s → {Math.floor(durSec)}s</div>
-                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(aftDmg)}</div>
-                          <div style={{ fontSize: '0.7rem', color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(aftDps)} DPS</div>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(aftDmg)}</div>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(aftDps)} DPS</div>
                           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 2 }}>{aft.length} hits</div>
                         </div>
                       </div>
@@ -1068,9 +1065,9 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                           minWidth: 100,
                         }}>
                           <div style={{ fontSize: '0.58rem', color, fontWeight: 700, marginBottom: 3 }}>{w.name}</div>
-                          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(w.value)}</div>
+                          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(w.value)}</div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', marginTop: 2 }}>
-                            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(dps)} DPS</span>
+                            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(dps)} DPS</span>
                             <span style={{ fontSize: '0.6rem', color: `${color}cc` }}>{ratio.toFixed(2)}%</span>
                           </div>
                         </div>
@@ -1154,7 +1151,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
                         <XAxis dataKey="sec" stroke="rgba(255,255,255,0.2)" fontSize={9} tickFormatter={(v) => `${v}s`} hide={false} axisLine={false} tickLine={false} />
-                        <YAxis stroke="rgba(255,255,255,0.2)" fontSize={9} tickFormatter={(v) => fmt(v)} domain={[0, 'auto']} axisLine={false} tickLine={false} />
+                        <YAxis stroke="rgba(255,255,255,0.2)" fontSize={9} tickFormatter={(v) => fmtCompact(v)} domain={[0, 'auto']} axisLine={false} tickLine={false} />
                         <Tooltip 
                           contentStyle={{ background: '#0a0b0f', border: '1px solid var(--border-gold)', borderRadius: 4, fontSize: 10, color: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
                           labelFormatter={(v) => `Tempo: ${v}s`}
@@ -1239,7 +1236,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                                     boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
                                   }}>
                                     <div style={{ color, fontSize: '0.75rem', fontWeight: 700, marginBottom: '2px' }}>{data.name}</div>
-                                    <div style={{ color: '#fff', fontSize: '0.85rem', fontFamily: 'JetBrains Mono' }}>{fmt(data.value)}</div>
+                                    <div style={{ color: '#fff', fontSize: '0.85rem', fontFamily: 'JetBrains Mono' }}>{fmtCompact(data.value)}</div>
                                     <div style={{ color: 'var(--text-muted)', fontSize: '0.65rem' }}>{percent}% do total</div>
                                   </div>
                                 );
@@ -1323,9 +1320,9 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                   <div>
                     <h3 style={{ fontSize: '1.1rem', color: 'var(--gold-l)', marginBottom: '0.75rem' }}>{skillDetail.name}</h3>
                     <div style={{ display: 'flex', gap: '0.75rem' }}>
-                      {renderStatBox('Basic Attack', skillDetail.basic, fmtPct((100 - skillDetail.critRate - skillDetail.heavyRate + skillDetail.critHeavyRate)/100), '#e2e4ec')}
-                      {renderStatBox('Critical Hit', skillDetail.crit, fmtPct(skillDetail.critRate/100), '#3dd68c')}
-                      {renderStatBox('Heavy Attack', skillDetail.heavy, fmtPct(skillDetail.heavyRate/100), '#7c5cfc')}
+                      {renderStatBox('Basic Attack', skillDetail.basic, fmtPct(100 - skillDetail.critRate - skillDetail.heavyRate + skillDetail.critHeavyRate), '#e2e4ec')}
+                      {renderStatBox('Critical Hit', skillDetail.crit, fmtPct(skillDetail.critRate), '#3dd68c')}
+                      {renderStatBox('Heavy Attack', skillDetail.heavy, fmtPct(skillDetail.heavyRate), '#7c5cfc')}
                     </div>
                   </div>
                 ) : (
@@ -1535,7 +1532,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', fontWeight: 500 }}>{s.name}</td>
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.65rem', color: 'var(--text-soft)' }}>{getWeaponBySkill(s.name) || 'Indefinido'}</td>
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', fontFamily: 'JetBrains Mono' }}>{fmtFull(s.damage)}</td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', fontFamily: 'JetBrains Mono', color: 'var(--text-soft)' }}>{fmt(s.damage / durationSec)}</td>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', fontFamily: 'JetBrains Mono', color: 'var(--text-soft)' }}>{fmtCompact(s.damage / durationSec)}</td>
                               <td style={{ padding: '0.6rem 1rem', textAlign: 'right' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
                                   <span style={{ fontSize: '0.65rem' }}>{ratio.toFixed(2)}%</span>
