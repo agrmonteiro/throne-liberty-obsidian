@@ -85,7 +85,11 @@ export const useBuilds = create<BuildsState>((set, get) => ({
     // Migração: garante que todos os campos de DEFAULT_STATS existam nas builds antigas
     const builds: BuildMap = {}
     for (const [id, build] of Object.entries(raw)) {
-      builds[id] = { ...build, stats: { ...DEFAULT_STATS, ...build.stats } }
+      const merged = { ...DEFAULT_STATS, ...build.stats }
+      // Migração: campos que tinham default 0 e agora têm padrão novo
+      if (!merged.monsterDmgBoostPct) merged.monsterDmgBoostPct = DEFAULT_STATS.monsterDmgBoostPct
+      if (!merged.dmgBuffPct)         merged.dmgBuffPct         = DEFAULT_STATS.dmgBuffPct
+      builds[id] = { ...build, stats: merged }
     }
     const ids = Object.keys(builds)
     set({
