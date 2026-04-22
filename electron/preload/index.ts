@@ -39,6 +39,9 @@ const dataAPI = {
   combatlogListFiles:    (folder: string)                     => ipcRenderer.invoke('combatlog:list-files', folder),
   combatlogReadFile:     (filePath: string)                   => ipcRenderer.invoke('combatlog:read-file', filePath),
   combatlogDeleteFile:   (filePath: string)                   => ipcRenderer.invoke('combatlog:delete-file', filePath),
+  onMigration:           (cb: (payload: { files: string[] }) => void) => {
+    ipcRenderer.once('migration:done', (_e, p) => cb(p))
+  },
   // Scraper setup
   scraperGetPath:        ()                                   => ipcRenderer.invoke('scraper:get-path'),
   scraperSetPath:        (p: string)                          => ipcRenderer.invoke('scraper:set-path', p),
@@ -46,6 +49,7 @@ const dataAPI = {
   scraperDetect:         ()                                   => ipcRenderer.invoke('scraper:detect'),
   scraperOpenLog:        ()                                   => ipcRenderer.invoke('scraper:open-log'),
   scraperReadLog:        ()                                   => ipcRenderer.invoke('scraper:read-log'),
+  pickLogFiles:          ()                                   => ipcRenderer.invoke('data:pick-log-files'),
 }
 
 // ─── Update API ───────────────────────────────────────────────────────────────

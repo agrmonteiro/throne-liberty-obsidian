@@ -5,14 +5,16 @@ import { Calculator }  from './pages/Calculator'
 import { Comparator }  from './pages/Comparator'
 import { Sensitivity } from './pages/Sensitivity'
 import { Builds }      from './pages/Builds'
-import { LogReader }   from './pages/LogReader'
-import { Rotation }    from './pages/Rotation'
-import { Settings }    from './pages/Settings'
+import { LogReader }    from './pages/LogReader'
+import { Rotation }     from './pages/Rotation'
+import { Settings }     from './pages/Settings'
+import { PullRanking }  from './pages/PullRanking'
 import { useBuilds }       from './store/useBuilds'
 import { useSettings }     from './store/useSettings'
-import { UpdateNotifier }  from './components/UpdateNotifier'
+import { UpdateNotifier }    from './components/UpdateNotifier'
+import { MigrationNotifier } from './components/MigrationNotifier'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking'
 
 export default function App(): React.ReactElement {
   const [page, setPage]                     = useState<Page>('dashboard')
@@ -63,9 +65,10 @@ export default function App(): React.ReactElement {
     comparator:  Comparator,
     sensitivity: Sensitivity,
     builds:      Builds,
-    logreader:   LogReader,
-    rotation:    Rotation,
-    settings:    Settings,
+    logreader:    LogReader,
+    rotation:     Rotation,
+    settings:     Settings,
+    pullranking:  PullRanking,
   }[page]
 
   const settings = useSettings()
@@ -99,6 +102,7 @@ export default function App(): React.ReactElement {
       <Sidebar active={page} onChange={setPage} />
       <main style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <UpdateNotifier />
+        <MigrationNotifier />
         {/* Banner de setup do scraper */}
         {scraperMissing && page !== 'settings' && (
           <div style={{

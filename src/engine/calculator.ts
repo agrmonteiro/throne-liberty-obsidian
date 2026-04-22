@@ -1,5 +1,5 @@
 /**
- * Throne & Liberty Damage Engine — TypeScript
+ * Tier2 Command Lab — Damage Engine (T&L formulas)
  * Port fiel das fórmulas Python (Maxroll / DamageCalculatorFixed).
  *
  * Fórmulas de referência:

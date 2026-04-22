@@ -7,6 +7,8 @@ import { getWeaponBySkill, getSkillInfo } from '../engine/skillsDB'
 import { fmt, fmtPct } from '../engine/fmt'
 import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
+import { useRankingStore } from '../store/useRankingStore'
+import { parseAndEnrichLog, type EnrichedPull } from '../engine/logParser'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -248,6 +250,49 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
   const { save: saveLogTimeline } = useLogTimeline()
   const [showLogTimeline, setShowLogTimeline] = useState(false)
   const [timelineMaximized, setTimelineMaximized] = useState(false)
+
+  // ─── Ranking Store Integration ────────────────────────────────────────────
+  const { logs: rankingLogs, addLog } = useRankingStore()
+
+  const isInRanking = useMemo(
+    () => rankingLogs.some(l => l.name === logName),
+    [rankingLogs, logName]
+  )
+
+  const pullRankMap = useMemo(() => {
+    if (rankingLogs.length === 0) return {}
+    const allEnriched = rankingLogs.flatMap(l => parseAndEnrichLog(l.content, l.name))
+    const clusters: Record<string, EnrichedPull[]> = {}
+    allEnriched.forEach(p => {
+      const key = `${p.mainTarget}#${p.durationGroup}`
+      if (!clusters[key]) clusters[key] = []
+      clusters[key].push(p)
+    })
+    const map: Record<string, { rank: number; clusterSize: number; clusterLabel: string }> = {}
+    Object.entries(clusters).forEach(([key, pulls]) => {
+      pulls.sort((a, b) => b.dps - a.dps)
+      const [target, dg] = key.split('#')
+      pulls.forEach((p, i) => {
+        const pullKey = `${p.logFile}#${p.id}#${p.startTime}`
+        map[pullKey] = {
+          rank: i + 1,
+          clusterSize: pulls.length,
+          clusterLabel: `${target} · ${dg === 'short' ? '<120s' : '≥120s'}`
+        }
+      })
+    })
+    return map
+  }, [rankingLogs])
+
+  const currentLogEnriched = useMemo(() => {
+    if (!isInRanking || !logText || !logName) return []
+    return parseAndEnrichLog(logText, logName)
+  }, [isInRanking, logText, logName])
+
+  function handleSendToRanking() {
+    if (!logName || !logText) return
+    addLog({ name: logName, content: logText })
+  }
 
   // Initialization
   useEffect(() => {
@@ -885,8 +930,26 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                     </button>
                   )}
                 </div>
+                <button
+                  onClick={handleSendToRanking}
+                  disabled={!logName || isInRanking}
+                  style={{
+                    marginBottom: '0.5rem',
+                    width: '100%',
+                    padding: '0.4rem 0.75rem',
+                    borderRadius: 5,
+                    border: `1px solid ${isInRanking ? 'rgba(61,214,140,0.4)' : 'rgba(212,175,55,0.3)'}`,
+                    background: isInRanking ? 'rgba(61,214,140,0.08)' : 'rgba(212,175,55,0.08)',
+                    color: isInRanking ? '#3dd68c' : '#d4af37',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    cursor: isInRanking ? 'default' : 'pointer',
+                  }}
+                >
+                  {isInRanking ? '✓ Enviado para Ranking' : '↗ Enviar para Ranking'}
+                </button>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
-                   <div 
+                   <div
                     onClick={() => setSelPullId('all')}
                     style={{
                       padding: '0.75rem', borderRadius: 6, border: '1px solid', borderColor: selPullId === 'all' ? 'var(--gold)' : 'rgba(255,255,255,0.06)', background: selPullId === 'all' ? 'linear-gradient(135deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.03) 100%)' : 'rgba(0,0,0,0.2)', cursor: 'pointer', transition: 'all 0.15s'
@@ -895,7 +958,11 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                     <div style={{ fontSize: '0.8rem', fontWeight: 700, color: selPullId === 'all' ? 'var(--gold)' : '#e2e4ec' }}>All Combat</div>
                     <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 2 }}>Full log data for this target</div>
                   </div>
-                  {enrichedPulls.map(p => (
+                  {enrichedPulls.map(p => {
+                    const ep = currentLogEnriched.find(e => e.id === p.id)
+                    const pullKey = ep ? `${ep.logFile}#${ep.id}#${ep.startTime}` : ''
+                    const rankInfo = pullKey ? pullRankMap[pullKey] : undefined
+                    return (
                     <div
                       key={p.id}
                       onClick={() => setSelPullId(p.id)}
@@ -907,6 +974,11 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                         <div style={{ fontSize: '0.8rem', fontWeight: 700, color: selPullId === p.id ? 'var(--gold)' : '#e2e4ec' }}>Pull #{p.id}</div>
                         <div style={{ fontSize: '0.7rem', fontFamily: 'JetBrains Mono, monospace', color: selPullId === p.id ? '#f0cc55' : '#a8b5d4' }}>{fmtCompact(p.dps)} DPS</div>
                       </div>
+                      {rankInfo && (
+                        <div style={{ fontSize: '0.62rem', color: rankInfo.rank <= 3 ? '#d4af37' : '#7a8099', marginTop: 2 }}>
+                          #{rankInfo.rank}/{rankInfo.clusterSize} · {rankInfo.clusterLabel}
+                        </div>
+                      )}
                       {p.weapons.length > 0 && (
                         <div style={{ fontSize: '0.6rem', marginTop: 2, opacity: 0.9 }}>
                           {p.weapons.map((w, i) => (
@@ -935,7 +1007,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                         </button>
                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
 
                 {/* Split tool panel */}

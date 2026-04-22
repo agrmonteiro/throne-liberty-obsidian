@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useT } from '../i18n/useT'
+import { version } from '../../package.json'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking'
 
 interface NavItem {
   id:    Page
@@ -17,6 +18,7 @@ const NAV: NavItem[] = [
   { id: 'sensitivity', icon: '📡', group: 'analysis'     },
   { id: 'rotation',    icon: '🔄', group: 'analysis'     },
   { id: 'logreader',   icon: '📄', group: 'analysis'     },
+  { id: 'pullranking', icon: '🏆', group: 'analysis'     },
   { id: 'settings',    icon: '⚙',  group: 'preferences'  },
 ]
 
@@ -29,6 +31,7 @@ const NAV_KEYS: Record<Page, string> = {
   rotation:    'sidebar.nav.rotation',
   logreader:   'sidebar.nav.logreader',
   settings:    'sidebar.nav.settings',
+  pullranking: 'nav.pullranking',
 }
 
 const GROUP_KEYS: Array<{ key: 'overview' | 'manage' | 'analysis' | 'preferences'; tKey: string }> = [
@@ -177,7 +180,7 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
       {/* Footer */}
       <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '0.6rem 1rem' }}>
         <div style={{ fontSize: '0.62rem', color: '#474f6b', textAlign: 'center' }}>
-          v1.0 · {t('sidebar.footer')}
+          v{version} · {t('sidebar.footer')}
         </div>
       </div>
     </aside>

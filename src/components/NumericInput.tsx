@@ -32,7 +32,7 @@ export function NumericInput({ value, onChange, integer = false, min, max, onFoc
       inputMode={integer ? 'numeric' : 'decimal'}
       value={raw}
       onChange={(e) => {
-        const s = e.target.value
+        const s = e.target.value.replace(',', '.')
         setRaw(s)
         const parsed = parse(s)
         if (!isNaN(parsed)) onChange(clamp(parsed))

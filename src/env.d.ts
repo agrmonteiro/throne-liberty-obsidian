@@ -10,4 +10,9 @@ interface UpdateAPI {
 
 interface Window {
   updateAPI?: UpdateAPI
+  dataAPI?: {
+    onMigration:  (cb: (payload: { files: string[] }) => void) => void
+    pickLogFiles: () => Promise<Array<{ name: string; content: string }>>
+    [key: string]: unknown
+  }
 }

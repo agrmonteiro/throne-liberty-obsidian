@@ -53,6 +53,12 @@ export interface Translations {
   logreader: {
     title: string; subtitle: string
   }
+  pullranking: {
+    title: string; subtitle: string
+  }
+  nav: {
+    pullranking: string; pullrankingSub: string
+  }
   settings: {
     title: string; subtitle: string
     language: string; languageLabel: string
@@ -127,6 +133,8 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     },
     rotation: { title: 'Rotação', subtitle: 'Monte e simule sua rotação de habilidades.' },
     logreader: { title: 'Leitor de Logs', subtitle: 'Analise seus registros de combate do Throne & Liberty.' },
+    pullranking: { title: 'Pull Ranking', subtitle: 'Classifique pulls reais por dano e DPS.' },
+    nav: { pullranking: 'Pull Ranking', pullrankingSub: 'Classifique pulls reais por dano e DPS' },
     settings: {
       title: 'Configurações', subtitle: 'Preferências do Tier2 Command Lab.',
       language: 'Idioma', languageLabel: 'Idioma da Interface',
@@ -199,6 +207,8 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     },
     rotation: { title: 'Rotation', subtitle: 'Build and simulate your skill rotation.' },
     logreader: { title: 'Log Reader', subtitle: 'Analyze your Throne & Liberty combat logs.' },
+    pullranking: { title: 'Pull Ranking', subtitle: 'Rank real pulls by damage and DPS.' },
+    nav: { pullranking: 'Pull Ranking', pullrankingSub: 'Rank real pulls by damage and DPS' },
     settings: {
       title: 'Settings', subtitle: 'Tier2 Command Lab preferences.',
       language: 'Language', languageLabel: 'Interface Language',

@@ -419,7 +419,7 @@ export function Calculator(): React.ReactElement {
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(5, 7, 16, 0.8)', backdropFilter: 'blur(4px)' }} onClick={() => setShowFormula(false)} />
           <div className="tl-panel tl-modal-slide" style={{ position: 'relative', width: 680, maxWidth: '90%', maxHeight: '85vh', overflowY: 'auto', border: '1px solid var(--border-gold)' }}>
             <button className="tl-btn-ghost" style={{ position: 'absolute', top: '1rem', right: '1rem', padding: '0.4rem' }} onClick={() => setShowFormula(false)}>✕</button>
-            <h2 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: 'var(--gold)' }}>🛠 Fórmulas de Dano (Throne & Liberty)</h2>
+            <h2 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: 'var(--gold)' }}>🛠 Fórmulas de Dano (T&L)</h2>
             <div style={{ fontSize: '0.85rem', color: 'var(--text-soft)', lineHeight: 1.6, fontFamily: 'Inter, sans-serif' }}>
               <p>As fórmulas abaixo foram mapeadas e validadas pela comunidade Theorycrafter e representam a ordem oficial de operações utilizada pelo motor (engine) do jogo:</p>
               

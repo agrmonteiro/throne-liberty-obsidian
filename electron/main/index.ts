@@ -11,23 +11,29 @@ import { spawn, execSync } from 'child_process'
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
 
 // ─── Data migration (Throne & Liberty → Tier2 Command Lab) ────────────────────
-function migrateOldDataDir(): void {
-  const oldDir = path.join(app.getPath('appData'), 'Throne & Liberty', 'data')
-  if (fs.existsSync(oldDir) && !fs.existsSync(DATA_DIR)) {
-    try {
-      fs.mkdirSync(DATA_DIR, { recursive: true })
-      for (const file of fs.readdirSync(oldDir)) {
-        const src  = path.join(oldDir, file)
-        const dest = path.join(DATA_DIR, file)
-        if (fs.statSync(src).isFile()) {
-          fs.copyFileSync(src, dest)
-          console.log(`[migration] Migrated: ${file}`)
-        }
+function migrateOldDataDir(): { files: string[] } | null {
+  const oldDir   = path.join(app.getPath('appData'), 'throne-liberty', 'data')
+  const flagFile = path.join(DATA_DIR, '.migrated-from-throne')
+  // Flag prevents re-running even if DATA_DIR already existed from beta.7/beta.8
+  if (!fs.existsSync(oldDir) || fs.existsSync(flagFile)) return null
+  try {
+    fs.mkdirSync(DATA_DIR, { recursive: true })
+    const migrated: string[] = []
+    for (const file of fs.readdirSync(oldDir)) {
+      const src  = path.join(oldDir, file)
+      const dest = path.join(DATA_DIR, file)
+      if (fs.statSync(src).isFile()) {
+        fs.copyFileSync(src, dest)
+        migrated.push(file)
+        console.log(`[migration] Migrated: ${file}`)
       }
-      console.log('[migration] Data migrated from Throne & Liberty → Tier2 Command Lab')
-    } catch (err) {
-      console.error('[migration] Migration failed:', err)
     }
+    fs.writeFileSync(flagFile, new Date().toISOString(), 'utf-8')
+    console.log('[migration] Data migrated from Throne & Liberty → Tier2 Command Lab')
+    return { files: migrated }
+  } catch (err) {
+    console.error('[migration] Migration failed:', err)
+    return null
   }
 }
 
@@ -159,6 +165,21 @@ ipcMain.handle('data:export-file', async (_event, data: unknown, defaultName: st
 
 // Get data directory path (for display)
 ipcMain.handle('data:dir', () => DATA_DIR)
+
+// Pick multiple combat log files via OS dialog (multi-selection)
+// SEC: paths vêm exclusivamente do dialog do SO — nenhum input do renderer
+ipcMain.handle('data:pick-log-files', async () => {
+  const result = await dialog.showOpenDialog({
+    title: 'Selecionar logs de combate',
+    properties: ['openFile', 'multiSelections'],
+    filters: [{ name: 'Combat Logs', extensions: ['log', 'txt'] }],
+  })
+  if (result.canceled || !result.filePaths.length) return []
+  return result.filePaths.map(p => ({
+    name: path.basename(p),
+    content: fs.readFileSync(p, 'utf-8'),
+  }))
+})
 
 // ─── Combat Log folder management ────────────────────────────────────────────
 
@@ -428,7 +449,7 @@ ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown>
 
     const scriptPath = findPythonScraper()
     if (!scriptPath) {
-      resolve({ error: 'Scraper não encontrado — verifique a instalação do throne_and_liberty_agent' })
+      resolve({ error: 'Scraper não encontrado — reinstale o Tier2 Command Lab ou verifique a pasta do agente' })
       return
     }
 
@@ -699,13 +720,19 @@ function createWindow(): BrowserWindow {
 // ─── App lifecycle ─────────────────────────────────────────────────────────────
 
 app.whenReady().then(() => {
+  // Manter estável — alterar o appId quebra a cadeia de atualizações no Windows
   electronApp.setAppUserModelId('com.thronebuilds.obsidian')
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
-  migrateOldDataDir()
+  const migrationResult = migrateOldDataDir()
   ensureDataDir()
   const mainWindow = createWindow()
+  if (migrationResult) {
+    mainWindow.webContents.once('did-finish-load', () => {
+      mainWindow.webContents.send('migration:done', migrationResult)
+    })
+  }
   if (!is.dev) setupAutoUpdater(mainWindow)
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()

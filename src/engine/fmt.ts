@@ -19,8 +19,17 @@ export const fmtP = (n: number): string => fmtPct(n, 2)
 export const fmtDec = (n: number, decimals = 2): string =>
   n.toLocaleString('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
 
-/** Parseia entrada do usuário em pt-BR: remove pontos (milhar), converte vírgula → ponto. */
+/** Parseia entrada do usuário aceitando pt-BR (1.234,56) e notação com ponto decimal (1.5). */
 export function parsePtBR(raw: string): number {
-  const cleaned = raw.replace(/\./g, '').replace(',', '.')
-  return parseFloat(cleaned)
+  const s = raw.trim()
+  // Formato pt-BR com ambos separadores: 1.234,56
+  if (s.includes(',') && s.includes('.')) {
+    return parseFloat(s.replace(/\./g, '').replace(',', '.'))
+  }
+  // Só vírgula: separador decimal pt-BR (1234,56)
+  if (s.includes(',')) {
+    return parseFloat(s.replace(',', '.'))
+  }
+  // Só ponto ou sem separadores: tratar ponto como decimal (1.5, 120, .5)
+  return parseFloat(s)
 }
