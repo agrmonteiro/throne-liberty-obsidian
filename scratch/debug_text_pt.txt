@@ -1,0 +1,97 @@
+Voltar
+Conjunto de habilidades/
+sword/
+Barreira de Contra-ataque
+
+Épico
+
+Nível: 15 / 15
+
+Activa
+
+Espada
+
+Barreira de Contra-ataque Lv. 15
+
+Nível 15
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+
+Tempo de Recarga
+
+45s
+
+Custo de mana
+
+150 Maná
+
+Tipo de habilidade
+
+recovery
+
+Utilizar formato
+
+active
+
+Aumenta a Chance de Bloqueio do Escudo em 34% por 8s.
+Esquivar, Bloquear com Escudo ou bloquear com uma Habilidade Defensiva em um raio de 1,1 vezes o Alcance de Ataque ou 3,3 vezes o Alcance de Ataque Mágico e à Distância ativa um contra-ataque que causa dano equivalente a 125% da Redução de Dano ao atacante.
+O dano do contra-ataque não é afetado pela Chance de Acerto Crítico ou Chance de Ataque Pesado
+
+Lv. 11 - Lv. 15
+
+Chance de Bloqueio do Escudo ▲
+
+28%
+/
+29.5%
+/
+31%
+/
+32.5%
+/
+34%
+
+Desbloqueado no nível: 1
+
+Skill Specialization
+
+Barreira de Contra-ataque - Barreira Concentrada
+
+Nível
+
+15 / 15
+
+Remove Ads
+Comentários0
+Habilidade possui características3
+Características Necessárias1
+Especializações de Habilidade1
+Nome
+
+
+Barreira de Contra-ataque - Barreira Concentrada
+
+
+Barreira de Contra-ataque - Recarga ▼
+
+
+Barreira de Contra-ataque - Dano Aumentado
+Página 1 de 1
+
+1
+
+Remove Ads

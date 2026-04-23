@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useT } from '../i18n/useT'
 import { version } from '../../package.json'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking' | 'skillsdb'
 
 interface NavItem {
   id:    Page
@@ -19,7 +19,8 @@ const NAV: NavItem[] = [
   { id: 'rotation',    icon: '🔄', group: 'analysis'     },
   { id: 'logreader',   icon: '📄', group: 'analysis'     },
   { id: 'pullranking', icon: '🏆', group: 'analysis'     },
-  { id: 'settings',    icon: '⚙',  group: 'preferences'  },
+  { id: 'skillsdb',   icon: '📚', group: 'analysis'     },
+  { id: 'settings',   icon: '⚙',  group: 'preferences'  },
 ]
 
 const NAV_KEYS: Record<Page, string> = {
@@ -32,6 +33,7 @@ const NAV_KEYS: Record<Page, string> = {
   logreader:   'sidebar.nav.logreader',
   settings:    'sidebar.nav.settings',
   pullranking: 'nav.pullranking',
+  skillsdb:    'sidebar.nav.skillsdb',
 }
 
 const GROUP_KEYS: Array<{ key: 'overview' | 'manage' | 'analysis' | 'preferences'; tKey: string }> = [

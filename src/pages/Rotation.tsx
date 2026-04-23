@@ -3,7 +3,7 @@ import { useRotation } from '../store/useRotation'
 import { useBuilds }   from '../store/useBuilds'
 import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
-import { calcRotationResult, effectiveCDRPct, calcSkillAvgDamage, calcDotResult } from '../engine/rotationEngine'
+import { calcRotationResult, effectiveCDRPct, calcSkillAvgDamage, calcDotResult, calcTimelineDps } from '../engine/rotationEngine'
 import { NumericInput } from '../components/NumericInput'
 import type {
   RotationCharacter,
@@ -137,13 +137,17 @@ function useAutoSave(dep: unknown): string {
 // ─── Card DPS (destaque) ─────────────────────────────────────────────────────
 
 interface DpsCardProps {
-  totalDps:   number
-  skillCount: number
-  dotCount:   number
-  buffCount:  number
+  totalDps:    number
+  timelineDps: number | null
+  skillCount:  number
+  dotCount:    number
+  buffCount:   number
 }
 
-function DpsCard({ totalDps, skillCount, dotCount, buffCount }: DpsCardProps): React.ReactElement {
+function DpsCard({ totalDps, timelineDps, skillCount, dotCount, buffCount }: DpsCardProps): React.ReactElement {
+  const displayDps    = timelineDps ?? totalDps
+  const fromTimeline  = timelineDps !== null
+
   return (
     <div style={{
       background: 'rgba(212,175,55,0.07)',
@@ -156,10 +160,10 @@ function DpsCard({ totalDps, skillCount, dotCount, buffCount }: DpsCardProps): R
     }}>
       <div>
         <div style={{ fontSize: '0.6rem', color: '#7a8099', textTransform: 'uppercase', letterSpacing: '0.14em' }}>
-          DPS Total · 60 segundos
+          DPS Total · {fromTimeline ? 'Timeline' : '60 segundos'}
         </div>
         <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#f0cc55', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-          {fmt(totalDps)}
+          {fmt(displayDps)}
         </div>
       </div>
       <div style={{ textAlign: 'right', fontSize: '0.72rem', color: '#474f6b' }}>
@@ -922,7 +926,7 @@ function abbrev(name: string): string {
 type CellState = 'empty' | 'cast' | 'active' | 'conflict'
 
 function Timeline({ rotation }: TimelineProps): React.ReactElement {
-  const { toggleCastEvent } = useRotation()
+  const { toggleCastEvent, clearItemTimeline, clearAllTimeline } = useRotation()
   const [hoverCell, setHoverCell] = useState<string | null>(null)
 
   const skills  = rotation.skills.filter(s => s.enabled)
@@ -980,6 +984,43 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
     return 'empty'
   }
 
+  // ── Células de sugestão: primeiro slot disponível após cada cast ─────────────
+  const suggestionCells = useMemo<Set<string>>(() => {
+    const s = new Set<string>()
+    const cdrPct = rotation.character.cdrPct
+
+    function addSuggestions(
+      itemId: string,
+      recastTime: number,
+    ): void {
+      if (!isFinite(recastTime) || recastTime <= 0) return
+      const events = timeline
+        .filter(e => e.itemId === itemId)
+        .sort((a, b) => a.castAt - b.castAt)
+      for (const ev of events) {
+        const availableAt = ev.castAt + recastTime
+        const nextStep = TIME_STEPS.find(t => t >= availableAt - 0.001)
+        if (nextStep !== undefined) {
+          s.add(`${itemId}-${nextStep}`)
+        }
+      }
+    }
+
+    for (const sk of skills) {
+      addSuggestions(sk.id, sk.castTime + localApplyCD(sk.cooldown, cdrPct))
+    }
+    for (const buf of buffs) {
+      addSuggestions(buf.id, buf.cooldown)
+    }
+    for (const d of dots) {
+      if ((d.cooldown ?? 0) > 0) {
+        addSuggestions(d.id, (d.castTime ?? 1) + localApplyCD(d.cooldown, cdrPct))
+      }
+    }
+
+    return s
+  }, [timeline, skills, dots, buffs, rotation.character.cdrPct])
+
   // ── Estilo visual da célula ──────────────────────────────────────────────────
   function cellStyle(state: CellState, itemType: CastEvent['itemType'], cellKey: string): React.CSSProperties {
     const base: React.CSSProperties = {
@@ -1000,7 +1041,10 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
       const rgb = itemType === 'buff' ? '34,211,238' : '124,92,252'
       return { ...base, background: `rgba(${rgb},0.22)`, border: `1px solid rgba(${rgb},0.15)` }
     }
-    // empty — realça se hover (arrastando)
+    // empty — sugestão de cooldown disponível ou hover
+    if (state === 'empty' && suggestionCells.has(cellKey)) {
+      return { ...base, background: 'rgba(0,0,0,0.15)', border: '1px dashed rgba(160,160,180,0.45)' }
+    }
     return { ...base, background: hoverCell === cellKey ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.15)' }
   }
 
@@ -1040,9 +1084,22 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
         <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           Timeline
         </span>
-        <span style={{ fontSize: '0.65rem', color: '#474f6b' }}>
+        <span style={{ fontSize: '0.65rem', color: '#474f6b', flex: 1 }}>
           Clique ou arraste skills / DoTs / buffs para marcar o cast · 🟥 = cooldown não liberado
         </span>
+        {timeline.length > 0 && (
+          <button
+            onClick={() => clearAllTimeline(rotation.id)}
+            title="Limpar toda a timeline"
+            style={{
+              fontSize: '0.65rem', padding: '2px 8px',
+              background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
+              borderRadius: 4, color: '#f87171', cursor: 'pointer', whiteSpace: 'nowrap',
+            }}
+          >
+            Limpar tudo
+          </button>
+        )}
       </div>
 
       <div style={{ overflowY: 'auto', overflowX: 'auto', maxHeight: 420 }}>
@@ -1050,24 +1107,57 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
           <thead>
             <tr style={{ position: 'sticky', top: 0, zIndex: 2 }}>
               <th style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 48, minWidth: 48 }}>Tempo</th>
-              {skills.map(s => (
-                <th key={s.id} title={s.skillName || 'skill'}
-                  style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#7c5cfc' }}>
-                  {abbrev(s.skillName)}
-                </th>
-              ))}
-              {dots.map(d => (
-                <th key={d.id} title={d.dotName || 'dot'}
-                  style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#f97316' }}>
-                  {abbrev(d.dotName)}
-                </th>
-              ))}
-              {buffs.map(b => (
-                <th key={b.id} title={b.buffName || 'buff'}
-                  style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#22d3ee' }}>
-                  {abbrev(b.buffName)}
-                </th>
-              ))}
+              {skills.map(s => {
+                const hasCasts = timeline.some(e => e.itemId === s.id)
+                return (
+                  <th key={s.id} title={s.skillName || 'skill'}
+                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#7c5cfc', padding: '3px 2px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                      <span>{abbrev(s.skillName)}</span>
+                      {hasCasts && (
+                        <button onClick={() => clearItemTimeline(rotation.id, s.id)} title="Limpar coluna"
+                          style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </th>
+                )
+              })}
+              {dots.map(d => {
+                const hasCasts = timeline.some(e => e.itemId === d.id)
+                return (
+                  <th key={d.id} title={d.dotName || 'dot'}
+                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#f97316', padding: '3px 2px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                      <span>{abbrev(d.dotName)}</span>
+                      {hasCasts && (
+                        <button onClick={() => clearItemTimeline(rotation.id, d.id)} title="Limpar coluna"
+                          style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </th>
+                )
+              })}
+              {buffs.map(b => {
+                const hasCasts = timeline.some(e => e.itemId === b.id)
+                return (
+                  <th key={b.id} title={b.buffName || 'buff'}
+                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#22d3ee', padding: '3px 2px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
+                      <span>{abbrev(b.buffName)}</span>
+                      {hasCasts && (
+                        <button onClick={() => clearItemTimeline(rotation.id, b.id)} title="Limpar coluna"
+                          style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  </th>
+                )
+              })}
             </tr>
           </thead>
           <tbody>
@@ -1201,7 +1291,9 @@ export function Rotation(): React.ReactElement {
 
   const result = useMemo(() => {
     if (!rotation) return null
-    return calcRotationResult(rotation, 60)
+    const rotResult   = calcRotationResult(rotation, 60)
+    const timelineDps = calcTimelineDps(rotation, 60)
+    return { ...rotResult, timelineDps }
   }, [rotation])
 
   function handleImportBuild(buildId: string): void {
@@ -1306,14 +1398,6 @@ export function Rotation(): React.ReactElement {
               {rotation.name}
             </div>
 
-            {/* DPS Card em destaque */}
-            <DpsCard
-              totalDps={result?.totalDps ?? 0}
-              skillCount={rotation.skills.filter(s => s.enabled).length}
-              dotCount={rotation.dots.filter(d => d.enabled).length}
-              buffCount={(rotation.buffs ?? []).filter(b => b.enabled).length}
-            />
-
             {/* Painel do personagem */}
             <CharacterPanel
               char={rotation.character}
@@ -1333,6 +1417,15 @@ export function Rotation(): React.ReactElement {
 
             {/* Linha 3: Regras de Encadeamento */}
             <RulesBlock rotation={rotation} />
+
+            {/* DPS Card — posicionado acima das timelines */}
+            <DpsCard
+              totalDps={result?.totalDps ?? 0}
+              timelineDps={result?.timelineDps ?? null}
+              skillCount={rotation.skills.filter(s => s.enabled).length}
+              dotCount={rotation.dots.filter(d => d.enabled).length}
+              buffCount={(rotation.buffs ?? []).filter(b => b.enabled).length}
+            />
 
             {/* Linha 4: Timelines em paralelo */}
             <div style={{ display: 'grid', gridTemplateColumns: logTimeline ? '1fr 1fr' : '1fr', gap: '0.75rem', alignItems: 'start' }}>

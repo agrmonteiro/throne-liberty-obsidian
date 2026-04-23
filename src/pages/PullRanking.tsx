@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react'
+import React, { useMemo, useEffect, useRef } from 'react'
 import { parseAndEnrichLog, type EnrichedPull } from '../engine/logParser'
 import { useT } from '../i18n/useT'
 import { useRankingStore } from '../store/useRankingStore'
@@ -42,19 +42,42 @@ function commentKey(pull: EnrichedPull): string {
 
 export function PullRanking(): React.ReactElement {
   const t = useT()
-  const { logs, comments, updateComment, setComments } = useRankingStore()
-  const [selTarget, setSelTarget] = useState('all')
-  const [selWeapon, setSelWeapon] = useState('all')
-  const [durationFilter, setDurationFilter] = useState<'all' | 'short' | 'long'>('all')
-  const [sortBy, setSortBy] = useState<'damage' | 'dps'>('damage')
+  const { logs, comments, filters, updateComment, setComments, setFilter, setLogs, setFilters } = useRankingStore()
+  const { target: selTarget, weapon: selWeapon, duration: durationFilter, sortBy } = filters
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const logsSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const filtersSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // Carrega dados persistidos na abertura
   useEffect(() => {
-    ;(window.dataAPI as any)?.read?.('pullComments.json').then((data: Record<string, string> | null) => {
-      if (data) setComments(data)
-    }).catch(() => {})
+    const api = (window.dataAPI as any)
+    Promise.all([
+      api?.read?.('pullComments.json').catch(() => null),
+      api?.read?.('rankingLogs.json').catch(() => null),
+      api?.read?.('rankingFilters.json').catch(() => null),
+    ]).then(([savedComments, savedLogs, savedFilters]) => {
+      if (savedComments) setComments(savedComments)
+      if (Array.isArray(savedLogs) && savedLogs.length > 0) setLogs(savedLogs)
+      if (savedFilters && typeof savedFilters === 'object') setFilters(savedFilters)
+    })
   }, [])
+
+  // Persiste logs quando mudam (debounce 800ms)
+  useEffect(() => {
+    if (logsSaveRef.current) clearTimeout(logsSaveRef.current)
+    logsSaveRef.current = setTimeout(() => {
+      ;(window.dataAPI as any)?.write?.('rankingLogs.json', logs).catch(() => {})
+    }, 800)
+  }, [logs])
+
+  // Persiste filtros quando mudam (debounce 400ms)
+  useEffect(() => {
+    if (filtersSaveRef.current) clearTimeout(filtersSaveRef.current)
+    filtersSaveRef.current = setTimeout(() => {
+      ;(window.dataAPI as any)?.write?.('rankingFilters.json', filters).catch(() => {})
+    }, 400)
+  }, [filters])
 
   const allPulls = useMemo<EnrichedPull[]>(() => {
     return logs.flatMap(log => parseAndEnrichLog(log.content, log.name))
@@ -109,7 +132,7 @@ export function PullRanking(): React.ReactElement {
               <select
                 className="tl-input"
                 value={selTarget}
-                onChange={e => setSelTarget(e.target.value)}
+                onChange={e => setFilter('target', e.target.value)}
                 style={{ fontFamily: 'Inter,sans-serif', minWidth: 140 }}
               >
                 <option value="all">Todos</option>
@@ -122,7 +145,7 @@ export function PullRanking(): React.ReactElement {
               <select
                 className="tl-input"
                 value={selWeapon}
-                onChange={e => setSelWeapon(e.target.value)}
+                onChange={e => setFilter('weapon', e.target.value)}
                 style={{ fontFamily: 'Inter,sans-serif', minWidth: 140 }}
               >
                 <option value="all">Todas</option>
@@ -139,7 +162,7 @@ export function PullRanking(): React.ReactElement {
                   return (
                     <button
                       key={opt}
-                      onClick={() => setDurationFilter(opt)}
+                      onClick={() => setFilter('duration', opt)}
                       style={{
                         padding: '0.4rem 0.75rem',
                         fontSize: '0.78rem', fontWeight: isActive ? 700 : 500,
@@ -167,7 +190,7 @@ export function PullRanking(): React.ReactElement {
                   return (
                     <button
                       key={opt}
-                      onClick={() => setSortBy(opt)}
+                      onClick={() => setFilter('sortBy', opt)}
                       style={{
                         padding: '0.4rem 0.75rem',
                         fontSize: '0.78rem', fontWeight: isActive ? 700 : 500,

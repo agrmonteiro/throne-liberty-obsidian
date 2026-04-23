@@ -39,7 +39,9 @@ interface RotationState {
   removeBuff:        (id: string, buffId: string)                => void
   addRule:           (id: string, rule: RotationRule)            => void
   removeRule:        (id: string, ruleId: string)                => void
-  toggleCastEvent:   (id: string, event: CastEvent)              => void
+  toggleCastEvent:      (id: string, event: CastEvent)            => void
+  clearItemTimeline:    (id: string, itemId: string)              => void
+  clearAllTimeline:     (id: string)                              => void
 }
 
 function newId(prefix: string): string {
@@ -326,6 +328,24 @@ export const useRotation = create<RotationState>((set, get) => ({
     }
 
     const updated = { ...rot, timeline: newTimeline }
+    const rotations = { ...get().rotations, [id]: updated }
+    set({ rotations })
+    writeRotations(rotations)
+  },
+
+  clearItemTimeline: (id, itemId) => {
+    const rot = get().rotations[id]
+    if (!rot) return
+    const updated = { ...rot, timeline: (rot.timeline ?? []).filter(e => e.itemId !== itemId) }
+    const rotations = { ...get().rotations, [id]: updated }
+    set({ rotations })
+    writeRotations(rotations)
+  },
+
+  clearAllTimeline: (id) => {
+    const rot = get().rotations[id]
+    if (!rot) return
+    const updated = { ...rot, timeline: [] }
     const rotations = { ...get().rotations, [id]: updated }
     set({ rotations })
     writeRotations(rotations)

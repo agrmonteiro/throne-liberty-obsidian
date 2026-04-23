@@ -19,6 +19,7 @@ export function UpdateNotifier(): React.ReactElement | null {
     })
 
     window.updateAPI.onProgress(({ percent }) => {
+      setDismissed(false)  // força exibir o progresso mesmo se o banner anterior foi fechado
       setState(prev => ({
         phase: 'downloading',
         version: 'version' in prev ? prev.version : '',
@@ -69,18 +70,17 @@ export function UpdateNotifier(): React.ReactElement | null {
   if (state.phase === 'downloading') {
     return (
       <div style={banner}>
-        <span style={text}>
-          ⬇ Baixando v{state.version}… {state.percent}%
-        </span>
+        <span style={text}>⬇ Baixando v{state.version}…</span>
         <div style={{
-          flexGrow: 1, maxWidth: 180, height: 4, borderRadius: 2,
+          flexGrow: 1, maxWidth: 200, height: 6, borderRadius: 3,
           background: 'rgba(72,187,120,0.2)', overflow: 'hidden',
         }}>
           <div style={{
-            height: '100%', borderRadius: 2, background: '#48bb78',
+            height: '100%', borderRadius: 3, background: '#48bb78',
             width: `${state.percent}%`, transition: 'width 0.3s ease',
           }} />
         </div>
+        <span style={{ ...text, fontWeight: 700, minWidth: 38 }}>{state.percent}%</span>
       </div>
     )
   }

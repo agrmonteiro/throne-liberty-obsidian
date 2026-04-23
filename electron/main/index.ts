@@ -621,6 +621,36 @@ ipcMain.handle('questlog:cancel', () => {
   return { ok: !killFailed }
 })
 
+// Reinstall playwright + chromium (called from Settings when scraper deps are missing)
+ipcMain.handle('scraper:reinstall-playwright', (): Promise<{ ok: boolean; output?: string; error?: string }> => {
+  return new Promise((resolve) => {
+    let pythonBin: string | null = null
+    for (const bin of ['python', 'python3', 'py']) {
+      try { execSync(`${bin} --version`, { timeout: 5000 }); pythonBin = bin; break } catch { /* try next */ }
+    }
+    if (!pythonBin) {
+      resolve({ ok: false, error: 'Python não encontrado — instale o Python antes de continuar.' })
+      return
+    }
+    const out: string[] = []
+    const pip = spawn(pythonBin, ['-m', 'pip', 'install', 'playwright', '--upgrade'], { env: { ...process.env } })
+    pip.stdout.on('data', (c: Buffer) => out.push(c.toString()))
+    pip.stderr.on('data', (c: Buffer) => out.push(c.toString()))
+    pip.on('error', (err) => resolve({ ok: false, error: err.message, output: out.join('') }))
+    pip.on('close', (code) => {
+      if (code !== 0) { resolve({ ok: false, error: `pip install falhou (código ${code})`, output: out.join('') }); return }
+      const pw = spawn(pythonBin!, ['-m', 'playwright', 'install', 'chromium'], { env: { ...process.env } })
+      pw.stdout.on('data', (c: Buffer) => out.push(c.toString()))
+      pw.stderr.on('data', (c: Buffer) => out.push(c.toString()))
+      pw.on('error', (err) => resolve({ ok: false, error: err.message, output: out.join('') }))
+      pw.on('close', (code2) => {
+        if (code2 !== 0) { resolve({ ok: false, error: `playwright install falhou (código ${code2})`, output: out.join('') }); return }
+        resolve({ ok: true, output: out.join('') })
+      })
+    })
+  })
+})
+
 // ─── Auto-updater ─────────────────────────────────────────────────────────────
 
 function setupAutoUpdater(win: BrowserWindow): void {

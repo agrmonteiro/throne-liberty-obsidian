@@ -40,3 +40,7 @@ reddit_dump.json
 reddit_formula.json
 reddit_formula.md
 clean.md
+
+# Scraper: artefatos de build PyInstaller e cache intermediário
+build/scraper_standalone/
+scripts/catalog_cache.json

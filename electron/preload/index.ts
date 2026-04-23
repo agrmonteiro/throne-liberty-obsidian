@@ -47,8 +47,9 @@ const dataAPI = {
   scraperSetPath:        (p: string)                          => ipcRenderer.invoke('scraper:set-path', p),
   scraperPickFile:       ()                                   => ipcRenderer.invoke('scraper:pick-file'),
   scraperDetect:         ()                                   => ipcRenderer.invoke('scraper:detect'),
-  scraperOpenLog:        ()                                   => ipcRenderer.invoke('scraper:open-log'),
-  scraperReadLog:        ()                                   => ipcRenderer.invoke('scraper:read-log'),
+  scraperOpenLog:            ()                               => ipcRenderer.invoke('scraper:open-log'),
+  scraperReadLog:            ()                               => ipcRenderer.invoke('scraper:read-log'),
+  scraperReinstallPlaywright: ()                              => ipcRenderer.invoke('scraper:reinstall-playwright'),
   pickLogFiles:          ()                                   => ipcRenderer.invoke('data:pick-log-files'),
 }
 

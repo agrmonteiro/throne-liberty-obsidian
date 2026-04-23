@@ -10,7 +10,7 @@
  *   dmgBase     = baseNonCrit×(1−critChance) + baseCrit×(1+critDmg%)×critChance
  *   dmgMult     = (1+dmgBonus)×(1+monsterBonus)×sdbMult×speciesMult×(1+dmgBoost)
  *   avgPerHit   = 4 cenários independentes (normal/crit/heavy/crit+heavy) + bonusDamage
- *   DPS         = avgPerHit × hits / finalCD
+ *   DPS         = avgPerHit × hits / (castTime + finalCD)
  */
 
 import type {
@@ -126,8 +126,9 @@ export function calcSkillAvgDamage(skill: RotationSkill, char: RotationCharacter
 export function calcSkillDps(skill: RotationSkill, char: RotationCharacter): number {
   if (!skill.enabled || skill.cooldown <= 0) return 0
   const dmgPerCast = calcSkillAvgDamage(skill, char)
-  const cd = applyCD(skill.cooldown, char.cdrPct)
-  return cd > 0 ? dmgPerCast / cd : 0
+  const cd    = applyCD(skill.cooldown, char.cdrPct)
+  const cycle = skill.castTime + cd  // ciclo completo: cast + cooldown pós-CDR
+  return cycle > 0 ? dmgPerCast / cycle : 0
 }
 
 /** @deprecated Use calcSkillAvgDamage diretamente */
@@ -181,14 +182,15 @@ export function calcRotationResult(rotation: Rotation, simulationSeconds = 60): 
   const skillResults: RotationSkillResult[] = rotation.skills
     .filter(s => s.enabled)
     .map(s => {
-      const dps = calcSkillDps(s, char)
-      const cd  = applyCD(s.cooldown, char.cdrPct)
+      const dps   = calcSkillDps(s, char)
+      const cd    = applyCD(s.cooldown, char.cdrPct)
+      const cycle = s.castTime + cd
       return {
         skillId:     s.id,
         skillName:   s.skillName,
         dps,
-        dmgPerCast:  Math.max(0, dps * cd),
-        castsPerMin: cd > 0 ? simulationSeconds / cd : 0,
+        dmgPerCast:  calcSkillAvgDamage(s, char),
+        castsPerMin: cycle > 0 ? simulationSeconds / cycle : 0,
         pctOfTotal:  0,
       }
     })
@@ -207,6 +209,49 @@ export function calcRotationResult(rotation: Rotation, simulationSeconds = 60): 
   dotResults.forEach(r =>   { r.pctOfTotal = totalDps > 0 ? (r.dps / totalDps) * 100 : 0 })
 
   return { totalDps, skillResults, dotResults }
+}
+
+// ─── Timeline DPS ─────────────────────────────────────────────────────────────
+
+/**
+ * DPS calculado a partir dos cast events marcados na timeline.
+ * Ignora cooldown — é apenas a soma de (danoSimples × nCasts) / simulationSeconds.
+ * Retorna null se a timeline não tiver nenhum cast de skill ou DoT.
+ */
+export function calcTimelineDps(rotation: Rotation, simulationSeconds = 60): number | null {
+  const timeline = rotation.timeline ?? []
+  const char     = rotation.character
+
+  let totalDmg = 0
+  let hasCasts = false
+
+  for (const skill of rotation.skills.filter(s => s.enabled)) {
+    const n = timeline.filter(e => e.itemId === skill.id && e.itemType === 'skill').length
+    if (n > 0) {
+      hasCasts = true
+      totalDmg += calcSkillAvgDamage(skill, char) * n
+    }
+  }
+
+  for (const dot of (rotation.dots ?? []).filter(d => d.enabled)) {
+    const n = timeline.filter(e => e.itemId === dot.id && e.itemType === 'dot').length
+    if (n > 0) {
+      hasCasts = true
+      const { avg: wAvg } = weaponStats(char, dot.weapon)
+      const { critChance, heavyChance, critDmgMult, heavyMult } = chancesFromChar(char)
+      const charMult   = charMultipliers(char)
+      const pct        = dot.skillDmgPct / 100
+      const baseDmg    = wAvg * pct + dot.bonusBaseDmg
+      const skillMult  = (1 + dot.dmgBonus) * (1 + dot.monsterBonus) * charMult
+      const dmgPerTick = baseDmg * skillMult
+        * (1 + critChance  * (critDmgMult - 1))
+        * (1 + heavyChance * (heavyMult   - 1))
+      totalDmg += Math.max(0, dmgPerTick) * dot.ticks * n
+    }
+  }
+
+  if (!hasCasts) return null
+  return simulationSeconds > 0 ? totalDmg / simulationSeconds : 0
 }
 
 // ─── CDR display helper ───────────────────────────────────────────────────────

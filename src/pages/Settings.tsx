@@ -16,9 +16,11 @@ export function Settings(): React.ReactElement {
   const { lang, setLang } = useLocale()
   const t = useT()
 
-  const [scraper, setScraper]     = useState<ScraperStatus | null>(null)
-  const [detecting, setDetecting] = useState(false)
-  const [saved, setSaved]         = useState(false)
+  const [scraper, setScraper]         = useState<ScraperStatus | null>(null)
+  const [detecting, setDetecting]     = useState(false)
+  const [saved, setSaved]             = useState(false)
+  const [reinstalling, setReinstalling] = useState(false)
+  const [reinstallMsg, setReinstallMsg] = useState<{ ok: boolean; text: string } | null>(null)
 
   useEffect(() => { runDetect() }, [])
 
@@ -29,6 +31,18 @@ export function Settings(): React.ReactElement {
       setScraper(result as ScraperStatus)
     } finally {
       setDetecting(false)
+    }
+  }
+
+  async function reinstallPlaywright() {
+    setReinstalling(true)
+    setReinstallMsg(null)
+    try {
+      const res = await (window.dataAPI as any).scraperReinstallPlaywright() as { ok: boolean; error?: string }
+      setReinstallMsg({ ok: res.ok, text: res.ok ? '✓ Playwright reinstalado com sucesso!' : (res.error ?? 'Erro desconhecido') })
+      if (res.ok) await runDetect()
+    } finally {
+      setReinstalling(false)
     }
   }
 
@@ -84,6 +98,22 @@ export function Settings(): React.ReactElement {
                 <>
                   <div style={{ color: '#4ade80', fontWeight: 700, fontSize: '0.9rem' }}>✓ Encontrado</div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-soft)', marginTop: 2 }}>{scraper.pythonVersion}</div>
+                  <button
+                    onClick={reinstallPlaywright}
+                    disabled={reinstalling}
+                    style={{
+                      marginTop: 8, padding: '0.3rem 0.75rem', borderRadius: 5, fontSize: '0.72rem',
+                      border: '1px solid var(--border)', background: 'var(--bg)', color: 'var(--text-soft)',
+                      cursor: reinstalling ? 'default' : 'pointer', opacity: reinstalling ? 0.6 : 1,
+                    }}
+                  >
+                    {reinstalling ? '⏳ Reinstalando…' : '🔄 Reinstalar Playwright'}
+                  </button>
+                  {reinstallMsg && (
+                    <div style={{ marginTop: 6, fontSize: '0.72rem', color: reinstallMsg.ok ? '#4ade80' : '#f87171' }}>
+                      {reinstallMsg.text}
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
@@ -94,6 +124,9 @@ export function Settings(): React.ReactElement {
                   >
                     Baixar Python →
                   </a>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: 4 }}>
+                    Após instalar, clique em Detectar automaticamente
+                  </div>
                 </>
               )}
             </div>

@@ -7,7 +7,7 @@ export interface Translations {
     title: string
     tagline: string
     groups: { overview: string; manage: string; analysis: string; preferences: string }
-    nav: { dashboard: string; builds: string; calculator: string; comparator: string; sensitivity: string; rotation: string; logreader: string; settings: string }
+    nav: { dashboard: string; builds: string; calculator: string; comparator: string; sensitivity: string; rotation: string; logreader: string; settings: string; skillsdb: string }
     footer: string
   }
   // Páginas
@@ -73,7 +73,7 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       title: 'Command Lab',
       tagline: 'Análise de elite, na palma da sua mão',
       groups: { overview: 'Visão Geral', manage: 'Gerenciar', analysis: 'Análise', preferences: 'Preferências' },
-      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'Calculadora PvE', comparator: 'Comparador', sensitivity: 'Sensibilidade', rotation: 'Rotação', logreader: 'Leitor de Logs', settings: 'Configurações' },
+      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'Calculadora PvE', comparator: 'Comparador', sensitivity: 'Sensibilidade', rotation: 'Rotação', logreader: 'Leitor de Logs', settings: 'Configurações', skillsdb: 'Banco de Skills' },
       footer: 'Electron + React',
     },
     common: {
@@ -147,7 +147,7 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       title: 'Command Lab',
       tagline: 'Elite analysis, at your fingertips',
       groups: { overview: 'Overview', manage: 'Manage', analysis: 'Analysis', preferences: 'Preferences' },
-      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'PvE Calculator', comparator: 'Comparator', sensitivity: 'Sensitivity', rotation: 'Rotation', logreader: 'Log Reader', settings: 'Settings' },
+      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'PvE Calculator', comparator: 'Comparator', sensitivity: 'Sensitivity', rotation: 'Rotation', logreader: 'Log Reader', settings: 'Settings', skillsdb: 'Skills DB' },
       footer: 'Electron + React',
     },
     common: {

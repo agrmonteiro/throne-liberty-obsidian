@@ -1,0 +1,97 @@
+Back
+Skill Sets/
+sword/
+Counter Barrier
+
+Epic
+
+Level: 15 / 15
+
+Active
+
+Sword
+
+Counter Barrier Lv. 15
+
+Level 15
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+
+Cooldown
+
+45s
+
+Mana Cost
+
+150 Mana
+
+Skill Type
+
+recovery
+
+Use Format
+
+active
+
+Shield Block Chance +34% for 8s.
+Evading, Shield Blocking, or blocking with a Defense skill within 1.1 times the Attack Range or 3.3 times the Magic and Ranged Attack Range activates a counterattack that deals damage equal to 125% of Damage Reduction to the attacker.
+The counterattack damage is not affected by Critical Hit Chance or Heavy Attack Chance.
+
+Lv. 11 - Lv. 15
+
+Shield Block Chance ▲
+
+28%
+/
+29.5%
+/
+31%
+/
+32.5%
+/
+34%
+
+Unlocked at level: 1
+
+Skill Specialization
+
+Counter Barrier - Concentrated Barrier
+
+Level
+
+15 / 15
+
+Remove Ads
+Comments0
+Skill has Traits3
+Skill Required Traits1
+Skill Specializations1
+Name
+
+
+Counter Barrier - Concentrated Barrier
+
+
+Counter Barrier - Cooldown ▼
+
+
+Counter Barrier - Damage Increased
+Page 1 of 1
+
+1
+
+Remove Ads

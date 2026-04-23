@@ -9,12 +9,13 @@ import { LogReader }    from './pages/LogReader'
 import { Rotation }     from './pages/Rotation'
 import { Settings }     from './pages/Settings'
 import { PullRanking }  from './pages/PullRanking'
+import { SkillsDB }     from './pages/SkillsDB'
 import { useBuilds }       from './store/useBuilds'
 import { useSettings }     from './store/useSettings'
 import { UpdateNotifier }    from './components/UpdateNotifier'
 import { MigrationNotifier } from './components/MigrationNotifier'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking' | 'skillsdb'
 
 export default function App(): React.ReactElement {
   const [page, setPage]                     = useState<Page>('dashboard')
@@ -69,6 +70,7 @@ export default function App(): React.ReactElement {
     rotation:     Rotation,
     settings:     Settings,
     pullranking:  PullRanking,
+    skillsdb:     SkillsDB,
   }[page]
 
   const settings = useSettings()
