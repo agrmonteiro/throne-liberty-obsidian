@@ -691,7 +691,13 @@ function createWindow(): BrowserWindow {
     },
   })
 
+  // Fallback: if ready-to-show never fires (GPU crash / driver issue), show after 10s
+  const showFallback = setTimeout(() => {
+    if (!mainWindow.isVisible()) mainWindow.show()
+  }, 10_000)
+
   mainWindow.on('ready-to-show', () => {
+    clearTimeout(showFallback)
     mainWindow.show()
   })
 
@@ -718,6 +724,10 @@ function createWindow(): BrowserWindow {
 }
 
 // ─── App lifecycle ─────────────────────────────────────────────────────────────
+
+// Workaround for GPU/driver issues on some Windows machines (blank window / no UI)
+app.commandLine.appendSwitch('disable-gpu-sandbox')
+app.commandLine.appendSwitch('disable-software-rasterizer')
 
 app.whenReady().then(() => {
   // Manter estável — alterar o appId quebra a cadeia de atualizações no Windows
