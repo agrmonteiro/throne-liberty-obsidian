@@ -328,14 +328,16 @@ export function Calculator(): React.ReactElement {
           <YAxis tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
           <Tooltip content={({ active, payload, label }) => {
             if (!active || !payload?.length) return null
+            const sorted = [...(payload ?? [])].sort((a: any, b: any) => (b.value as number) - (a.value as number))
             return (
-              <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-gold)', borderRadius: 8, boxShadow: '0 4px 24px rgba(0,0,0,0.55), 0 0 12px var(--gold-glow)', fontFamily: 'JetBrains Mono, monospace', fontSize: 10, padding: '8px 12px', maxWidth: 270 }}>
-                <div style={{ color: '#d4af37', fontWeight: 700, marginBottom: 6, fontSize: 11 }}>Iteração {label}</div>
-                {[...(payload ?? [])].sort((a: any, b: any) => (b.value as number) - (a.value as number)).map((p: any) => {
+              <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-gold)', borderRadius: 8, boxShadow: '0 4px 24px rgba(0,0,0,0.55), 0 0 12px var(--gold-glow)', fontFamily: 'JetBrains Mono, monospace', fontSize: 'calc(var(--base-font-size) * 0.72)', padding: '8px 12px', maxWidth: 560 }}>
+                <div style={{ color: '#d4af37', fontWeight: 700, marginBottom: 6, fontSize: 'calc(var(--base-font-size) * 0.79)' }}>Iteração {label}</div>
+                <div style={{ display: 'grid', gridTemplateColumns: sorted.length > 1 ? 'repeat(2, 1fr)' : '1fr', gap: '0 16px' }}>
+                {sorted.map((p: any) => {
                   const s = elasticPointDetails[p.dataKey]?.[label as number]
                   return (
                     <div key={p.dataKey} style={{ marginBottom: 5, paddingTop: 4, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                      <div style={{ color: p.stroke, fontWeight: 700, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 240 }}>{p.dataKey}</div>
+                      <div style={{ color: p.stroke, fontWeight: 700, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.dataKey}</div>
                       <div style={{ color: '#3dd68c' }}>Ganho: {(p.value as number) >= 0 ? '+' : ''}{fmtPct(p.value as number)}</div>
                       {s && (<>
                         <div style={{ color: 'var(--text-soft)', marginTop: 2 }}>
@@ -343,8 +345,8 @@ export function Calculator(): React.ReactElement {
                             const tc = s.critHitChance + (s.bossCritChance ?? 0)
                             const zero = tc <= 0
                             return <>
-                              Crit stat: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{tc}</span>
-                              {(s.bossCritChance ?? 0) > 0 && <span style={{ color: '#8a9bbf', fontSize: 9 }}> ({s.critHitChance}+{s.bossCritChance}b)</span>}
+                              Crit: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{tc}</span>
+                              {(s.bossCritChance ?? 0) > 0 && <span style={{ color: '#8a9bbf' }}> ({s.critHitChance}+{s.bossCritChance}b)</span>}
                               {' → '}<span style={{ color: '#d4af37' }}>{fmtPct(critChanceFromStat(tc, s.targetEndurance) * 100)}</span>
                             </>
                           })()}
@@ -354,8 +356,8 @@ export function Calculator(): React.ReactElement {
                             const th = s.heavyAttackChance + (s.bossHeavyChance ?? 0)
                             const zero = th <= 0
                             return <>
-                              Heavy stat: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{th}</span>
-                              {(s.bossHeavyChance ?? 0) > 0 && <span style={{ color: '#8a9bbf', fontSize: 9 }}> ({s.heavyAttackChance}+{s.bossHeavyChance}b)</span>}
+                              Heavy: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{th}</span>
+                              {(s.bossHeavyChance ?? 0) > 0 && <span style={{ color: '#8a9bbf' }}> ({s.heavyAttackChance}+{s.bossHeavyChance}b)</span>}
                               {' → '}<span style={{ color: '#7c5cfc' }}>{fmtPct(heavyChanceFromStat(th) * 100)}</span>
                             </>
                           })()}
@@ -367,13 +369,13 @@ export function Calculator(): React.ReactElement {
                             {(s.cdrPct ?? 0) > 0 && (
                               <div style={{ color: 'var(--text-soft)' }}>
                                 CDR: <span style={{ color: '#e2e4ec' }}>{s.cdrPct}%</span>
-                                {' → CD '}<span style={{ color: '#f0965a' }}>{effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0).toFixed(2)}s</span>
+                                {' → '}<span style={{ color: '#f0965a' }}>{effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0).toFixed(2)}s</span>
                               </div>
                             )}
                             {(s.attackSpeedPct ?? 0) > 0 && (
                               <div style={{ color: 'var(--text-soft)' }}>
-                                Atk Speed: <span style={{ color: '#e2e4ec' }}>{s.attackSpeedPct}%</span>
-                                {' → cast '}<span style={{ color: '#00d4ff' }}>{effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0).toFixed(2)}s</span>
+                                Atk Spd: <span style={{ color: '#e2e4ec' }}>{s.attackSpeedPct}%</span>
+                                {' → '}<span style={{ color: '#00d4ff' }}>{effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0).toFixed(2)}s</span>
                               </div>
                             )}
                             <div style={{ color: 'var(--text-soft)' }}>
@@ -385,6 +387,7 @@ export function Calculator(): React.ReactElement {
                     </div>
                   )
                 })}
+                </div>
               </div>
             )
           }} />
