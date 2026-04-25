@@ -31,7 +31,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 8: IPC Security** - Hardening de todos os handlers IPC com validação Zod, URL check antes de subprocess e sanitização de paths
 - [ ] **Phase 9: Skill Importer** - Script standalone produz `skillsDB.json` carregado em runtime, substituindo o TypeScript hardcoded
 - [ ] **Phase 10: Log Parser Split View** - Usuário abre dois logs simultaneamente e compara DPS e métricas lado a lado
-- [ ] **Phase 11: Rotation Builder** - Autocomplete de skills do `skillsDB.json` e visualização side-by-side de duas rotações com DPS
+- [ ] **Phase 11: Build Specialization Data** - Scraper captura maestrias do Questlog; Build persiste specialization, weaponMain e weaponOff
 - [ ] **Phase 12: Gear Scorer UI** - Página GearScorer com ranking por slot usando o engine `rankItemUpgrades` existente
 - [ ] **Phase 13: Gear Scorer ML** - Pipeline sklearn → ONNX, inference via subprocess Python, ciclo de retreinamento documentado
 
@@ -193,17 +193,20 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
-### Phase 11: Rotation Builder
-**Goal**: O Rotation Builder usa skills reais do `skillsDB.json` com autocomplete e stats pré-preenchidos, e o usuário pode comparar duas rotações side-by-side com DPS de cada exibido simultaneamente
-**Depends on**: Phase 9 (skillsDB.json enriquecido é prerequisito para autocomplete e stats reais)
-**Requirements**: ROT-01, ROT-02
+### Phase 11: Build Specialization Data
+**Goal**: O scraper Python captura o JSON de especialização (maestrias) do Questlog Build Editor; o tipo Build persiste specialization, weaponMain e weaponOff para consumo pela Phase 12 (Rotation Builder)
+**Depends on**: Nothing (infraestrutura de dados — pode rodar em paralelo com Phase 9/10)
+**Requirements**: ROT-01
 **Success Criteria** (what must be TRUE):
-  1. Ao digitar o nome de uma skill no campo do builder, uma lista de sugestões aparece com skills reais do `skillsDB.json` — não dados hardcoded
-  2. Selecionar uma skill pelo autocomplete preenche automaticamente cooldown, damage% e hits sem que o usuário precise digitar esses valores
-  3. O usuário pode criar duas rotações distintas e visualizá-las side-by-side na mesma tela com o DPS calculado de cada uma exibido simultaneamente
-  4. Trocar a build ativa na comparação recalcula o DPS de ambas as rotações sem recarregar a página
-**Plans**: TBD
-**UI hint**: yes
+  1. Ao re-importar uma build com URL que tem maestrias configuradas, builds.json contém specialization: [{id: ..., lvl: N}, ...], weaponMain e weaponOff
+  2. Builds antigas (sem maestrias) carregam sem quebrar — campos ausentes chegam como undefined
+  3. O scraper retorna normalmente sem specialization quando o botão de export não está disponível — nunca retorna erro por causa do export
+**Plans**: 2 planos
+
+Plans:
+- [ ] 11-01-PLAN.md — Estender interface Build em types.ts + extrair campos em parseNewScraperFormat() (TypeScript)
+- [ ] 11-02-PLAN.md — Implementar _try_export_specialization() e integrar em scrape() (Python Playwright)
+**UI hint**: no
 
 ### Phase 12: Gear Scorer UI
 **Goal**: O app tem uma página GearScorer funcional que exibe recomendações de upgrade organizadas por slot usando o engine determinístico `rankItemUpgrades` já implementado
@@ -257,6 +260,6 @@ Phase 10 can run in parallel with 9 or 11.
 | 8. IPC Security | 0/TBD | Not started | - |
 | 9. Skill Importer | 0/TBD | Not started | - |
 | 10. Log Parser Split View | 0/TBD | Not started | - |
-| 11. Rotation Builder | 0/TBD | Not started | - |
+| 11. Build Specialization Data | 0/2 | Not started | - |
 | 12. Gear Scorer UI | 0/TBD | Not started | - |
 | 13. Gear Scorer ML | 0/TBD | Not started | - |
