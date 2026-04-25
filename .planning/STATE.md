@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Game Intelligence
 status: in_progress
-stopped_at: Roadmap criado — pronto para /gsd-plan-phase 8
-last_updated: "2026-04-17T00:00:00.000Z"
-last_activity: 2026-04-17 -- Roadmap v2.0 inicializado (6 fases, 17 requisitos mapeados)
+stopped_at: Phase 11 Plan 01 completo — interface Build estendida e parseNewScraperFormat atualizado
+last_updated: "2026-04-25T20:23:00.000Z"
+last_activity: 2026-04-25 — Phase 11 Plan 01 executado: Build.specialization/weaponMain/weaponOff adicionados
 progress:
-  total_phases: 6
+  total_phases: 13
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 2
+  completed_plans: 1
+  percent: 50
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-17)
 
 ## Current Position
 
-Phase: 8 — IPC Security
-Plan: —
-Status: Not started
-Last activity: 2026-04-17 — Roadmap v2.0 criado, pronto para planejar Phase 8
+Phase: 11 — Build Specialization Data
+Plan: 01 (completo) → 02 (próximo)
+Status: In progress
+Last activity: 2026-04-25 — Plan 11-01 executado: Build.specialization/weaponMain/weaponOff (2 commits: 8a51e53, ca7f7bd)
 
-Progress: [          ] 0%
+Progress: [##        ] 50% (1/2 plans)
 
 ## Performance Metrics
 
@@ -65,6 +65,8 @@ Recent decisions affecting current work:
 - v2.0 Init: Gear Scorer UI separada do ML pipeline — usuário recebe valor do scorer determinístico enquanto ML é construído
 - v2.0 Init: skillsDB carregado de JSON em runtime (userData), com fallback para bundle compilado — permite atualização sem novo release
 - v2.0 Init: Log Parser Split View é self-contained — pode rodar em paralelo com Skill Importer
+- 11-01: Build.specialization/weaponMain/weaponOff são opcionais — retrocompatibilidade total com builds antigas no disco
+- 11-01: weaponMain/weaponOff distintos de RotationCharacter.weaponMainType/weaponOffType (formato lowercase vs capitalizado)
 
 ### Pending Todos
 
@@ -79,6 +81,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-17
-Stopped at: Roadmap v2.0 criado — 6 fases (8-13), 17 requisitos mapeados 17/17
+Last session: 2026-04-25
+Stopped at: Phase 11 Plan 01 completo — próximo: 11-02-PLAN.md (Python scraper)
 Resume file: None

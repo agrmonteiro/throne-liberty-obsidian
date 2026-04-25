@@ -204,7 +204,7 @@ Plans:
 **Plans**: 2 planos
 
 Plans:
-- [ ] 11-01-PLAN.md — Estender interface Build em types.ts + extrair campos em parseNewScraperFormat() (TypeScript)
+- [x] 11-01-PLAN.md — Estender interface Build em types.ts + extrair campos em parseNewScraperFormat() (TypeScript)
 - [ ] 11-02-PLAN.md — Implementar _try_export_specialization() e integrar em scrape() (Python Playwright)
 **UI hint**: no
 
