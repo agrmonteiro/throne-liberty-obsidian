@@ -5,6 +5,10 @@ import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
 import { calcRotationResult, effectiveCDRPct, calcSkillAvgDamage, calcDotResult, calcTimelineDps } from '../engine/rotationEngine'
 import { NumericInput } from '../components/NumericInput'
+import { useT } from '../i18n/useT'
+import { useSkillsDB, filterSkillsByWeapons } from '../store/useSkillsDB'
+import type { SkillDBEntry } from '../store/useSkillsDB'
+import { WEAPON_TYPES } from '../engine/constants'
 import type {
   RotationCharacter,
   RotationSkill,
@@ -57,6 +61,19 @@ const baseInput: React.CSSProperties = {
   color: 'var(--text)',
   padding: '3px 6px',
   fontSize: '0.82rem',
+}
+
+const WEAPON_COLOR: Record<string, string> = {
+  'Staff':          '#a78bfa',
+  'Wand & Tome':    '#60a5fa',
+  'Longbow':        '#4ade80',
+  'Crossbow':       '#86efac',
+  'Dagger':         '#f97316',
+  'Greatsword':     '#ef4444',
+  'Sword & Shield': '#f59e0b',
+  'Spear':          '#ec4899',
+  'Orb':            '#22d3ee',
+  'Item/Proc':      '#94a3b8',
 }
 
 const th: React.CSSProperties = {
@@ -119,17 +136,18 @@ function newDotId(): string {
 
 // Hook para indicador de auto-save
 function useAutoSave(dep: unknown): string {
+  const t = useT()
   const [status, setStatus] = useState('')
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isFirst = useRef(true)
 
   useEffect(() => {
     if (isFirst.current) { isFirst.current = false; return }
-    setStatus('Salvando...')
+    setStatus(t('rotation.autoSave.saving'))
     if (timer.current) clearTimeout(timer.current)
-    timer.current = setTimeout(() => setStatus('Salvo ✓'), 600)
+    timer.current = setTimeout(() => setStatus(t('rotation.autoSave.saved')), 600)
     return () => { if (timer.current) clearTimeout(timer.current) }
-  }, [dep])
+  }, [dep, t])
 
   return status
 }
@@ -145,6 +163,7 @@ interface DpsCardProps {
 }
 
 function DpsCard({ totalDps, timelineDps, skillCount, dotCount, buffCount }: DpsCardProps): React.ReactElement {
+  const t = useT()
   const displayDps    = timelineDps ?? totalDps
   const fromTimeline  = timelineDps !== null
 
@@ -160,7 +179,7 @@ function DpsCard({ totalDps, timelineDps, skillCount, dotCount, buffCount }: Dps
     }}>
       <div>
         <div style={{ fontSize: '0.6rem', color: '#7a8099', textTransform: 'uppercase', letterSpacing: '0.14em' }}>
-          DPS Total · {fromTimeline ? 'Timeline' : '60 segundos'}
+          {t('rotation.card.dpsTotal')}{fromTimeline ? t('rotation.timeline.planned') : t('rotation.card.seconds')}
         </div>
         <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#f0cc55', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
           {fmt(displayDps)}
@@ -185,6 +204,7 @@ interface CharPanelProps {
 }
 
 function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanelProps): React.ReactElement {
+  const t = useT()
   const critTotal  = char.critChanceBase + char.critChanceBoss
   const heavyTotal = char.heavyChanceBase + char.heavyChanceBoss
   const eff       = Math.max(0, critTotal - char.targetEndurance)
@@ -201,9 +221,9 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
   return (
     <div style={{ ...panel, display: 'flex', flexDirection: 'column', gap: 0 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
         <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
-          Personagem
+          {t('rotation.character.title')}
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {saveStatus && (
@@ -213,7 +233,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
           )}
           <button
             onClick={onImportBuild}
-            title="Preenche os campos com dados de uma build salva no Quest Log"
+            title={t('rotation.character.importTooltip')}
             style={{
               fontSize: '0.72rem', padding: '3px 10px',
               background: 'rgba(124,92,252,0.12)',
@@ -221,48 +241,52 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
               borderRadius: 4, color: '#a78bfa', cursor: 'pointer',
             }}
           >
-            ⬇ Importar de Build
+            {t('rotation.character.importButton')}
           </button>
         </div>
       </div>
 
       {/* ── ARMAS ─────────────────────────────────────── */}
       <div style={sectionDivider}>
-        <div style={sectionLabel}>Armas</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+        <div style={sectionLabel}>{t('rotation.character.weapons')}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
           <div>
-            <div style={fieldLabel}>Principal <span style={{ color: '#f0cc55' }}>(auto-attack)</span></div>
+            <div style={fieldLabel}>{t('rotation.character.weaponMain')} <span style={{ color: '#f0cc55' }}>({t('rotation.character.autoAttack')})</span></div>
             <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexWrap: 'wrap' }}>
-              <input value={char.weaponMainType} onChange={e => onChange({ weaponMainType: e.target.value })}
-                placeholder="Staff" style={{ ...baseInput, width: 94 }} />
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>min</span>
+              <select value={char.weaponMainType} onChange={e => onChange({ weaponMainType: e.target.value })}
+                style={{ ...baseInput, width: 122 }}>
+                {WEAPON_TYPES.map(w => <option key={w} value={w}>{w}</option>)}
+              </select>
+              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.min')}</span>
               {numInput(char.weaponMainDmgMin, v => onChange({ weaponMainDmgMin: v }), { width: 78 })}
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>max</span>
+              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.max')}</span>
               {numInput(char.weaponMainDmgMax, v => onChange({ weaponMainDmgMax: v }), { width: 78 })}
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }} title="Velocidade de Ataque base da arma">Vel.Atq</span>
+              <span style={{ fontSize: '0.72rem', color: '#474f6b' }} title={t('rotation.character.weaponSpeedTooltip')}>{t('rotation.character.weaponSpeed')}</span>
               {numInput(char.weaponMainAttackSpeedBase, v => onChange({ weaponMainAttackSpeedBase: v }), { width: 65, step: 0.01 })}
             </div>
           </div>
           <div>
-            <div style={fieldLabel}>Secundária <span style={{ color: '#474f6b' }}>(skills apenas)</span></div>
+            <div style={fieldLabel}>{t('rotation.character.weaponSecondary')} <span style={{ color: '#474f6b' }}>({t('rotation.character.skillsOnly')})</span></div>
             <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexWrap: 'wrap' }}>
-              <input value={char.weaponOffType} onChange={e => onChange({ weaponOffType: e.target.value })}
-                placeholder="Wand" style={{ ...baseInput, width: 94 }} />
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>min</span>
+              <select value={char.weaponOffType} onChange={e => onChange({ weaponOffType: e.target.value })}
+                style={{ ...baseInput, width: 122 }}>
+                {WEAPON_TYPES.map(w => <option key={w} value={w}>{w}</option>)}
+              </select>
+              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.min')}</span>
               {numInput(char.weaponOffDmgMin, v => onChange({ weaponOffDmgMin: v }), { width: 78 })}
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>max</span>
+              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.max')}</span>
               {numInput(char.weaponOffDmgMax, v => onChange({ weaponOffDmgMax: v }), { width: 78 })}
             </div>
           </div>
         </div>
 
         {/* Stellarite */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
-          <span style={fieldLabel}>Stellarite</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.3rem' }}>
+          <span style={fieldLabel}>{t('rotation.character.stellarite')}</span>
           {(['none', 'common', 'rare'] as Stellarite[]).map(opt => (
             <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.78rem', color: char.stellarite === opt ? '#f0cc55' : '#7a8099' }}>
               <input type="radio" name="stellarite" checked={char.stellarite === opt} onChange={() => onChange({ stellarite: opt })} />
-              {opt === 'none' ? 'Nenhuma' : opt === 'common' ? 'Comum +10%' : 'Rara +15%'}
+              {opt === 'none' ? t('rotation.character.stellariteNone') : opt === 'common' ? t('rotation.character.stellariteCommon') : t('rotation.character.stellariteRare')}
             </label>
           ))}
         </div>
@@ -270,44 +294,44 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
 
       {/* ── STATS DE COMBATE ──────────────────────────── */}
       <div style={sectionDivider}>
-        <div style={sectionLabel}>Stats de Combate</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <div style={sectionLabel}>{t('rotation.character.combatStats')}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.4rem', marginBottom: '0.3rem' }}>
           {/* CDR */}
           <div>
-            <div style={fieldLabel}>Redução de Cooldown %</div>
+            <div style={fieldLabel}>{t('rotation.character.cooldownReduction')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.cdrPct, v => onChange({ cdrPct: v }), { step: 0.1, error: cdrOver })}
               <span style={{ fontSize: '0.7rem', color: cdrOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
-                → {cdrEff.toFixed(2)}%{cdrOver ? ' ⚠ cap 120' : ''}
+                → {cdrEff.toFixed(2)}%{cdrOver ? ` ${t('rotation.character.cooldownCap')}` : ''}
               </span>
             </div>
           </div>
           {/* Attack Speed */}
           <div>
-            <div style={fieldLabel}>Velocidade de Ataque %</div>
+            <div style={fieldLabel}>{t('rotation.character.attackSpeed')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.attackSpeedPct, v => onChange({ attackSpeedPct: v }), { step: 0.1, error: asOver })}
               <span style={{ fontSize: '0.7rem', color: asOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
-                → {asEff.toFixed(2)}%{asOver ? ' ⚠ cap 150' : ''}
+                → {asEff.toFixed(2)}%{asOver ? ` ${t('rotation.character.attackSpeedCap')}` : ''}
               </span>
             </div>
           </div>
           {/* Adv Duration */}
           <div>
-            <div style={fieldLabel}>Duração de Vantagem %</div>
+            <div style={fieldLabel}>{t('rotation.character.advantageDuration')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.advDurPct, v => onChange({ advDurPct: v }), { step: 0.1, error: advOver })}
               <span style={{ fontSize: '0.7rem', color: advOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
-                → {advEff.toFixed(2)}%{advOver ? ' ⚠ cap 150' : ''}
+                → {advEff.toFixed(2)}%{advOver ? ` ${t('rotation.character.attackSpeedCap')}` : ''}
               </span>
             </div>
           </div>
         </div>
 
         {/* Crit e Heavy */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.35rem' }}>
           <div>
-            <div style={fieldLabel}>Chance Crítica &nbsp;<span style={{ color: '#474f6b' }}>+ boss</span></div>
+            <div style={fieldLabel}>{t('rotation.character.critChance')} &nbsp;<span style={{ color: '#474f6b' }}>+ boss</span></div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               {numInput(char.critChanceBase, v => onChange({ critChanceBase: v }), { width: 88 })}
               <span style={{ color: '#474f6b', fontSize: '0.8rem' }}>+</span>
@@ -316,12 +340,12 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             </div>
           </div>
           <div>
-            <div style={fieldLabel}>Dano Crítico %</div>
+            <div style={fieldLabel}>{t('rotation.character.critDamage')}</div>
             {numInput(char.critDmgPct, v => onChange({ critDmgPct: v }), { width: 104 })}
           </div>
 
           <div>
-            <div style={fieldLabel}>Chance Pesado &nbsp;<span style={{ color: '#474f6b' }}>+ boss</span></div>
+            <div style={fieldLabel}>{t('rotation.character.heavyChance')} &nbsp;<span style={{ color: '#474f6b' }}>+ boss</span></div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               {numInput(char.heavyChanceBase, v => onChange({ heavyChanceBase: v }), { width: 88 })}
               <span style={{ color: '#474f6b', fontSize: '0.8rem' }}>+</span>
@@ -330,7 +354,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             </div>
           </div>
           <div>
-            <div style={fieldLabel}>Dano Pesado %</div>
+            <div style={fieldLabel}>{t('rotation.character.heavyDamage')}</div>
             {numInput(char.heavyDmgPct, v => onChange({ heavyDmgPct: v }), { width: 104 })}
           </div>
         </div>
@@ -338,22 +362,22 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
 
       {/* ── MODIFICADORES ─────────────────────────────── */}
       <div style={sectionDivider}>
-        <div style={sectionLabel}>Modificadores</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
+        <div style={sectionLabel}>{t('rotation.character.modifiers')}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.35rem' }}>
           <div>
-            <div style={fieldLabel} title="Skill Damage Boost — stat flat, fórmula: SDB/(SDB+1000)">Skill Dmg Boost</div>
+            <div style={fieldLabel} title={t('rotation.character.skillDmgBoostTooltip')}>{t('rotation.character.skillDmgBoost')}</div>
             {numInput(char.skillDmgBoost, v => onChange({ skillDmgBoost: v }))}
           </div>
           <div>
-            <div style={fieldLabel} title="Species Damage Boost — mesma fórmula do SDB">Espécie Boost</div>
+            <div style={fieldLabel} title={t('rotation.character.speciesBoostTooltip')}>{t('rotation.character.speciesBoost')}</div>
             {numInput(char.speciesDmgBoost, v => onChange({ speciesDmgBoost: v }))}
           </div>
           <div>
-            <div style={fieldLabel} title="True Damage — somado flat após todos os multiplicadores, não afeta DoT">Bonus Dmg (flat)</div>
+            <div style={fieldLabel} title={t('rotation.character.bonusDamageTooltip')}>{t('rotation.character.bonusDamage')}</div>
             {numInput(char.bonusDamage, v => onChange({ bonusDamage: v }))}
           </div>
           <div>
-            <div style={fieldLabel} title="Bônus de item por elemento/tipo de skill (ex: +5% dano de raio)">Item Boost %</div>
+            <div style={fieldLabel} title={t('rotation.character.itemBoostTooltip')}>{t('rotation.character.itemBoost')}</div>
             {numInput(char.dmgBoost * 100, v => onChange({ dmgBoost: v / 100 }), { step: 0.1 })}
           </div>
         </div>
@@ -361,21 +385,158 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
 
       {/* ── ALVO ──────────────────────────────────────── */}
       <div style={sectionDivider}>
-        <div style={sectionLabel}>Alvo</div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '0.5rem', alignItems: 'end' }}>
+        <div style={sectionLabel}>{t('rotation.character.target')}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 2fr', gap: '0.35rem', alignItems: 'end' }}>
           <div>
-            <div style={fieldLabel}>Defesa</div>
+            <div style={fieldLabel}>{t('rotation.character.targetDefense')}</div>
             {numInput(char.targetDefense, v => onChange({ targetDefense: v }))}
           </div>
           <div>
-            <div style={fieldLabel}>Endurance</div>
+            <div style={fieldLabel}>{t('rotation.character.targetEndurance')}</div>
             {numInput(char.targetEndurance, v => onChange({ targetEndurance: v }))}
           </div>
           <div style={{ fontSize: '0.68rem', color: '#474f6b', paddingBottom: 4 }}>
-            Endurance reduz chance crítica efetiva
+            {t('rotation.character.enduranceNote')}
           </div>
         </div>
       </div>
+    </div>
+  )
+}
+
+// ─── SkillPicker ─────────────────────────────────────────────────────────────
+
+interface SkillPickerProps {
+  currentName:  string
+  skillDbId:    string | undefined
+  weaponTypes:  string[]
+  onNameChange: (name: string) => void
+  onSelect:     (entry: SkillDBEntry) => void
+  onClear:      () => void
+  placeholder?: string
+}
+
+function SkillPicker({
+  currentName, skillDbId, weaponTypes,
+  onNameChange, onSelect, onClear, placeholder = 'Nome',
+}: SkillPickerProps): React.ReactElement {
+  const [open, setOpen]     = useState(false)
+  const [search, setSearch] = useState('')
+  const containerRef        = useRef<HTMLDivElement>(null)
+  const { entries } = useSkillsDB()
+
+  const filtered = useMemo(() => {
+    const base = filterSkillsByWeapons(entries, weaponTypes)
+    if (!search.trim()) return base
+    const q = search.toLowerCase()
+    return base.filter(e =>
+      e.name.toLowerCase().includes(q) || e.nameEn.toLowerCase().includes(q)
+    )
+  }, [entries, weaponTypes, search])
+
+  useEffect(() => {
+    if (!open) return
+    function handler(e: MouseEvent): void {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+        setSearch('')
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [open])
+
+  function toggle(): void {
+    setOpen(o => !o)
+    setSearch('')
+  }
+
+  return (
+    <div ref={containerRef} style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+      <input
+        value={currentName}
+        onChange={e => onNameChange(e.target.value)}
+        placeholder={placeholder}
+        style={{ ...baseInput, width: skillDbId ? 148 : 156 }}
+      />
+      <button
+        onClick={toggle}
+        title={skillDbId ? 'Substituir skill vinculada' : 'Vincular ao Banco de Skills'}
+        style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          fontSize: '0.82rem', padding: '2px 2px', lineHeight: 1,
+          color: skillDbId ? '#7c5cfc' : '#474f6b',
+        }}
+      >
+        {skillDbId ? '🔗' : '🔍'}
+      </button>
+      {skillDbId && (
+        <button
+          onClick={onClear}
+          title="Desvincular (voltar para edição manual)"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', padding: '2px 1px', lineHeight: 1, color: '#7a8099' }}
+        >
+          ✕
+        </button>
+      )}
+
+      {open && (
+        <div style={{
+          position: 'absolute', top: '100%', left: 0, zIndex: 200,
+          background: 'var(--bg-panel)',
+          border: '1px solid rgba(124,92,252,0.35)',
+          borderRadius: 6, width: 300, maxHeight: 260,
+          display: 'flex', flexDirection: 'column',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.55)',
+          marginTop: 2,
+        }}>
+          <div style={{ padding: '5px 7px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+            <input
+              autoFocus
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Buscar skill..."
+              style={{ ...baseInput, width: '100%', boxSizing: 'border-box' }}
+            />
+          </div>
+          <div style={{ overflowY: 'auto', flex: 1 }}>
+            {filtered.length === 0 && (
+              <div style={{ padding: '0.6rem', color: '#474f6b', fontSize: '0.75rem', textAlign: 'center', fontStyle: 'italic' }}>
+                {entries.length === 0
+                  ? 'Banco vazio — adicione skills na aba Banco de Skills'
+                  : 'Nenhuma skill encontrada'}
+              </div>
+            )}
+            {filtered.map(entry => (
+              <button
+                key={entry.id}
+                onClick={() => { onSelect(entry); setOpen(false); setSearch('') }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  width: '100%', padding: '4px 8px',
+                  background: 'none', border: 'none',
+                  borderBottom: '1px solid rgba(255,255,255,0.03)',
+                  cursor: 'pointer', textAlign: 'left', color: 'var(--text)',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(124,92,252,0.12)')}
+                onMouseLeave={e => (e.currentTarget.style.background = 'none')}
+              >
+                <span style={{
+                  width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
+                  background: WEAPON_COLOR[entry.weaponType] ?? '#94a3b8',
+                }} />
+                <span style={{ flex: 1, fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {entry.name}
+                </span>
+                <span style={{ fontSize: '0.62rem', color: '#474f6b', flexShrink: 0, whiteSpace: 'nowrap' }}>
+                  {entry.castTime > 0 ? `${entry.castTime}s` : ''}
+                  {entry.cooldown > 0 ? ` cd${entry.cooldown}s` : ''}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -404,7 +565,25 @@ const SKILL_HEADERS: Array<{ label: string; title?: string }> = [
 ]
 
 function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElement {
+  const t = useT()
   const { addSkill, updateSkill, removeSkill, moveSkill } = useRotation()
+
+  function handleSkillSelect(skillId: string, entry: SkillDBEntry): void {
+    const weaponAssignment: SkillWeapon =
+      entry.weaponType === char.weaponMainType ? 'main' : 'off'
+    updateSkill(rotId, skillId, {
+      skillName:    entry.name,
+      skillDbId:    entry.id,
+      weapon:       weaponAssignment,
+      castTime:     entry.castTime,
+      cooldown:     entry.cooldown,
+      skillDmgPct:  entry.skillDmgPct,
+      bonusBaseDmg: entry.bonusBaseDmg,
+      hits:         entry.hits,
+      monsterBonus: entry.monsterBonus,
+      dmgBonus:     entry.dmgBonus,
+    })
+  }
 
   function addRow(): void {
     addSkill(rotId, {
@@ -418,14 +597,14 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
     <div style={panel}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
         <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          Skills Ativas
+          {t('rotation.skills.title')}
         </span>
         <button onClick={addRow} style={{
           fontSize: '0.72rem', padding: '3px 10px',
           background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)',
           borderRadius: 4, color: '#f0cc55', cursor: 'pointer',
         }}>
-          + Skill
+          {t('rotation.skills.addButton')}
         </button>
       </div>
 
@@ -442,7 +621,7 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
             {skills.length === 0 && (
               <tr>
                 <td colSpan={12} style={{ ...td, color: '#474f6b', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
-                  Nenhuma skill. Clique em + Skill para adicionar.
+                  {t('rotation.skills.emptyState')}
                 </td>
               </tr>
             )}
@@ -466,8 +645,15 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
                     </div>
                   </td>
                   <td style={td}>
-                    <input value={sk.skillName} onChange={e => updateSkill(rotId, sk.id, { skillName: e.target.value })}
-                      placeholder="Nome da skill" style={{ ...baseInput, width: 182 }} />
+                    <SkillPicker
+                      currentName={sk.skillName}
+                      skillDbId={sk.skillDbId}
+                      weaponTypes={[char.weaponMainType, char.weaponOffType]}
+                      onNameChange={name => updateSkill(rotId, sk.id, { skillName: name })}
+                      onSelect={entry => handleSkillSelect(sk.id, entry)}
+                      onClear={() => updateSkill(rotId, sk.id, { skillDbId: undefined })}
+                      placeholder={t('rotation.skills.skillName')}
+                    />
                   </td>
                   <td style={td}>
                     <select value={sk.weapon} onChange={e => updateSkill(rotId, sk.id, { weapon: e.target.value as SkillWeapon })}
@@ -488,11 +674,11 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
                   </td>
                   <td style={{ ...td, width: 52 }}>
                     <button onClick={() => updateSkill(rotId, sk.id, { enabled: !sk.enabled })}
-                      title={sk.enabled ? 'Desativar skill' : 'Ativar skill'}
+                      title={sk.enabled ? t('rotation.skills.toggleTooltip') : t('rotation.skills.toggleTooltipInactive')}
                       style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: sk.enabled ? '#4ade80' : '#474f6b', marginRight: 2 }}>
                       {sk.enabled ? '●' : '○'}
                     </button>
-                    <button onClick={() => removeSkill(rotId, sk.id)} title="Remover skill"
+                    <button onClick={() => removeSkill(rotId, sk.id)} title={t('rotation.skills.removeTooltip')}
                       style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: '#7a8099' }}>
                       ×
                     </button>
@@ -531,7 +717,25 @@ const DOT_HEADERS: Array<{ label: string; title?: string }> = [
 ]
 
 function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
+  const t = useT()
   const { addDot, updateDot, removeDot } = useRotation()
+
+  function handleDotSelect(dotId: string, entry: SkillDBEntry): void {
+    const weaponAssignment: SkillWeapon =
+      entry.weaponType === char.weaponMainType ? 'main' : 'off'
+    updateDot(rotId, dotId, {
+      dotName:      entry.name,
+      skillDbId:    entry.id,
+      weapon:       weaponAssignment,
+      castTime:     entry.castTime,
+      cooldown:     entry.cooldown,
+      skillDmgPct:  entry.skillDmgPct,
+      bonusBaseDmg: entry.bonusBaseDmg,
+      ticks:        entry.hits,
+      monsterBonus: entry.monsterBonus,
+      dmgBonus:     entry.dmgBonus,
+    })
+  }
 
   function addRow(): void {
     addDot(rotId, {
@@ -546,14 +750,14 @@ function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
     <div style={{ ...panel, height: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
         <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          DoT / Passivas
+          {t('rotation.dots.title')}
         </span>
         <button onClick={addRow} style={{
           fontSize: '0.72rem', padding: '3px 10px',
           background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)',
           borderRadius: 4, color: '#f0cc55', cursor: 'pointer',
         }}>
-          + DoT
+          {t('rotation.dots.addButton')}
         </button>
       </div>
 
@@ -570,7 +774,7 @@ function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
             {dots.length === 0 && (
               <tr>
                 <td colSpan={12} style={{ ...td, color: '#474f6b', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
-                  Nenhum DoT / passiva.
+                  {t('rotation.dots.emptyState')}
                 </td>
               </tr>
             )}
@@ -586,8 +790,15 @@ function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
                   style={{ opacity: dot.enabled ? 1 : 0.4, cursor: 'grab' }}>
                   <td style={{ ...td, width: 28, color: '#474f6b', textAlign: 'center', fontSize: '0.7rem' }}>{idx + 1}</td>
                   <td style={td}>
-                    <input value={dot.dotName} onChange={e => updateDot(rotId, dot.id, { dotName: e.target.value })}
-                      placeholder="Nome do DoT" style={{ ...baseInput, width: 156 }} />
+                    <SkillPicker
+                      currentName={dot.dotName}
+                      skillDbId={dot.skillDbId}
+                      weaponTypes={[char.weaponMainType, char.weaponOffType]}
+                      onNameChange={name => updateDot(rotId, dot.id, { dotName: name })}
+                      onSelect={entry => handleDotSelect(dot.id, entry)}
+                      onClear={() => updateDot(rotId, dot.id, { skillDbId: undefined })}
+                      placeholder={t('rotation.dots.dotName')}
+                    />
                   </td>
                   <td style={td}>
                     <select value={dot.weapon} onChange={e => updateDot(rotId, dot.id, { weapon: e.target.value as SkillWeapon })}
@@ -660,6 +871,7 @@ const BUFF_HEADERS: Array<{ label: string; title?: string }> = [
 ]
 
 function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
+  const t = useT()
   const { addBuff, updateBuff, removeBuff } = useRotation()
 
   function addRow(): void {
@@ -673,14 +885,14 @@ function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
     <div style={panel}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
         <span style={{ fontSize: '0.72rem', color: '#22d3ee', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          Buffs
+          {t('rotation.buffs.title')}
         </span>
         <button onClick={addRow} style={{
           fontSize: '0.72rem', padding: '3px 10px',
           background: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.25)',
           borderRadius: 4, color: '#22d3ee', cursor: 'pointer',
         }}>
-          + Buff
+          {t('rotation.buffs.addButton')}
         </button>
       </div>
 
@@ -697,7 +909,7 @@ function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
             {buffs.length === 0 && (
               <tr>
                 <td colSpan={7} style={{ ...td, color: '#474f6b', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
-                  Nenhum buff. Clique em + Buff para adicionar.
+                  {t('rotation.buffs.emptyState')}
                 </td>
               </tr>
             )}
@@ -711,7 +923,7 @@ function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
                 style={{ opacity: buff.enabled ? 1 : 0.4, cursor: 'grab' }}>
                 <td style={td}>
                   <input value={buff.buffName} onChange={e => updateBuff(rotId, buff.id, { buffName: e.target.value })}
-                    placeholder="Nome do buff" style={{ ...baseInput, width: 160 }} />
+                    placeholder={t('rotation.buffs.buffName')} style={{ ...baseInput, width: 160 }} />
                 </td>
                 <td style={td}>
                   <select value={buff.buffType} onChange={e => updateBuff(rotId, buff.id, { buffType: e.target.value as BuffType })}
@@ -727,11 +939,11 @@ function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
                 <td style={td}>{numInput(buff.cooldown,      v => updateBuff(rotId, buff.id, { cooldown: v }), { width: 72, step: 0.5 })}</td>
                 <td style={{ ...td, width: 48 }}>
                   <button onClick={() => updateBuff(rotId, buff.id, { enabled: !buff.enabled })}
-                    title={buff.enabled ? 'Desativar buff' : 'Ativar buff'}
+                    title={buff.enabled ? t('rotation.buffs.toggleTooltip') : t('rotation.buffs.toggleTooltipInactive')}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: buff.enabled ? '#22d3ee' : '#474f6b', marginRight: 2 }}>
                     {buff.enabled ? '●' : '○'}
                   </button>
-                  <button onClick={() => removeBuff(rotId, buff.id)} title="Remover buff"
+                  <button onClick={() => removeBuff(rotId, buff.id)} title={t('rotation.buffs.removeTooltip')}
                     style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: '#7a8099' }}>
                     ×
                   </button>
@@ -756,6 +968,7 @@ function newRuleId(): string {
 }
 
 function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
+  const t = useT()
   const { addRule, removeRule } = useRotation()
   const rules = rotation.rules ?? []
 
@@ -793,7 +1006,7 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
         <span style={{ fontSize: '0.72rem', color: '#f97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          Regras de Encadeamento
+          {t('rotation.rules.title')}
         </span>
         <button
           onClick={handleAddRule}
@@ -805,13 +1018,13 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
             opacity: allItems.length < 2 ? 0.45 : 1,
           }}
         >
-          + Regra
+          {t('rotation.rules.addButton')}
         </button>
       </div>
 
       {rules.length === 0 && (
         <div style={{ color: '#474f6b', fontSize: '0.8rem', fontStyle: 'italic', padding: '0.5rem 0' }}>
-          Nenhuma regra. Adicione skills, DoTs ou buffs e clique em + Regra.
+          {t('rotation.rules.emptyState')}
         </div>
       )}
 
@@ -841,7 +1054,7 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
 
           <button
             onClick={() => removeRule(rotation.id, rule.id)}
-            title="Remover regra"
+            title={t('rotation.rules.removeTooltip')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#7a8099', lineHeight: 1 }}
           >
             ×
@@ -926,6 +1139,7 @@ function abbrev(name: string): string {
 type CellState = 'empty' | 'cast' | 'active' | 'conflict'
 
 function Timeline({ rotation }: TimelineProps): React.ReactElement {
+  const t = useT()
   const { toggleCastEvent, clearItemTimeline, clearAllTimeline } = useRotation()
   const [hoverCell, setHoverCell] = useState<string | null>(null)
 
@@ -1069,10 +1283,10 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
     return (
       <div style={panel}>
         <div style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
-          Timeline
+          {t('rotation.timeline.title')}
         </div>
         <div style={{ color: '#474f6b', fontSize: '0.8rem', fontStyle: 'italic', padding: '1rem 0' }}>
-          Habilite ao menos uma skill, DoT ou buff para usar a timeline.
+          {t('rotation.timeline.noSkills')}
         </div>
       </div>
     )
@@ -1082,22 +1296,22 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
     <div style={panel}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
         <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          Timeline
+          {t('rotation.timeline.title')}
         </span>
         <span style={{ fontSize: '0.65rem', color: '#474f6b', flex: 1 }}>
-          Clique ou arraste skills / DoTs / buffs para marcar o cast · 🟥 = cooldown não liberado
+          {t('rotation.timeline.instruction')}
         </span>
         {timeline.length > 0 && (
           <button
             onClick={() => clearAllTimeline(rotation.id)}
-            title="Limpar toda a timeline"
+            title={t('rotation.timeline.clearAllTooltip')}
             style={{
               fontSize: '0.65rem', padding: '2px 8px',
               background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
               borderRadius: 4, color: '#f87171', cursor: 'pointer', whiteSpace: 'nowrap',
             }}
           >
-            Limpar tudo
+            {t('rotation.timeline.clearAllButton')}
           </button>
         )}
       </div>
@@ -1115,7 +1329,7 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
                       <span>{abbrev(s.skillName)}</span>
                       {hasCasts && (
-                        <button onClick={() => clearItemTimeline(rotation.id, s.id)} title="Limpar coluna"
+                        <button onClick={() => clearItemTimeline(rotation.id, s.id)} title={t('rotation.timeline.clearColumnTooltip')}
                           style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
                           ×
                         </button>
@@ -1132,7 +1346,7 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
                       <span>{abbrev(d.dotName)}</span>
                       {hasCasts && (
-                        <button onClick={() => clearItemTimeline(rotation.id, d.id)} title="Limpar coluna"
+                        <button onClick={() => clearItemTimeline(rotation.id, d.id)} title={t('rotation.timeline.clearColumnTooltip')}
                           style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
                           ×
                         </button>
@@ -1149,7 +1363,7 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
                       <span>{abbrev(b.buffName)}</span>
                       {hasCasts && (
-                        <button onClick={() => clearItemTimeline(rotation.id, b.id)} title="Limpar coluna"
+                        <button onClick={() => clearItemTimeline(rotation.id, b.id)} title={t('rotation.timeline.clearColumnTooltip')}
                           style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
                           ×
                         </button>
@@ -1228,6 +1442,7 @@ interface ImportModalProps {
 }
 
 function ImportModal({ onSelect, onClose }: ImportModalProps): React.ReactElement {
+  const t = useT()
   const { builds } = useBuilds()
   const list = Object.values(builds)
 
@@ -1238,16 +1453,16 @@ function ImportModal({ onSelect, onClose }: ImportModalProps): React.ReactElemen
     }}>
       <div style={{ ...panel, width: 420, maxHeight: '65vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <span style={{ fontSize: '0.85rem', color: '#d4af37', fontWeight: 700 }}>Importar stats de Build</span>
+          <span style={{ fontSize: '0.85rem', color: '#d4af37', fontWeight: 700 }}>{t('rotation.importModal.title')}</span>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#7a8099', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
         </div>
         <div style={{ fontSize: '0.7rem', color: '#474f6b', marginBottom: '0.5rem' }}>
-          Preenche automaticamente os campos disponíveis. Campos exclusivos da rotação permanecem intactos.
+          {t('rotation.importModal.description')}
         </div>
         <div style={{ overflowY: 'auto', flex: 1 }}>
           {list.length === 0 && (
             <div style={{ color: '#474f6b', fontSize: '0.82rem', textAlign: 'center', padding: '1rem' }}>
-              Nenhuma build importada ainda.<br />Use o Quest Log para importar uma build primeiro.
+              {t('rotation.importModal.emptyState')}<br />{t('rotation.importModal.emptyStateNote')}
             </div>
           )}
           {list.map(b => (
@@ -1271,18 +1486,21 @@ function ImportModal({ onSelect, onClose }: ImportModalProps): React.ReactElemen
 // ─── Página principal ─────────────────────────────────────────────────────────
 
 export function Rotation(): React.ReactElement {
+  const t = useT()
   const {
     rotations, activeRotationId,
     loadFromDisk, createEmpty, deleteRotation, setActive, updateCharacter,
   } = useRotation()
   const { builds } = useBuilds()
   const { data: logTimeline, load: loadLogTimeline } = useLogTimeline()
+  const { loadFromDisk: loadSkillsDB } = useSkillsDB()
 
   const [showImportModal, setShowImportModal] = useState(false)
   const [newName, setNewName] = useState('')
 
   useEffect(() => { loadFromDisk() }, [])
   useEffect(() => { loadLogTimeline() }, [])
+  useEffect(() => { loadSkillsDB() }, [])
 
   const rotation = activeRotationId ? rotations[activeRotationId] : null
 
@@ -1315,7 +1533,8 @@ export function Rotation(): React.ReactElement {
   }
 
   function handleCreateNew(): void {
-    const name = newName.trim() || 'Nova Rotação'
+    const t = useT()
+    const name = newName.trim() || t('rotation.sidebar.newRotation')
     createEmpty(name)
     setNewName('')
   }
@@ -1337,7 +1556,7 @@ export function Rotation(): React.ReactElement {
             value={newName}
             onChange={e => setNewName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleCreateNew()}
-            placeholder="Nome da rotação..."
+            placeholder={t('rotation.sidebar.rotationName')}
             style={{ ...baseInput, width: '100%', marginBottom: 6 }}
           />
           <button onClick={handleCreateNew} style={{
@@ -1345,7 +1564,7 @@ export function Rotation(): React.ReactElement {
             background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)',
             borderRadius: 4, color: '#f0cc55', cursor: 'pointer', fontSize: '0.78rem',
           }}>
-            + Nova Rotação
+            + {t('rotation.sidebar.newRotation')}
           </button>
         </div>
 
@@ -1367,7 +1586,7 @@ export function Rotation(): React.ReactElement {
                   {r.name}
                 </button>
                 {isActive && (
-                  <button onClick={() => deleteRotation(r.id)} title="Deletar rotação"
+                  <button onClick={() => deleteRotation(r.id)} title={t('rotation.sidebar.deleteTooltip')}
                     style={{ background: 'none', border: 'none', color: '#474f6b', cursor: 'pointer', fontSize: '0.85rem', padding: '0 4px', flexShrink: 0 }}
                     onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
                     onMouseLeave={e => (e.currentTarget.style.color = '#474f6b')}
@@ -1389,7 +1608,7 @@ export function Rotation(): React.ReactElement {
       }}>
         {!rotation ? (
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#474f6b' }}>
-            Selecione ou crie uma rotação na sidebar
+            {t('rotation.empty')}
           </div>
         ) : (
           <>
@@ -1432,7 +1651,7 @@ export function Rotation(): React.ReactElement {
               {/* Coluna esquerda: Timeline planejada */}
               <div>
                 <div style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.35rem' }}>
-                  Planejado
+                  {t('rotation.timeline.planned')}
                 </div>
                 <Timeline rotation={rotation} />
               </div>
@@ -1442,7 +1661,7 @@ export function Rotation(): React.ReactElement {
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
                     <span style={{ fontSize: '0.72rem', color: '#a78bfa', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                      Real (Log)
+                      {t('rotation.timeline.realLog')}
                     </span>
                   </div>
                   <LogTimelinePanel data={logTimeline} />
@@ -1460,7 +1679,7 @@ export function Rotation(): React.ReactElement {
                   borderRadius: 4, color: '#a78bfa', cursor: 'pointer',
                 }}
               >
-                {logTimeline ? '📥 Atualizar do Log' : '📥 Importar Timeline do Log'}
+                {logTimeline ? t('rotation.timeline.updateButton') : t('rotation.timeline.importButton')}
               </button>
             </div>
           </>

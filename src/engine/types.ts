@@ -122,7 +122,7 @@ export interface RotationCharacter {
 
 export const DEFAULT_ROTATION_CHARACTER: RotationCharacter = {
   weaponMainType: 'Staff', weaponMainDmgMin: 0, weaponMainDmgMax: 0, weaponMainAttackSpeedBase: 0,
-  weaponOffType: 'Wand',   weaponOffDmgMin: 0,  weaponOffDmgMax: 0,
+  weaponOffType: 'Wand & Tome', weaponOffDmgMin: 0,  weaponOffDmgMax: 0,
   stellarite: 'none',
   cdrPct: 0, attackSpeedPct: 0, advDurPct: 0,
   critChanceBase: 0, critChanceBoss: 0, critDmgPct: 100,
@@ -143,6 +143,7 @@ export interface RotationSkill {
   monsterBonus: number   // decimal: 1.2 = +120%
   dmgBonus:     number   // condicional decimal: 0.4 = +40%
   enabled:      boolean
+  skillDbId?:   string   // undefined = entrada manual; string = vinculada ao SkillsDB
 }
 
 export interface RotationDot {
@@ -157,6 +158,7 @@ export interface RotationDot {
   monsterBonus: number
   dmgBonus:     number
   enabled:      boolean
+  skillDbId?:   string
 }
 
 export type BuffType = 'dmg' | 'crit' | 'as' | 'adv' | 'utility'

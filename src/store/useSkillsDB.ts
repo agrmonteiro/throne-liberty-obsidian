@@ -180,6 +180,18 @@ export const DEFAULT_ENTRIES: SkillDBEntry[] = SEED.map((s, i) => {
 })
 
 
+export function filterSkillsByWeapons(
+  entries: SkillDBEntry[],
+  weaponTypes: string[],
+): SkillDBEntry[] {
+  return entries.filter(e =>
+    weaponTypes.includes(e.weaponType) ||
+    e.weaponType === 'Item/Proc' ||
+    e.category === 'item' ||
+    e.category === 'proc'
+  )
+}
+
 export const useSkillsDB = create<SkillsDBState>((set, get) => ({
   entries: [],
   loading: false,

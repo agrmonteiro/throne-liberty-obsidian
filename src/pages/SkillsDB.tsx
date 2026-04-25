@@ -1,7 +1,9 @@
 import React, { useState, useMemo } from 'react'
 import { useSkillsDB } from '../store/useSkillsDB'
 import type { SkillDBEntry, SkillCategory } from '../store/useSkillsDB'
+import { WEAPON_TYPES } from '../engine/constants'
 import { NumericInput } from '../components/NumericInput'
+import { useT } from '../i18n/useT'
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
 
@@ -45,11 +47,6 @@ const td: React.CSSProperties = {
 
 // ─── Constantes ────────────────────────────────────────────────────────────────
 
-const WEAPON_TYPES = [
-  'Staff', 'Wand & Tome', 'Longbow', 'Crossbow',
-  'Dagger', 'Greatsword', 'Sword & Shield', 'Spear', 'Orb', 'Item/Proc',
-]
-
 const CATEGORIES: SkillCategory[] = ['active', 'passive', 'proc', 'item', 'mastery']
 
 const GRADE_COLOR: Record<string, string> = {
@@ -91,6 +88,7 @@ interface RowProps {
 }
 
 function EntryRow({ entry, onUpdate, onDelete }: RowProps): React.ReactElement {
+  const t = useT()
   const gradeColor = GRADE_COLOR[entry.grade] ?? '#7a8099'
   const descSnippet = (entry.description || '').split('\n')[0].slice(0, 60)
   return (
@@ -146,7 +144,7 @@ function EntryRow({ entry, onUpdate, onDelete }: RowProps): React.ReactElement {
       <td style={{ ...td, width: 28 }}>
         <button
           onClick={onDelete}
-          title="Remover skill"
+          title={t('skillsdb.table.removeTooltip')}
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#7a8099', fontSize: '1rem', lineHeight: 1, padding: 0 }}
           onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
           onMouseLeave={e => (e.currentTarget.style.color = '#7a8099')}
@@ -161,6 +159,7 @@ function EntryRow({ entry, onUpdate, onDelete }: RowProps): React.ReactElement {
 // ─── Página principal ──────────────────────────────────────────────────────────
 
 export function SkillsDB(): React.ReactElement {
+  const t = useT()
   const { entries, loading, loadFromDisk, addEntry, updateEntry, removeEntry, resetToDefault } = useSkillsDB()
 
   const [search,       setSearch]       = useState('')
@@ -202,10 +201,10 @@ export function SkillsDB(): React.ReactElement {
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
         <div>
           <div style={{ fontSize: '0.6rem', color: '#7c5cfc', textTransform: 'uppercase', letterSpacing: '0.14em', marginBottom: 2 }}>
-            Banco de Skills
+            {t('skillsdb.header.title')}
           </div>
           <div style={{ fontSize: '1rem', fontWeight: 700, color: '#f0cc55' }}>
-            {entries.length} skills cadastradas
+            {entries.length} {t('skillsdb.header.count')}
           </div>
         </div>
 
@@ -213,7 +212,7 @@ export function SkillsDB(): React.ReactElement {
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
-          placeholder="Buscar por nome..."
+          placeholder={t('skillsdb.search.placeholder')}
           style={{ ...baseInput, width: 200 }}
         />
         <select
@@ -221,7 +220,7 @@ export function SkillsDB(): React.ReactElement {
           onChange={e => setFilterWeapon(e.target.value)}
           style={{ ...baseInput, width: 130 }}
         >
-          <option value="Todos" style={optionStyle}>Todas as armas</option>
+          <option value="Todos" style={optionStyle}>{t('skillsdb.filter.allWeapons')}</option>
           {WEAPON_TYPES.map(w => <option key={w} value={w} style={optionStyle}>{w}</option>)}
         </select>
         <select
@@ -229,7 +228,7 @@ export function SkillsDB(): React.ReactElement {
           onChange={e => setFilterCat(e.target.value as typeof filterCat)}
           style={{ ...baseInput, width: 110 }}
         >
-          <option value="Todos" style={optionStyle}>Todas as categorias</option>
+          <option value="Todos" style={optionStyle}>{t('skillsdb.filter.allCategories')}</option>
           {CATEGORIES.map(c => <option key={c} value={c} style={optionStyle}>{c}</option>)}
         </select>
 
@@ -242,7 +241,7 @@ export function SkillsDB(): React.ReactElement {
               borderRadius: 5, color: '#f0cc55', cursor: 'pointer', fontWeight: 600,
             }}
           >
-            + Nova Skill
+            {t('skillsdb.button.addSkill')}
           </button>
           <button
             onClick={handleReset}
@@ -254,7 +253,7 @@ export function SkillsDB(): React.ReactElement {
               borderRadius: 5, color: '#f87171', cursor: 'pointer',
             }}
           >
-            {confirmReset ? 'Confirmar reset' : 'Restaurar padrão'}
+            {confirmReset ? t('skillsdb.button.confirmReset') : t('skillsdb.button.resetDefault')}
           </button>
         </div>
       </div>
@@ -263,26 +262,26 @@ export function SkillsDB(): React.ReactElement {
       <div style={{ ...panel, flex: 1, overflow: 'auto' }}>
         {loading ? (
           <div style={{ color: '#474f6b', fontSize: '0.85rem', padding: '1.5rem', textAlign: 'center' }}>
-            Carregando...
+            {t('skillsdb.table.loading')}
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead style={{ position: 'sticky', top: 0, zIndex: 1 }}>
               <tr>
                 <th style={{ ...th, minWidth: 190 }}>Nome</th>
-                <th style={{ ...th, minWidth: 120 }}>Nome EN</th>
-                <th style={{ ...th, minWidth: 120 }}>Arma</th>
-                <th style={{ ...th, minWidth: 82  }}>Categoria</th>
-                <th style={{ ...th, minWidth: 62  }}>Grade</th>
-                <th style={{ ...th, minWidth: 52  }} title="Cast em segundos">Cast</th>
-                <th style={{ ...th, minWidth: 52  }} title="Cooldown base em segundos">CD</th>
-                <th style={{ ...th, minWidth: 58  }} title="Custo de mana">Mana</th>
-                <th style={{ ...th, minWidth: 62  }} title="Dmg % da skill">Dmg %</th>
-                <th style={{ ...th, minWidth: 62  }} title="Bônus de dano base fixo">+ Base</th>
-                <th style={{ ...th, minWidth: 46  }} title="Hits por cast">Hits</th>
-                <th style={{ ...th, minWidth: 52  }} title="Bônus vs monstros (%)">Mob %</th>
-                <th style={{ ...th, minWidth: 52  }} title="Bônus condicional (%)">+Dano %</th>
-                <th style={{ ...th, minWidth: 100 }}>Descrição</th>
+                <th style={{ ...th, minWidth: 120 }}>{t('skillsdb.table.nameEn')}</th>
+                <th style={{ ...th, minWidth: 120 }}>{t('skillsdb.table.weapon')}</th>
+                <th style={{ ...th, minWidth: 82  }}>{t('skillsdb.table.category')}</th>
+                <th style={{ ...th, minWidth: 62  }}>{t('skillsdb.table.grade')}</th>
+                <th style={{ ...th, minWidth: 52  }} title={t('skillsdb.table.castTooltip')}>Cast</th>
+                <th style={{ ...th, minWidth: 52  }} title={t('skillsdb.table.cooldownTooltip')}>CD</th>
+                <th style={{ ...th, minWidth: 58  }} title={t('skillsdb.table.manaTooltip')}>Mana</th>
+                <th style={{ ...th, minWidth: 62  }} title={t('skillsdb.table.dmgPercentTooltip')}>Dmg %</th>
+                <th style={{ ...th, minWidth: 62  }} title={t('skillsdb.table.bonusBaseDmgTooltip')}>+ Base</th>
+                <th style={{ ...th, minWidth: 46  }} title={t('skillsdb.table.hitsTooltip')}>Hits</th>
+                <th style={{ ...th, minWidth: 52  }} title={t('skillsdb.table.mobPercentTooltip')}>Mob %</th>
+                <th style={{ ...th, minWidth: 52  }} title={t('skillsdb.table.dmgBonusTooltip')}>+Dano %</th>
+                <th style={{ ...th, minWidth: 100 }}>{t('skillsdb.table.description')}</th>
                 <th style={{ ...th, width: 28     }}></th>
               </tr>
             </thead>
@@ -290,7 +289,7 @@ export function SkillsDB(): React.ReactElement {
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={15} style={{ ...td, color: '#474f6b', textAlign: 'center', padding: '2rem', fontStyle: 'italic' }}>
-                    {entries.length === 0 ? 'Nenhuma skill cadastrada.' : 'Nenhuma skill encontrada com os filtros atuais.'}
+                    {entries.length === 0 ? t('skillsdb.table.emptyState') : t('skillsdb.table.noResults')}
                   </td>
                 </tr>
               )}
@@ -308,7 +307,7 @@ export function SkillsDB(): React.ReactElement {
       </div>
 
       <div style={{ fontSize: '0.65rem', color: '#474f6b' }}>
-        Campos de dano (Dmg %, +Base, Mob %, +Dano %) serão usados como padrão ao selecionar a skill na rotação. Edições são salvas automaticamente.
+        {t('skillsdb.footer.damageFieldsNote')}
       </div>
     </div>
   )
