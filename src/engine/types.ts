@@ -70,6 +70,10 @@ export interface Build {
   // All raw fields from the scraper (preserved for display + editing)
   rawAttributes?: Record<string, { total: number; display: string }>
   rawStats?:      Record<string, string>
+  // Phase 11 — dados de especialização do Questlog Build Editor (per D-04, D-06)
+  specialization?: Array<{ id: string; lvl: number }>
+  weaponMain?:     string   // ex: "staff" (lowercase, formato Questlog) — distinto de RotationCharacter.weaponMainType
+  weaponOff?:      string   // ex: "wand" (lowercase, formato Questlog) — distinto de RotationCharacter.weaponOffType
 }
 
 export type BuildMap = Record<string, Build>
