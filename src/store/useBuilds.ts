@@ -329,6 +329,22 @@ function parseNewScraperFormat(raw: Record<string, unknown>): Build | null {
   const name = String(meta.character_name || meta.slug || 'Build importada')
   const sourceUrl = typeof meta.source_url === 'string' ? meta.source_url : undefined
 
+  const rawSpec = raw.specialization
+  const specialization: Array<{ id: string; lvl: number }> | undefined = (() => {
+    if (!Array.isArray(rawSpec) || rawSpec.length === 0) return undefined
+    const filtered = (rawSpec as unknown[]).reduce<Array<{ id: string; lvl: number }>>((acc, item) => {
+      if (
+        item !== null && typeof item === 'object' &&
+        typeof (item as any).id === 'string' &&
+        typeof (item as any).lvl === 'number'
+      ) {
+        acc.push({ id: (item as any).id, lvl: (item as any).lvl })
+      }
+      return acc
+    }, [])
+    return filtered.length ? filtered : undefined
+  })()
+
   return {
     id:            newId(),
     name,
@@ -339,6 +355,9 @@ function parseNewScraperFormat(raw: Record<string, unknown>): Build | null {
     sourceUrl,
     rawStats:      rawStatsIn,
     rawAttributes,
+    specialization,
+    weaponMain: typeof raw.weaponMain === 'string' ? raw.weaponMain : undefined,
+    weaponOff:  typeof raw.weaponOff  === 'string' ? raw.weaponOff  : undefined,
   }
 }
 
