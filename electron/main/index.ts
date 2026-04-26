@@ -621,6 +621,59 @@ ipcMain.handle('questlog:cancel', () => {
   return { ok: !killFailed }
 })
 
+// Screenshot parser: detects active specialization nodes from an image
+ipcMain.handle('questlog:import-screenshot', (_event, payload: { imagePath: string; weaponMain?: string; weaponOff?: string }): Promise<unknown> => {
+  return new Promise((resolve) => {
+    const { imagePath, weaponMain, weaponOff } = payload ?? {}
+
+    // SEC: reject path traversal
+    if (!imagePath || imagePath.includes('..')) {
+      resolve({ error: 'Caminho de imagem inválido' })
+      return
+    }
+    if (!fs.existsSync(imagePath)) {
+      resolve({ error: `Arquivo não encontrado: ${imagePath}` })
+      return
+    }
+
+    // Locate spec_screenshot_parser.py alongside the known scraper locations
+    const home = app.getPath('home')
+    let parserPath: string | null = null
+    for (const base of [
+      path.join(home, 'Documents', 'python'),
+      path.join(home, 'Documents'),
+      path.join(home, 'OneDrive', 'Documentos', 'python'),
+    ]) {
+      const candidate = path.join(base, 'throne_and_liberty_agent', 'scraper', 'spec_screenshot_parser.py')
+      if (fs.existsSync(candidate)) { parserPath = candidate; break }
+    }
+    if (!parserPath) {
+      resolve({ error: 'spec_screenshot_parser.py não encontrado — verifique o projeto throne_and_liberty_agent' })
+      return
+    }
+
+    const pythonBin = process.platform === 'win32' ? 'python' : 'python3'
+    const args = [parserPath, imagePath]
+    if (weaponMain) args.push(weaponMain)
+    if (weaponOff) args.push(weaponOff)
+
+    let stdout = ''
+    const proc = spawn(pythonBin, args, { env: { ...process.env, PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' } })
+    proc.stdout.on('data', (c: Buffer) => { stdout += c.toString() })
+    proc.on('close', (code) => {
+      if (code !== 0) { resolve({ error: `Parser encerrou com código ${code}` }); return }
+      const jsonStart = stdout.indexOf('{')
+      if (jsonStart === -1) { resolve({ error: 'Parser não retornou dados JSON' }); return }
+      try {
+        resolve(JSON.parse(stdout.slice(jsonStart)))
+      } catch {
+        resolve({ error: 'Resposta JSON inválida do parser' })
+      }
+    })
+    proc.on('error', (err) => resolve({ error: `Erro ao executar parser: ${err.message}` }))
+  })
+})
+
 // Reinstall playwright + chromium (called from Settings when scraper deps are missing)
 ipcMain.handle('scraper:reinstall-playwright', (): Promise<{ ok: boolean; output?: string; error?: string }> => {
   return new Promise((resolve) => {
