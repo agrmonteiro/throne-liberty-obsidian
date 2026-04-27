@@ -10,12 +10,15 @@ import { Rotation }     from './pages/Rotation'
 import { Settings }     from './pages/Settings'
 import { PullRanking }  from './pages/PullRanking'
 import { SkillsDB }     from './pages/SkillsDB'
+import { MasteryTrees } from './pages/MasteryTrees'
 import { useBuilds }       from './store/useBuilds'
 import { useSettings }     from './store/useSettings'
 import { UpdateNotifier }    from './components/UpdateNotifier'
 import { MigrationNotifier } from './components/MigrationNotifier'
+import { useAutoScale }      from './hooks/useAutoScale'
+import { useT }              from './i18n/useT'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking' | 'skillsdb'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking' | 'skillsdb' | 'masterytrees'
 
 export default function App(): React.ReactElement {
   const [page, setPage]                     = useState<Page>('dashboard')
@@ -71,18 +74,21 @@ export default function App(): React.ReactElement {
     settings:     Settings,
     pullranking:  PullRanking,
     skillsdb:     SkillsDB,
+    masterytrees: MasteryTrees,
   }[page]
 
+  const t = useT()
   const settings = useSettings()
   const theme = settings?.theme || 'dark'
-  const fontSize = settings?.fontSize || 14
 
-  // Apply theme class and base font size to body/html
+  // Auto-scale + font-size override para Full HD → 4K (gerenciado inteiramente pelo hook)
+  useAutoScale()
+
+  // Apply theme class to body/html
   useEffect(() => {
     // Only apply light theme class if selected; root is dark by default
     document.body.className = theme === 'light' ? 'theme-light' : ''
-    document.documentElement.style.setProperty('--base-font-size', `${fontSize}px`)
-  }, [theme, fontSize])
+  }, [theme])
 
   return (
     <div 
@@ -113,7 +119,7 @@ export default function App(): React.ReactElement {
             borderBottom: '1px solid rgba(212,175,55,0.25)', flexShrink: 0
           }}>
             <span style={{ fontSize: '0.82rem', color: '#f0cc55' }}>
-              ⚠ Importador não configurado — builds do Questlog não estão disponíveis.
+              {t('settings.scraper.bannerMessage')}
             </span>
             <button
               onClick={() => { setPage('settings'); setScraperMissing(false) }}
@@ -123,7 +129,7 @@ export default function App(): React.ReactElement {
                 cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap'
               }}
             >
-              Configurar agora →
+              {t('settings.scraper.bannerConfigure')}
             </button>
             <button
               onClick={() => setScraperMissing(false)}

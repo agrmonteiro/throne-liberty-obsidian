@@ -10,6 +10,9 @@ export { SKILL_ENHANCEMENTS } from './skillEnhancements'
 export type { WeaponMastery, MasteryStat } from './weaponMasteries'
 export { WEAPON_MASTERIES } from './weaponMasteries'
 
+export type { MasteryNode, WeaponMasteryTree } from './masteryTrees'
+export { MASTERY_TREES, masteryTreeByWeapon, masteryNodeById, skillNodesForWeapon } from './masteryTrees'
+
 // Helpers de lookup por ID
 import { SKILLS } from './skills'
 import { SKILL_ENHANCEMENTS } from './skillEnhancements'

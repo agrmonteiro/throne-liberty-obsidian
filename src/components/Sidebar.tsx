@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useT } from '../i18n/useT'
 import { version } from '../../package.json'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking' | 'skillsdb'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking' | 'skillsdb' | 'masterytrees'
 
 interface NavItem {
   id:    Page
@@ -19,7 +19,8 @@ const NAV: NavItem[] = [
   { id: 'rotation',    icon: '🔄', group: 'analysis'     },
   { id: 'logreader',   icon: '📄', group: 'analysis'     },
   { id: 'pullranking', icon: '🏆', group: 'analysis'     },
-  { id: 'skillsdb',   icon: '📚', group: 'analysis'     },
+  { id: 'skillsdb',     icon: '📚', group: 'analysis'     },
+  { id: 'masterytrees', icon: '🌿', group: 'analysis'     },
   { id: 'settings',   icon: '⚙',  group: 'preferences'  },
 ]
 
@@ -33,7 +34,8 @@ const NAV_KEYS: Record<Page, string> = {
   logreader:   'sidebar.nav.logreader',
   settings:    'sidebar.nav.settings',
   pullranking: 'nav.pullranking',
-  skillsdb:    'sidebar.nav.skillsdb',
+  skillsdb:     'sidebar.nav.skillsdb',
+  masterytrees: 'sidebar.nav.masterytrees',
 }
 
 const GROUP_KEYS: Array<{ key: 'overview' | 'manage' | 'analysis' | 'preferences'; tKey: string }> = [
@@ -119,7 +121,7 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
           <span style={{ fontSize: '0.85rem' }}>
             {checkState === 'checking' ? '⏳' : checkState === 'upToDate' ? '✓' : '↑'}
           </span>
-          {checkState === 'checking' ? 'Verificando…' : checkState === 'upToDate' ? 'Atualizado' : 'Verificar atualização'}
+          {checkState === 'checking' ? t('sidebar.checking') : checkState === 'upToDate' ? t('sidebar.upToDate') : t('sidebar.checkUpdate')}
         </button>
       </div>
 
