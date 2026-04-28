@@ -1,6 +1,6 @@
 {
   "name": "tier2-command-lab",
-  "version": "1.0.0-beta.16",
+  "version": "1.0.0-beta.17",
   "description": "Tier2 Command Lab — Análise de builds e maximização de personagens por AgrMonteiro",
   "main": "dist-electron/main/index.js",
   "author": "Luis Monteiro",
@@ -29,6 +29,7 @@
     "electron": "^31.2.1",
     "electron-builder": "^24.13.3",
     "electron-vite": "^2.3.0",
+    "playwright": "^1.59.1",
     "png-to-ico": "^3.0.1",
     "postcss": "^8.4.39",
     "react": "^18.3.1",
