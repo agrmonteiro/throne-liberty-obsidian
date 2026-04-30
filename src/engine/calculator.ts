@@ -186,8 +186,10 @@ export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult
 
 const SENSITIVITY_DELTAS: Array<[keyof BuildStats, string, number]> = [
   ['critHitChance',       'Chance de Acerto Crítico',      100],
+  ['bossCritChance',      'Chance de Crítico vs Chefe',    100],
   ['critDmgPct',          'Dano Crítico %',                  1],
   ['heavyAttackChance',   'Chance de Ataque Pesado',        100],
+  ['bossHeavyChance',     'Chance de Pesado vs Chefe',      100],
   ['heavyAttackDmgComp',  'Dano de Ataque Pesado',           1],
   ['skillDmgBoost',       'Ampliação de Dano de Habilidade',100],
   ['bonusDmg',            'Bônus de Dano',                  10],

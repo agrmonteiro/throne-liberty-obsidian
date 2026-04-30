@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts'
 import { useBuilds } from '../store/useBuilds'
-import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat } from '../engine/calculator'
+import { calcAverageDPS, critChanceFromStat, heavyChanceFromStat, calcModifiers } from '../engine/calculator'
 import type { Build } from '../engine/types'
 import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartStyles'
 import { fmt, fmtP, fmtPct, fmtDec } from '../engine/fmt'
@@ -222,8 +222,8 @@ export function Comparator(): React.ReactElement {
               {maximized === 'stats' ? t('comparator.charts.stats') : t('comparator.charts.dps')}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>Esc para fechar</div>
-              <button className="tl-btn-ghost" onClick={() => setMaximized(null)} style={{ padding: '0.3rem 0.9rem' }}>✕ Fechar</button>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>{t('comparator.fullscreen.closeHint')}</div>
+              <button className="tl-btn-ghost" onClick={() => setMaximized(null)} style={{ padding: '0.3rem 0.9rem' }}>✕ {t('comparator.fullscreen.closeBtn')}</button>
             </div>
           </div>
           <div style={{ flex: 1, minHeight: 0 }}>
@@ -239,7 +239,7 @@ export function Comparator(): React.ReactElement {
           <p>{t('comparator.subtitle')}</p>
           <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', cursor: 'pointer', color: 'var(--text-soft)', border: '1px solid var(--border)', padding: '0.3rem 0.6rem', borderRadius: 6, background: 'var(--bg-card)' }}>
             <input type="checkbox" checked={showLabels} onChange={(e) => setShowLabels(e.target.checked)} />
-            Exibir valores nos gráficos
+            {t('comparator.chart.showValues')}
           </label>
         </div>
       </div>
@@ -299,22 +299,25 @@ export function Comparator(): React.ReactElement {
                     key={b.id}
                     className="tl-stat-card"
                     onClick={() => toggleHide(b.id)}
-                    title={isHid ? 'Clique para mostrar nos gráficos' : 'Clique para ocultar nos gráficos'}
+                    title={isHid ? t('comparator.visibility.show') : t('comparator.visibility.hide')}
                     style={{ borderColor: color, opacity: isHid ? 0.32 : 1, cursor: 'pointer', transition: 'opacity 0.22s, border-color 0.22s', userSelect: 'none' }}
                   >
                     <div className="tl-eyebrow" style={{ color, marginBottom: 4 }}>
                       {b.name.slice(0, 20)}
-                      {isBest && <span className="tl-tag tl-tag-gold" style={{ marginLeft: 6 }}>BEST</span>}
-                      {isHid  && <span className="tl-tag" style={{ marginLeft: 6, background: 'rgba(255,255,255,0.04)', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: '0.6rem' }}>oculto</span>}
+                      {isBest && <span className="tl-tag tl-tag-gold" style={{ marginLeft: 6 }}>{t('comparator.kpi.best')}</span>}
+                      {isHid  && <span className="tl-tag" style={{ marginLeft: 6, background: 'rgba(255,255,255,0.04)', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: '0.6rem' }}>{t('comparator.kpi.hidden')}</span>}
                     </div>
                     <div className="tl-dmg">{fmt(dps)}</div>
                     <div style={{ fontSize: '0.72rem', marginTop: 4 }}>
                       <span className={isBest ? 'tl-gain-neu' : gain >= 0 ? 'tl-gain-pos' : 'tl-gain-neg'}>
-                        {isBest ? 'BASE' : `${gain >= 0 ? '+' : ''}${fmtPct(gain)}`}
+                        {isBest ? t('comparator.kpi.base') : `${gain >= 0 ? '+' : ''}${fmtPct(gain)}`}
                       </span>
                     </div>
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-soft)', marginTop: 4 }}>
                       Crit {fmtP(critChanceFromStat(b.stats.critHitChance) * 100)} · Heavy {fmtP(heavyChanceFromStat(b.stats.heavyAttackChance) * 100)}
+                    </div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-soft)', marginTop: 2 }}>
+                      Max Dmg {fmt(calcModifiers(b.stats).maxCrit)}
                     </div>
                   </div>
                 )
@@ -335,7 +338,7 @@ export function Comparator(): React.ReactElement {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <div>
                     <div className="tl-eyebrow" style={{ marginBottom: 6, color: selPoint.color }}>
-                      Ponto selecionado · {selPoint.axisLabel}
+                      {t('comparator.detail.pointSelected')} · {selPoint.axisLabel}
                     </div>
                     <div style={{ fontFamily: 'Noto Serif, serif', color: selPoint.color, fontSize: '1.05rem', fontWeight: 700, marginBottom: 10 }}>
                       {selPoint.buildName}
@@ -343,12 +346,12 @@ export function Comparator(): React.ReactElement {
                     <div style={{ display: 'flex', gap: '2.5rem', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', flexWrap: 'wrap' }}>
                       {selPoint.axisKey !== 'dps' && (
                         <span>
-                          <span style={{ color: 'var(--text-soft)' }}>Normalizado: </span>
+                          <span style={{ color: 'var(--text-soft)' }}>{t('comparator.detail.normalized')} </span>
                           <span style={{ color: selPoint.color, fontWeight: 700 }}>{fmtDec(selPoint.normalized, 1)} / 100</span>
                         </span>
                       )}
                       <span>
-                        <span style={{ color: 'var(--text-soft)' }}>Valor real: </span>
+                        <span style={{ color: 'var(--text-soft)' }}>{t('comparator.detail.realValue')} </span>
                         <span style={{ color: '#e2e4ec', fontWeight: 700 }}>{selPoint.rawValue}</span>
                       </span>
                     </div>
@@ -371,14 +374,14 @@ export function Comparator(): React.ReactElement {
                   <div className="tl-eyebrow">{t('comparator.charts.stats')}</div>
                   <button
                     className="tl-btn-ghost"
-                    title="Maximizar gráfico (Esc para fechar)"
+                    title={t('comparator.chart.maximizeTooltip')}
                     onClick={() => setMaximized('stats')}
                     style={{ padding: '0.3rem 0.5rem', lineHeight: 0, display: 'flex', alignItems: 'center' }}
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                       <path d="M5 2H2v3M9 2h3v3M2 9v3h3M12 9v3h-3"/>
                     </svg>
-                    <span style={{ marginLeft: 6, fontSize: '0.7rem' }}>Maximizar</span>
+                    <span style={{ marginLeft: 6, fontSize: '0.7rem' }}>{t('comparator.chart.maximizeBtn')}</span>
                   </button>
                 </div>
                 {renderStats(300)}
@@ -389,14 +392,14 @@ export function Comparator(): React.ReactElement {
                   <div className="tl-eyebrow">{t('comparator.charts.dps')}</div>
                   <button
                     className="tl-btn-ghost"
-                    title="Maximizar gráfico (Esc para fechar)"
+                    title={t('comparator.chart.maximizeTooltip')}
                     onClick={() => setMaximized('dps')}
                     style={{ padding: '0.3rem 0.5rem', lineHeight: 0, display: 'flex', alignItems: 'center' }}
                   >
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                       <path d="M5 2H2v3M9 2h3v3M2 9v3h3M12 9v3h-3"/>
                     </svg>
-                    <span style={{ marginLeft: 6, fontSize: '0.7rem' }}>Maximizar</span>
+                    <span style={{ marginLeft: 6, fontSize: '0.7rem' }}>{t('comparator.chart.maximizeBtn')}</span>
                   </button>
                 </div>
                 {renderDps(280)}
@@ -408,6 +411,7 @@ export function Comparator(): React.ReactElement {
               <div className="tl-eyebrow" style={{ marginBottom: 12 }}>{t('comparator.table')}</div>
               {([
                 { label: 'DPS Estimado',    fn: (b: Build) => fmt(calcAverageDPS(b.stats)) },
+                { label: 'Dano Máximo',     fn: (b: Build) => fmt(calcModifiers(b.stats).maxCrit) },
                 { label: 'Crit Chance %',   fn: (b: Build) => fmtP(critChanceFromStat(b.stats.critHitChance) * 100) },
                 { label: 'Heavy Chance %',  fn: (b: Build) => fmtP(heavyChanceFromStat(b.stats.heavyAttackChance) * 100) },
                 { label: 'Crit Damage %',   fn: (b: Build) => `${b.stats.critDmgPct}` },
