@@ -269,6 +269,78 @@ const ELASTICITY_TESTS: ElasticityTest[] = [
   },
 ]
 
+// ─── Return curves (Crítico vs Pesado) ───────────────────────────────────────
+
+export type ReturnCurvePoint = {
+  stat:      number
+  critPct:   number
+  heavyPct:  number
+  critMarg:  number
+  heavyMarg: number
+}
+
+const RETURN_CURVE_STEP = 50
+const RETURN_CURVE_MAX  = 5000
+
+export function calcReturnCurves(endurance: number): ReturnCurvePoint[] {
+  const steps = RETURN_CURVE_MAX / RETURN_CURVE_STEP
+  return Array.from({ length: steps + 1 }, (_, k) => {
+    const stat = k * RETURN_CURVE_STEP
+    const eff  = Math.max(0, stat - endurance)
+    const effN = Math.max(0, stat + 100 - endurance)
+    const critPct   = eff  > 0 ? eff  / (eff  + DR) * 100 : 0
+    const critPctN  = effN > 0 ? effN / (effN + DR) * 100 : 0
+    const heavyPct  = stat > 0 ? stat / (stat + DR) * 100 : 0
+    const heavyPctN = (stat + 100) / (stat + 100 + DR) * 100
+    return {
+      stat,
+      critPct:   +critPct.toFixed(2),
+      heavyPct:  +heavyPct.toFixed(2),
+      critMarg:  +(critPctN  - critPct).toFixed(4),
+      heavyMarg: +(heavyPctN - heavyPct).toFixed(4),
+    }
+  })
+}
+
+export type CrossoverPoint = ReturnCurvePoint & {
+  dps60sCrit:  number   // dano total 60s variando só crítico
+  dps60sHeavy: number   // dano total 60s variando só pesado
+  dps60sBoth:  number   // dano total 60s variando ambos juntos
+}
+
+export function calcCrossoverSimulation(stats: BuildStats): CrossoverPoint[] {
+  const endurance = stats.targetEndurance ?? 0
+  const steps     = RETURN_CURVE_MAX / RETURN_CURVE_STEP
+  return Array.from({ length: steps + 1 }, (_, k) => {
+    const stat = k * RETURN_CURVE_STEP
+
+    // curva de retorno marginal
+    const eff  = Math.max(0, stat - endurance)
+    const effN = Math.max(0, stat + 100 - endurance)
+    const critPct   = eff  > 0 ? eff  / (eff  + DR) * 100 : 0
+    const critPctN  = effN > 0 ? effN / (effN + DR) * 100 : 0
+    const heavyPct  = stat > 0 ? stat / (stat + DR) * 100 : 0
+    const heavyPctN = (stat + 100) / (stat + 100 + DR) * 100
+
+    // X representa o stat TOTAL (base + boss combinados).
+    // Zeramos o bônus vs chefe ao variar para que a soma permaneça = stat.
+    const dps60sCrit  = calcTrueDps({ ...stats, critHitChance:     stat, bossCritChance:  0 }) * 60
+    const dps60sHeavy = calcTrueDps({ ...stats, heavyAttackChance: stat, bossHeavyChance: 0 }) * 60
+    const dps60sBoth  = calcTrueDps({ ...stats, critHitChance: stat, bossCritChance: 0, heavyAttackChance: stat, bossHeavyChance: 0 }) * 60
+
+    return {
+      stat,
+      critPct:   +critPct.toFixed(2),
+      heavyPct:  +heavyPct.toFixed(2),
+      critMarg:  +(critPctN  - critPct).toFixed(4),
+      heavyMarg: +(heavyPctN - heavyPct).toFixed(4),
+      dps60sCrit:  Math.round(dps60sCrit),
+      dps60sHeavy: Math.round(dps60sHeavy),
+      dps60sBoth:  Math.round(dps60sBoth),
+    }
+  })
+}
+
 export function calcElasticity(stats: BuildStats, iterations: number, tests: ElasticityTest[] = ELASTICITY_TESTS): ElasticityPoint[] {
   const baseDmg  = calcTrueDps(stats)
   const rows: ElasticityPoint[] = []

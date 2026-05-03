@@ -11,6 +11,7 @@ export interface Translations {
     footer: string
     checking: string
     upToDate: string
+    available: string
     checkUpdate: string
   }
   // Componentes globais
@@ -24,6 +25,7 @@ export interface Translations {
   }
   update: {
     available: string; downloading: string; ready: string; restart: string
+    error: string; stalled: string; retry: string
   }
   // Páginas
   dashboard: {
@@ -60,6 +62,19 @@ export interface Translations {
     noStats: string
     deltaLabel: string
     tooltipWeight: string
+    balance: {
+      title: string; subtitle: string
+      critChart: string; heavyChart: string
+      probLine: string; margLine: string
+      margCrit: string; margHeavy: string
+      perPts: string; currChance: string
+      investCrit: string; investHeavy: string
+      balanced: string; higherReturn: string; equalReturn: string
+      equilibrium: string
+      crossChart: string; crossSubtitle: string
+      crossAt: string; crossNone: string; crossTarget: string
+      crossTargetCrit: string; crossTargetHeavy: string
+    }
   }
   builds: {
     title: string; subtitle: string
@@ -80,14 +95,19 @@ export interface Translations {
       cancelled: string; discarded: string; deleted: string; exported: string
       reimporting: string; reimported: string; created: string
       downloading: string; starting: string; extracting: string
+      viewLog: string
     }
     cancel: { error: string }
-    queue: { title: string; buildSingular: string; buildPlural: string; start: string; pause: string; clear: string }
+    queue: {
+      title: string; buildSingular: string; buildPlural: string; pause: string; clear: string
+      naming: string; namePlaceholder: string; nameSave: string
+      errorPrefix: string; noSourceUrl: string
+    }
     card: {
       active: string; edited: string; stats: string; attributes: string
       activate: string; activateStatus: string; edit: string; close: string
-      reimport: string; queueAdd: string; queueRemove: string
-      queueAddTitle: string; queueRemoveTitle: string; export: string; deleteBtn: string
+      reimport: string; inQueue: string; export: string; deleteBtn: string
+      urlCopied: string; urlCopyHint: string
     }
     delete: { confirm: string }
   }
@@ -168,17 +188,20 @@ export interface Translations {
     theme: string; version: string
     scraper: {
       title: string; checking: string; configured: string; notConfigured: string; description: string
-      python: { label: string; found: string; notFound: string; downloadLink: string; downloadHint: string }
       playwright: { reinstall: string; reinstalling: string; success: string }
       script: { label: string; found: string; notFound: string; hint: string }
       autoDetect: string; autoDetecting: string; selectFile: string; saved: string
       bannerMessage: string; bannerConfigure: string
       howToSetup: string
-      setup: { step1: string; step2: string; step3: string; step4: string }
+      setup: { step1: string; step2: string; step3: string }
     }
     themeSection: { title: string; description: string; darkMode: string; lightMode: string }
     uiScale: { title: string; description: string; auto: string; detected: string; fullHd: string; qhd: string; qhdPlus: string; fourK: string }
     accessibility: { title: string; description: string; fontSize: string; preview: string; previewText: string }
+    report: {
+      title: string; description: string; placeholder: string; send: string
+      sending: string; success: string; error: string; note: string
+    }
   }
   skillsdb: {
     header: { title: string; count: string }
@@ -205,8 +228,9 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       groups: { overview: 'Visão Geral', manage: 'Gerenciar', analysis: 'Análise', preferences: 'Preferências' },
       nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'Calculadora PvE', comparator: 'Comparador', sensitivity: 'Sensibilidade', rotation: 'Rotação', logreader: 'Leitor de Logs', settings: 'Configurações', skillsdb: 'Banco de Skills', masterytrees: 'Maestrias' },
       footer: 'Electron + React',
-      checking: 'Verificando…',
-      upToDate: 'Atualizado',
+      checking: 'Verificando versão…',
+      upToDate: 'Versão atual já é a última',
+      available: 'Nova versão encontrada!',
       checkUpdate: 'Verificar atualização',
     },
     common: {
@@ -225,6 +249,9 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       downloading: '⬇ Baixando v{version}…',
       ready: '✅ v{version} pronta para instalar!',
       restart: 'Reiniciar e instalar →',
+      error: '⚠ Erro ao verificar atualizações',
+      stalled: '⚠ Download parado — verifique sua conexão',
+      retry: '↺ Tentar novamente',
     },
     dashboard: {
       title: 'War Room',
@@ -279,6 +306,24 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       noStats: 'Selecione uma build com stats de arma para análise.',
       deltaLabel: 'Delta',
       tooltipWeight: 'Peso (delta: +',
+      balance: {
+        title: '⚖️ Curvas de Retorno: Crítico vs Pesado',
+        subtitle: 'Probabilidade e retorno marginal por ponto investido. A linha vertical marca sua posição atual na curva.',
+        critChart: 'Chance de Crítico', heavyChart: 'Chance de Ataque Pesado',
+        probLine: 'Chance %', margLine: 'Retorno / +100',
+        margCrit: 'Retorno Marginal — Crítico', margHeavy: 'Retorno Marginal — Pesado',
+        perPts: 'por +100 pts', currChance: 'Chance atual:',
+        investCrit: '↑ Investir em Crítico', investHeavy: '↑ Investir em Pesado',
+        balanced: '⚖ Balanceado', higherReturn: 'maior retorno por ponto', equalReturn: 'retorno marginal igual',
+        equilibrium: 'Equilíbrio: Crítico efetivo = Pesado',
+        crossChart: '🎯 Cruzamento de Retorno Marginal — Ponto Ideal',
+        crossSubtitle: 'Curvas de retorno marginal sobrepostas. O ponto verde ▼ é onde o custo por +100 em Crítico iguala o custo por +100 em Pesado.',
+        crossAt: 'Cruzamento em stat ≈',
+        crossNone: 'Curvas idênticas (endurance = 0)',
+        crossTarget: 'Linha de nivelamento',
+        crossTargetCrit: 'Crit-alvo p/ equilíbrio',
+        crossTargetHeavy: 'Pesado-alvo p/ equilíbrio',
+      },
     },
     builds: {
       title: 'Builds', subtitle: 'Gerencie suas builds. Importe do quest log ou edite manualmente.',
@@ -320,20 +365,26 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
         created: 'criada.',
         downloading: '📥 Baixando recursos — apenas na primeira vez, aguarde...',
         starting: '⏳ Iniciando...', extracting: '🔍 Extraindo stats...',
+        viewLog: 'Ver log',
       },
       cancel: { error: 'Não foi possível cancelar — o processo pode continuar em segundo plano.' },
       queue: {
-        title: '⟳ Fila de Reimportação — ',
+        title: 'Fila de Importação — ',
         buildSingular: 'build', buildPlural: 'builds',
-        start: '▶ Iniciar', pause: '⏹ Pausar', clear: '✕ Limpar',
+        pause: '⏹ Pausar', clear: '✕ Limpar concluídos',
+        naming: '✏ Confirme o nome antes de salvar',
+        namePlaceholder: 'Nome da build...',
+        nameSave: '💾 Salvar',
+        errorPrefix: 'Erro: ',
+        noSourceUrl: 'Sem URL de origem',
       },
       card: {
         active: 'ATIVA', edited: 'editada', stats: 'stats', attributes: 'atributos',
         activate: 'Ativar', activateStatus: 'Build " ativa.',
         edit: '✏ Editar', close: 'Fechar',
-        reimport: '⟳ Reimportar', queueAdd: '⊕ Fila', queueRemove: '✓ Na fila',
-        queueAddTitle: 'Adicionar à fila de reimportação', queueRemoveTitle: 'Remover da fila',
+        reimport: '⟳ Reimportar', inQueue: '✓ Na fila',
         export: '⬇ Export', deleteBtn: '🗑',
+        urlCopied: '🔗 URL copiada!', urlCopyHint: 'Clique para copiar: ',
       },
       delete: { confirm: 'Deletar esta build?' },
     },
@@ -429,24 +480,32 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       theme: 'Tema', version: 'Versão',
       scraper: {
         title: 'Importador de Builds', checking: 'verificando…', configured: '✓ Configurado', notConfigured: '⚠ Não configurado',
-        description: 'O importador usa um script Python para extrair sua build do Questlog. Configure o caminho uma vez e o app cuida do resto.',
-        python: { label: 'Python', found: '✓ Encontrado', notFound: '✗ Não encontrado', downloadLink: 'Baixar Python →', downloadHint: 'Após instalar, clique em Detectar automaticamente' },
-        playwright: { reinstall: '🔄 Reinstalar Playwright', reinstalling: '⏳ Reinstalando…', success: '✓ Playwright reinstalado com sucesso!' },
-        script: { label: 'Script do Scraper', found: '✓ Encontrado', notFound: '✗ Não encontrado', hint: 'Clique em "Detectar" ou selecione manualmente' },
+        description: 'O importador está integrado ao app e extrai sua build diretamente do Questlog. Normalmente é detectado automaticamente — use as opções abaixo se necessário.',
+        playwright: { reinstall: '🔄 Reinstalar navegador integrado', reinstalling: '⏳ Reinstalando…', success: '✓ Navegador reinstalado com sucesso!' },
+        script: { label: 'Importador', found: '✓ Encontrado', notFound: '✗ Não encontrado', hint: 'Clique em "Detectar" ou selecione o arquivo manualmente' },
         autoDetect: '🔍 Detectar automaticamente', autoDetecting: '⏳ Detectando…', selectFile: '📂 Selecionar arquivo…', saved: '✓ Salvo!',
-        bannerMessage: '⚠ Importador não configurado — builds do Questlog não estão disponíveis.',
+        bannerMessage: '⚠ Importador não encontrado — builds do Questlog não estão disponíveis.',
         bannerConfigure: 'Configurar agora →',
-        howToSetup: 'Como configurar',
+        howToSetup: 'Como configurar manualmente',
         setup: {
-          step1: 'Instale o Python em python.org/downloads (se necessário)',
-          step2: 'Baixe o scraper em github.com/agrmonteiro/throne_and_liberty_agent',
-          step3: 'No terminal, execute: pip install playwright && playwright install chromium',
-          step4: 'Clique em Detectar automaticamente — ou Selecionar arquivo para localizar o questlog_scraper_standalone.py',
+          step1: 'Baixe o pacote do importador em github.com/agrmonteiro/throne_and_liberty_agent',
+          step2: 'Coloque o arquivo questlog_scraper_standalone.exe (ou .py) em qualquer pasta',
+          step3: 'Clique em Detectar automaticamente — ou Selecionar arquivo para localizá-lo',
         },
       },
       themeSection: { title: 'Tema Visual', description: 'Escolha entre o Modo Escuro clássico ou o Modo Claro.', darkMode: 'Dark Mode', lightMode: 'Light Mode' },
       uiScale: { title: 'Escala de Interface', description: 'Ajusta automaticamente tamanhos de fonte, espaçamento e tooltips dos gráficos conforme a resolução. Use Auto ou force um tier específico.', auto: 'Auto', detected: 'detectado:', fullHd: 'Full HD', qhd: 'QHD', qhdPlus: 'QHD+', fourK: '4K UHD' },
       accessibility: { title: 'Acessibilidade', description: 'Ajuste o tamanho global das fontes.', fontSize: 'Tamanho da Fonte', preview: 'Visualização:', previewText: 'Texto de exemplo para validação do tamanho de fonte.' },
+      report: {
+        title: 'Reportar Problema',
+        description: 'Encontrou um erro? Envie um relatório automático com o log do app para análise. Nenhum dado pessoal é coletado.',
+        placeholder: 'Descreva o que aconteceu (opcional)...',
+        send: '📤 Enviar relatório',
+        sending: 'Enviando...',
+        success: '✅ Relatório enviado! Obrigado pelo feedback.',
+        error: '⚠ Falha ao enviar. Tente novamente.',
+        note: 'O relatório inclui: versão do app, sistema operacional e as últimas linhas do log de importação.',
+      },
     },
     skillsdb: {
       header: { title: 'Banco de Skills', count: 'skills cadastradas' },
@@ -471,8 +530,9 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       groups: { overview: 'Overview', manage: 'Manage', analysis: 'Analysis', preferences: 'Preferences' },
       nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'PvE Calculator', comparator: 'Comparator', sensitivity: 'Sensitivity', rotation: 'Rotation', logreader: 'Log Reader', settings: 'Settings', skillsdb: 'Skills DB', masterytrees: 'Masteries' },
       footer: 'Electron + React',
-      checking: 'Checking…',
-      upToDate: 'Up to date',
+      checking: 'Checking version…',
+      upToDate: 'Already on latest version',
+      available: 'New version found!',
       checkUpdate: 'Check for update',
     },
     common: {
@@ -491,6 +551,9 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       downloading: '⬇ Downloading v{version}…',
       ready: '✅ v{version} ready to install!',
       restart: 'Restart and install →',
+      error: '⚠ Error checking for updates',
+      stalled: '⚠ Download stalled — check your connection',
+      retry: '↺ Try again',
     },
     dashboard: {
       title: 'War Room',
@@ -545,6 +608,24 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       noStats: 'Select a build with weapon stats for analysis.',
       deltaLabel: 'Delta',
       tooltipWeight: 'Weight (delta: +',
+      balance: {
+        title: '⚖️ Return Curves: Crit vs Heavy',
+        subtitle: 'Probability and marginal return per point invested. The vertical line marks your current position on each curve.',
+        critChart: 'Crit Chance', heavyChart: 'Heavy Attack Chance',
+        probLine: 'Chance %', margLine: 'Return / +100',
+        margCrit: 'Marginal Return — Crit', margHeavy: 'Marginal Return — Heavy',
+        perPts: 'per +100 pts', currChance: 'Current chance:',
+        investCrit: '↑ Invest in Crit', investHeavy: '↑ Invest in Heavy',
+        balanced: '⚖ Balanced', higherReturn: 'higher return per point', equalReturn: 'equal marginal return',
+        equilibrium: 'Equilibrium: Effective Crit = Heavy',
+        crossChart: '🎯 Marginal Return Crossover — Ideal Balance Point',
+        crossSubtitle: 'Overlapping marginal return curves. The green marker ▼ is where the cost per +100 Crit equals the cost per +100 Heavy.',
+        crossAt: 'Crossover at stat ≈',
+        crossNone: 'Identical curves (endurance = 0)',
+        crossTarget: 'Equalization target',
+        crossTargetCrit: 'Crit target for balance',
+        crossTargetHeavy: 'Heavy target for balance',
+      },
     },
     builds: {
       title: 'Builds', subtitle: 'Manage your builds. Import from quest log or edit manually.',
@@ -586,20 +667,26 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
         created: 'created.',
         downloading: '📥 Downloading resources — first time only, please wait...',
         starting: '⏳ Starting...', extracting: '🔍 Extracting stats...',
+        viewLog: 'View log',
       },
       cancel: { error: 'Could not cancel — the process may continue in background.' },
       queue: {
-        title: '⟳ Re-import Queue — ',
+        title: 'Import Queue — ',
         buildSingular: 'build', buildPlural: 'builds',
-        start: '▶ Start', pause: '⏹ Pause', clear: '✕ Clear',
+        pause: '⏹ Pause', clear: '✕ Clear done',
+        naming: '✏ Confirm name before saving',
+        namePlaceholder: 'Build name...',
+        nameSave: '💾 Save',
+        errorPrefix: 'Error: ',
+        noSourceUrl: 'No source URL',
       },
       card: {
         active: 'ACTIVE', edited: 'edited', stats: 'stats', attributes: 'attributes',
         activate: 'Activate', activateStatus: 'Build " active.',
         edit: '✏ Edit', close: 'Close',
-        reimport: '⟳ Re-import', queueAdd: '⊕ Queue', queueRemove: '✓ In queue',
-        queueAddTitle: 'Add to re-import queue', queueRemoveTitle: 'Remove from queue',
+        reimport: '⟳ Re-import', inQueue: '✓ In queue',
         export: '⬇ Export', deleteBtn: '🗑',
+        urlCopied: '🔗 URL copied!', urlCopyHint: 'Click to copy: ',
       },
       delete: { confirm: 'Delete this build?' },
     },
@@ -695,24 +782,32 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       theme: 'Theme', version: 'Version',
       scraper: {
         title: 'Build Importer', checking: 'checking…', configured: '✓ Configured', notConfigured: '⚠ Not configured',
-        description: 'The importer uses a Python script to extract your build from Questlog. Configure the path once and the app handles the rest.',
-        python: { label: 'Python', found: '✓ Found', notFound: '✗ Not found', downloadLink: 'Download Python →', downloadHint: 'After installing, click Auto-detect' },
-        playwright: { reinstall: '🔄 Reinstall Playwright', reinstalling: '⏳ Reinstalling…', success: '✓ Playwright reinstalled successfully!' },
-        script: { label: 'Scraper Script', found: '✓ Found', notFound: '✗ Not found', hint: 'Click "Detect" or select manually' },
+        description: 'The importer is built into the app and extracts your build directly from Questlog. It is usually detected automatically — use the options below if needed.',
+        playwright: { reinstall: '🔄 Reinstall built-in browser', reinstalling: '⏳ Reinstalling…', success: '✓ Browser reinstalled successfully!' },
+        script: { label: 'Importer', found: '✓ Found', notFound: '✗ Not found', hint: 'Click "Detect" or select the file manually' },
         autoDetect: '🔍 Auto-detect', autoDetecting: '⏳ Detecting…', selectFile: '📂 Select file…', saved: '✓ Saved!',
-        bannerMessage: '⚠ Importer not configured — Questlog builds are unavailable.',
+        bannerMessage: '⚠ Importer not found — Questlog builds are unavailable.',
         bannerConfigure: 'Configure now →',
-        howToSetup: 'How to set up',
+        howToSetup: 'Manual setup',
         setup: {
-          step1: 'Install Python from python.org/downloads (if needed)',
-          step2: 'Download the scraper from github.com/agrmonteiro/throne_and_liberty_agent',
-          step3: 'In terminal, run: pip install playwright && playwright install chromium',
-          step4: 'Click Auto-detect — or Select file to locate questlog_scraper_standalone.py',
+          step1: 'Download the importer package from github.com/agrmonteiro/throne_and_liberty_agent',
+          step2: 'Place questlog_scraper_standalone.exe (or .py) in any folder',
+          step3: 'Click Auto-detect — or Select file to locate it',
         },
       },
       themeSection: { title: 'Visual Theme', description: 'Choose between classic Dark Mode or Light Mode.', darkMode: 'Dark Mode', lightMode: 'Light Mode' },
       uiScale: { title: 'UI Scale', description: 'Automatically adjusts font sizes, spacing, and chart tooltips based on resolution. Use Auto or force a specific tier.', auto: 'Auto', detected: 'detected:', fullHd: 'Full HD', qhd: 'QHD', qhdPlus: 'QHD+', fourK: '4K UHD' },
       accessibility: { title: 'Accessibility', description: 'Adjust the global font size.', fontSize: 'Font Size', preview: 'Preview:', previewText: 'Sample text for font size validation.' },
+      report: {
+        title: 'Report a Problem',
+        description: 'Found a bug? Send an automatic report with the app log for analysis. No personal data is collected.',
+        placeholder: 'Describe what happened (optional)...',
+        send: '📤 Send report',
+        sending: 'Sending...',
+        success: '✅ Report sent! Thank you for your feedback.',
+        error: '⚠ Failed to send. Please try again.',
+        note: 'The report includes: app version, operating system and the last lines of the import log.',
+      },
     },
     skillsdb: {
       header: { title: 'Skills Bank', count: 'registered skills' },
