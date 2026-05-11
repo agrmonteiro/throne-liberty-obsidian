@@ -1245,7 +1245,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Hero_Attack_01",
     name: { en: "Merciless Form", pt: "Forma Impiedosa" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Epic",
     stats: [
@@ -1256,7 +1256,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Hero_Defense_03",
     name: { en: "Ethereal Evasion", pt: "Esquiva Etérea" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Epic",
     stats: [
@@ -1267,7 +1267,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Hero_Tactic_04",
     name: { en: "Dexterous Power", pt: "Poder Hábil" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -1278,7 +1278,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Hero_Util_02",
     name: { en: "Off-hand Frenzy", pt: "Fúria Secundária" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Epic",
     stats: [
@@ -1289,7 +1289,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Attack_01",
     name: { en: "Critical Hit Augment", pt: "Aumento de Acerto Crítico" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -1302,7 +1302,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Attack_02",
     name: { en: "Melee Critical Hit Intensity", pt: "Intensidade do Acerto Crítico Corpo a Corpo" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -1314,7 +1314,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Attack_Skill",
     name: { en: "Venomous Edge", pt: "Limite Venenoso" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -1325,7 +1325,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_AttackUtil_03",
     name: { en: "Max Damage Expertise", pt: "Especialista em Dano Máximo" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -1337,7 +1337,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Defense_07",
     name: { en: "Evasion Augment", pt: "Aumento de Esquiva" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -1350,7 +1350,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Defense_08",
     name: { en: "Max Health Intensity", pt: "Intensidade de Vida Máxima" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -1362,7 +1362,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_DefenseTactic_09",
     name: { en: "Ranged Evasion Expertise", pt: "Especialização em Esquiva à Distância" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -1374,7 +1374,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Def_Skill",
     name: { en: "Phantom Timer", pt: "Temporizador Fantasma" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -1385,7 +1385,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Tac_Skill",
     name: { en: "Combat Velocity", pt: "Velocidade de Combate" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -1396,7 +1396,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Tactic_10",
     name: { en: "Attack Range Augment", pt: "Aumento de Alcance de Ataque" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -1407,7 +1407,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Tactic_11",
     name: { en: "Crowd Control Intensity", pt: "Intensidade de CM" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -1426,7 +1426,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_TacticAttack_12",
     name: { en: "Bonus Damage Expertise", pt: "Especialização em Bônus de Dano" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -1438,7 +1438,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Util_04",
     name: { en: "Off-hand Weapon Augment", pt: "Aumento da Arma Secundária" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -1449,7 +1449,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Util_05",
     name: { en: "Off-hand Weapon Damage Intensity", pt: "Intensidade do Dano da Arma Secundária" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -1468,7 +1468,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_UtilDefense_06",
     name: { en: "Cooldown Speed Expertise", pt: "Especialização em Velocidade de Recarga" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -1480,7 +1480,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_High_Util_Skill",
     name: { en: "Fatal Fatigue", pt: "Fadiga Fatal" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -1491,7 +1491,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Attack_01",
     name: { en: "Lesser Attack Speed Augment", pt: "Aumento Inferior de Velocidade de Ataque" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -1502,7 +1502,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Attack_02",
     name: { en: "Attack Speed Intensity", pt: "Intensidade de Velocidade de Ataque" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -1514,7 +1514,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Attack_Skill",
     name: { en: "Piercing Bite", pt: "Mordida Perfurante" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -1525,7 +1525,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_AttackUtil_03",
     name: { en: "Movement Speed Expertise", pt: "Especialização em Velocidade de Movimento" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -1537,7 +1537,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Defense_07",
     name: { en: "Lesser Magic Heavy Attack Evasion Augment", pt: "Aumento Inferior de Esquiva de Ataque Pesado Mágico" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -1548,7 +1548,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Defense_08",
     name: { en: "Damage Reduction Intensity", pt: "Intensidade de Redução de Dano" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -1560,7 +1560,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_DefenseTactic_09",
     name: { en: "Skill Damage Resistance Expertise", pt: "Especialização em Resistência a Dano de Habilidade" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -1572,7 +1572,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Def_Skill",
     name: { en: "Umbral Toughness", pt: "Vigor Umbral" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -1583,7 +1583,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Tac_Skill",
     name: { en: "Potent Toxicity", pt: "Toxicidade Potente" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -1594,7 +1594,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Tactic_10",
     name: { en: "Lesser Silence Augment", pt: "Aumento Inferior de Silêncio" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -1605,7 +1605,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Tactic_11",
     name: { en: "Buff Duration Intensity", pt: "Intensidade de Duração da Vantagem" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -1617,7 +1617,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_TacticAttack_12",
     name: { en: "Weaken Chance Offensive", pt: "Chance Ofensiva de Fraqueza" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -1629,7 +1629,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Util_04",
     name: { en: "Lesser Buff Duration Augment", pt: "Aumento Inferior de Duração da Vantagem" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -1640,7 +1640,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Util_05",
     name: { en: "Stamina Regen Intensity", pt: "Intensidade de Regeneração de Vigor" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -1652,7 +1652,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_UtilDefense_06",
     name: { en: "Ranged Defense Expertise", pt: "Especialização em Defesa à Distância" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -1664,7 +1664,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Normal_Util_Skill",
     name: { en: "Blood Seeker", pt: "Buscador de Sangue" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -1675,7 +1675,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Attack_01",
     name: { en: "Greater Hit Augment", pt: "Aumento Superior de Acerto" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -1688,7 +1688,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Attack_02",
     name: { en: "Critical Damage Intensity", pt: "Intensidade de Dano Crítico" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -1703,7 +1703,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Attack_Skill",
     name: { en: "Primal Strike", pt: "Ataque Primal" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -1714,7 +1714,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_AttackUtil_03",
     name: { en: "Critical Damage Expertise", pt: "Especialização em Dano Crítico" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -1726,7 +1726,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Defense_07",
     name: { en: "Greater Ranged Defense Augment", pt: "Aumento Superior de Defesa à Distância" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -1737,7 +1737,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Defense_08",
     name: { en: "Evasion Intensity", pt: "Intensidade de Esquiva" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -1752,7 +1752,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_DefenseTactic_09",
     name: { en: "Ranged Defense Expertise", pt: "Especialização em Defesa à Distância" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -1764,7 +1764,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Def_Skill",
     name: { en: "Fluid Block", pt: "Bloqueio Fluido" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -1775,7 +1775,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Tac_Skill",
     name: { en: "Strategic Exchange", pt: "Troca Estratégica" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -1786,7 +1786,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Tactic_10",
     name: { en: "Greater CC Resistance Augment", pt: "Aumento Superior de Resistência a CM" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -1804,7 +1804,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Tactic_11",
     name: { en: "Movement Speed Intensity", pt: "Intensidade de Velocidade de Movimento" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -1816,7 +1816,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_TacticAttack_12",
     name: { en: "Skill Damage Boost Expertise", pt: "Especialização em Ampliação de Dano de Habilidade" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -1828,7 +1828,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Util_04",
     name: { en: "Greater Potion Healing Augment", pt: "Aumento Superior de Cura de Poção" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -1839,7 +1839,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Util_05",
     name: { en: "Cooldown Speed Intensity", pt: "Intensidade de Velocidade de Recarga" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -1851,7 +1851,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_UtilDefense_06",
     name: { en: "Magic Defense Expertise", pt: "Especialização em Defesa Mágica" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -1863,7 +1863,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Dagger_Rare_Util_Skill",
     name: { en: "Fleeting Shadow", pt: "Sombra Fugaz" },
-    weapon: "",
+    weapon: "Dagger",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -3711,7 +3711,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Hero_Attack_01",
     name: { en: "Blade Momentum", pt: "Impulso da Lâmina" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Epic",
     stats: [
@@ -3722,7 +3722,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Hero_Defense_03",
     name: { en: "Life's Bargain", pt: "Barganha da Vida" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Epic",
     stats: [
@@ -3733,7 +3733,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Hero_Tactic_04",
     name: { en: "Wisdom's Path", pt: "Caminho da Sabedoria" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -3744,7 +3744,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Attack_01",
     name: { en: "Melee Critical Hit Augment", pt: "Aumento de Acerto Crítico Corpo a Corpo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -3755,7 +3755,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Attack_02",
     name: { en: "Melee Hit Intensity", pt: "Intensidade de Acerto Corpo a Corpo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -3767,7 +3767,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Attack_Skill",
     name: { en: "Power Breach", pt: "Violação de Poder" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -3778,7 +3778,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_AttackUtil_03",
     name: { en: "Max Damage Expertise", pt: "Especialista em Dano Máximo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -3790,7 +3790,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Defense_07",
     name: { en: "Evasion Augment", pt: "Aumento de Esquiva" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -3803,7 +3803,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Defense_08",
     name: { en: "Shield Block Intensity", pt: "Intensidade do Bloqueio de Escudo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -3815,7 +3815,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_DefenseTactic_09",
     name: { en: "Damage Reduction Expertise", pt: "Especialização em Redução de Dano" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -3827,7 +3827,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Def_Skill",
     name: { en: "Unyielding Aegis", pt: "Égide Implacável" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -3838,7 +3838,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Tac_Skill",
     name: { en: "Bulwark Stance", pt: "Postura de Defesa" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -3849,7 +3849,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Tactic_10",
     name: { en: "Collision Resistance Augment", pt: "Aumento de Resistência a Colisão" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -3860,7 +3860,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Tactic_11",
     name: { en: "Boss Defense Intensity", pt: "Intensidade de Defesa Contra Chefes" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -3872,7 +3872,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_TacticAttack_12",
     name: { en: "Weaken and Damage Expertise", pt: "Especialização em Fraqueza e Dano" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -3884,7 +3884,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Util_04",
     name: { en: "Mana Regen Augment", pt: "Aumento de Regeneração de Mana" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -3895,7 +3895,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Util_05",
     name: { en: "Healing Received Intensity", pt: "Intensidade de Cura Recebida" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -3907,7 +3907,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_UtilDefense_06",
     name: { en: "Mana Cost Efficiency Expertise", pt: "Especialização em Eficiência do Custo de Mana" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -3919,7 +3919,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_High_Util_Skill",
     name: { en: "Stamina Renewal", pt: "Restauração de Vigor" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -3930,7 +3930,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Attack_01",
     name: { en: "Lesser Melee Hit Augment", pt: "Aumento Inferior de Acerto Corpo a Corpo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -3941,7 +3941,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Attack_02",
     name: { en: "Melee Critical Hit Intensity", pt: "Intensidade do Acerto Crítico Corpo a Corpo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -3953,7 +3953,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Attack_Skill",
     name: { en: "Roar Amplifier", pt: "Amplificador de Rugido" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -3964,7 +3964,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_AttackUtil_03",
     name: { en: "Base Damage Expertise", pt: "Especialização em Dano Base" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -3976,7 +3976,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Defense_07",
     name: { en: "Lesser Melee Defense Augment", pt: "Aumento Inferior de Defesa Corpo a Corpo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -3987,7 +3987,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Defense_08",
     name: { en: "Max Health Intensity", pt: "Intensidade de Vida Máxima" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -3999,7 +3999,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_DefenseTactic_09",
     name: { en: "Ranged Endurance Expertise", pt: "Especialização em Tolerância à Distância" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4011,7 +4011,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Def_Skill",
     name: { en: "Strategic Retreat", pt: "Retirada Estratégica" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -4022,7 +4022,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Tac_Skill",
     name: { en: "Gerad's Precision", pt: "Precisão de Gerad" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4033,7 +4033,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Tactic_10",
     name: { en: "Lesser Collision Augment", pt: "Aumento Inferior de Colisão" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4044,7 +4044,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Tactic_11",
     name: { en: "Max Stamina Intensity", pt: "Intensidade de Vigor Máximo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4056,7 +4056,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_TacticAttack_12",
     name: { en: "Weaken and Range Expertise", pt: "Especialização em Fraqueza e Alcance" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4068,7 +4068,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Util_04",
     name: { en: "Lesser Health Regen Augment", pt: "Aumento Inferior de Regeneração de Vida" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -4079,7 +4079,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Util_05",
     name: { en: "Cooldown Speed Intensity", pt: "Intensidade de Velocidade de Recarga" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -4091,7 +4091,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_UtilDefense_06",
     name: { en: "Damage Reduction Expertise", pt: "Especialização em Redução de Dano" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4103,7 +4103,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Normal_Util_Skill",
     name: { en: "Gerad's Resilience", pt: "Resiliência de Gerad" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -4114,7 +4114,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Attack_01",
     name: { en: "Greater Heavy Attack Augment", pt: "Aumento Superior de Ataque Pesado" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -4127,7 +4127,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Attack_02",
     name: { en: "Attack Speed Intensity", pt: "Intensidade de Velocidade de Ataque" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -4139,7 +4139,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Attack_Skill",
     name: { en: "Shredding Strike", pt: "Golpe Retalhador" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -4150,7 +4150,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_AttackUtil_03",
     name: { en: "Damage Increase Expertise", pt: "Especialização em Aumento de Dano" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4162,7 +4162,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Defense_07",
     name: { en: "Greater Shield Block Augment", pt: "Aumento Superior de Bloqueio de Escudo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -4173,7 +4173,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Defense_08",
     name: { en: "Critical Damage Intensity", pt: "Intensidade de Dano Crítico" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -4185,7 +4185,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_DefenseTactic_09",
     name: { en: "Skill Damage Resistance Expertise", pt: "Especialização em Resistência a Dano de Habilidade" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4197,7 +4197,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Def_Skill",
     name: { en: "Unshakeable Will", pt: "Vontade Inabalável" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -4208,7 +4208,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Tac_Skill",
     name: { en: "Tactical Breaker", pt: "Quebra-Tática" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4219,7 +4219,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Tactic_10",
     name: { en: "Greater Boss Bonus Damage Augment", pt: "Aumento Superior de Bônus de Dano contra Chefes" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4230,7 +4230,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Tactic_11",
     name: { en: "Collision Intensity", pt: "Intensidade de Colisão" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4243,7 +4243,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_TacticAttack_12",
     name: { en: "Stun Resistance and Damage Expertise", pt: "Especialização em Resistência a Atordoamento e Dano" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4255,7 +4255,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Util_04",
     name: { en: "Greater Buff Duration Augment", pt: "Aumento Superior de Duração da Vantagem" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -4266,7 +4266,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Util_05",
     name: { en: "CC Resistance Intensity", pt: "Intensidade de Resistência a CM" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -4286,7 +4286,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_UtilDefense_06",
     name: { en: "Melee Defense Expertise", pt: "Especialização em Defesa Corpo a Corpo" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4298,7 +4298,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Sword_Rare_Util_Skill",
     name: { en: "Replenishment", pt: "Reabastecimento" },
-    weapon: "",
+    weapon: "Sword",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -4309,7 +4309,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Hero_Attack_01",
     name: { en: "Abyssal Burst", pt: "Explosão Abissal" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Epic",
     stats: [
@@ -4320,7 +4320,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Hero_Defense_03",
     name: { en: "Blessed Haste", pt: "Pressa Abençoada" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Epic",
     stats: [
@@ -4331,7 +4331,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Hero_Tactic_04",
     name: { en: "Nightmare", pt: "Pesadelo" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -4342,7 +4342,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Hero_Util_02",
     name: { en: "Divine Choice", pt: "Escolha Divina" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Epic",
     stats: [
@@ -4353,7 +4353,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Attack_01",
     name: { en: "Curse Duration Augment", pt: "Aumento da Duração da Maldição" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -4364,7 +4364,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Attack_02",
     name: { en: "Attack Speed Intensity", pt: "Intensidade de Velocidade de Ataque" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -4376,7 +4376,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Attack_Skill",
     name: { en: "Warrior's Gambit", pt: "Gambito de Combatente" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Uncommon",
     stats: [
@@ -4387,7 +4387,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_AttackUtil_03",
     name: { en: "Max Damage Expertise", pt: "Especialista em Dano Máximo" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4399,7 +4399,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Defense_07",
     name: { en: "Melee Defense Augment", pt: "Aumento de Defesa Corpo a Corpo" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -4410,7 +4410,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Defense_08",
     name: { en: "Magic Heavy Attack Evasion Intensity", pt: "Intensidade de Esquiva de Ataque Pesado Mágico" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -4422,7 +4422,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_DefenseTactic_09",
     name: { en: "Damage Reduction Expertise", pt: "Especialização em Redução de Dano" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4434,7 +4434,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Def_Skill",
     name: { en: "Celestial Boost", pt: "Ampliação Celestial" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Uncommon",
     stats: [
@@ -4445,7 +4445,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Tac_Skill",
     name: { en: "Shadow Oath", pt: "Juramento Sombrio" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4456,7 +4456,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Tactic_10",
     name: { en: "Species Damage Augment", pt: "Aumento de Dano de Espécies" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4471,7 +4471,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Tactic_11",
     name: { en: "Buff Duration Intensity", pt: "Intensidade de Duração da Vantagem" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4483,7 +4483,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_TacticAttack_12",
     name: { en: "Skill Damage Boost Expertise", pt: "Especialização em Ampliação de Dano de Habilidade" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4495,7 +4495,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Util_04",
     name: { en: "Healing Augment", pt: "Aumento de Cura" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -4506,7 +4506,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Util_05",
     name: { en: "Max Mana Intensity", pt: "Intensidade de Mana Máxima" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -4518,7 +4518,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_UtilDefense_06",
     name: { en: "Magic Defense Expertise", pt: "Especialização em Defesa Mágica" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4530,7 +4530,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_High_Util_Skill",
     name: { en: "Eye of Emptiness", pt: "Olho do Vazio" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Uncommon",
     stats: [
@@ -4541,7 +4541,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Attack_01",
     name: { en: "Lesser Attack Range Augment", pt: "Aumento Inferior de Alcance de Ataque" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -4552,7 +4552,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Attack_02",
     name: { en: "Hit Intensity", pt: "Intensidade de Acerto" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -4566,7 +4566,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Attack_Skill",
     name: { en: "Vampiric Onslaught", pt: "Ataque Vampírico" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Common",
     stats: [
@@ -4577,7 +4577,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_AttackUtil_03",
     name: { en: "Bonus Damage Expertise", pt: "Especialização em Bônus de Dano" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4589,7 +4589,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Defense_07",
     name: { en: "Lesser Melee Heavy Attack Evasion Augment", pt: "Aumento de Esquiva de Ataque Pesado Corpo a Corpo Menor" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -4600,7 +4600,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Defense_08",
     name: { en: "Healing Received Intensity", pt: "Intensidade de Cura Recebida" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -4612,7 +4612,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_DefenseTactic_09",
     name: { en: "Evasion Expertise", pt: "Especialização em Esquiva" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4626,7 +4626,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Def_Skill",
     name: { en: "Light of Devotion", pt: "Luz da Devoção" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Common",
     stats: [
@@ -4637,7 +4637,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Tac_Skill",
     name: { en: "Malicious Focus", pt: "Foco Malévolo" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4648,7 +4648,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Tactic_10",
     name: { en: "Lesser Species Resistance Augment", pt: "Aumento Inferior de Resistência de Espécies" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4663,7 +4663,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Tactic_11",
     name: { en: "Cooldown Speed Intensity", pt: "Intensidade de Velocidade de Recarga" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4675,7 +4675,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_TacticAttack_12",
     name: { en: "Base Damage Expertise", pt: "Especialização em Dano Base" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4687,7 +4687,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Util_04",
     name: { en: "Lesser Mana Efficiency Augment", pt: "Aumento Inferior de Eficiência de Mana" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -4698,7 +4698,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Util_05",
     name: { en: "Healing Intensity I", pt: "Intensidade de Cura I" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -4710,7 +4710,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_UtilDefense_06",
     name: { en: "Damage Reduction Expertise", pt: "Especialização em Redução de Dano" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Common",
     stats: [
@@ -4722,7 +4722,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Normal_Util_Skill",
     name: { en: "Battle Spirit", pt: "Espírito de Batalha" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Common",
     stats: [
@@ -4733,7 +4733,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Attack_01",
     name: { en: "Greater Damage Over Time Augment", pt: "Aumento Superior de Dano Contínuo" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -4744,7 +4744,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Attack_02",
     name: { en: "Magic Heavy Attack Intensity", pt: "Intensidade de Ataque Pesado Mágico" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -4756,7 +4756,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Attack_Skill",
     name: { en: "Malicious Intent", pt: "Intenção Maliciosa" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Attack", pt: "Ataque" },
     grade: "Rare",
     stats: [
@@ -4767,7 +4767,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_AttackUtil_03",
     name: { en: "Silence Chance Response", pt: "Resposta à Chance de Silêncio" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4781,7 +4781,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Defense_07",
     name: { en: "Greater Melee Evasion Augment", pt: "Aumento Superior de Esquiva Corpo a Corpo" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -4792,7 +4792,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Defense_08",
     name: { en: "Endurance Intensity", pt: "Intensidade da Tolerância" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -4806,7 +4806,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_DefenseTactic_09",
     name: { en: "Skill Damage Resistance Expertise", pt: "Especialização em Resistência a Dano de Habilidade" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4818,7 +4818,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Def_Skill",
     name: { en: "Spectral Defense", pt: "Defesa Espectral" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Defense", pt: "Defesa" },
     grade: "Rare",
     stats: [
@@ -4829,7 +4829,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Tac_Skill",
     name: { en: "Dark Apostasy", pt: "" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4840,7 +4840,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Tactic_11",
     name: { en: "Stamina Regen Intensity", pt: "Intensidade de Regeneração de Vigor" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4853,7 +4853,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_TacticAttack_12",
     name: { en: "Skill Damage Expertise", pt: "Especialização em Dano de Habilidade" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4865,7 +4865,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Util_04",
     name: { en: "Greater Mana Regen Augment", pt: "Aumento Superior de Regeneração de Mana" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -4876,7 +4876,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Util_05",
     name: { en: "Healing Intensity II", pt: "Intensidade de Cura II" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -4889,7 +4889,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_UtilDefense_06",
     name: { en: "Debuff Duration Defense", pt: "Defesa contra Duração da Desvantagem" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4901,7 +4901,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "Wand_Rare_Util_Skill",
     name: { en: "Corrupting Hit", pt: "Acerto Corrompido" },
-    weapon: "",
+    weapon: "Wand",
     category: { en: "Utility", pt: "Utilidade" },
     grade: "Rare",
     stats: [
@@ -4912,7 +4912,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_001",
     name: { en: "Overcome Crisis", pt: "Superar a Crise" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4923,7 +4923,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_002",
     name: { en: "Destruction Spear", pt: "Lança Destruidora" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4934,7 +4934,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_003",
     name: { en: "Spirit of Defiance", pt: "Espírito de Desafio" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4945,7 +4945,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_004",
     name: { en: "Deadly Survival Instinct", pt: "Instinto Mortal de Sobrevivência" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Uncommon",
     stats: [
@@ -4956,7 +4956,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_005",
     name: { en: "Fountain of Revitalization", pt: "Fonte de Revitalização" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4967,7 +4967,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_006",
     name: { en: "Deadly Viper", pt: "Víbora Mortal" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4978,7 +4978,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_007",
     name: { en: "Potential", pt: "Potencial" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -4989,7 +4989,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_008",
     name: { en: "Dragon Ascent", pt: "Ascensão Dracônica" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Rare",
     stats: [
@@ -5000,7 +5000,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_009",
     name: { en: "Falling Flower", pt: "Flor que Cai" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5011,7 +5011,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_010",
     name: { en: "Indomitable Stance", pt: "Postura Indomável" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5022,7 +5022,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_011",
     name: { en: "Lightning Speed", pt: "Velocidade da Luz" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5033,7 +5033,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_012",
     name: { en: "Time Bomb", pt: "Bomba Relógio" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5652,7 +5652,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_013",
     name: { en: "Battle Prep", pt: "Preparativos de Batalha" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5663,7 +5663,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_014",
     name: { en: "Guardian's Awakening", pt: "Despertar do Guardião" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5674,7 +5674,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_015",
     name: { en: "Windy Veil", pt: "Véu Ventoso" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5685,7 +5685,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_016",
     name: { en: "Survival Enhancement", pt: "Aprimoramento de Sobrevivência" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5696,7 +5696,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_017",
     name: { en: "Fighting Instincts", pt: "Instintos de Luta" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5707,7 +5707,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_018",
     name: { en: "Overcoming Pain", pt: "Superando a Dor" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5718,7 +5718,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_019",
     name: { en: "Duelist", pt: "Duelista" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5729,7 +5729,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_020",
     name: { en: "Shielded by Unity", pt: "Escudo da Unidade" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5740,7 +5740,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_021",
     name: { en: "Defense Null", pt: "Defesa Nula" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [
@@ -5751,7 +5751,7 @@ export const WEAPON_MASTERIES: WeaponMastery[] = [
   {
     id: "WM_Common_SKILL_022",
     name: { en: "Guardian's Blessing", pt: "Bênção do Guardião" },
-    weapon: "",
+    weapon: "Shared",
     category: { en: "", pt: "" },
     grade: "Epic",
     stats: [

@@ -567,7 +567,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_BA_S_KillMoveSpeed",
     name: { en: "Assassin's Step", pt: "Passo de Assassino" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -580,7 +580,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_BasicStrike",
     name: { en: "Mutilation", pt: "Mutilação" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: undefined,
@@ -593,7 +593,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_BlinkStrike",
     name: { en: "Shadow Strike", pt: "Golpe Sombrio" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 10.8,
@@ -606,7 +606,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_BloodStrike",
     name: { en: "Vampiric Strike", pt: "Golpe Vampírico" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -619,7 +619,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_CounterMove",
     name: { en: "Block Blade", pt: "Bloqueio de Lâmina" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "defensive",
     cooldownSec: 30.0,
@@ -632,7 +632,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_CriticalStrike",
     name: { en: "Cleaving Moonlight", pt: "Fenda Enluarada" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 6.0,
@@ -645,7 +645,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_DeadlyStrike",
     name: { en: "Brutal Incision", pt: "Corte Brutal" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -658,7 +658,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_DelayDamage",
     name: { en: "Fatal Stigma", pt: "Estigma Fatal" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -671,7 +671,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_LegAttack",
     name: { en: "Ankle Strike", pt: "Golpe Baixo" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -684,7 +684,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_MoveSkillEvasion",
     name: { en: "Shadow Walker", pt: "Passos Sombrios" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -697,7 +697,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_PoisonDagger",
     name: { en: "Knife Throwing", pt: "Arremesso de Facas" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -710,7 +710,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_PoisonEnchant",
     name: { en: "Inject Venom", pt: "Injeção Letal" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -723,7 +723,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_ShadowChaser",
     name: { en: "Umbral Spirit", pt: "Espírito Umbral" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -736,7 +736,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_Smoke",
     name: { en: "Phantom Smokescreen", pt: "Fumaça Fantasma" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 65.0,
@@ -749,7 +749,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_SonicAttacka",
     name: { en: "Frenzied Sword Dance", pt: "Dança da Espada Frenética" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -762,7 +762,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_DA_S_Stealth",
     name: { en: "Camouflage Cloak", pt: "Manto de Camuflagem" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 60.0,
@@ -775,7 +775,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_S_CriticalDamageUp",
     name: { en: "Wrathful Edge", pt: "Limite da Ira" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -788,7 +788,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_S_EvasionBuff",
     name: { en: "Assassination Stance", pt: "Postura de Assassinato" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "passive",
     cooldownSec: 15.4,
@@ -801,7 +801,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_S_MeleeAccuracy",
     name: { en: "Assassin's Instincts", pt: "Instinto Assassino" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -814,7 +814,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_S_PoisonBuff",
     name: { en: "Murderous Energy", pt: "Energia Assassina" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -827,7 +827,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_DA_S_PoisonTargetOffHandAttack",
     name: { en: "Destructive Fang", pt: "Presas Destrutivas" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1659,7 +1659,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_ArmorUp",
     name: { en: "Aegis Shield", pt: "Escudo de Égide" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1672,7 +1672,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_AroundCountBuff",
     name: { en: "Impenetrable", pt: "Impenetrável" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1685,7 +1685,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_BasicAttack",
     name: { en: "Slash", pt: "Corte" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: undefined,
@@ -1698,7 +1698,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_BlockSuccecsToleranceUp",
     name: { en: "Gerad's Patience", pt: "Paciência de Gerad" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1711,7 +1711,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_BlockSucceedRewardMana",
     name: { en: "Resilient Mind", pt: "Mente Resiliente" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1724,7 +1724,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_BuffAttack",
     name: { en: "Counter Barrier", pt: "Barreira de Contra-ataque" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -1737,7 +1737,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_CounterMove",
     name: { en: "Shield Survival Technique", pt: "Técnica de Sobrevivência com Escudo" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "defensive",
     cooldownSec: 30.0,
@@ -1750,7 +1750,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_CrashSucceedBuff",
     name: { en: "Morale Boost", pt: "Aumento de Moral" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "passive",
     cooldownSec: 14.0,
@@ -1763,7 +1763,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_DashAttack",
     name: { en: "Strategic Rush", pt: "Investida Estratégica" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -1776,7 +1776,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_DebuffAttack",
     name: { en: "Shield Strike", pt: "Impacto de Escudo" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 6.0,
@@ -1789,7 +1789,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_ManaAttack",
     name: { en: "Witty Retort", pt: "Réplica Espirituosa" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -1802,7 +1802,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_MaxHealthUp",
     name: { en: "Immortal Pride", pt: "Orgulho Imortal" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 90.0,
@@ -1815,7 +1815,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_PullSkill",
     name: { en: "Chain Hook", pt: "Gancho Acorrentado" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -1828,7 +1828,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_PushAttack",
     name: { en: "Fierce Clash", pt: "Confronto Feroz" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 22.0,
@@ -1841,7 +1841,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_ShieldBuff",
     name: { en: "Stalwart Bastion", pt: "Bastião Vigoroso" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 90.0,
@@ -1854,7 +1854,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_ShieldThrow",
     name: { en: "Shield Throw", pt: "Arremesso de Escudo" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 33.0,
@@ -1867,7 +1867,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff",
     name: { en: "Provoking Roar", pt: "Rugido Provocador" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -1880,7 +1880,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff_Attack",
     name: { en: "Spectrum of Agony", pt: "Espectro da Agonia" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1893,7 +1893,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_TheCloserEvasionUP",
     name: { en: "Skillful Evasion", pt: "Esquiva Habilidosa" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1906,7 +1906,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_VictoryAttack",
     name: { en: "A Shot at Victory", pt: "Uma Chance de Vitória" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -1919,7 +1919,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_SW_SH_S_WhirlwindSlash",
     name: { en: "Annihilating Slash", pt: "Corte Aniquilador" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -1932,7 +1932,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_BasicAttack",
     name: { en: "Manaball", pt: "Esfera de Mana" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: undefined,
@@ -1945,7 +1945,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_Corruption",
     name: { en: "Touch of Despair", pt: "Toque de Desespero" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 6.0,
@@ -1958,7 +1958,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_CounterMove",
     name: { en: "Chaotic Shield", pt: "Escudo Caótico" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "defensive",
     cooldownSec: 3.0,
@@ -1971,7 +1971,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_CurseArea",
     name: { en: "Corrupted Magic Circle", pt: "Círculo Mágico Corrompido" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 36.0,
@@ -1984,7 +1984,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_CurseAttackHeal",
     name: { en: "Vampiric Contract", pt: "Contrato Vampírico" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -1997,7 +1997,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_CurseBurst",
     name: { en: "Curse Explosion", pt: "Maldição Explosiva" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -2010,7 +2010,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_CurseDuration",
     name: { en: "Wraith's Beckon", pt: "Chamado do Espectro" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -2023,7 +2023,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_CurseKillBonus",
     name: { en: "Full of Corruption", pt: "Corrupção Total" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -2036,7 +2036,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_CurseSpread",
     name: { en: "Karmic Haze", pt: "Névoa Cármica" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 42.0,
@@ -2049,7 +2049,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_DayHealNightCurse",
     name: { en: "Devotion and Emptiness", pt: "Devoção e Vazio" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "passive",
     cooldownSec: 10.0,
@@ -2062,7 +2062,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_Decay",
     name: { en: "Time for Punishment", pt: "Hora da Punição" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -2075,7 +2075,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_DefenseUp",
     name: { en: "Blessed Barrier", pt: "Barreira Abençoada" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2088,7 +2088,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_Heal",
     name: { en: "Swift Healing", pt: "Cura Célere" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -2101,7 +2101,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_HealAll",
     name: { en: "Clay's Salvation", pt: "Salvação de Clay" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -2114,7 +2114,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_HealEffectUpWhenSkillDamageTaken",
     name: { en: "Saint's Oath", pt: "Juramento de Santo" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -2127,7 +2127,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_HealEfficiencyByMaxCost",
     name: { en: "Noble Revival", pt: "Renascimento Nobre" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -2140,7 +2140,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_HealField",
     name: { en: "Fountain of Life", pt: "Fonte da Vida" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 36.0,
@@ -2153,7 +2153,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_LinkLaser",
     name: { en: "Ray of Disaster", pt: "Raio do Desastre" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 36.0,
@@ -2166,7 +2166,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_MagicShield",
     name: { en: "Invincible Wall", pt: "Parede Invencível" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2179,7 +2179,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_Sleep",
     name: { en: "Cursed Nightmare", pt: "Pesadelo Maldito" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2192,7 +2192,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_WA_GR_S_SupportAllyCostRegenUp",
     name: { en: "Selfless Soul", pt: "Alma Altruísta" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "passive",
     cooldownSec: undefined,
@@ -2205,7 +2205,7 @@ export const SKILLS: Skill[] = [
   {
     id: "SW2_S_DamageReceive_SP",
     name: { en: "Devoted Sanctuary", pt: "Santuário Devoto" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 90.0,
@@ -2218,7 +2218,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_CycloneShot",
     name: { en: "Tornado", pt: "Tornado" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -2231,7 +2231,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_DoubleShot_Trait1",
     name: { en: "Limit Break", pt: "Quebra de Limite" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 60.0,
@@ -2244,7 +2244,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_MultiShot_Move",
     name: { en: "Strafing", pt: "Ataque Rasante" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -2257,7 +2257,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PheonixArrow_Charge",
     name: { en: "Flash Wave", pt: "Onda Supersônica" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -2270,7 +2270,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge",
     name: { en: "Decisive Sniping", pt: "Disparo Preciso Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2283,7 +2283,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge_CanMove",
     name: { en: "Decisive Sniping", pt: "Disparo Preciso Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2296,7 +2296,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge_CanMove_NoneTarget",
     name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2309,7 +2309,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge_NoneTarget",
     name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2322,7 +2322,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1",
     name: { en: "Decisive Sniping", pt: "Disparo Preciso Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2335,7 +2335,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1_CanMove",
     name: { en: "Decisive Sniping", pt: "Disparo Preciso Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2348,7 +2348,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1_CanMove_NoneTarget",
     name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2361,7 +2361,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1_NoneTarget",
     name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2374,7 +2374,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_CircleFire",
     name: { en: "Annihilation Barrage Shot", pt: "Disparo de Barragem de Aniquilação" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 75.0,
@@ -2387,7 +2387,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_CR_D_S_S_RapidShot_Hero",
     name: { en: "Quick Fire", pt: "Tiro Ligeiro" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 6.0,
@@ -2400,7 +2400,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_CR_S_BloodToSoul",
     name: { en: "Mana Exchange", pt: "Conversão de Mana" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 9.0,
@@ -2413,7 +2413,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_CR_S_BuckShot_Trait1",
     name: { en: "Rapid Shot", pt: "Disparo Rápido" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -2426,7 +2426,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_CR_S_BuckShot_Trait2",
     name: { en: "Collision Shot", pt: "Disparo de Colisão" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -2439,7 +2439,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_CR_S_Step_Trait2",
     name: { en: "Nimble Leap", pt: "Salto Ágil" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 11.8,
@@ -2452,7 +2452,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_ElementalBolt",
     name: { en: "Mother Nature's Protest", pt: "Protesto da Mãe Natureza" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: undefined,
@@ -2465,7 +2465,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_FuriousFire_Boss_T2_CR_01",
     name: { en: "Wild Barrage", pt: "Barragem Selvagem" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 75.0,
@@ -2478,7 +2478,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_S_AddShot",
     name: { en: "Recoil Shot", pt: "Tiro de Recuo" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: undefined,
@@ -2491,7 +2491,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_DA_DA_S_BloodStrike_SP",
     name: { en: "Vampiric Strike", pt: "Golpe Vampírico" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -2504,7 +2504,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_DA_DA_S_DeadlyStrike_SP",
     name: { en: "Thundering Bomb", pt: "Bomba Trovejante" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -2517,7 +2517,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_DA_DA_S_DelayDamage_SP",
     name: { en: "Fatal Stigma", pt: "Estigma Fatal" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2530,7 +2530,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_DA_DA_S_PoisonDagger_SP",
     name: { en: "Lightning Throw", pt: "Arremesso de Relâmpago" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2543,7 +2543,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_DA_DA_S_PoisonEnchant_SP",
     name: { en: "Lightning Infusion", pt: "Infusão de Relâmpago" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -2556,7 +2556,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_DA_DA_S_ShadowChaser_SP",
     name: { en: "Thunder Spirit", pt: "Espírito do Trovão" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2569,7 +2569,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_DA_DA_S_SonicAttack_SP",
     name: { en: "Mad Sword Dance", pt: "Dança da Espada Frenética" },
-    weapon: "",
+    weapon: "Dagger",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2582,7 +2582,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_AbnormalTolerance_SP",
     name: { en: "Sentinel's Bastion", pt: "Bastião de Sentinela" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -2595,7 +2595,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_AbnormalTolerance_SP2",
     name: { en: "Enforcer", pt: "Executor" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -2608,7 +2608,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_CrossAttack_SP",
     name: { en: "Slaughtering Slash", pt: "Corte de Abate" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -2621,7 +2621,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_DefenceAttack_SP",
     name: { en: "Wreak Havoc", pt: "Causar Estragos" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2634,7 +2634,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_DefenceAttack_SP_Strong",
     name: { en: "Wreak Havoc", pt: "Causar Estragos" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2647,7 +2647,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_DefenceAttack_Strong",
     name: { en: "Cataclysm", pt: "Cataclismo" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2660,7 +2660,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_PushAttack_SP",
     name: { en: "Constricting Tempest", pt: "Tempestade Constritiva" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 36.0,
@@ -2673,7 +2673,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_PushAttack_Stay",
     name: { en: "Tempest Strike", pt: "Golpe Tempestuoso" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 36.0,
@@ -2686,7 +2686,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_RapidAttack_SP",
     name: { en: "Phoenix Barrage", pt: "Barragem Fênix" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2699,7 +2699,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_RapidThrust_5Hit",
     name: { en: "Brutal Fury", pt: "Fúria Brutal" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -2712,7 +2712,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_RapidThrust_SP",
     name: { en: "Explosive Fury", pt: "Fúria Explosiva" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -2725,7 +2725,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_SpearThrower_SP",
     name: { en: "Javelin Inferno", pt: "Azagaia Infernal" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: undefined,
@@ -2738,7 +2738,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SP_S_StunAttack_SP",
     name: { en: "Ascending Cleave", pt: "Corte Crescente" },
-    weapon: "",
+    weapon: "Spear",
     grade: "Epic",
     type: "active",
     cooldownSec: 36.0,
@@ -2751,7 +2751,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_AoeTeleport_FieldArea",
     name: { en: "Frost Smokescreen", pt: "Cortina de Gelo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2764,7 +2764,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_AoeTeleport_FieldArea_trait1",
     name: { en: "Burning Smokescreen", pt: "Cortina de Fogo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2777,7 +2777,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_AoeTeleport_Hero_trait1",
     name: { en: "Burning Smokescreen", pt: "Cortina de Fogo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 27.0,
@@ -2790,7 +2790,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_BringSkill_Move",
     name: { en: "Jumping Chain", pt: "Corrente Saltitante" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 40.0,
@@ -2803,7 +2803,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_BringSkill_Shield",
     name: { en: "Redemptive Barrier", pt: "Barreira Redentora" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 40.0,
@@ -2816,7 +2816,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_Firecombo_Canmove",
     name: { en: "Fireball Barrage", pt: "Barragem de Bola de Fogo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2829,7 +2829,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_GlobalCoolDownUp_trait1",
     name: { en: "High Focus", pt: "Foco Elevado" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 75.0,
@@ -2842,7 +2842,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_IceFreeze_Self",
     name: { en: "Icebound Armor", pt: "Armadura Gélida" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 85.0,
@@ -2855,7 +2855,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_IceSpear_Onetarget",
     name: { en: "Ice Spear Bombardment", pt: "Bombardeio de Lança de Gelo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2868,7 +2868,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_IceSpear_Onetarget_trait_2",
     name: { en: "Ice Spear Bombardment", pt: "Bombardeio de Lança de Gelo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2881,7 +2881,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_IceSpear_trait_2",
     name: { en: "Ice Spear", pt: "Lança de Gelo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2894,7 +2894,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_ManaRengeUp_Legend",
     name: { en: "Inner Peace", pt: "Paz Interior" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 60.0,
@@ -2907,7 +2907,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_Meteor_Attack_Seperate",
     name: { en: "Hellfire Rain", pt: "Chuva de Fogo do Inferno" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 60.0,
@@ -2920,7 +2920,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_PowerAttack_Casting",
     name: { en: "Judgment Lightning", pt: "Raio do Julgamento" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -2933,7 +2933,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_WideAreaAttack_Charge",
     name: { en: "Focused Fire Bombs", pt: "Bombas de Fogo Concentradas" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -2946,7 +2946,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_WideAreaAttack_Charge_Canmove",
     name: { en: "Focused Fire Bombs", pt: "Bombas de Fogo Concentradas" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -2959,7 +2959,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_WideAreaAttack_Hero_1_Canmove",
     name: { en: "Serial Fire Bombs", pt: "Explosão de Bombas de Fogo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -2972,7 +2972,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_WideAreaAttack_Hero_1_Canmove_trait5",
     name: { en: "Serial Fire Bombs", pt: "Explosão de Bombas de Fogo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -2985,7 +2985,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_WideAreaAttack_Hero_1_trait5",
     name: { en: "Serial Fire Bombs", pt: "Explosão de Bombas de Fogo" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -2998,7 +2998,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ST_S_WideAreaDebuffAttack_Hero_trait1",
     name: { en: "Frenzied Lightning Wave", pt: "Onda de Relâmpago Em Frenesi" },
-    weapon: "",
+    weapon: "Staff",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -3011,7 +3011,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_CounterAttack_SP",
     name: { en: "Death Blow", pt: "Golpe Fatal" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -3024,7 +3024,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_DashAttack_SP",
     name: { en: "Precision Dash", pt: "Aceleração Precisa" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 10.8,
@@ -3037,7 +3037,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_DefenseDebuffAttack_SP",
     name: { en: "Willbreaker", pt: "Quebra-Vontade" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -3050,7 +3050,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_GaiaCrash_SP",
     name: { en: "Frost Cleaving", pt: "Fenda Glacial" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -3063,7 +3063,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_PowerAttack_SP",
     name: { en: "Guillotine Blade", pt: "Lâmina Guilhotina" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -3076,7 +3076,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_ShieldBuff_SP",
     name: { en: "DaVinci's Chill", pt: "Frio de DaVinci" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -3089,7 +3089,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_SpinAttack_1_SP",
     name: { en: "Ice Tornado", pt: "Tornado de Gelo" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -3102,7 +3102,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW2_S_UpperAttack_SP",
     name: { en: "Charging Slash", pt: "Corte Impetuoso" },
-    weapon: "",
+    weapon: "Greatsword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -3115,7 +3115,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_BuffAttack_Charge",
     name: { en: "Concentrated Barrier", pt: "Barreira Concentrada" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -3128,7 +3128,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_DashAttack_trait1",
     name: { en: "Strategic Rush", pt: "Investida Estratégica" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -3141,7 +3141,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_DashAttack_trait1_2",
     name: { en: "Strategic Rush", pt: "Investida Estratégica" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -3154,7 +3154,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_DashAttack_trait2",
     name: { en: "Strategic Rush", pt: "Investida Estratégica" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -3167,7 +3167,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_PullSkill_Hero_trait1",
     name: { en: "Controlling Rake", pt: "Tridente do Controle" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -3180,7 +3180,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_PullSkill_Hero_trait1_3",
     name: { en: "Controlling Rake", pt: "Tridente do Controle" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -3193,7 +3193,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_PullSkill_Hero_trait3",
     name: { en: "Chain Hook", pt: "Gancho Acorrentado" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -3206,7 +3206,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_PushAttack_Earth",
     name: { en: "Desperate Clash", pt: "Confronto Desesperado" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 22.0,
@@ -3219,7 +3219,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_ShieldBuff_trait1",
     name: { en: "Righteous Fury", pt: "Fúria Justa" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 90.0,
@@ -3232,7 +3232,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_ShieldBuff_trait3",
     name: { en: "Stalwart Bastion", pt: "Bastião Vigoroso" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 90.0,
@@ -3245,7 +3245,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_ShieldBuff_trait3_1",
     name: { en: "Righteous Fury", pt: "Fúria Justa" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 90.0,
@@ -3258,7 +3258,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_ShieldThrow_trait1",
     name: { en: "Whirling Shield", pt: "Escudo Giratório" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 33.0,
@@ -3271,7 +3271,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_VictoryAttack_Earth",
     name: { en: "Annihilation Blade", pt: "Lâmina Aniquiladora" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -3284,7 +3284,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_WhirlwindSlash_trait3",
     name: { en: "Annihilating Slash", pt: "Corte Aniquilador" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -3297,7 +3297,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_S_MaxHealthUp_trait1",
     name: { en: "Blessing of Immortality", pt: "Bênção da Imortalidade" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 90.0,
@@ -3310,7 +3310,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_CurseArea_Onetarget",
     name: { en: "Decaying Touch", pt: "Toque em Degradação" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 18.0,
@@ -3323,7 +3323,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_CurseBurst_Hero",
     name: { en: "Curse Explosion", pt: "Maldição Explosiva" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -3336,7 +3336,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_Decay_trait1",
     name: { en: "Enchanting Time", pt: "Tempo de Encantamento" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 21.0,
@@ -3349,7 +3349,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_DefenseUp_trait2",
     name: { en: "Blessed Barrier", pt: "Barreira Abençoada" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -3362,7 +3362,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_HealAll_trait1",
     name: { en: "Janice's Rage", pt: "Fúria de Janice" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -3375,7 +3375,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_HealField_trait2",
     name: { en: "Fountain of Life", pt: "Fonte da Vida" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 36.0,
@@ -3388,7 +3388,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_MagicShield",
     name: { en: "Invincible Wall", pt: "Parede Invencível" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -3401,7 +3401,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_BO_SiegeMode",
     name: { en: "Concentration Stance", pt: "Postura de Concentração" },
-    weapon: "",
+    weapon: "Longbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -3687,7 +3687,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_CR_CR_S_ArmorBreakShot_Hero_Trait2",
     name: { en: "Detonation Mark", pt: "Marca de Detonação" },
-    weapon: "",
+    weapon: "Crossbow",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -3700,7 +3700,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_ChasingOrb",
     name: { en: "Healing Star", pt: "Estrela Curativa" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
@@ -3713,7 +3713,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_OrbitSlashHeal",
     name: { en: "Healing Wave", pt: "Onda Curativa" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.0,
@@ -3726,7 +3726,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_OrbShootPos",
     name: { en: "Milky Way", pt: "Via Láctea" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 12.0,
@@ -3739,7 +3739,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_PartyBarrier_Trait3",
     name: { en: "Guardian Defensive Wall", pt: "Muralha Defensiva de Guardião" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 120.0,
@@ -3752,7 +3752,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_Phasing_Trait1",
     name: { en: "Space Transition", pt: "Transição Espacial" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 31.0,
@@ -3765,7 +3765,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_RollingBall_Trait1",
     name: { en: "Gravity Star Destroyer", pt: "Destruidor Estelar Gravitacional" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -3778,7 +3778,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_RollingBall_Trait1_Trait2",
     name: { en: "Gravity Star Destroyer", pt: "Destruidor Estelar Gravitacional" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -3791,7 +3791,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_RollingBall_Trait2",
     name: { en: "Star Destroyer", pt: "Destruidor Estelar" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 45.0,
@@ -3804,7 +3804,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_ShieldSelf",
     name: { en: "Amplification Veil", pt: "Véu de Amplificação" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 15.0,
@@ -3817,7 +3817,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_TimeDelay",
     name: { en: "Time Dilation", pt: "Dilatação do Tempo" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 60.0,
@@ -3830,7 +3830,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_TimeDelay_Trait1",
     name: { en: "Echoes of Distortion", pt: "Ecos da Distorção" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 60.0,
@@ -3843,7 +3843,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_ORB_Active_Satellite_trait1",
     name: { en: "Summon Guardian Satellite", pt: "Invocar Satélite Guardião" },
-    weapon: "",
+    weapon: "Orb",
     grade: "Epic",
     type: "active",
     cooldownSec: 24.8,
@@ -3856,7 +3856,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_WA_GR_S_CurseSpread",
     name: { en: "Karmic Haze", pt: "Névoa Cármica" },
-    weapon: "",
+    weapon: "Wand",
     grade: "Epic",
     type: "active",
     cooldownSec: 42.0,
@@ -3869,7 +3869,7 @@ export const SKILLS: Skill[] = [
   {
     id: "WP_SW_SH_S_TauntBuff_Hero_Trait1",
     name: { en: "Provoking Roar", pt: "Rugido Provocador" },
-    weapon: "",
+    weapon: "Sword",
     grade: "Epic",
     type: "active",
     cooldownSec: 30.0,
