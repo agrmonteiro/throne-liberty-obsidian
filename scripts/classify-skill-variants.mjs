@@ -165,7 +165,7 @@ ${skills.map(s => {
     skillType: ${l10(s.skillType)},
     useFormat: ${l10(s.useFormat)},
     description: { en: ${q(s.description.en)}, pt: ${q(s.description.pt)} },
-    enhancementIds: ${JSON.stringify(s.enhancementIds)},${vOf  ? `\n    variantOf: ${q(vOf)},`   : ''}${vTyp ? `\n    variantType: ${JSON.stringify(vTyp)},` : ''}${vIds ? `\n    variantIds: ${JSON.stringify(vIds)},`   : ''}
+    enhancementIds: ${JSON.stringify(s.enhancementIds)},${s.requiredTraits?.length ? `\n    requiredTraits: ${JSON.stringify(s.requiredTraits)},` : ''}${vOf  ? `\n    variantOf: ${q(vOf)},`   : ''}${vTyp ? `\n    variantType: ${JSON.stringify(vTyp)},` : ''}${vIds ? `\n    variantIds: ${JSON.stringify(vIds)},`   : ''}
   }`
 }).join(',\n')}
 ]

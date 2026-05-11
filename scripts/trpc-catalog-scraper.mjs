@@ -213,8 +213,10 @@ function buildTraitList(enItems, ptItems) {
     traits.push({
       id:            t.id,
       name:          { en: t.name ?? '', pt: pt.name ?? '' },
+      rawName:       { en: t.rawName ?? '', pt: pt.rawName ?? '' },  // nome só do efeito, sem prefixo da skill
       baseSkillName: { en: baseNameEn, pt: baseNamePt },
-      skillSetId:    t.skillSetId ?? '',   // ← novo campo: liga ao SkillSet_ pai
+      skillSetId:    t.skillSetId ?? '',   // liga ao SkillSet_ pai
+      groupId:       t.groupId ?? null,    // traits do mesmo groupId são mutuamente exclusivos
       grade:         gradeStr(t.grade ?? 11),
       effect:        { en: efEn.effect,      pt: efPt.effect },
       description:   { en: efEn.description, pt: efPt.description },
@@ -308,8 +310,10 @@ export type L10n = { en: string; pt: string }
 export interface SkillEnhancement {
   id: string
   name: L10n
+  rawName: L10n                  // nome só do efeito, sem prefixo "SkillName - "
   baseSkillName: L10n
   skillSetId: string             // ID da SkillSet_* pai
+  groupId: string | null         // traits do mesmo grupo são mutuamente exclusivos
   grade: 'Common' | 'Uncommon' | 'Rare' | 'Epic' | string
   effect: L10n
   unlockLevel?: number
@@ -321,8 +325,10 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
 ${traits.map(t => `  {
     id: ${q(t.id)},
     name: ${l10(t.name)},
+    rawName: ${l10(t.rawName)},
     baseSkillName: ${l10(t.baseSkillName)},
     skillSetId: ${q(t.skillSetId)},
+    groupId: ${t.groupId ? q(t.groupId) : 'null'},
     grade: ${q(t.grade)},
     effect: ${l10(t.effect)},
     unlockLevel: ${opt(t.unlockLevel)},

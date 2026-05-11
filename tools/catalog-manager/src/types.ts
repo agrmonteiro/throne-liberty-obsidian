@@ -16,6 +16,7 @@ export interface Skill {
   useFormat?: L10n
   description: L10n
   enhancementIds: string[]
+  requiredTraits?: string[]
   variantOf?: string
   variantType?: SkillVariantFlag[]
   variantIds?: string[]
@@ -24,7 +25,10 @@ export interface Skill {
 export interface SkillEnhancement {
   id: string
   name: L10n
+  rawName: L10n
   baseSkillName: L10n
+  skillSetId: string
+  groupId: string | null
   grade: string
   effect: L10n
   unlockLevel?: number
