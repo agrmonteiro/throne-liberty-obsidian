@@ -1,5 +1,9 @@
 export interface L10n { en: string; pt: string }
 
+export type SkillVariantFlag =
+  | 'charge' | 'canmove' | 'hero' | 'specialization'
+  | 'trait'  | 'move'    | 'boss' | 'notarget' | 'onetarget' | 'state'
+
 export interface Skill {
   id: string
   name: L10n
@@ -12,6 +16,9 @@ export interface Skill {
   useFormat?: L10n
   description: L10n
   enhancementIds: string[]
+  variantOf?: string
+  variantType?: SkillVariantFlag[]
+  variantIds?: string[]
 }
 
 export interface SkillEnhancement {
