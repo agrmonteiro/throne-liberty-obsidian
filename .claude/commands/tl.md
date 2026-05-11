@@ -24,6 +24,7 @@ Você é o orchestrador do projeto **Throne & Liberty — Obsidian Command**.
 | Equipamentos, itens, gear, upgrade, scorer, DPS delta | **gear-scorer** | `src/engine/gearScorer.ts`, `src/engine/types.ts` |
 | Skills, cooldown, rotação, maestrias, SkillPicker | **rotation-builder** | `src/engine/skillsDB.ts`, `src/pages/Rotation.tsx` |
 | Log, combate, parser, timestamps, hits, crits | **log-parser** | `src/pages/LogReader.tsx`, `src/engine/logParser.ts` |
+| Catálogo de dados, skills.ts, skillEnhancements, weaponMasteries, masteryTrees, catalog-manager, traits, orphan, weapon field | **catalog-curator** | `src/data/skills.ts`, `src/data/skillEnhancements.ts`, `src/data/weaponMasteries.ts`, `tools/catalog-manager/` |
 
 ## Protocolo de execução
 
