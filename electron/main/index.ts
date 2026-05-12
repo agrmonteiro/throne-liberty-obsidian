@@ -462,9 +462,24 @@ ipcMain.handle('questlog:import-python', (_event, url: string): Promise<unknown>
 
     // Run .exe directly (bundled) or via python interpreter (dev)
     const isExe = scriptPath.endsWith('.exe')
-    const [cmd, spawnArgs] = isExe
-      ? [scriptPath, [trimmedUrl]]
-      : [process.platform === 'win32' ? 'python' : 'python3', [scriptPath, trimmedUrl]]
+    let cmd: string
+    let spawnArgs: string[]
+    if (isExe) {
+      cmd = scriptPath
+      spawnArgs = [trimmedUrl]
+    } else {
+      // Find working Python binary (avoids Windows Store alias that fails with spawn)
+      let pythonBin: string | null = null
+      for (const bin of ['python', 'python3', 'py']) {
+        try { execSync(`${bin} --version`, { timeout: 3000 }); pythonBin = bin; break } catch { /* try next */ }
+      }
+      if (!pythonBin) {
+        resolve({ error: 'Python não encontrado — instale o Python (python.org) e reinicie o app' })
+        return
+      }
+      cmd = pythonBin
+      spawnArgs = [scriptPath, trimmedUrl]
+    }
 
     const logHeader = `\n${'─'.repeat(60)}\n[${new Date().toISOString()}] cmd=${cmd}\nargs=${JSON.stringify(spawnArgs)}\n${'─'.repeat(60)}\n`
     writeScraperLog(logHeader)
@@ -710,8 +725,25 @@ function setupAutoUpdater(win: BrowserWindow): void {
   autoUpdater.autoDownload = true
   autoUpdater.autoInstallOnAppQuit = true
 
+  // ── Stall watchdog: se o progresso não avançar em 60s, notifica o renderer ──
+  let stallTimer: ReturnType<typeof setTimeout> | null = null
+  const STALL_MS = 60_000
+
+  function resetStallTimer() {
+    if (stallTimer) clearTimeout(stallTimer)
+    stallTimer = setTimeout(() => {
+      console.warn('[updater] download stalled — no progress for 60s')
+      win.webContents.send('update:stalled')
+    }, STALL_MS)
+  }
+
+  function clearStallTimer() {
+    if (stallTimer) { clearTimeout(stallTimer); stallTimer = null }
+  }
+
   autoUpdater.on('update-available', (info) => {
     win.webContents.send('update:available', { version: info.version })
+    resetStallTimer()
   })
 
   autoUpdater.on('update-not-available', () => {
@@ -720,22 +752,38 @@ function setupAutoUpdater(win: BrowserWindow): void {
 
   autoUpdater.on('download-progress', (progress) => {
     win.webContents.send('update:progress', { percent: Math.round(progress.percent) })
+    resetStallTimer()
   })
 
   autoUpdater.on('update-downloaded', (info) => {
+    clearStallTimer()
     win.webContents.send('update:downloaded', { version: info.version })
   })
 
   autoUpdater.on('error', (err) => {
+    clearStallTimer()
     console.error('[updater] error:', err)
+    win.webContents.send('update:error', { message: err?.message ?? String(err) })
   })
 
   // Verifica update 5 segundos após iniciar (deixa o app renderizar primeiro)
-  setTimeout(() => {
-    autoUpdater.checkForUpdates().catch((err) => {
-      console.error('[updater] checkForUpdates failed:', err)
-    })
-  }, 5000)
+  // Timeout de 30s: se o check não responder, notifica erro ao renderer
+  function runCheck() {
+    const checkTimeout = setTimeout(() => {
+      console.warn('[updater] checkForUpdates timed out after 30s')
+      win.webContents.send('update:error', { message: 'timeout' })
+    }, 30_000)
+
+    autoUpdater.checkForUpdates()
+      .then(() => clearTimeout(checkTimeout))
+      .catch((err) => {
+        clearTimeout(checkTimeout)
+        console.error('[updater] checkForUpdates failed:', err)
+        win.webContents.send('update:error', { message: err?.message ?? String(err) })
+      })
+  }
+
+  setTimeout(runCheck, 5000)
 }
 
 ipcMain.on('update:install', () => {
@@ -743,9 +791,99 @@ ipcMain.on('update:install', () => {
 })
 
 ipcMain.on('update:check', () => {
-  autoUpdater.checkForUpdates().catch((err) => {
-    console.error('[updater] manual checkForUpdates failed:', err)
-  })
+  const win = BrowserWindow.getAllWindows()[0]
+  if (!win) return
+
+  const checkTimeout = setTimeout(() => {
+    console.warn('[updater] manual checkForUpdates timed out after 30s')
+    win.webContents.send('update:error', { message: 'timeout' })
+  }, 30_000)
+
+  try {
+    const p = autoUpdater.checkForUpdates()
+    if (p && typeof (p as any).then === 'function') {
+      ;(p as any)
+        .then(() => clearTimeout(checkTimeout))
+        .catch((err: Error) => {
+          clearTimeout(checkTimeout)
+          console.error('[updater] manual checkForUpdates failed:', err)
+          win.webContents.send('update:error', { message: err?.message ?? String(err) })
+        })
+    } else {
+      clearTimeout(checkTimeout)
+    }
+  } catch (err: any) {
+    clearTimeout(checkTimeout)
+    console.error('[updater] manual checkForUpdates threw:', err)
+    win.webContents.send('update:error', { message: err?.message ?? String(err) })
+  }
+})
+
+// ─── Error report ─────────────────────────────────────────────────────────────
+
+// Webhook embarcado em build-time via define no electron.vite.config.ts
+declare const __DISCORD_WEBHOOK__: string
+
+ipcMain.handle('report:send', async (_event, userNote: string) => {
+  const webhookUrl = __DISCORD_WEBHOOK__
+  if (!webhookUrl) return { ok: false, error: 'Webhook não configurado no build.' }
+
+  try {
+    const version  = app.getVersion()
+    const platform = process.platform
+    const arch     = process.arch
+    const osVer    = process.getSystemVersion?.() ?? 'desconhecido'
+
+    // Últimas 4 KB do log do scraper (se existir)
+    let logSnippet = '(sem log disponível)'
+    try {
+      if (fs.existsSync(SCRAPER_LOG_FILE)) {
+        const raw = fs.readFileSync(SCRAPER_LOG_FILE, 'utf-8')
+        const tail = raw.slice(-4000)
+        logSnippet = tail.length < raw.length ? `…(truncado)\n${tail}` : tail
+      }
+    } catch { /* ignora */ }
+
+    const noteField = userNote?.trim()
+      ? { name: '💬 Descrição do usuário', value: userNote.trim().slice(0, 1024), inline: false }
+      : null
+
+    const embed = {
+      title: `🐛 Relatório de Erro — v${version}`,
+      color: 0xe53e3e,
+      timestamp: new Date().toISOString(),
+      fields: [
+        { name: 'Versão', value: `v${version}`, inline: true },
+        { name: 'Plataforma', value: `${platform} / ${arch}`, inline: true },
+        { name: 'Sistema', value: osVer, inline: true },
+        ...(noteField ? [noteField] : []),
+        {
+          name: '📄 Log do scraper (últimas 4 KB)',
+          value: `\`\`\`\n${logSnippet.slice(0, 1000)}\n\`\`\``,
+          inline: false,
+        },
+      ],
+      footer: { text: 'Tier2 Command Lab — bug report automático' },
+    }
+
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ embeds: [embed] }),
+    })
+
+    if (!res.ok) {
+      const body = await res.text().catch(() => '')
+      console.error('[report] Discord webhook error:', res.status, body)
+      return { ok: false, error: `Discord retornou ${res.status}` }
+    }
+
+    console.log('[report] Relatório enviado com sucesso.')
+    return { ok: true }
+  } catch (err: any) {
+    console.error('[report] Falha ao enviar relatório:', err)
+    return { ok: false, error: err?.message ?? String(err) }
+  }
 })
 
 // ─── Window ────────────────────────────────────────────────────────────────────
