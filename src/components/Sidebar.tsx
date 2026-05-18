@@ -10,42 +10,43 @@ interface NavItem {
   group: 'overview' | 'manage' | 'analysis' | 'preferences'
 }
 
+const WIP_PAGES: Set<Page> = new Set(['skillsdb', 'masterytrees', 'rotation'])
+
 const NAV: NavItem[] = [
-  { id: 'dashboard',   icon: '⚡', group: 'overview'     },
-  { id: 'builds',      icon: '📁', group: 'manage'       },
-  { id: 'calculator',  icon: '⚔',  group: 'analysis'     },
-  { id: 'comparator',  icon: '🕷',  group: 'analysis'     },
-  { id: 'sensitivity', icon: '📡', group: 'analysis'     },
-  { id: 'rotation',    icon: '🔄', group: 'analysis'     },
-  { id: 'logreader',   icon: '📄', group: 'analysis'     },
-  { id: 'pullranking', icon: '🏆', group: 'analysis'     },
+  { id: 'dashboard',    icon: '⚡', group: 'overview'     },
+  { id: 'builds',       icon: '📁', group: 'manage'       },
+  { id: 'calculator',   icon: '⚔',  group: 'analysis'     },
+  { id: 'comparator',   icon: '🕷',  group: 'analysis'     },
+  { id: 'sensitivity',  icon: '📡', group: 'analysis'     },
+  { id: 'rotation',     icon: '🔄', group: 'analysis'     },
+  { id: 'logreader',    icon: '📄', group: 'analysis'     },
+  { id: 'pullranking',  icon: '🏆', group: 'analysis'     },
   { id: 'skillsdb',     icon: '📚', group: 'analysis'     },
   { id: 'masterytrees', icon: '🌿', group: 'analysis'     },
-  { id: 'settings',   icon: '⚙',  group: 'preferences'  },
+  { id: 'settings',     icon: '⚙',  group: 'preferences'  },
 ]
 
 const NAV_KEYS: Record<Page, string> = {
-  dashboard:   'sidebar.nav.dashboard',
-  builds:      'sidebar.nav.builds',
-  calculator:  'sidebar.nav.calculator',
-  comparator:  'sidebar.nav.comparator',
-  sensitivity: 'sidebar.nav.sensitivity',
-  rotation:    'sidebar.nav.rotation',
-  logreader:   'sidebar.nav.logreader',
-  settings:    'sidebar.nav.settings',
-  pullranking: 'nav.pullranking',
+  dashboard:    'sidebar.nav.dashboard',
+  builds:       'sidebar.nav.builds',
+  calculator:   'sidebar.nav.calculator',
+  comparator:   'sidebar.nav.comparator',
+  sensitivity:  'sidebar.nav.sensitivity',
+  rotation:     'sidebar.nav.rotation',
+  logreader:    'sidebar.nav.logreader',
+  settings:     'sidebar.nav.settings',
+  pullranking:  'nav.pullranking',
   skillsdb:     'sidebar.nav.skillsdb',
   masterytrees: 'sidebar.nav.masterytrees',
 }
 
 const GROUP_KEYS: Array<{ key: 'overview' | 'manage' | 'analysis' | 'preferences'; tKey: string }> = [
-  { key: 'overview',     tKey: 'sidebar.groups.overview'     },
-  { key: 'manage',       tKey: 'sidebar.groups.manage'       },
-  { key: 'analysis',     tKey: 'sidebar.groups.analysis'     },
-  { key: 'preferences',  tKey: 'sidebar.groups.preferences'  },
+  { key: 'overview',    tKey: 'sidebar.groups.overview'    },
+  { key: 'manage',      tKey: 'sidebar.groups.manage'      },
+  { key: 'analysis',    tKey: 'sidebar.groups.analysis'    },
+  { key: 'preferences', tKey: 'sidebar.groups.preferences' },
 ]
 
-// Maintain group order by first appearance in NAV
 const GROUPS = [...new Set(NAV.map((n) => n.group))]
 
 interface Props {
@@ -53,7 +54,7 @@ interface Props {
   onChange: (page: Page) => void
 }
 
-type CheckState = 'idle' | 'checking' | 'upToDate'
+type CheckState = 'idle' | 'checking' | 'upToDate' | 'available'
 
 export function Sidebar({ active, onChange }: Props): React.ReactElement {
   const t = useT()
@@ -61,48 +62,52 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
 
   useEffect(() => {
     if (!window.updateAPI) return
-    window.updateAPI.onNotAvailable(() => {
+    const api = window.updateAPI
+    api.onNotAvailable(() => {
       setCheckState('upToDate')
-      setTimeout(() => setCheckState('idle'), 3000)
+      setTimeout(() => setCheckState('idle'), 4000)
     })
-    window.updateAPI.onAvailable(() => {
-      setCheckState('idle')
-    })
+    api.onAvailable(() => { setCheckState('available') })
+    api.onError(() => { setCheckState('idle') })
   }, [])
 
   function handleCheckUpdate() {
     if (checkState === 'checking') return
     setCheckState('checking')
+    const guard = setTimeout(() => {
+      setCheckState(prev => prev === 'checking' ? 'idle' : prev)
+    }, 35_000)
+    const cleanup = () => clearTimeout(guard)
+    window.updateAPI?.onNotAvailable(cleanup)
+    window.updateAPI?.onAvailable(cleanup)
+    window.updateAPI?.onError(cleanup)
     window.updateAPI?.checkNow()
   }
 
   return (
-    <aside
-      style={{
-        width: 200,
-        minWidth: 200,
-        background: 'var(--bg-panel)',
-        borderRight: '1px solid rgba(124,92,252,0.2)',
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        userSelect: 'none',
-      }}
-    >
+    <aside style={{
+      width: 200, minWidth: 200,
+      background: 'var(--bg-panel)',
+      borderRight: '1px solid var(--sb-border, rgba(124,92,252,0.2))',
+      display: 'flex', flexDirection: 'column',
+      height: '100%', userSelect: 'none',
+    }}>
       {/* Logo */}
       <div style={{ padding: '1.25rem 1rem 0.75rem' }}>
-        <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#474f6b', marginBottom: 4 }}>
+        <div style={{ fontSize: 'var(--fs-xs)', textTransform: 'uppercase', letterSpacing: '0.15em', color: 'var(--text-muted)', marginBottom: 4 }}>
           {t('sidebar.eyebrow')}
         </div>
-        <div style={{ fontFamily: 'Noto Serif, serif', fontSize: '1rem', color: '#f0cc55', fontWeight: 700, lineHeight: 1.2 }}>
+        <div style={{ fontFamily: 'Noto Serif, serif', fontSize: 'var(--fs-lg)', color: 'var(--gold-l)', fontWeight: 700, lineHeight: 1.2 }}>
           {t('sidebar.title')}
         </div>
-        <div style={{ fontSize: '0.65rem', color: '#474f6b', marginTop: 2 }}>{t('sidebar.tagline')}</div>
+        <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', marginTop: 3 }}>
+          {t('sidebar.tagline')}
+        </div>
       </div>
 
-      <div style={{ borderTop: '1px solid rgba(124,92,252,0.18)', margin: '0.5rem 0' }} />
+      <div style={{ borderTop: '1px solid var(--sb-border, rgba(124,92,252,0.18))', margin: '0.5rem 0' }} />
 
-      {/* Botão verificar atualização */}
+      {/* Update button */}
       <div style={{ padding: '0 0.6rem 0.5rem' }}>
         <button
           onClick={handleCheckUpdate}
@@ -111,17 +116,20 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
             width: '100%', padding: '0.45rem 0.75rem',
             display: 'flex', alignItems: 'center', gap: '0.5rem',
             borderRadius: 6, cursor: checkState === 'checking' ? 'default' : 'pointer',
-            fontSize: '0.75rem', fontWeight: 600,
-            border: `1px solid ${checkState === 'upToDate' ? 'rgba(61,214,140,0.4)' : 'rgba(212,175,55,0.25)'}`,
-            background: checkState === 'upToDate' ? 'rgba(61,214,140,0.08)' : 'rgba(212,175,55,0.06)',
-            color: checkState === 'upToDate' ? '#3dd68c' : checkState === 'checking' ? '#7a8099' : '#d4af37',
+            fontSize: 'var(--fs-sm)', fontWeight: 600,
+            border: `1px solid ${checkState === 'upToDate' ? 'rgba(61,214,140,0.4)' : checkState === 'available' ? 'rgba(124,92,252,0.5)' : 'rgba(212,175,55,0.25)'}`,
+            background: checkState === 'upToDate' ? 'rgba(61,214,140,0.08)' : checkState === 'available' ? 'rgba(124,92,252,0.12)' : 'rgba(212,175,55,0.06)',
+            color: checkState === 'upToDate' ? 'var(--green)' : checkState === 'checking' ? 'var(--text-muted)' : checkState === 'available' ? '#a78bfa' : 'var(--gold)',
             transition: 'all 0.2s',
           }}
         >
-          <span style={{ fontSize: '0.85rem' }}>
-            {checkState === 'checking' ? '⏳' : checkState === 'upToDate' ? '✓' : '↑'}
+          <span style={{ fontSize: 'var(--fs-md)' }}>
+            {checkState === 'checking' ? '⏳' : checkState === 'upToDate' ? '✓' : checkState === 'available' ? '⬆' : '↑'}
           </span>
-          {checkState === 'checking' ? t('sidebar.checking') : checkState === 'upToDate' ? t('sidebar.upToDate') : t('sidebar.checkUpdate')}
+          {checkState === 'checking' ? t('sidebar.checking')
+            : checkState === 'upToDate' ? t('sidebar.upToDate')
+            : checkState === 'available' ? t('sidebar.available')
+            : t('sidebar.checkUpdate')}
         </button>
       </div>
 
@@ -132,8 +140,8 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
           return (
             <div key={groupKey}>
               <div style={{
-                fontSize: '0.58rem', textTransform: 'uppercase', letterSpacing: '0.14em',
-                color: '#474f6b', fontWeight: 700, padding: '0.7rem 1rem 0.3rem',
+                fontSize: 'var(--fs-xs)', textTransform: 'uppercase', letterSpacing: '0.14em',
+                color: 'var(--text-muted)', fontWeight: 700, padding: '0.7rem 1rem 0.3rem',
               }}>
                 {t(groupTKey)}
               </div>
@@ -146,33 +154,36 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
                     style={{
                       display: 'flex', alignItems: 'center', gap: '0.6rem',
                       width: '100%', padding: '0.55rem 1rem',
-                      background: isActive ? 'rgba(124,92,252,0.12)' : 'transparent',
-                      borderLeft: `2px solid ${isActive ? '#d4af37' : 'transparent'}`,
-                      border: 'none',
-                      borderLeftWidth: 2,
-                      borderLeftStyle: 'solid',
-                      borderLeftColor: isActive ? '#d4af37' : 'transparent',
-                      color: isActive ? '#f0cc55' : '#7a8099',
-                      fontSize: '0.82rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s',
-                      textAlign: 'left',
+                      background: isActive ? 'var(--act-bg, rgba(124,92,252,0.12))' : 'transparent',
+                      border: 'none', borderLeftWidth: 2, borderLeftStyle: 'solid',
+                      borderLeftColor: isActive ? 'var(--act-border, var(--gold))' : 'transparent',
+                      color: isActive ? 'var(--gold-l)' : 'var(--text-soft)',
+                      fontSize: 'var(--fs-sm)', fontWeight: isActive ? 600 : 400,
+                      cursor: 'pointer', transition: 'all 0.15s', textAlign: 'left',
                     }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.background = 'rgba(124,92,252,0.08)'
-                        e.currentTarget.style.color = '#e2e4ec'
+                        e.currentTarget.style.color = 'var(--text)'
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isActive) {
                         e.currentTarget.style.background = 'transparent'
-                        e.currentTarget.style.color = '#7a8099'
+                        e.currentTarget.style.color = 'var(--text-soft)'
                       }
                     }}
                   >
-                    <span style={{ fontSize: '0.9rem', opacity: 0.85 }}>{item.icon}</span>
-                    {t(NAV_KEYS[item.id])}
+                    <span style={{ fontSize: 'var(--fs-md)', opacity: 0.9, lineHeight: 1 }}>{item.icon}</span>
+                    <span style={{ flex: 1 }}>{t(NAV_KEYS[item.id])}</span>
+                    {WIP_PAGES.has(item.id) && (
+                      <span style={{
+                        fontSize: 9, fontWeight: 700, letterSpacing: '0.06em',
+                        textTransform: 'uppercase', color: '#f97316',
+                        border: '1px solid rgba(249,115,22,0.4)',
+                        borderRadius: 3, padding: '1px 4px', lineHeight: 1.4, flexShrink: 0,
+                      }}>dev</span>
+                    )}
                   </button>
                 )
               })}
@@ -182,8 +193,8 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
       </nav>
 
       {/* Footer */}
-      <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '0.6rem 1rem' }}>
-        <div style={{ fontSize: '0.62rem', color: '#474f6b', textAlign: 'center' }}>
+      <div style={{ borderTop: '1px solid var(--border)', padding: '0.6rem 1rem' }}>
+        <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', textAlign: 'center' }}>
           v{version} · {t('sidebar.footer')}
         </div>
       </div>

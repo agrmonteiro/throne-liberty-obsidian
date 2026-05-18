@@ -11,6 +11,16 @@
 
 const AGENT_ROUTES = [
   {
+    agent: 'i18n-curator',
+    label: '🌐 i18n Curator',
+    patterns: [
+      /src[/\\]pages[/\\].+\.tsx$/,
+      /src[/\\]components[/\\].+\.tsx$/,
+      /src[/\\]i18n[/\\]translations\.ts$/,
+    ],
+    hint: 'Arquivo com texto de UI modificado. Verificar: todas as strings visíveis estão no dicionário (translations.ts), sem mistura de idiomas (inglês em pt-BR ou vice-versa), chaves em dot-notation consistente com a seção.',
+  },
+  {
     agent: 'ipc-security',
     label: '🔒 IPC Security',
     patterns: [

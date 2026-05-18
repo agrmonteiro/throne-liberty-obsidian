@@ -42,6 +42,8 @@ const dataAPI = {
   onMigration:           (cb: (payload: { files: string[] }) => void) => {
     ipcRenderer.once('migration:done', (_e, p) => cb(p))
   },
+  // Error report
+  sendReport:            (note: string)                       => ipcRenderer.invoke('report:send', note),
   // Scraper setup
   scraperGetPath:        ()                                   => ipcRenderer.invoke('scraper:get-path'),
   scraperSetPath:        (p: string)                          => ipcRenderer.invoke('scraper:set-path', p),
@@ -57,10 +59,13 @@ const dataAPI = {
 type UpdateAvailablePayload  = { version: string }
 type UpdateProgressPayload   = { percent: number }
 type UpdateDownloadedPayload = { version: string }
-let _updateAvailableCb:  ((_e: Electron.IpcRendererEvent, p: UpdateAvailablePayload)  => void) | null = null
-let _updateProgressCb:   ((_e: Electron.IpcRendererEvent, p: UpdateProgressPayload)   => void) | null = null
-let _updateDownloadedCb: ((_e: Electron.IpcRendererEvent, p: UpdateDownloadedPayload) => void) | null = null
+type UpdateErrorPayload      = { message: string }
+let _updateAvailableCb:    ((_e: Electron.IpcRendererEvent, p: UpdateAvailablePayload)  => void) | null = null
+let _updateProgressCb:     ((_e: Electron.IpcRendererEvent, p: UpdateProgressPayload)   => void) | null = null
+let _updateDownloadedCb:   ((_e: Electron.IpcRendererEvent, p: UpdateDownloadedPayload) => void) | null = null
 let _updateNotAvailableCb: ((_e: Electron.IpcRendererEvent) => void) | null = null
+let _updateErrorCb:        ((_e: Electron.IpcRendererEvent, p: UpdateErrorPayload)      => void) | null = null
+let _updateStalledCb:      ((_e: Electron.IpcRendererEvent) => void) | null = null
 
 const updateAPI = {
   onAvailable: (cb: (p: UpdateAvailablePayload) => void) => {
@@ -82,6 +87,16 @@ const updateAPI = {
     if (_updateDownloadedCb) ipcRenderer.removeListener('update:downloaded', _updateDownloadedCb)
     _updateDownloadedCb = (_e, p) => cb(p)
     ipcRenderer.on('update:downloaded', _updateDownloadedCb)
+  },
+  onError: (cb: (p: UpdateErrorPayload) => void) => {
+    if (_updateErrorCb) ipcRenderer.removeListener('update:error', _updateErrorCb)
+    _updateErrorCb = (_e, p) => cb(p)
+    ipcRenderer.on('update:error', _updateErrorCb)
+  },
+  onStalled: (cb: () => void) => {
+    if (_updateStalledCb) ipcRenderer.removeListener('update:stalled', _updateStalledCb)
+    _updateStalledCb = (_e) => cb()
+    ipcRenderer.on('update:stalled', _updateStalledCb)
   },
   install:   () => ipcRenderer.send('update:install'),
   checkNow:  () => ipcRenderer.send('update:check'),

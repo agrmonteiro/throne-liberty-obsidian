@@ -128,36 +128,36 @@ export function PullRanking(): React.ReactElement {
             flexWrap: 'wrap', marginBottom: '1.25rem',
           }}>
             <div>
-              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Alvo</div>
+              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>{t('pullranking.filter.target')}</div>
               <select
                 className="tl-input"
                 value={selTarget}
                 onChange={e => setFilter('target', e.target.value)}
                 style={{ fontFamily: 'Inter,sans-serif', minWidth: 140 }}
               >
-                <option value="all">Todos</option>
+                <option value="all">{t('pullranking.filter.targetAll')}</option>
                 {targets.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
 
             <div>
-              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Armas</div>
+              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>{t('pullranking.filter.weapons')}</div>
               <select
                 className="tl-input"
                 value={selWeapon}
                 onChange={e => setFilter('weapon', e.target.value)}
                 style={{ fontFamily: 'Inter,sans-serif', minWidth: 140 }}
               >
-                <option value="all">Todas</option>
+                <option value="all">{t('pullranking.filter.weaponsAll')}</option>
                 {weapons.map(w => <option key={w} value={w}>{w}</option>)}
               </select>
             </div>
 
             <div>
-              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Duração</div>
+              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>{t('pullranking.filter.duration')}</div>
               <div style={{ display: 'flex', gap: 0 }}>
                 {(['all', 'short', 'long'] as const).map((opt, i) => {
-                  const labels = { all: 'Todos', short: '<120s', long: '≥120s' }
+                  const labels = { all: t('pullranking.filter.durationAll'), short: t('pullranking.filter.durationShort'), long: t('pullranking.filter.durationLong') }
                   const isActive = durationFilter === opt
                   return (
                     <button
@@ -182,10 +182,10 @@ export function PullRanking(): React.ReactElement {
             </div>
 
             <div>
-              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>Ordenar</div>
+              <div className="tl-eyebrow" style={{ marginBottom: 4 }}>{t('pullranking.filter.sortBy')}</div>
               <div style={{ display: 'flex', gap: 0 }}>
                 {(['damage', 'dps'] as const).map((opt, i) => {
-                  const labels = { damage: 'DMG', dps: 'DPS' }
+                  const labels = { damage: t('pullranking.filter.sortDmg'), dps: t('pullranking.filter.sortDps') }
                   const isActive = sortBy === opt
                   return (
                     <button
@@ -219,15 +219,15 @@ export function PullRanking(): React.ReactElement {
           }}>
             <div style={{ fontSize: '2.5rem', opacity: 0.5 }}>📂</div>
             <div style={{ fontSize: '1rem', color: 'var(--text-soft)', fontWeight: 600 }}>
-              Nenhum log enviado para ranking ainda.
+              {t('pullranking.empty.title')}
             </div>
             <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', maxWidth: 420, lineHeight: 1.6 }}>
-              Abra o Log Reader, carregue um arquivo e clique em &quot;Enviar para Ranking&quot;.
+              {t('pullranking.empty.description')}
             </div>
           </div>
         ) : filtered.length === 0 ? (
           <div className="tl-panel" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-soft)' }}>
-            Nenhum pull encontrado com os filtros selecionados.
+            {t('pullranking.noResults')}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -334,7 +334,7 @@ export function PullRanking(): React.ReactElement {
                       <textarea
                         value={comments[key] ?? ''}
                         onChange={e => handleCommentChange(pull, e.target.value)}
-                        placeholder='Digite sua build ou referência (ex: Longbow/Dagger — set de open world)'
+                        placeholder={t('pullranking.comment.placeholder')}
                         rows={2}
                         style={{
                           width: '100%',

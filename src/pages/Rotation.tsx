@@ -39,7 +39,7 @@ const sectionDivider: React.CSSProperties = {
 
 const sectionLabel: React.CSSProperties = {
   fontSize: '0.6rem',
-  color: '#7c5cfc',
+  color: 'var(--violet)',
   textTransform: 'uppercase',
   letterSpacing: '0.12em',
   fontWeight: 700,
@@ -48,7 +48,7 @@ const sectionLabel: React.CSSProperties = {
 
 const fieldLabel: React.CSSProperties = {
   fontSize: '0.68rem',
-  color: '#7a8099',
+  color: 'var(--text-soft)',
   textTransform: 'uppercase',
   letterSpacing: '0.06em',
   marginBottom: 2,
@@ -61,24 +61,25 @@ const baseInput: React.CSSProperties = {
   color: 'var(--text)',
   padding: '3px 6px',
   fontSize: '0.82rem',
+  colorScheme: 'dark',
 }
 
 const WEAPON_COLOR: Record<string, string> = {
-  'Staff':          '#a78bfa',
+  'Staff':          'var(--violet-l)',
   'Wand & Tome':    '#60a5fa',
-  'Longbow':        '#4ade80',
+  'Longbow':        'var(--green)',
   'Crossbow':       '#86efac',
-  'Dagger':         '#f97316',
+  'Dagger':         'var(--orange)',
   'Greatsword':     '#ef4444',
   'Sword & Shield': '#f59e0b',
   'Spear':          '#ec4899',
-  'Orb':            '#22d3ee',
+  'Orb':            'var(--cyan)',
   'Item/Proc':      '#94a3b8',
 }
 
 const th: React.CSSProperties = {
   fontSize: '0.63rem',
-  color: '#7a8099',
+  color: 'var(--text-soft)',
   textTransform: 'uppercase',
   letterSpacing: '0.07em',
   padding: '5px 7px',
@@ -178,17 +179,17 @@ function DpsCard({ totalDps, timelineDps, skillCount, dotCount, buffCount }: Dps
       justifyContent: 'space-between',
     }}>
       <div>
-        <div style={{ fontSize: '0.6rem', color: '#7a8099', textTransform: 'uppercase', letterSpacing: '0.14em' }}>
+        <div style={{ fontSize: '0.6rem', color: 'var(--text-soft)', textTransform: 'uppercase', letterSpacing: '0.14em' }}>
           {t('rotation.card.dpsTotal')}{fromTimeline ? t('rotation.timeline.planned') : t('rotation.card.seconds')}
         </div>
-        <div style={{ fontSize: '2.2rem', fontWeight: 800, color: '#f0cc55', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+        <div style={{ fontSize: '2.2rem', fontWeight: 800, color: 'var(--gold-l)', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
           {fmt(displayDps)}
         </div>
       </div>
-      <div style={{ textAlign: 'right', fontSize: '0.72rem', color: '#474f6b' }}>
+      <div style={{ textAlign: 'right', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
         <div>{skillCount} skill{skillCount !== 1 ? 's' : ''} ativas</div>
         <div>{dotCount} DoT{dotCount !== 1 ? 's' : ''}</div>
-        <div style={{ color: '#22d3ee' }}>{buffCount} buff{buffCount !== 1 ? 's' : ''}</div>
+        <div style={{ color: 'var(--cyan)' }}>{buffCount} buff{buffCount !== 1 ? 's' : ''}</div>
       </div>
     </div>
   )
@@ -222,12 +223,12 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
     <div style={{ ...panel, display: 'flex', flexDirection: 'column', gap: 0 }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-        <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em' }}>
           {t('rotation.character.title')}
         </span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           {saveStatus && (
-            <span style={{ fontSize: '0.65rem', color: saveStatus.includes('✓') ? '#4ade80' : '#7a8099' }}>
+            <span style={{ fontSize: '0.65rem', color: saveStatus.includes('✓') ? 'var(--green)' : 'var(--text-soft)' }}>
               {saveStatus}
             </span>
           )}
@@ -238,7 +239,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
               fontSize: '0.72rem', padding: '3px 10px',
               background: 'rgba(124,92,252,0.12)',
               border: '1px solid rgba(124,92,252,0.28)',
-              borderRadius: 4, color: '#a78bfa', cursor: 'pointer',
+              borderRadius: 4, color: 'var(--violet-l)', cursor: 'pointer',
             }}
           >
             {t('rotation.character.importButton')}
@@ -251,30 +252,30 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
         <div style={sectionLabel}>{t('rotation.character.weapons')}</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.4rem' }}>
           <div>
-            <div style={fieldLabel}>{t('rotation.character.weaponMain')} <span style={{ color: '#f0cc55' }}>({t('rotation.character.autoAttack')})</span></div>
+            <div style={fieldLabel}>{t('rotation.character.weaponMain')} <span style={{ color: 'var(--gold-l)' }}>({t('rotation.character.autoAttack')})</span></div>
             <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexWrap: 'wrap' }}>
               <select value={char.weaponMainType} onChange={e => onChange({ weaponMainType: e.target.value })}
                 style={{ ...baseInput, width: 122 }}>
                 {WEAPON_TYPES.map(w => <option key={w} value={w}>{w}</option>)}
               </select>
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.min')}</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('rotation.character.min')}</span>
               {numInput(char.weaponMainDmgMin, v => onChange({ weaponMainDmgMin: v }), { width: 78 })}
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.max')}</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('rotation.character.max')}</span>
               {numInput(char.weaponMainDmgMax, v => onChange({ weaponMainDmgMax: v }), { width: 78 })}
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }} title={t('rotation.character.weaponSpeedTooltip')}>{t('rotation.character.weaponSpeed')}</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }} title={t('rotation.character.weaponSpeedTooltip')}>{t('rotation.character.weaponSpeed')}</span>
               {numInput(char.weaponMainAttackSpeedBase, v => onChange({ weaponMainAttackSpeedBase: v }), { width: 65, step: 0.01 })}
             </div>
           </div>
           <div>
-            <div style={fieldLabel}>{t('rotation.character.weaponSecondary')} <span style={{ color: '#474f6b' }}>({t('rotation.character.skillsOnly')})</span></div>
+            <div style={fieldLabel}>{t('rotation.character.weaponSecondary')} <span style={{ color: 'var(--text-muted)' }}>({t('rotation.character.skillsOnly')})</span></div>
             <div style={{ display: 'flex', gap: 5, alignItems: 'center', flexWrap: 'wrap' }}>
               <select value={char.weaponOffType} onChange={e => onChange({ weaponOffType: e.target.value })}
                 style={{ ...baseInput, width: 122 }}>
                 {WEAPON_TYPES.map(w => <option key={w} value={w}>{w}</option>)}
               </select>
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.min')}</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('rotation.character.min')}</span>
               {numInput(char.weaponOffDmgMin, v => onChange({ weaponOffDmgMin: v }), { width: 78 })}
-              <span style={{ fontSize: '0.72rem', color: '#474f6b' }}>{t('rotation.character.max')}</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{t('rotation.character.max')}</span>
               {numInput(char.weaponOffDmgMax, v => onChange({ weaponOffDmgMax: v }), { width: 78 })}
             </div>
           </div>
@@ -284,7 +285,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.3rem' }}>
           <span style={fieldLabel}>{t('rotation.character.stellarite')}</span>
           {(['none', 'common', 'rare'] as Stellarite[]).map(opt => (
-            <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.78rem', color: char.stellarite === opt ? '#f0cc55' : '#7a8099' }}>
+            <label key={opt} style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', fontSize: '0.78rem', color: char.stellarite === opt ? 'var(--gold-l)' : 'var(--text-soft)' }}>
               <input type="radio" name="stellarite" checked={char.stellarite === opt} onChange={() => onChange({ stellarite: opt })} />
               {opt === 'none' ? t('rotation.character.stellariteNone') : opt === 'common' ? t('rotation.character.stellariteCommon') : t('rotation.character.stellariteRare')}
             </label>
@@ -301,7 +302,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             <div style={fieldLabel}>{t('rotation.character.cooldownReduction')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.cdrPct, v => onChange({ cdrPct: v }), { step: 0.1, error: cdrOver })}
-              <span style={{ fontSize: '0.7rem', color: cdrOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: '0.7rem', color: cdrOver ? 'var(--red)' : 'var(--text-soft)', whiteSpace: 'nowrap' }}>
                 → {cdrEff.toFixed(2)}%{cdrOver ? ` ${t('rotation.character.cooldownCap')}` : ''}
               </span>
             </div>
@@ -311,7 +312,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             <div style={fieldLabel}>{t('rotation.character.attackSpeed')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.attackSpeedPct, v => onChange({ attackSpeedPct: v }), { step: 0.1, error: asOver })}
-              <span style={{ fontSize: '0.7rem', color: asOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: '0.7rem', color: asOver ? 'var(--red)' : 'var(--text-soft)', whiteSpace: 'nowrap' }}>
                 → {asEff.toFixed(2)}%{asOver ? ` ${t('rotation.character.attackSpeedCap')}` : ''}
               </span>
             </div>
@@ -321,7 +322,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             <div style={fieldLabel}>{t('rotation.character.advantageDuration')}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
               {numInput(char.advDurPct, v => onChange({ advDurPct: v }), { step: 0.1, error: advOver })}
-              <span style={{ fontSize: '0.7rem', color: advOver ? '#f87171' : '#7a8099', whiteSpace: 'nowrap' }}>
+              <span style={{ fontSize: '0.7rem', color: advOver ? 'var(--red)' : 'var(--text-soft)', whiteSpace: 'nowrap' }}>
                 → {advEff.toFixed(2)}%{advOver ? ` ${t('rotation.character.attackSpeedCap')}` : ''}
               </span>
             </div>
@@ -331,12 +332,12 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
         {/* Crit e Heavy */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.35rem' }}>
           <div>
-            <div style={fieldLabel}>{t('rotation.character.critChance')} &nbsp;<span style={{ color: '#474f6b' }}>+ boss</span></div>
+            <div style={fieldLabel}>{t('rotation.character.critChance')} &nbsp;<span style={{ color: 'var(--text-muted)' }}>+ boss</span></div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               {numInput(char.critChanceBase, v => onChange({ critChanceBase: v }), { width: 88 })}
-              <span style={{ color: '#474f6b', fontSize: '0.8rem' }}>+</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>+</span>
               {numInput(char.critChanceBoss, v => onChange({ critChanceBoss: v }), { width: 88 })}
-              <span style={{ fontSize: '0.72rem', color: '#a78bfa', whiteSpace: 'nowrap', marginLeft: 2 }}>= {critPct.toFixed(2)}%</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--violet-l)', whiteSpace: 'nowrap', marginLeft: 2 }}>= {critPct.toFixed(2)}%</span>
             </div>
           </div>
           <div>
@@ -345,12 +346,12 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
           </div>
 
           <div>
-            <div style={fieldLabel}>{t('rotation.character.heavyChance')} &nbsp;<span style={{ color: '#474f6b' }}>+ boss</span></div>
+            <div style={fieldLabel}>{t('rotation.character.heavyChance')} &nbsp;<span style={{ color: 'var(--text-muted)' }}>+ boss</span></div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
               {numInput(char.heavyChanceBase, v => onChange({ heavyChanceBase: v }), { width: 88 })}
-              <span style={{ color: '#474f6b', fontSize: '0.8rem' }}>+</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>+</span>
               {numInput(char.heavyChanceBoss, v => onChange({ heavyChanceBoss: v }), { width: 88 })}
-              <span style={{ fontSize: '0.72rem', color: '#a78bfa', whiteSpace: 'nowrap', marginLeft: 2 }}>= {heavyPct.toFixed(2)}%</span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--violet-l)', whiteSpace: 'nowrap', marginLeft: 2 }}>= {heavyPct.toFixed(2)}%</span>
             </div>
           </div>
           <div>
@@ -395,7 +396,7 @@ function CharacterPanel({ char, onChange, onImportBuild, saveStatus }: CharPanel
             <div style={fieldLabel}>{t('rotation.character.targetEndurance')}</div>
             {numInput(char.targetEndurance, v => onChange({ targetEndurance: v }))}
           </div>
-          <div style={{ fontSize: '0.68rem', color: '#474f6b', paddingBottom: 4 }}>
+          <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', paddingBottom: 4 }}>
             {t('rotation.character.enduranceNote')}
           </div>
         </div>
@@ -465,7 +466,7 @@ function SkillPicker({
         style={{
           background: 'none', border: 'none', cursor: 'pointer',
           fontSize: '0.82rem', padding: '2px 2px', lineHeight: 1,
-          color: skillDbId ? '#7c5cfc' : '#474f6b',
+          color: skillDbId ? 'var(--violet)' : 'var(--text-muted)',
         }}
       >
         {skillDbId ? '🔗' : '🔍'}
@@ -474,7 +475,7 @@ function SkillPicker({
         <button
           onClick={onClear}
           title="Desvincular (voltar para edição manual)"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', padding: '2px 1px', lineHeight: 1, color: '#7a8099' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.72rem', padding: '2px 1px', lineHeight: 1, color: 'var(--text-soft)' }}
         >
           ✕
         </button>
@@ -501,7 +502,7 @@ function SkillPicker({
           </div>
           <div style={{ overflowY: 'auto', flex: 1 }}>
             {filtered.length === 0 && (
-              <div style={{ padding: '0.6rem', color: '#474f6b', fontSize: '0.75rem', textAlign: 'center', fontStyle: 'italic' }}>
+              <div style={{ padding: '0.6rem', color: 'var(--text-muted)', fontSize: '0.75rem', textAlign: 'center', fontStyle: 'italic' }}>
                 {entries.length === 0
                   ? 'Banco vazio — adicione skills na aba Banco de Skills'
                   : 'Nenhuma skill encontrada'}
@@ -528,7 +529,7 @@ function SkillPicker({
                 <span style={{ flex: 1, fontSize: '0.78rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {entry.name}
                 </span>
-                <span style={{ fontSize: '0.62rem', color: '#474f6b', flexShrink: 0, whiteSpace: 'nowrap' }}>
+                <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', flexShrink: 0, whiteSpace: 'nowrap' }}>
                   {entry.castTime > 0 ? `${entry.castTime}s` : ''}
                   {entry.cooldown > 0 ? ` cd${entry.cooldown}s` : ''}
                 </span>
@@ -596,13 +597,13 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
   return (
     <div style={panel}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-        <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {t('rotation.skills.title')}
         </span>
         <button onClick={addRow} style={{
           fontSize: '0.72rem', padding: '3px 10px',
           background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)',
-          borderRadius: 4, color: '#f0cc55', cursor: 'pointer',
+          borderRadius: 4, color: 'var(--gold-l)', cursor: 'pointer',
         }}>
           {t('rotation.skills.addButton')}
         </button>
@@ -620,7 +621,7 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
           <tbody>
             {skills.length === 0 && (
               <tr>
-                <td colSpan={12} style={{ ...td, color: '#474f6b', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
+                <td colSpan={12} style={{ ...td, color: 'var(--text-muted)', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
                   {t('rotation.skills.emptyState')}
                 </td>
               </tr>
@@ -638,10 +639,10 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
                   <td style={{ ...td, width: 28 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
                       <button onClick={() => idx > 0 && moveSkill(rotId, idx, idx - 1)}
-                        style={{ background: 'none', border: 'none', color: '#474f6b', cursor: idx > 0 ? 'pointer' : 'default', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>▲</button>
-                      <span style={{ fontSize: '0.7rem', color: '#474f6b' }}>{idx + 1}</span>
+                        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: idx > 0 ? 'pointer' : 'default', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>▲</button>
+                      <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{idx + 1}</span>
                       <button onClick={() => idx < skills.length - 1 && moveSkill(rotId, idx, idx + 1)}
-                        style={{ background: 'none', border: 'none', color: '#474f6b', cursor: idx < skills.length - 1 ? 'pointer' : 'default', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>▼</button>
+                        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: idx < skills.length - 1 ? 'pointer' : 'default', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>▼</button>
                     </div>
                   </td>
                   <td style={td}>
@@ -669,17 +670,17 @@ function SkillTable({ skills, char, rotId }: SkillTableProps): React.ReactElemen
                   <td style={td}>{numInput(sk.hits,         v => updateSkill(rotId, sk.id, { hits:         v }), { width: 55             })}</td>
                   <td style={td}>{numInput(sk.monsterBonus * 100, v => updateSkill(rotId, sk.id, { monsterBonus: v / 100 }), { width: 68, step: 1 })}</td>
                   <td style={td}>{numInput(sk.dmgBonus * 100,     v => updateSkill(rotId, sk.id, { dmgBonus:     v / 100 }), { width: 68, step: 1 })}</td>
-                  <td style={{ ...td, color: avgDmg > 0 ? '#f0cc55' : '#474f6b', fontWeight: 600, whiteSpace: 'nowrap', minWidth: 60 }}>
+                  <td style={{ ...td, color: avgDmg > 0 ? 'var(--gold-l)' : 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap', minWidth: 60 }}>
                     {avgDmg > 0 ? fmt(avgDmg) : '—'}
                   </td>
                   <td style={{ ...td, width: 52 }}>
                     <button onClick={() => updateSkill(rotId, sk.id, { enabled: !sk.enabled })}
                       title={sk.enabled ? t('rotation.skills.toggleTooltip') : t('rotation.skills.toggleTooltipInactive')}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: sk.enabled ? '#4ade80' : '#474f6b', marginRight: 2 }}>
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: sk.enabled ? 'var(--green)' : 'var(--text-muted)', marginRight: 2 }}>
                       {sk.enabled ? '●' : '○'}
                     </button>
                     <button onClick={() => removeSkill(rotId, sk.id)} title={t('rotation.skills.removeTooltip')}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: '#7a8099' }}>
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-soft)' }}>
                       ×
                     </button>
                   </td>
@@ -749,13 +750,13 @@ function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
   return (
     <div style={{ ...panel, height: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-        <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {t('rotation.dots.title')}
         </span>
         <button onClick={addRow} style={{
           fontSize: '0.72rem', padding: '3px 10px',
           background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)',
-          borderRadius: 4, color: '#f0cc55', cursor: 'pointer',
+          borderRadius: 4, color: 'var(--gold-l)', cursor: 'pointer',
         }}>
           {t('rotation.dots.addButton')}
         </button>
@@ -773,7 +774,7 @@ function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
           <tbody>
             {dots.length === 0 && (
               <tr>
-                <td colSpan={12} style={{ ...td, color: '#474f6b', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
+                <td colSpan={12} style={{ ...td, color: 'var(--text-muted)', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
                   {t('rotation.dots.emptyState')}
                 </td>
               </tr>
@@ -788,7 +789,7 @@ function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
                     e.dataTransfer.effectAllowed = 'copy'
                   }}
                   style={{ opacity: dot.enabled ? 1 : 0.4, cursor: 'grab' }}>
-                  <td style={{ ...td, width: 28, color: '#474f6b', textAlign: 'center', fontSize: '0.7rem' }}>{idx + 1}</td>
+                  <td style={{ ...td, width: 28, color: 'var(--text-muted)', textAlign: 'center', fontSize: '0.7rem' }}>{idx + 1}</td>
                   <td style={td}>
                     <SkillPicker
                       currentName={dot.dotName}
@@ -814,16 +815,16 @@ function DotBlock({ dots, char, rotId }: DotBlockProps): React.ReactElement {
                   <td style={td}>{numInput(dot.ticks,           v => updateDot(rotId, dot.id, { ticks:        v }), { width: 55         })}</td>
                   <td style={td}>{numInput(dot.monsterBonus * 100, v => updateDot(rotId, dot.id, { monsterBonus: v / 100 }), { width: 68, step: 1 })}</td>
                   <td style={td}>{numInput(dot.dmgBonus * 100,     v => updateDot(rotId, dot.id, { dmgBonus:     v / 100 }), { width: 68, step: 1 })}</td>
-                  <td style={{ ...td, color: dps > 0 ? '#a78bfa' : '#474f6b', fontWeight: 600, whiteSpace: 'nowrap', minWidth: 60 }}>
+                  <td style={{ ...td, color: dps > 0 ? 'var(--violet-l)' : 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap', minWidth: 60 }}>
                     {dps > 0 ? fmt(dps) : '—'}
                   </td>
                   <td style={{ ...td, width: 48 }}>
                     <button onClick={() => updateDot(rotId, dot.id, { enabled: !dot.enabled })}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: dot.enabled ? '#4ade80' : '#474f6b', marginRight: 2 }}>
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: dot.enabled ? 'var(--green)' : 'var(--text-muted)', marginRight: 2 }}>
                       {dot.enabled ? '●' : '○'}
                     </button>
                     <button onClick={() => removeDot(rotId, dot.id)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: '#7a8099' }}>
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-soft)' }}>
                       ×
                     </button>
                   </td>
@@ -844,7 +845,7 @@ const BUFF_TYPE_LABEL: Record<BuffType, string> = {
 }
 
 const BUFF_TYPE_COLOR: Record<BuffType, string> = {
-  dmg: '#f0cc55', crit: '#f97316', as: '#22d3ee', adv: '#a78bfa', utility: '#7a8099',
+  dmg: 'var(--gold-l)', crit: 'var(--orange)', as: 'var(--cyan)', adv: 'var(--violet-l)', utility: 'var(--text-soft)',
 }
 
 function newBuffId(): string {
@@ -884,13 +885,13 @@ function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
   return (
     <div style={panel}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-        <span style={{ fontSize: '0.72rem', color: '#22d3ee', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--cyan)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {t('rotation.buffs.title')}
         </span>
         <button onClick={addRow} style={{
           fontSize: '0.72rem', padding: '3px 10px',
           background: 'rgba(34,211,238,0.1)', border: '1px solid rgba(34,211,238,0.25)',
-          borderRadius: 4, color: '#22d3ee', cursor: 'pointer',
+          borderRadius: 4, color: 'var(--cyan)', cursor: 'pointer',
         }}>
           {t('rotation.buffs.addButton')}
         </button>
@@ -908,7 +909,7 @@ function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
           <tbody>
             {buffs.length === 0 && (
               <tr>
-                <td colSpan={7} style={{ ...td, color: '#474f6b', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
+                <td colSpan={7} style={{ ...td, color: 'var(--text-muted)', textAlign: 'center', padding: '1.25rem', fontStyle: 'italic' }}>
                   {t('rotation.buffs.emptyState')}
                 </td>
               </tr>
@@ -940,11 +941,11 @@ function BuffBlock({ buffs, rotId }: BuffBlockProps): React.ReactElement {
                 <td style={{ ...td, width: 48 }}>
                   <button onClick={() => updateBuff(rotId, buff.id, { enabled: !buff.enabled })}
                     title={buff.enabled ? t('rotation.buffs.toggleTooltip') : t('rotation.buffs.toggleTooltipInactive')}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: buff.enabled ? '#22d3ee' : '#474f6b', marginRight: 2 }}>
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: buff.enabled ? 'var(--cyan)' : 'var(--text-muted)', marginRight: 2 }}>
                     {buff.enabled ? '●' : '○'}
                   </button>
                   <button onClick={() => removeBuff(rotId, buff.id)} title={t('rotation.buffs.removeTooltip')}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: '#7a8099' }}>
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.9rem', color: 'var(--text-soft)' }}>
                     ×
                   </button>
                 </td>
@@ -1005,7 +1006,7 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
       padding: '1rem',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.6rem' }}>
-        <span style={{ fontSize: '0.72rem', color: '#f97316', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--orange)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {t('rotation.rules.title')}
         </span>
         <button
@@ -1014,7 +1015,7 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
           style={{
             fontSize: '0.72rem', padding: '3px 10px',
             background: 'rgba(249,115,22,0.1)', border: '1px solid rgba(249,115,22,0.28)',
-            borderRadius: 4, color: '#f97316', cursor: allItems.length < 2 ? 'default' : 'pointer',
+            borderRadius: 4, color: 'var(--orange)', cursor: allItems.length < 2 ? 'default' : 'pointer',
             opacity: allItems.length < 2 ? 0.45 : 1,
           }}
         >
@@ -1023,7 +1024,7 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
       </div>
 
       {rules.length === 0 && (
-        <div style={{ color: '#474f6b', fontSize: '0.8rem', fontStyle: 'italic', padding: '0.5rem 0' }}>
+        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic', padding: '0.5rem 0' }}>
           {t('rotation.rules.emptyState')}
         </div>
       )}
@@ -1040,7 +1041,7 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
             ))}
           </select>
 
-          <span style={{ color: '#f97316', fontWeight: 700, fontSize: '1rem' }}>→</span>
+          <span style={{ color: 'var(--orange)', fontWeight: 700, fontSize: '1rem' }}>→</span>
 
           <select
             value={rule.effectId}
@@ -1055,7 +1056,7 @@ function RulesBlock({ rotation }: RulesBlockProps): React.ReactElement {
           <button
             onClick={() => removeRule(rotation.id, rule.id)}
             title={t('rotation.rules.removeTooltip')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: '#7a8099', lineHeight: 1 }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: 'var(--text-soft)', lineHeight: 1 }}
           >
             ×
           </button>
@@ -1081,7 +1082,7 @@ function LogTimelinePanel({ data }: LogTimelinePanelProps): React.ReactElement {
 
   return (
     <div style={panel}>
-      <div style={{ fontSize: '0.65rem', color: '#474f6b', marginBottom: '0.4rem' }}>
+      <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>
         {data.source} · {data.pullDurationSec.toFixed(1)}s · {new Date(data.savedAt).toLocaleString('pt-BR')}
       </div>
       <div style={{ overflowY: 'auto', overflowX: 'auto', maxHeight: 420 }}>
@@ -1091,7 +1092,7 @@ function LogTimelinePanel({ data }: LogTimelinePanelProps): React.ReactElement {
               <th style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 48, minWidth: 48 }}>Tempo</th>
               {displaySkills.map(sk => (
                 <th key={sk} title={sk}
-                  style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#a78bfa' }}>
+                  style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: 'var(--violet-l)' }}>
                   {sk.length > 8 ? sk.slice(0, 8) : sk}
                 </th>
               ))}
@@ -1100,7 +1101,7 @@ function LogTimelinePanel({ data }: LogTimelinePanelProps): React.ReactElement {
           <tbody>
             {steps.map(t => (
               <tr key={t}>
-                <td style={{ ...td, fontSize: '0.65rem', color: '#474f6b', whiteSpace: 'nowrap', padding: '0 6px', background: 'rgba(0,0,0,0.08)' }}>
+                <td style={{ ...td, fontSize: '0.65rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', padding: '0 6px', background: 'rgba(0,0,0,0.08)' }}>
                   {t.toFixed(1)}s
                 </td>
                 {displaySkills.map(sk => {
@@ -1282,10 +1283,10 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
   if (colCount === 0) {
     return (
       <div style={panel}>
-        <div style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
+        <div style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>
           {t('rotation.timeline.title')}
         </div>
-        <div style={{ color: '#474f6b', fontSize: '0.8rem', fontStyle: 'italic', padding: '1rem 0' }}>
+        <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', fontStyle: 'italic', padding: '1rem 0' }}>
           {t('rotation.timeline.noSkills')}
         </div>
       </div>
@@ -1295,10 +1296,10 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
   return (
     <div style={panel}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.5rem' }}>
-        <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
           {t('rotation.timeline.title')}
         </span>
-        <span style={{ fontSize: '0.65rem', color: '#474f6b', flex: 1 }}>
+        <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', flex: 1 }}>
           {t('rotation.timeline.instruction')}
         </span>
         {timeline.length > 0 && (
@@ -1308,7 +1309,7 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
             style={{
               fontSize: '0.65rem', padding: '2px 8px',
               background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-              borderRadius: 4, color: '#f87171', cursor: 'pointer', whiteSpace: 'nowrap',
+              borderRadius: 4, color: 'var(--red)', cursor: 'pointer', whiteSpace: 'nowrap',
             }}
           >
             {t('rotation.timeline.clearAllButton')}
@@ -1325,12 +1326,12 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
                 const hasCasts = timeline.some(e => e.itemId === s.id)
                 return (
                   <th key={s.id} title={s.skillName || 'skill'}
-                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#7c5cfc', padding: '3px 2px' }}>
+                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: 'var(--violet)', padding: '3px 2px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
                       <span>{abbrev(s.skillName)}</span>
                       {hasCasts && (
                         <button onClick={() => clearItemTimeline(rotation.id, s.id)} title={t('rotation.timeline.clearColumnTooltip')}
-                          style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
+                          style={{ background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
                           ×
                         </button>
                       )}
@@ -1342,12 +1343,12 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
                 const hasCasts = timeline.some(e => e.itemId === d.id)
                 return (
                   <th key={d.id} title={d.dotName || 'dot'}
-                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#f97316', padding: '3px 2px' }}>
+                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: 'var(--orange)', padding: '3px 2px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
                       <span>{abbrev(d.dotName)}</span>
                       {hasCasts && (
                         <button onClick={() => clearItemTimeline(rotation.id, d.id)} title={t('rotation.timeline.clearColumnTooltip')}
-                          style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
+                          style={{ background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
                           ×
                         </button>
                       )}
@@ -1359,12 +1360,12 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
                 const hasCasts = timeline.some(e => e.itemId === b.id)
                 return (
                   <th key={b.id} title={b.buffName || 'buff'}
-                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: '#22d3ee', padding: '3px 2px' }}>
+                    style={{ ...th, background: 'rgba(0,0,0,0.75)', width: 42, minWidth: 42, color: 'var(--cyan)', padding: '3px 2px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1 }}>
                       <span>{abbrev(b.buffName)}</span>
                       {hasCasts && (
                         <button onClick={() => clearItemTimeline(rotation.id, b.id)} title={t('rotation.timeline.clearColumnTooltip')}
-                          style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
+                          style={{ background: 'none', border: 'none', color: 'var(--red)', cursor: 'pointer', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>
                           ×
                         </button>
                       )}
@@ -1377,7 +1378,7 @@ function Timeline({ rotation }: TimelineProps): React.ReactElement {
           <tbody>
             {TIME_STEPS.map(t => (
               <tr key={t}>
-                <td style={{ ...td, fontSize: '0.65rem', color: '#474f6b', whiteSpace: 'nowrap', padding: '0 6px', background: 'rgba(0,0,0,0.08)' }}>
+                <td style={{ ...td, fontSize: '0.65rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', padding: '0 6px', background: 'rgba(0,0,0,0.08)' }}>
                   {t.toFixed(1)}s
                 </td>
                 {skills.map(s => {
@@ -1453,15 +1454,15 @@ function ImportModal({ onSelect, onClose }: ImportModalProps): React.ReactElemen
     }}>
       <div style={{ ...panel, width: 420, maxHeight: '65vh', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <span style={{ fontSize: '0.85rem', color: '#d4af37', fontWeight: 700 }}>{t('rotation.importModal.title')}</span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#7a8099', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
+          <span style={{ fontSize: '0.85rem', color: 'var(--gold)', fontWeight: 700 }}>{t('rotation.importModal.title')}</span>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text-soft)', cursor: 'pointer', fontSize: '1.1rem' }}>×</button>
         </div>
-        <div style={{ fontSize: '0.7rem', color: '#474f6b', marginBottom: '0.5rem' }}>
+        <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
           {t('rotation.importModal.description')}
         </div>
         <div style={{ overflowY: 'auto', flex: 1 }}>
           {list.length === 0 && (
-            <div style={{ color: '#474f6b', fontSize: '0.82rem', textAlign: 'center', padding: '1rem' }}>
+            <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem', textAlign: 'center', padding: '1rem' }}>
               {t('rotation.importModal.emptyState')}<br />{t('rotation.importModal.emptyStateNote')}
             </div>
           )}
@@ -1474,7 +1475,7 @@ function ImportModal({ onSelect, onClose }: ImportModalProps): React.ReactElemen
               borderRadius: 5, color: 'var(--text)', cursor: 'pointer', fontSize: '0.82rem',
             }}>
               <div style={{ fontWeight: 600 }}>{b.name}</div>
-              <div style={{ fontSize: '0.7rem', color: '#7a8099' }}>{b.weaponCombo}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)' }}>{b.weaponCombo}</div>
             </button>
           ))}
         </div>
@@ -1562,7 +1563,7 @@ export function Rotation(): React.ReactElement {
           <button onClick={handleCreateNew} style={{
             width: '100%', padding: '5px 0',
             background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.25)',
-            borderRadius: 4, color: '#f0cc55', cursor: 'pointer', fontSize: '0.78rem',
+            borderRadius: 4, color: 'var(--gold-l)', cursor: 'pointer', fontSize: '0.78rem',
           }}>
             + {t('rotation.sidebar.newRotation')}
           </button>
@@ -1578,8 +1579,8 @@ export function Rotation(): React.ReactElement {
                   flex: 1, textAlign: 'left',
                   padding: '0.45rem 0.6rem',
                   background: isActive ? 'rgba(124,92,252,0.15)' : 'transparent',
-                  border: 'none', borderLeft: `2px solid ${isActive ? '#d4af37' : 'transparent'}`,
-                  color: isActive ? '#f0cc55' : '#7a8099',
+                  border: 'none', borderLeft: `2px solid ${isActive ? 'var(--gold)' : 'transparent'}`,
+                  color: isActive ? 'var(--gold-l)' : 'var(--text-soft)',
                   cursor: 'pointer', fontSize: '0.78rem', borderRadius: '0 4px 4px 0',
                   overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
                 }}>
@@ -1587,9 +1588,9 @@ export function Rotation(): React.ReactElement {
                 </button>
                 {isActive && (
                   <button onClick={() => deleteRotation(r.id)} title={t('rotation.sidebar.deleteTooltip')}
-                    style={{ background: 'none', border: 'none', color: '#474f6b', cursor: 'pointer', fontSize: '0.85rem', padding: '0 4px', flexShrink: 0 }}
-                    onMouseEnter={e => (e.currentTarget.style.color = '#f87171')}
-                    onMouseLeave={e => (e.currentTarget.style.color = '#474f6b')}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: '0.85rem', padding: '0 4px', flexShrink: 0 }}
+                    onMouseEnter={e => (e.currentTarget.style.color = 'var(--red)')}
+                    onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}
                   >
                     ×
                   </button>
@@ -1607,13 +1608,13 @@ export function Rotation(): React.ReactElement {
         display: 'flex', flexDirection: 'column', gap: '0.75rem',
       }}>
         {!rotation ? (
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#474f6b' }}>
+          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
             {t('rotation.empty')}
           </div>
         ) : (
           <>
             {/* Nome */}
-            <div style={{ fontSize: '0.95rem', color: '#f0cc55', fontWeight: 700 }}>
+            <div style={{ fontSize: '0.95rem', color: 'var(--gold-l)', fontWeight: 700 }}>
               {rotation.name}
             </div>
 
@@ -1650,7 +1651,7 @@ export function Rotation(): React.ReactElement {
             <div style={{ display: 'grid', gridTemplateColumns: logTimeline ? '1fr 1fr' : '1fr', gap: '0.75rem', alignItems: 'start' }}>
               {/* Coluna esquerda: Timeline planejada */}
               <div>
-                <div style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.35rem' }}>
+                <div style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.35rem' }}>
                   {t('rotation.timeline.planned')}
                 </div>
                 <Timeline rotation={rotation} />
@@ -1660,7 +1661,7 @@ export function Rotation(): React.ReactElement {
               {logTimeline && (
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                    <span style={{ fontSize: '0.72rem', color: '#a78bfa', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--violet-l)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                       {t('rotation.timeline.realLog')}
                     </span>
                   </div>
@@ -1676,7 +1677,7 @@ export function Rotation(): React.ReactElement {
                 style={{
                   fontSize: '0.72rem', padding: '4px 14px',
                   background: 'rgba(167,139,250,0.1)', border: '1px solid rgba(167,139,250,0.28)',
-                  borderRadius: 4, color: '#a78bfa', cursor: 'pointer',
+                  borderRadius: 4, color: 'var(--violet-l)', cursor: 'pointer',
                 }}
               >
                 {logTimeline ? t('rotation.timeline.updateButton') : t('rotation.timeline.importButton')}

@@ -96,6 +96,23 @@ const CALC_FIELDS: Array<{ key: StatKey; label: string; group: string; max?: num
   { key: 'targetEvasion',      label: "Target's Evasion",    group: 'Alvo'      },
 ]
 
+// ─── Import queue ────────────────────────────────────────────────────────────
+
+const DEFAULT_BUILD_NAME = 'Build'
+function isDefaultName(name: string) { return name.trim() === DEFAULT_BUILD_NAME }
+
+interface QueueItem {
+  qid: string
+  type: 'url' | 'reimport'
+  url?: string
+  buildId?: string
+  sourceUrl?: string
+  status: 'pending' | 'running' | 'naming' | 'done' | 'error'
+  result?: Build
+  editName: string
+  errorMsg?: string
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function Builds(): React.ReactElement {
@@ -104,8 +121,10 @@ export function Builds(): React.ReactElement {
           importFromFile, importFromUrlPython, exportBuild, createEmpty } = useBuilds()
   const buildList = useMemo(() => Object.values(builds), [builds])
 
-  const statusTimerRef    = React.useRef<ReturnType<typeof setTimeout> | null>(null)
-  const importGeneration  = React.useRef(0)
+  const statusTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
+  const processingRef  = React.useRef(false)
+  const importGenRef   = React.useRef(0)
+  const queueRef       = React.useRef<QueueItem[]>([])
 
   const [editId,        setEditId]        = useState<string | null>(null)
   const [editData,      setEditData]      = useState<Build | null>(null)
@@ -114,15 +133,11 @@ export function Builds(): React.ReactElement {
   const [newName,       setNewName]       = useState('')
   const [newCombo,      setNewCombo]      = useState('')
   const [urlInput,      setUrlInput]      = useState('')
-  const [urlLoading,    setUrlLoading]    = useState(false)
   const [status,        setStatus]        = useState<string | null>(null)
   const [statusErr,     setStatusErr]     = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [lastLog,       setLastLog]       = useState<string | null>(null)
-  const [pendingImport, setPendingImport] = useState<Build | null>(null)
-  const [queueIds,     setQueueIds]     = useState<string[]>([])
-  const [queueStatus,  setQueueStatus]  = useState<Record<string, 'pending' | 'running' | 'done' | 'error'>>({})
-  const [queueRunning, setQueueRunning] = useState(false)
+  const [queue,         setQueue]         = useState<QueueItem[]>([])
 
   function startEdit(b: Build) {
     setEditId(b.id)
@@ -143,98 +158,155 @@ export function Builds(): React.ReactElement {
     await saveBuild({ ...editData, editedAt: now() })
     setEditId(null)
     setEditData(null)
-    showStatus('Build salva!', false)
+    showStatus(t('builds.status.saved'), false)
+  }
+
+  function updateQueue(updater: (prev: QueueItem[]) => QueueItem[]) {
+    const next = updater(queueRef.current)
+    queueRef.current = next
+    setQueue(next)
   }
 
   async function handleImport() {
-    showStatus('Importando...', false)
+    showStatus(t('builds.status.importing'), false)
     const build = await importFromFile()
     if (build) showStatus(`Importado: ${build.name}`, false)
-    else showStatus('Importação cancelada ou inválida.', true)
+    else showStatus(t('builds.status.importCancelled'), true)
   }
 
-  async function handleUrlImport() {
+  function handleUrlImport() {
     const url = urlInput.trim()
     if (!url) return
-
     if (!isValidQuestlogUrl(url)) {
-      showStatus('URL inválida — cole o link completo do Questlog (questlog.gg/...character-builder/...)', true)
+      showStatus(t('builds.import.invalid'), true)
       return
     }
+    setUrlInput('')
+    addToQueue({ type: 'url', url })
+  }
 
-    // Generation token: if handleCancel fires and a new import starts before this
-    // Promise resolves, we skip the stale state updates to avoid clobbering the new import
-    const gen = ++importGeneration.current
-    setUrlLoading(true)
-    const result = await importFromUrlPython(url)
+  function addToQueue(opts: { type: 'url'; url: string } | { type: 'reimport'; buildId: string }) {
+    if (opts.type === 'reimport') {
+      const already = queueRef.current.some(
+        i => i.buildId === opts.buildId && (i.status === 'pending' || i.status === 'running'),
+      )
+      if (already) return
+    }
+    const sourceUrl = opts.type === 'reimport' ? (builds[opts.buildId]?.sourceUrl ?? undefined) : undefined
+    const item: QueueItem = {
+      qid: `q-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      ...opts,
+      sourceUrl,
+      status: 'pending',
+      editName: '',
+    }
+    updateQueue(prev => [...prev, item])
+    kick()
+  }
 
-    // Stale check — this import was superseded by a cancel + new import
-    if (gen !== importGeneration.current) return
+  async function kick() {
+    if (processingRef.current) return
+    const current = queueRef.current
+    if (current.some(i => i.status === 'naming')) return
+    const next = current.find(i => i.status === 'pending')
+    if (!next) return
 
-    setUrlLoading(false)
-    setIsDownloading(false)
+    processingRef.current = true
+    const gen = ++importGenRef.current
+    updateQueue(prev => prev.map(i => i.qid === next.qid ? { ...i, status: 'running' } : i))
 
-    if ('error' in result) {
-      if (result.error === 'cancelled') {
-        showStatus('Importação cancelada.', false)
+    let shouldContinue = true
+
+    if (next.type === 'url') {
+      const result = await importFromUrlPython(next.url!)
+      if (importGenRef.current !== gen) { processingRef.current = false; return }
+      if ('error' in result) {
+        const errMsg = result.error === 'cancelled' ? t('builds.status.cancelled') : result.error
+        updateQueue(prev => prev.map(i => i.qid === next.qid ? { ...i, status: 'error', errorMsg: errMsg } : i))
+        if (result.error === 'cancelled') shouldContinue = false
+      } else if (isDefaultName(result.name)) {
+        updateQueue(prev => prev.map(i => i.qid === next.qid
+          ? { ...i, status: 'naming', result, editName: result.name }
+          : i))
+        processingRef.current = false
+        setIsDownloading(false)
+        return
       } else {
-        showStatus(result.error, true)
+        await saveBuild(result)
+        setActive(result.id)
+        updateQueue(prev => prev.map(i => i.qid === next.qid ? { ...i, status: 'done' } : i))
       }
     } else {
-      setUrlInput('')
-      // Não salva automaticamente — abre painel de confirmação para renomear
-      setPendingImport({ ...result })
+      if (!next.sourceUrl) {
+        updateQueue(prev => prev.map(i => i.qid === next.qid
+          ? { ...i, status: 'error', errorMsg: t('builds.queue.noSourceUrl') }
+          : i))
+      } else {
+        const result = await importFromUrlPython(next.sourceUrl)
+        if (importGenRef.current !== gen) { processingRef.current = false; return }
+        if ('error' in result) {
+          const errMsg = result.error === 'cancelled' ? t('builds.status.cancelled') : result.error
+          updateQueue(prev => prev.map(i => i.qid === next.qid ? { ...i, status: 'error', errorMsg: errMsg } : i))
+          if (result.error === 'cancelled') shouldContinue = false
+        } else {
+          const build = useBuilds.getState().builds[next.buildId!]
+          if (build) {
+            await saveBuild({
+              ...build,
+              stats:         result.stats,
+              rawStats:      result.rawStats,
+              rawAttributes: result.rawAttributes,
+              importedAt:    new Date().toISOString(),
+              sourceUrl:     next.sourceUrl,
+            })
+          }
+          updateQueue(prev => prev.map(i => i.qid === next.qid ? { ...i, status: 'done' } : i))
+        }
+      }
     }
+
+    setIsDownloading(false)
+    setLastLog(null)
+    processingRef.current = false
+    if (shouldContinue) kick()
   }
 
-  async function savePendingImport() {
-    if (!pendingImport) return
-    await saveBuild(pendingImport)
-    setActive(pendingImport.id)
-    showStatus(`✅ "${pendingImport.name}" salva!`, false)
-    setPendingImport(null)
+  async function confirmNaming(qid: string) {
+    const item = queueRef.current.find(i => i.qid === qid)
+    if (!item?.result) return
+    const name = item.editName.trim() || DEFAULT_BUILD_NAME
+    await saveBuild({ ...item.result, name })
+    setActive(item.result.id)
+    updateQueue(prev => prev.map(i => i.qid === qid ? { ...i, status: 'done' } : i))
+    kick()
   }
 
-  function discardPendingImport() {
-    setPendingImport(null)
-    showStatus('Importação descartada.', false)
+  function cancelQueue() {
+    importGenRef.current++
+    processingRef.current = false
+    setIsDownloading(false)
+    setLastLog(null)
+    window.dataAPI.questlogCancel?.().catch(() => {})
+    updateQueue(prev => prev.map(i => i.status === 'running' ? { ...i, status: 'pending' } : i))
+  }
+
+  function clearQueue() {
+    updateQueue(prev => prev.filter(i => i.status === 'running' || i.status === 'naming' || i.status === 'pending'))
+  }
+
+  function removeFromQueue(qid: string) {
+    updateQueue(prev => prev.filter(i => !(i.qid === qid && i.status === 'pending')))
   }
 
   async function handleDelete(id: string) {
-    if (!confirm('Deletar esta build?')) return
+    if (!confirm(t('builds.delete.confirm'))) return
     await deleteBuild(id)
-    showStatus('Build removida.', false)
+    showStatus(t('builds.status.deleted'), false)
   }
 
   async function handleExport(id: string) {
     await exportBuild(id)
-    showStatus('Arquivo exportado!', false)
-  }
-
-  async function handleReimport(id: string) {
-    const build = builds[id]
-    if (!build?.sourceUrl) return
-    const gen = ++importGeneration.current
-    setUrlLoading(true)
-    showStatus(`⏳ Reimportando "${build.name}"...`, false, Infinity)
-    const result = await importFromUrlPython(build.sourceUrl)
-    if (gen !== importGeneration.current) return
-    setUrlLoading(false)
-    setIsDownloading(false)
-    if ('error' in result) {
-      showStatus(result.error === 'cancelled' ? 'Cancelado.' : result.error, true)
-      return
-    }
-    // Preserva id, nome, armas e notas — atualiza stats e rawStats
-    await saveBuild({
-      ...build,
-      stats:         result.stats,
-      rawStats:      result.rawStats,
-      rawAttributes: result.rawAttributes,
-      importedAt:    new Date().toISOString(),
-      sourceUrl:     build.sourceUrl,
-    })
-    showStatus(`✅ "${build.name}" reimportada com sucesso!`, false)
+    showStatus(t('builds.status.exported'), false)
   }
 
   async function handleCreate() {
@@ -245,7 +317,7 @@ export function Builds(): React.ReactElement {
     setActive(build.id)
     setNewName('')
     setNewCombo('')
-    showStatus(`Build "${name}" criada.`, false)
+    showStatus(`Build "${name}" ${t('builds.status.created')}`, false)
     startEdit(build)
     setEditTab('calc')
   }
@@ -268,88 +340,10 @@ export function Builds(): React.ReactElement {
     }
   }
 
-  function handleCancel() {
-    // Invalida o import em andamento — handleUrlImport vai ignorar a Promise ao resolver
-    importGeneration.current++
-    // Reseta UI imediatamente — não espera a Promise do import resolver
-    setUrlLoading(false)
-    setIsDownloading(false)
-    showStatus('Importação cancelada.', false)
-    // Kill do processo (taskkill /F /T no Windows, SIGKILL no Unix)
-    window.dataAPI.questlogCancel?.().then((res) => {
-      if (res && !res.ok) showStatus('Não foi possível cancelar — o processo pode continuar em background.', true)
-    }).catch(() => {/* ignore */})
-  }
-
-  // ── Fila de reimportação ────────────────────────────────────────────────────
-
-  function addToQueue(id: string) {
-    if (queueIds.includes(id)) return
-    setQueueIds(prev => [...prev, id])
-    setQueueStatus(prev => ({ ...prev, [id]: 'pending' }))
-  }
-
-  function removeFromQueue(id: string) {
-    setQueueIds(prev => prev.filter(x => x !== id))
-    setQueueStatus(prev => { const s = { ...prev }; delete s[id]; return s })
-  }
-
-  function clearQueue() {
-    setQueueIds([])
-    setQueueStatus({})
-    setQueueRunning(false)
-  }
-
-  async function runQueue() {
-    if (queueRunning) return
-    const pending = queueIds.filter(id => queueStatus[id] === 'pending')
-    if (pending.length === 0) return
-    setQueueRunning(true)
-    for (const id of pending) {
-      const build = builds[id]
-      if (!build?.sourceUrl) { setQueueStatus(prev => ({ ...prev, [id]: 'error' })); continue }
-      setQueueStatus(prev => ({ ...prev, [id]: 'running' }))
-      const gen = ++importGeneration.current
-      const result = await importFromUrlPython(build.sourceUrl)
-      if (gen !== importGeneration.current) { setQueueStatus(prev => ({ ...prev, [id]: 'error' })); break }
-      if ('error' in result) {
-        setQueueStatus(prev => ({ ...prev, [id]: 'error' }))
-        if (result.error === 'cancelled') break
-        continue
-      }
-      await saveBuild({ ...build, stats: result.stats, rawStats: result.rawStats, rawAttributes: result.rawAttributes, importedAt: new Date().toISOString(), sourceUrl: build.sourceUrl })
-      setQueueStatus(prev => ({ ...prev, [id]: 'done' }))
-    }
-    setQueueRunning(false)
-  }
-
-  function cancelQueue() {
-    importGeneration.current++
-    setQueueRunning(false)
-    window.dataAPI.questlogCancel?.().catch(() => {/* ignore */})
-    setQueueStatus(prev => {
-      const next = { ...prev }
-      Object.keys(next).forEach(k => { if (next[k] === 'running' || next[k] === 'pending') next[k] = 'pending' })
-      return next
-    })
-  }
-
   useEffect(() => {
     if (!window.dataAPI?.onProgress) return
     window.dataAPI.onProgress(({ stage }) => {
-      if (stage === 'starting') {
-        setIsDownloading(false)
-        showStatus('⏳ Iniciando...', false)
-      }
-      if (stage === 'downloading-browser') {
-        setIsDownloading(true)
-        // Sem auto-clear: o download pode levar vários minutos
-        showStatus('📥 Baixando recursos — apenas na primeira vez, aguarde...', false, Infinity)
-      }
-      if (stage === 'extracting') {
-        setIsDownloading(false)
-        showStatus('🔍 Extraindo stats...', false)
-      }
+      setIsDownloading(stage === 'downloading-browser')
     })
     return () => window.dataAPI.offProgress?.()
   }, [])
@@ -359,11 +353,6 @@ export function Builds(): React.ReactElement {
     window.dataAPI.onLog(({ line }) => setLastLog(line))
     return () => window.dataAPI.offLog?.()
   }, [])
-
-  // Clear lastLog when import finishes or is cancelled
-  useEffect(() => {
-    if (!urlLoading) setLastLog(null)
-  }, [urlLoading])
 
   function updateCalcField(key: StatKey, value: number) {
     if (!editData) return
@@ -461,6 +450,12 @@ export function Builds(): React.ReactElement {
 
   const calcGroups = [...new Set(CALC_FIELDS.map((f) => f.group))]
 
+  const queuedBuildIds = useMemo(
+    () => new Set(queue.filter(i => i.status === 'pending' || i.status === 'running').map(i => i.buildId).filter(Boolean) as string[]),
+    [queue],
+  )
+  const isQueueRunning = queue.some(i => i.status === 'running')
+
   const statusColor  = statusErr ? '#f25f5c' : '#3dd68c'
   const statusBg     = statusErr ? 'rgba(242,95,92,0.1)' : 'rgba(61,214,140,0.1)'
   const statusBorder = statusErr ? 'rgba(242,95,92,0.3)' : 'rgba(61,214,140,0.3)'
@@ -468,207 +463,107 @@ export function Builds(): React.ReactElement {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       <div className="tl-hero" style={{ flexShrink: 0 }}>
-        <h1>Gerenciar Builds</h1>
-        <p>Importe do Questlog via URL, importe JSON, crie e edite builds locais.</p>
+        <h1>{t('builds.title')}</h1>
+        <p>{t('builds.subtitle')}</p>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto', padding: '0 1.75rem 2rem' }}>
-        {/* Status bar */}
+        {/* ── Status bar (notificações gerais) ─────────────────────────── */}
         {status && (
           <div style={{ padding: '0.6rem 1rem', background: statusBg, border: `1px solid ${statusBorder}`, borderRadius: 6, marginBottom: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <span style={{ color: statusColor, fontSize: '0.82rem', fontFamily: 'JetBrains Mono, monospace', flex: 1 }}>
                 {status}
               </span>
-              {statusErr && !urlLoading && (
+              {statusErr && (
                 <button
                   onClick={() => window.dataAPI.scraperOpenLog?.()}
-                  style={{
-                    padding: '0.2rem 0.65rem',
-                    fontSize: '0.75rem',
-                    background: 'rgba(212,175,55,0.1)',
-                    border: '1px solid rgba(212,175,55,0.3)',
-                    borderRadius: 4,
-                    color: '#d4af37',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                  }}
+                  style={{ padding: '0.2rem 0.65rem', fontSize: '0.75rem', background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: 4, color: '#d4af37', cursor: 'pointer', whiteSpace: 'nowrap', flexShrink: 0 }}
                 >
-                  Ver log
-                </button>
-              )}
-              {urlLoading && (
-                <button
-                  onClick={handleCancel}
-                  style={{
-                    padding: '0.2rem 0.65rem',
-                    fontSize: '0.75rem',
-                    background: 'rgba(242,95,92,0.15)',
-                    border: '1px solid rgba(242,95,92,0.4)',
-                    borderRadius: 4,
-                    color: '#f25f5c',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                    flexShrink: 0,
-                  }}
-                >
-                  ✕ Cancelar
+                  {t('builds.status.viewLog')}
                 </button>
               )}
             </div>
-            {isDownloading && (
-              <div style={{ marginTop: '0.45rem', height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
-                <div style={{
-                  height: '100%',
-                  width: '40%',
-                  borderRadius: 2,
-                  background: '#d4af37',
-                  animation: 'tl-indeterminate 1.4s ease-in-out infinite',
-                }} />
-              </div>
-            )}
-            {urlLoading && lastLog && (
-              <div style={{
-                marginTop: '0.4rem',
-                fontSize: '0.72rem',
-                fontFamily: 'JetBrains Mono, monospace',
-                color: 'rgba(255,255,255,0.45)',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}>
-                {lastLog}
-              </div>
-            )}
           </div>
         )}
 
-        {/* ── Pending import confirmation ───────────────────────────── */}
-        {pendingImport && (
-          <div className="tl-panel" style={{ marginBottom: '1.25rem', border: '1px solid rgba(212,175,55,0.4)', background: 'rgba(212,175,55,0.05)' }}>
-            <div className="tl-eyebrow" style={{ marginBottom: '0.75rem', color: '#d4af37' }}>
-              ✅ Build importada — confirme o nome antes de salvar
-            </div>
-
-            {/* Save / discard — TOPO */}
-            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.9rem' }}>
-              <button
-                className="tl-btn"
-                onClick={savePendingImport}
-                style={{ background: 'rgba(212,175,55,0.15)', borderColor: 'rgba(212,175,55,0.5)', color: '#f0cc55' }}
-              >
-                💾 Salvar build
-              </button>
-              <button className="tl-btn-ghost" onClick={discardPendingImport}>Descartar</button>
-            </div>
-
-            {/* Nome + armas editáveis */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-              <div>
-                <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Nome</div>
-                <input
-                  className="tl-input"
-                  style={{ fontFamily: 'Inter,sans-serif' }}
-                  value={pendingImport.name}
-                  onChange={(e) => setPendingImport({ ...pendingImport, name: e.target.value })}
-                  onKeyDown={(e) => e.key === 'Enter' && savePendingImport()}
-                  autoFocus
-                />
-              </div>
-              <div>
-                <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Armas (ex: sword+wand)</div>
-                <input
-                  className="tl-input"
-                  style={{ fontFamily: 'Inter,sans-serif' }}
-                  placeholder="sword+wand"
-                  value={pendingImport.weaponCombo}
-                  onChange={(e) => setPendingImport({ ...pendingImport, weaponCombo: e.target.value })}
-                  onKeyDown={(e) => e.key === 'Enter' && savePendingImport()}
-                />
-              </div>
-            </div>
-
-            {/* Stats preview */}
-            {pendingImport.rawStats && Object.keys(pendingImport.rawStats).length > 0 && (
-              <div style={{ marginTop: '0.6rem', fontSize: '0.7rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>
-                {Object.keys(pendingImport.rawStats).length} stats extraídos
-                {pendingImport.sourceUrl && (
-                  <span style={{ marginLeft: 8, opacity: 0.6 }}>· {pendingImport.sourceUrl.slice(0, 60)}…</span>
-                )}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Questlog URL import */}
-        <div className="tl-panel" style={{ marginBottom: '1.25rem' }}>
-          <div className="tl-eyebrow" style={{ marginBottom: 8 }}>Importar do Questlog</div>
-          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-            <input
-              className="tl-input"
-              style={{ flex: 1, fontFamily: 'Inter,sans-serif' }}
-              placeholder="https://questlog.gg/throne-and-liberty/en/character-builder/..."
-              value={urlInput}
-              onChange={(e) => setUrlInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && !urlLoading && handleUrlImport()}
-              disabled={urlLoading}
-            />
-            <button
-              className="tl-btn"
-              onClick={handleUrlImport}
-              disabled={urlLoading || !urlInput.trim()}
-              style={{ whiteSpace: 'nowrap', opacity: urlLoading ? 0.6 : 1 }}
-            >
-              {urlLoading ? 'Importando...' : 'Importar'}
-            </button>
-          </div>
-        </div>
-
-        {/* Other actions */}
-        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem', alignItems: 'flex-end' }}>
-          <button className="tl-btn-ghost" onClick={handleImport}>📂 Importar JSON</button>
-
-          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'flex-end' }}>
-            <div>
-              <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Nome</div>
-              <input className="tl-input" style={{ width: 180, fontFamily: 'Inter,sans-serif' }} placeholder="Nova build..." value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleCreate()} />
-            </div>
-            <div>
-              <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Armas (ex: sword+wand)</div>
-              <input className="tl-input" style={{ width: 150, fontFamily: 'Inter,sans-serif' }} placeholder="sword+wand" value={newCombo} onChange={(e) => setNewCombo(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleCreate()} />
-            </div>
-            <button className="tl-btn-ghost" onClick={handleCreate}>+ Criar</button>
-          </div>
-        </div>
-
-        {/* ── Painel de fila de reimportação ──────────────────────────────── */}
-        {queueIds.length > 0 && (
+        {/* ── Fila unificada de importação ──────────────────────────────── */}
+        {queue.length > 0 && (
           <div className="tl-panel" style={{ marginBottom: '1.25rem', borderColor: 'var(--border-gold)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: 10 }}>
               <span style={{ fontWeight: 700, color: 'var(--gold-l)', fontSize: '0.85rem' }}>
-                ⟳ Fila de Reimportação — {queueIds.length} build{queueIds.length !== 1 ? 's' : ''}
+                {t('builds.queue.title')}{queue.length} {queue.length !== 1 ? t('builds.queue.buildPlural') : t('builds.queue.buildSingular')}
               </span>
               <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.4rem' }}>
-                {!queueRunning
-                  ? <button className="tl-btn" style={{ fontSize: '0.72rem', padding: '0.3rem 0.8rem' }} onClick={runQueue} disabled={queueIds.filter(id => queueStatus[id] === 'pending').length === 0}>▶ Iniciar</button>
-                  : <button className="tl-btn-ghost" style={{ fontSize: '0.72rem' }} onClick={cancelQueue}>⏹ Pausar</button>
-                }
-                <button className="tl-btn-ghost" style={{ fontSize: '0.72rem' }} onClick={clearQueue} disabled={queueRunning}>✕ Limpar</button>
+                {isQueueRunning && (
+                  <button className="tl-btn-ghost" style={{ fontSize: '0.72rem' }} onClick={cancelQueue}>{t('builds.queue.pause')}</button>
+                )}
+                <button className="tl-btn-ghost" style={{ fontSize: '0.72rem' }} onClick={clearQueue}>{t('builds.queue.clear')}</button>
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {queueIds.map(id => {
-                const b = builds[id]
-                const st = queueStatus[id]
-                const icon = st === 'done' ? '✅' : st === 'error' ? '❌' : st === 'running' ? '⏳' : '•'
-                const color = st === 'done' ? 'var(--green)' : st === 'error' ? 'var(--red)' : st === 'running' ? 'var(--gold-l)' : 'var(--text-soft)'
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {queue.map(item => {
+                const build = item.buildId ? builds[item.buildId] : null
+                const label = build?.name ?? (item.url ? item.url.replace('https://questlog.gg/', 'questlog.gg/') : item.qid)
+                const icon = item.status === 'done' ? '✅' : item.status === 'error' ? '❌' : item.status === 'running' ? '⏳' : item.status === 'naming' ? '✏' : '◦'
+                const labelColor = item.status === 'done' ? 'var(--green)' : item.status === 'error' ? 'var(--red)' : item.status === 'running' ? 'var(--gold-l)' : item.status === 'naming' ? '#d4af37' : 'var(--text-soft)'
+
                 return (
-                  <div key={id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', fontFamily: 'JetBrains Mono, monospace' }}>
-                    <span style={{ color, minWidth: 16 }}>{icon}</span>
-                    <span style={{ color: 'var(--text)', flex: 1 }}>{b?.name ?? id}</span>
-                    {st === 'pending' && !queueRunning && (
-                      <button className="tl-btn-ghost" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }} onClick={() => removeFromQueue(id)}>✕</button>
+                  <div key={item.qid} style={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', fontFamily: 'JetBrains Mono, monospace' }}>
+                      <span style={{ color: labelColor, minWidth: 16, flexShrink: 0 }}>{icon}</span>
+
+                      {item.status === 'naming' ? (
+                        <>
+                          <input
+                            className="tl-input"
+                            value={item.editName}
+                            placeholder={t('builds.queue.namePlaceholder')}
+                            onChange={(e) => updateQueue(prev => prev.map(i => i.qid === item.qid ? { ...i, editName: e.target.value } : i))}
+                            onKeyDown={(e) => e.key === 'Enter' && confirmNaming(item.qid)}
+                            autoFocus
+                            style={{ flex: 1, fontFamily: 'Inter,sans-serif', fontSize: '0.8rem', padding: '0.2rem 0.5rem' }}
+                          />
+                          <button
+                            className="tl-btn"
+                            style={{ fontSize: '0.72rem', padding: '0.25rem 0.7rem', background: 'rgba(212,175,55,0.15)', borderColor: 'rgba(212,175,55,0.5)', color: '#f0cc55', flexShrink: 0 }}
+                            onClick={() => confirmNaming(item.qid)}
+                          >
+                            {t('builds.queue.nameSave')}
+                          </button>
+                        </>
+                      ) : (
+                        <span style={{ flex: 1, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</span>
+                      )}
+
+                      {item.status === 'running' && isDownloading && (
+                        <div style={{ width: 48, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.1)', overflow: 'hidden', flexShrink: 0 }}>
+                          <div style={{ height: '100%', width: '40%', borderRadius: 2, background: '#d4af37', animation: 'tl-indeterminate 1.4s ease-in-out infinite' }} />
+                        </div>
+                      )}
+
+                      {item.status === 'pending' && (
+                        <button className="tl-btn-ghost" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem', flexShrink: 0 }} onClick={() => removeFromQueue(item.qid)}>✕</button>
+                      )}
+                    </div>
+
+                    {item.status === 'naming' && (
+                      <div style={{ marginLeft: 24, fontSize: '0.7rem', color: '#d4af37', fontFamily: 'JetBrains Mono, monospace' }}>
+                        {t('builds.queue.naming')}
+                      </div>
+                    )}
+
+                    {item.status === 'error' && item.errorMsg && (
+                      <div style={{ marginLeft: 24, fontSize: '0.7rem', color: 'var(--red)', fontFamily: 'JetBrains Mono, monospace' }}>
+                        {t('builds.queue.errorPrefix')}{item.errorMsg}
+                      </div>
+                    )}
+
+                    {item.status === 'running' && lastLog && (
+                      <div style={{ marginLeft: 24, fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)', fontFamily: 'JetBrains Mono, monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {lastLog}
+                      </div>
                     )}
                   </div>
                 )
@@ -677,9 +572,49 @@ export function Builds(): React.ReactElement {
           </div>
         )}
 
+        {/* Questlog URL import */}
+        <div className="tl-panel" style={{ marginBottom: '1.25rem' }}>
+          <div className="tl-eyebrow" style={{ marginBottom: 8 }}>{t('builds.questlog.title')}</div>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <input
+              className="tl-input"
+              style={{ flex: 1, fontFamily: 'Inter,sans-serif' }}
+              placeholder={t('builds.questlog.placeholder')}
+              value={urlInput}
+              onChange={(e) => setUrlInput(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleUrlImport()}
+            />
+            <button
+              className="tl-btn"
+              onClick={handleUrlImport}
+              disabled={!urlInput.trim()}
+              style={{ whiteSpace: 'nowrap' }}
+            >
+              {t('builds.questlog.button')}
+            </button>
+          </div>
+        </div>
+
+        {/* Other actions */}
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.25rem', alignItems: 'flex-end' }}>
+          <button className="tl-btn-ghost" onClick={handleImport}>{t('builds.import.button')}</button>
+
+          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'flex-end' }}>
+            <div>
+              <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{t('builds.create.name')}</div>
+              <input className="tl-input" style={{ width: 180, fontFamily: 'Inter,sans-serif' }} placeholder={t('builds.create.placeholder')} value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleCreate()} />
+            </div>
+            <div>
+              <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{t('builds.create.weapons')}</div>
+              <input className="tl-input" style={{ width: 150, fontFamily: 'Inter,sans-serif' }} placeholder={t('builds.create.weaponsPlaceholder')} value={newCombo} onChange={(e) => setNewCombo(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleCreate()} />
+            </div>
+            <button className="tl-btn-ghost" onClick={handleCreate}>{t('builds.create.button')}</button>
+          </div>
+        </div>
+
         {buildList.length === 0 ? (
           <div className="tl-panel" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-soft)' }}>
-            Nenhuma build salva. Cole uma URL do Questlog acima para começar.
+            {t('builds.empty')}
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -701,11 +636,11 @@ export function Builds(): React.ReactElement {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                           <span style={{ fontFamily: 'Noto Serif, serif', color: '#f0cc55', fontWeight: 700, fontSize: '0.95rem' }}>{b.name}</span>
                           {b.weaponCombo && <span className="tl-tag tl-tag-violet">{b.weaponCombo}</span>}
-                          {isActive && <span className="tl-tag tl-tag-gold">ATIVA</span>}
-                          {b.editedAt && <span className="tl-tag tl-tag-cyan">editada</span>}
+                          {isActive && <span className="tl-tag tl-tag-gold">{t('builds.card.active')}</span>}
+                          {b.editedAt && <span className="tl-tag tl-tag-cyan">{t('builds.card.edited')}</span>}
                           {statCount > 0 && (
                             <span className="tl-tag" style={{ background: 'rgba(61,214,140,0.08)', color: '#3dd68c', border: '1px solid rgba(61,214,140,0.2)' }}>
-                              {statCount} stats
+                              {statCount} {t('builds.card.stats')}
                             </span>
                           )}
                         </div>
@@ -713,14 +648,14 @@ export function Builds(): React.ReactElement {
                           <span>DPS <b style={{ color: '#f0cc55' }}>{dps > 0 ? fmt(dps) : '—'}</b></span>
                           <span>Crit <b style={{ color: '#d4af37' }}>{fmtPct(crit)}</b></span>
                           <span>Heavy <b style={{ color: '#7c5cfc' }}>{fmtPct(heavy)}</b></span>
-                          {attrCount > 0 && <span style={{ color: 'var(--text-muted)' }}>{attrCount} atributos</span>}
+                          {attrCount > 0 && <span style={{ color: 'var(--text-muted)' }}>{attrCount} {t('builds.card.attributes')}</span>}
                           <span style={{ color: 'var(--text-muted)' }}>{new Date(b.importedAt).toLocaleDateString('pt-BR')}</span>
                           {b.sourceUrl && (
                             <a
                               href="#"
-                              onClick={(e) => { e.preventDefault(); navigator.clipboard.writeText(b.sourceUrl!); showStatus('🔗 URL copiada!', false, 2000) }}
+                              onClick={(e) => { e.preventDefault(); window.open(b.sourceUrl, '_blank') }}
                               style={{ color: 'var(--text-muted)', textDecoration: 'none', maxWidth: 260, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block' }}
-                              title={`Clique para copiar: ${b.sourceUrl}`}
+                              title={`Abrir no navegador: ${b.sourceUrl}`}
                             >
                               🔗 {b.sourceUrl.replace('https://questlog.gg/', 'questlog.gg/')}
                             </a>
@@ -729,30 +664,19 @@ export function Builds(): React.ReactElement {
                       </div>
 
                       <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
-                        {!isActive && <button className="tl-btn-ghost" onClick={() => { setActive(b.id); showStatus(`✅ Build "${b.name}" ativa.`, false) }}>Ativar</button>}
-                        <button className="tl-btn-ghost" onClick={() => isEditing ? cancelEdit() : startEdit(b)}>{isEditing ? 'Fechar' : '✏ Editar'}</button>
+                        {!isActive && <button className="tl-btn-ghost" onClick={() => { setActive(b.id); showStatus(`✅ Build "${b.name}" ${t('builds.card.activate')}.`, false) }}>{t('builds.card.activate')}</button>}
+                        <button className="tl-btn-ghost" onClick={() => isEditing ? cancelEdit() : startEdit(b)}>{isEditing ? t('builds.card.close') : t('builds.card.edit')}</button>
                         {b.sourceUrl && (
                           <button
                             className="tl-btn-ghost"
-                            onClick={() => handleReimport(b.id)}
-                            disabled={urlLoading || queueRunning}
-                            title={b.sourceUrl}
-                            style={{ opacity: (urlLoading || queueRunning) ? 0.5 : 1 }}
+                            onClick={() => addToQueue({ type: 'reimport', buildId: b.id })}
+                            title={queuedBuildIds.has(b.id) ? undefined : b.sourceUrl}
+                            style={{ borderColor: queuedBuildIds.has(b.id) ? 'var(--border-gold)' : undefined, color: queuedBuildIds.has(b.id) ? 'var(--gold-l)' : undefined }}
                           >
-                            ⟳ Reimportar
+                            {queuedBuildIds.has(b.id) ? t('builds.card.inQueue') : t('builds.card.reimport')}
                           </button>
                         )}
-                        {b.sourceUrl && (
-                          <button
-                            className="tl-btn-ghost"
-                            onClick={() => queueIds.includes(b.id) ? removeFromQueue(b.id) : addToQueue(b.id)}
-                            title={queueIds.includes(b.id) ? 'Remover da fila' : 'Adicionar à fila de reimportação'}
-                            style={{ borderColor: queueIds.includes(b.id) ? 'var(--border-gold)' : undefined, color: queueIds.includes(b.id) ? 'var(--gold-l)' : undefined }}
-                          >
-                            {queueIds.includes(b.id) ? '✓ Na fila' : '⊕ Fila'}
-                          </button>
-                        )}
-                        <button className="tl-btn-ghost" onClick={() => handleExport(b.id)}>⬇ Export</button>
+                        <button className="tl-btn-ghost" onClick={() => handleExport(b.id)}>{t('builds.card.export')}</button>
                         <button className="tl-btn-ghost" style={{ borderColor: 'rgba(242,95,92,0.3)', color: '#f25f5c' }} onClick={() => handleDelete(b.id)}>🗑</button>
                       </div>
                     </div>
@@ -775,18 +699,18 @@ export function Builds(): React.ReactElement {
 
                       {/* Save / cancel — TOPO */}
                       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.9rem' }}>
-                        <button className="tl-btn" onClick={saveEdit}>💾 Salvar alterações</button>
-                        <button className="tl-btn-ghost" onClick={cancelEdit}>Cancelar</button>
+                        <button className="tl-btn" onClick={saveEdit}>{t('builds.editor.save')}</button>
+                        <button className="tl-btn-ghost" onClick={cancelEdit}>{t('builds.card.close')}</button>
                       </div>
 
                       {/* Name / combo */}
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
                         <div>
-                          <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Nome</div>
+                          <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{t('builds.create.name')}</div>
                           <input className="tl-input" style={{ fontFamily: 'Inter,sans-serif' }} value={editData.name} onChange={(e) => setEditData({ ...editData, name: e.target.value })} />
                         </div>
                         <div>
-                          <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Armas</div>
+                          <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{t('builds.create.weapons')}</div>
                           <input className="tl-input" style={{ fontFamily: 'Inter,sans-serif' }} value={editData.weaponCombo} onChange={(e) => setEditData({ ...editData, weaponCombo: e.target.value })} />
                         </div>
                       </div>
@@ -811,7 +735,7 @@ export function Builds(): React.ReactElement {
                               letterSpacing: '0.07em',
                             }}
                           >
-                            {tab === 'stats' ? `Stats completos (${Object.keys(editData.rawStats ?? {}).length})` : 'Calculadora DPS'}
+                            {tab === 'stats' ? `${t('builds.editor.statsTab')} ${Object.keys(editData.rawStats ?? {}).length})` : t('builds.editor.calcTab')}
                           </button>
                         ))}
                       </div>
@@ -822,7 +746,7 @@ export function Builds(): React.ReactElement {
                           {/* Attributes */}
                           {editData.rawAttributes && Object.keys(editData.rawAttributes).length > 0 && (
                             <div style={{ marginBottom: '1rem' }}>
-                              <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#a992f8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.4rem' }}>Atributos</div>
+                              <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#a992f8', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.4rem' }}>{t('builds.editor.attributes')}</div>
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', gap: '0.4rem' }}>
                                 {ATTRIBUTE_NAMES.map((a) => (
                                   <div key={a}>
@@ -843,7 +767,7 @@ export function Builds(): React.ReactElement {
                           <div style={{ marginBottom: '0.75rem' }}>
                             <input
                               className="tl-input"
-                              placeholder="Filtrar stats..."
+                              placeholder={t('builds.editor.filterStats')}
                               value={statsFilter}
                               onChange={(e) => setStatsFilter(e.target.value)}
                               style={{ width: '100%', fontFamily: 'Inter,sans-serif' }}
@@ -887,7 +811,7 @@ export function Builds(): React.ReactElement {
                           {extraStats.length > 0 && (
                             <div>
                               <div style={{ fontSize: '0.63rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0.6rem 0 0.35rem', borderTop: '1px solid var(--border)', paddingTop: '0.5rem' }}>
-                                Outros ({extraStats.length})
+                                {t('builds.editor.other')} ({extraStats.length})
                               </div>
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(195px, 1fr))', gap: '0.4rem' }}>
                                 {extraStats.map((key) => (
@@ -907,7 +831,7 @@ export function Builds(): React.ReactElement {
 
                           {/* Notes */}
                           <div style={{ marginTop: '0.75rem' }}>
-                            <div className="tl-eyebrow" style={{ marginBottom: 3 }}>Notas</div>
+                            <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{t('builds.editor.notes')}</div>
                             <textarea className="tl-input" style={{ fontFamily: 'Inter,sans-serif', resize: 'vertical', minHeight: 60 }} value={editData.notes} onChange={(e) => setEditData({ ...editData, notes: e.target.value })} />
                           </div>
                         </div>
@@ -918,16 +842,16 @@ export function Builds(): React.ReactElement {
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
                             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', flex: 1 }}>
-                              Campos usados pelo motor de cálculo de DPS. Preenchidos automaticamente ao importar.
+                              {t('builds.editor.calc.hint')}
                             </span>
                             {editData.rawStats && (
                               <button
                                 className="tl-btn-ghost"
                                 onClick={replicateFromQuestlog}
                                 style={{ fontSize: '0.72rem', whiteSpace: 'nowrap', background: '#ca8a04', color: '#000', borderColor: '#ca8a04' }}
-                                title="Relê todos os campos possíveis dos rawStats do Questlog e preenche a calculadora"
+                                title={t('builds.editor.calc.replicateTitle')}
                               >
-                                ⟳ Replicar Stats do Questlog
+                                {t('builds.editor.calc.replicate')}
                               </button>
                             )}
                           </div>

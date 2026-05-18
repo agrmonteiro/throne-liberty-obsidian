@@ -19,6 +19,18 @@ export const fmtP = (n: number): string => fmtPct(n, 2)
 export const fmtDec = (n: number, decimals = 2): string =>
   n.toLocaleString('pt-BR', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
 
+/**
+ * Stat display — arredonda floating-point noise (ex: 713.6000000000001 → "713,6"),
+ * mostra inteiro quando não tem casa decimal relevante (100 → "100").
+ * Máximo 1 casa decimal.
+ */
+export const fmtStat = (n: number): string => {
+  const rounded = Math.round(n * 10) / 10
+  return Number.isInteger(rounded)
+    ? rounded.toLocaleString('pt-BR')
+    : rounded.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+}
+
 /** Parseia entrada do usuário aceitando pt-BR (1.234,56) e notação com ponto decimal (1.5). */
 export function parsePtBR(raw: string): number {
   const s = raw.trim()

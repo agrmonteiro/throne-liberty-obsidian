@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from 'react'
+import { useT } from '../i18n/useT'
 
 type State =
   | { phase: 'idle' }
   | { phase: 'available';   version: string }
   | { phase: 'downloading'; version: string; percent: number }
   | { phase: 'ready';       version: string }
+  | { phase: 'error';       version: string }
+  | { phase: 'stalled';     version: string }
 
 export function UpdateNotifier(): React.ReactElement | null {
+  const t = useT()
   const [state, setState] = useState<State>({ phase: 'idle' })
   const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
     if (!window.updateAPI) return
 
-    window.updateAPI.onAvailable(({ version }) => {
+    const api = window.updateAPI
+
+    api.onAvailable(({ version }) => {
       setState({ phase: 'available', version })
       setDismissed(false)
     })
 
-    window.updateAPI.onProgress(({ percent }) => {
-      setDismissed(false)  // força exibir o progresso mesmo se o banner anterior foi fechado
+    api.onProgress(({ percent }) => {
+      setDismissed(false)
       setState(prev => ({
         phase: 'downloading',
         version: 'version' in prev ? prev.version : '',
@@ -27,27 +33,56 @@ export function UpdateNotifier(): React.ReactElement | null {
       }))
     })
 
-    window.updateAPI.onDownloaded(({ version }) => {
+    api.onDownloaded(({ version }) => {
       setState({ phase: 'ready', version })
+      setDismissed(false)
     })
+
+    api.onError(() => {
+      setState(prev =>
+        prev.phase === 'idle'
+          ? prev  // erro no check silencioso (sidebar já trata)
+          : { phase: 'error', version: 'version' in prev ? prev.version : '' }
+      )
+    })
+
+    api.onStalled(() => {
+      setState(prev => ({
+        phase: 'stalled',
+        version: 'version' in prev ? prev.version : '',
+      }))
+    })
+
+    // sem cleanup de listeners: a preload já garante remoção ao re-registrar
   }, [])
 
   if (dismissed || state.phase === 'idle') return null
 
   // ── estilos compartilhados ────────────────────────────────────────────────
-  const banner: React.CSSProperties = {
+  const bannerGreen: React.CSSProperties = {
     display: 'flex', alignItems: 'center', gap: '1rem',
     padding: '0.6rem 1.25rem',
     background: 'rgba(72, 187, 120, 0.1)',
     borderBottom: '1px solid rgba(72, 187, 120, 0.3)',
     flexShrink: 0,
   }
-  const text: React.CSSProperties = { fontSize: '0.82rem', color: '#68d391' }
+  const bannerWarn: React.CSSProperties = {
+    ...bannerGreen,
+    background: 'rgba(245, 158, 11, 0.1)',
+    borderBottom: '1px solid rgba(245, 158, 11, 0.3)',
+  }
+  const textGreen: React.CSSProperties = { fontSize: '0.82rem', color: '#68d391' }
+  const textWarn:  React.CSSProperties = { fontSize: '0.82rem', color: '#fbbf24' }
   const btn: React.CSSProperties = {
     padding: '0.3rem 0.9rem', borderRadius: 5,
     border: '1px solid #48bb78',
     background: 'rgba(72, 187, 120, 0.15)', color: '#68d391',
     cursor: 'pointer', fontSize: '0.78rem', fontWeight: 700, whiteSpace: 'nowrap',
+  }
+  const btnWarn: React.CSSProperties = {
+    ...btn,
+    border: '1px solid #f59e0b',
+    background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24',
   }
   const closeBtn: React.CSSProperties = {
     marginLeft: 'auto', background: 'none', border: 'none',
@@ -57,9 +92,9 @@ export function UpdateNotifier(): React.ReactElement | null {
   // ── available ─────────────────────────────────────────────────────────────
   if (state.phase === 'available') {
     return (
-      <div style={banner}>
-        <span style={text}>
-          ⬆ Nova versão disponível: <strong>v{state.version}</strong> — baixando em segundo plano…
+      <div style={bannerGreen}>
+        <span style={textGreen}>
+          {t('update.available').replace('{version}', state.version)}
         </span>
         <button style={closeBtn} onClick={() => setDismissed(true)}>×</button>
       </div>
@@ -69,8 +104,8 @@ export function UpdateNotifier(): React.ReactElement | null {
   // ── downloading ───────────────────────────────────────────────────────────
   if (state.phase === 'downloading') {
     return (
-      <div style={banner}>
-        <span style={text}>⬇ Baixando v{state.version}…</span>
+      <div style={bannerGreen}>
+        <span style={textGreen}>{t('update.downloading').replace('{version}', state.version)}</span>
         <div style={{
           flexGrow: 1, maxWidth: 200, height: 6, borderRadius: 3,
           background: 'rgba(72,187,120,0.2)', overflow: 'hidden',
@@ -80,7 +115,7 @@ export function UpdateNotifier(): React.ReactElement | null {
             width: `${state.percent}%`, transition: 'width 0.3s ease',
           }} />
         </div>
-        <span style={{ ...text, fontWeight: 700, minWidth: 38 }}>{state.percent}%</span>
+        <span style={{ ...textGreen, fontWeight: 700, minWidth: 38 }}>{state.percent}%</span>
       </div>
     )
   }
@@ -88,12 +123,44 @@ export function UpdateNotifier(): React.ReactElement | null {
   // ── ready to install ──────────────────────────────────────────────────────
   if (state.phase === 'ready') {
     return (
-      <div style={banner}>
-        <span style={text}>
-          ✅ v{state.version} pronta para instalar!
+      <div style={bannerGreen}>
+        <span style={textGreen}>
+          {t('update.ready').replace('{version}', state.version)}
         </span>
         <button style={btn} onClick={() => window.updateAPI?.install()}>
-          Reiniciar e instalar →
+          {t('update.restart')}
+        </button>
+        <button style={closeBtn} onClick={() => setDismissed(true)}>×</button>
+      </div>
+    )
+  }
+
+  // ── stalled ───────────────────────────────────────────────────────────────
+  if (state.phase === 'stalled') {
+    return (
+      <div style={bannerWarn}>
+        <span style={textWarn}>{t('update.stalled')}</span>
+        <button style={btnWarn} onClick={() => {
+          setState({ phase: 'idle' })
+          window.updateAPI?.checkNow()
+        }}>
+          {t('update.retry')}
+        </button>
+        <button style={closeBtn} onClick={() => setDismissed(true)}>×</button>
+      </div>
+    )
+  }
+
+  // ── error (durante download) ──────────────────────────────────────────────
+  if (state.phase === 'error') {
+    return (
+      <div style={bannerWarn}>
+        <span style={textWarn}>{t('update.error')}</span>
+        <button style={btnWarn} onClick={() => {
+          setState({ phase: 'idle' })
+          window.updateAPI?.checkNow()
+        }}>
+          {t('update.retry')}
         </button>
         <button style={closeBtn} onClick={() => setDismissed(true)}>×</button>
       </div>

@@ -44,3 +44,12 @@ clean.md
 # Scraper: artefatos de build PyInstaller e cache intermediário
 build/scraper_standalone/
 scripts/catalog_cache.json
+
+# Temp/scratch
+scratch/
+capturas_treinamento/
+.claude/worktrees/
+
+# Arquivos raiz pendentes de análise
+/App.tsx
+/Dashboard.tsx

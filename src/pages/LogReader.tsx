@@ -9,6 +9,8 @@ import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
 import { useRankingStore } from '../store/useRankingStore'
 import { parseAndEnrichLog, type EnrichedPull } from '../engine/logParser'
+import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartStyles'
+import { useT } from '../i18n/useT'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -88,11 +90,11 @@ function fmtDateShort(ms: number): string {
 }
 
 const WEAPON_COLORS: Record<string, string> = {
-  'Longbow': '#D4AF37', 'Arco Longo': '#D4AF37',
+  'Longbow': 'var(--gold)', 'Arco Longo': 'var(--gold)',
   'Wand & Tome': '#5C6BC0', 'Varinha e Tomo': '#5C6BC0',
-  'Staff': '#7C5CFC', 'Cajado': '#7C5CFC',
-  'Dagger': '#3DD68C', 'Adaga': '#3DD68C',
-  'Spear': '#F25F5C', 'Lança': '#F25F5C',
+  'Staff': 'var(--violet)', 'Cajado': 'var(--violet)',
+  'Dagger': 'var(--green)', 'Adaga': 'var(--green)',
+  'Spear': 'var(--red)', 'Lança': 'var(--red)',
   'Orb': '#FF00FF', 'Orbe': '#FF00FF',
   'Greatsword': '#B71C1C', 'Espadão': '#B71C1C',
   'Crossbow': '#00BCD4', 'Besta': '#00BCD4',
@@ -126,14 +128,14 @@ function LogTimelineView({ events, skills, pullDurationSec, maxHeight = 420 }: {
 
   const thStyle: React.CSSProperties = {
     fontSize: '0.63rem',
-    color: '#7a8099',
+    color: 'var(--text-soft)',
     textTransform: 'uppercase',
     letterSpacing: '0.07em',
     padding: '5px 7px',
     textAlign: 'left',
     whiteSpace: 'nowrap',
     borderBottom: '1px solid rgba(255,255,255,0.07)',
-    background: 'rgba(0,0,0,0.75)',
+    background: 'var(--bg-panel)',
   }
 
   const tdStyle: React.CSSProperties = {
@@ -160,7 +162,7 @@ function LogTimelineView({ events, skills, pullDurationSec, maxHeight = 420 }: {
         <tbody>
           {steps.map(t => (
             <tr key={t}>
-              <td style={{ ...tdStyle, fontSize: '0.65rem', color: '#474f6b', whiteSpace: 'nowrap', padding: '0 6px', background: 'rgba(0,0,0,0.08)' }}>
+              <td style={{ ...tdStyle, fontSize: '0.65rem', color: 'var(--text-muted)', whiteSpace: 'nowrap', padding: '0 6px', background: 'rgba(0,0,0,0.08)' }}>
                 {t.toFixed(1)}s
               </td>
               {displaySkills.map(sk => {
@@ -220,6 +222,7 @@ interface LogReaderProps {
 }
 
 export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): React.ReactElement {
+  const t = useT()
   const [logText, setLogText] = useState<string>('')
   const [logName, setLogName] = useState<string>('')
   const [loading, setLoading] = useState(false)
@@ -423,7 +426,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
   // Get Character Info and Identified Weapons
   const combatIdentity = useMemo(() => {
     // Weapon detection based on Top 5 ACTIVE skills by total damage
-    if (rawEvents.length === 0) return { name: 'Unknown character', weapons: ['Análise de Classe...'] }
+    if (rawEvents.length === 0) return { name: 'Unknown character', weapons: [t('logreader.sidebar.weaponAnalysis')] }
 
     const skillAgg: Record<string, number> = {}
     rawEvents.forEach(e => {
@@ -440,9 +443,9 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
     // Get unique weapons from top 5 (usually 2)
     const detected = Array.from(new Set(topActiveWeapons))
 
-    return { 
-      name: rawEvents[0].source, 
-      weapons: detected.length > 0 ? detected : ['Análise de Classe...']
+    return {
+      name: rawEvents[0].source,
+      weapons: detected.length > 0 ? detected : [t('logreader.sidebar.weaponAnalysis')]
     }
   }, [rawEvents])
 
@@ -714,24 +717,24 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
         <div>
-          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>Min</div>
-          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#e2e4ec' }}>{fmtFull(data.min)}</div>
+          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>{t('logreader.renderbox.min')}</div>
+          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: 'var(--text)' }}>{fmtFull(data.min)}</div>
         </div>
         <div>
           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>Ratio</div>
-          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#e2e4ec' }}>—</div>
+          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: 'var(--text)' }}>—</div>
         </div>
         <div>
-          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>Max</div>
-          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#e2e4ec' }}>{fmtFull(data.max)}</div>
+          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>{t('logreader.renderbox.max')}</div>
+          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: 'var(--text)' }}>{fmtFull(data.max)}</div>
         </div>
         <div>
           <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>DPS</div>
-          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: '#e2e4ec' }}>{fmtCompact(data.dps)}</div>
+          <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono', color: 'var(--text)' }}>{fmtCompact(data.dps)}</div>
         </div>
         <div style={{ gridColumn: 'span 2', marginTop: 4 }}>
-          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>Average</div>
-          <div style={{ fontSize: '0.85rem', fontWeight: 600, fontFamily: 'JetBrains Mono', color: '#f0cc55' }}>{fmtFull(data.avg)}</div>
+          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)' }}>{t('logreader.renderbox.average')}</div>
+          <div style={{ fontSize: '0.85rem', fontWeight: 600, fontFamily: 'JetBrains Mono', color: 'var(--gold-l)' }}>{fmtFull(data.avg)}</div>
         </div>
       </div>
     </div>
@@ -803,15 +806,15 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
   // ─── Main Render ───────────────────────────────────────────────────────────
 
   return (
-    <div style={{ display: 'flex', height: '100%', overflow: 'hidden', background: '#05060a' }}>
+    <div style={{ display: 'flex', height: '100%', overflow: 'hidden', background: 'var(--bg)' }}>
       
       {/* ─── Sidebar ───────────────────────────────────────────────────────── */}
-      <aside style={{ width: 220, minWidth: 220, background: '#0a0b0f', borderRight: '1px solid rgba(124,92,252,0.12)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <aside style={{ width: 220, minWidth: 220, background: 'var(--bg-panel)', borderRight: '1px solid rgba(124,92,252,0.12)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         
         {/* Character info */}
         <div style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-          <div style={{ fontSize: '0.55rem', textTransform: 'uppercase', color: '#474f6b', marginBottom: 2 }}>Character</div>
-          <div style={{ fontSize: '0.9rem', color: '#e2e4ec', fontWeight: 700 }}>{combatIdentity.name}</div>
+          <div style={{ fontSize: '0.55rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 2 }}>{t('logreader.sidebar.character')}</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text)', fontWeight: 700 }}>{combatIdentity.name}</div>
           <div style={{ fontSize: '0.62rem', color: 'var(--gold)', marginTop: 2 }}>{combatIdentity.weapons.join(' + ') || 'Class Analysis'}</div>
         </div>
 
@@ -820,13 +823,13 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
           
           {/* Logs list */}
           <div>
-            <div style={{ padding: '0.75rem 1rem 0.4rem', fontSize: '0.58rem', fontWeight: 700, color: '#474f6b', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
-              Arquivos de Log <span>({fileList.length})</span>
+            <div style={{ padding: '0.75rem 1rem 0.4rem', fontSize: '0.58rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
+              {t('logreader.sidebar.logfiles')} <span>({fileList.length})</span>
             </div>
             {fileList.map(f => (
               <div key={f.path} style={{ display: 'flex', alignItems: 'stretch' }}>
                 <button onClick={() => handleLoadFile(f)} style={{
-                  flex: 1, textAlign: 'left', padding: '0.5rem 0.5rem 0.5rem 1rem', background: logName === f.name ? 'rgba(212,175,55,0.08)' : 'transparent', border: 'none', borderLeft: `2px solid ${logName === f.name ? 'var(--gold)' : 'transparent'}`, cursor: 'pointer', color: logName === f.name ? '#f0cc55' : '#7a8099', transition: 'all 0.15s', minWidth: 0
+                  flex: 1, textAlign: 'left', padding: '0.5rem 0.5rem 0.5rem 1rem', background: logName === f.name ? 'rgba(212,175,55,0.08)' : 'transparent', border: 'none', borderLeft: `2px solid ${logName === f.name ? 'var(--gold)' : 'transparent'}`, cursor: 'pointer', color: logName === f.name ? 'var(--gold-l)' : 'var(--text-soft)', transition: 'all 0.15s', minWidth: 0
                 }}>
                   <div style={{ fontSize: '0.68rem', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</div>
                   <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 2 }}>{fmtDateShort(f.mtime)} · {fmtBytes(f.sizeBytes)}</div>
@@ -834,15 +837,15 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                 <button
                   onClick={(e) => handleDeleteFile(f, e)}
                   title="Deletar arquivo permanentemente"
-                  style={{ flexShrink: 0, width: 28, background: 'transparent', border: 'none', cursor: 'pointer', color: '#474f6b', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.15s' }}
-                  onMouseEnter={(e) => (e.currentTarget.style.color = '#f25f5c')}
-                  onMouseLeave={(e) => (e.currentTarget.style.color = '#474f6b')}
+                  style={{ flexShrink: 0, width: 28, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'color 0.15s' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--red)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-muted)')}
                 >✕</button>
               </div>
             ))}
             {!folder && (
               <div style={{ padding: '1rem', textAlign: 'center' }}>
-                <button className="tl-btn" onClick={handlePickFolder} style={{ fontSize: '0.65rem', padding: '0.4rem' }}>Configurar Pasta</button>
+                <button className="tl-btn" onClick={handlePickFolder} style={{ fontSize: '0.65rem', padding: '0.4rem' }}>{t('logreader.sidebar.folderButton')}</button>
               </div>
             )}
           </div>
@@ -852,13 +855,13 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
 
           {/* Targets list */}
           <div>
-            <div style={{ padding: '0.75rem 1rem 0.4rem', fontSize: '0.58rem', fontWeight: 700, color: '#474f6b', textTransform: 'uppercase' }}>Alvos Detectados</div>
+            <div style={{ padding: '0.75rem 1rem 0.4rem', fontSize: '0.58rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{t('logreader.sidebar.targets')}</div>
             <button onClick={() => setSelTarget('All targets')} style={{
-              display: 'block', width: '100%', textAlign: 'left', padding: '0.5rem 1rem', background: selTarget === 'All targets' ? 'rgba(124,92,252,0.1)' : 'transparent', border: 'none', borderLeft: `2px solid ${selTarget === 'All targets' ? '#7c5cfc' : 'transparent'}`, color: selTarget === 'All targets' ? '#e2e4ec' : '#7a8099', cursor: 'pointer', fontSize: '0.7rem'
-            }}>Todos os Alvos</button>
+              display: 'block', width: '100%', textAlign: 'left', padding: '0.5rem 1rem', background: selTarget === 'All targets' ? 'rgba(124,92,252,0.1)' : 'transparent', border: 'none', borderLeft: `2px solid ${selTarget === 'All targets' ? 'var(--violet)' : 'transparent'}`, color: selTarget === 'All targets' ? 'var(--text)' : 'var(--text-soft)', cursor: 'pointer', fontSize: '0.7rem'
+            }}>{t('logreader.sidebar.allTargets')}</button>
             {availableTargets.map(t => (
               <button key={t} onClick={() => setSelTarget(t)} style={{
-                display: 'block', width: '100%', textAlign: 'left', padding: '0.5rem 1rem', background: selTarget === t ? 'rgba(124,92,252,0.1)' : 'transparent', border: 'none', borderLeft: `2px solid ${selTarget === t ? '#7c5cfc' : 'transparent'}`, color: selTarget === t ? '#e2e4ec' : '#7a8099', cursor: 'pointer', fontSize: '0.7rem'
+                display: 'block', width: '100%', textAlign: 'left', padding: '0.5rem 1rem', background: selTarget === t ? 'rgba(124,92,252,0.1)' : 'transparent', border: 'none', borderLeft: `2px solid ${selTarget === t ? 'var(--violet)' : 'transparent'}`, color: selTarget === t ? 'var(--text)' : 'var(--text-soft)', cursor: 'pointer', fontSize: '0.7rem'
               }}>{t}</button>
             ))}
           </div>
@@ -872,19 +875,19 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
         <header style={{ padding: '0.75rem 10rem 0.75rem 1.5rem', background: 'var(--bg-panel)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
             <div>
-              <div className="tl-eyebrow" style={{ color: 'var(--text-muted)' }}>Personagem</div>
+              <div className="tl-eyebrow" style={{ color: 'var(--text-muted)' }}>{t('logreader.header.characterLabel')}</div>
               <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--gold-l)', fontFamily: 'Noto Serif, serif', lineHeight: 1.1 }}>{combatIdentity.name}</div>
             </div>
-            
+
             <div style={{ width: 1, height: 28, background: 'var(--border)' }} />
-            
+
             <div>
-              <div className="tl-eyebrow" style={{ color: 'var(--text-muted)' }}>Armas Detectadas</div>
+              <div className="tl-eyebrow" style={{ color: 'var(--text-muted)' }}>{t('logreader.header.detectedWeapons')}</div>
               <div style={{ display: 'flex', gap: '0.5rem', marginTop: 4 }}>
                 {combatIdentity.weapons.length > 0 ? combatIdentity.weapons.map(w => (
                   <span key={w} className="tl-tag tl-tag-gold" style={{ fontSize: '0.65rem', padding: '0.1rem 0.6rem' }}>{w}</span>
                 )) : (
-                  <span className="tl-tag" style={{ background: 'rgba(255,255,255,0.03)', color: 'var(--text-muted)', fontSize: '0.65rem' }}>Analisando...</span>
+                  <span className="tl-tag" style={{ background: 'rgba(255,255,255,0.03)', color: 'var(--text-muted)', fontSize: '0.65rem' }}>{t('logreader.header.analyzing')}</span>
                 )}
               </div>
             </div>
@@ -896,26 +899,26 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                 className={isSplitView ? 'tl-btn' : 'tl-btn-ghost'}
                 onClick={onToggleSplit}
                 style={{ fontSize: '0.65rem' }}
-                title="Análise lado a lado"
+                title={t('logreader.header.splitViewTitle')}
               >
-                {isSplitView ? '✕ Fechar Split' : '⊞ Split View'}
+                {isSplitView ? `✕ ${t('logreader.header.splitViewClose')}` : `⊞ ${t('logreader.header.splitViewOpen')}`}
               </button>
             )}
-             <button className="tl-btn-ghost" onClick={handlePickFolder} style={{ fontSize: '0.65rem' }}>Alterar Pasta</button>
-             <button className="tl-btn" onClick={refreshFiles} style={{ fontSize: '0.65rem' }}>Atualizar Lista</button>
+             <button className="tl-btn-ghost" onClick={handlePickFolder} style={{ fontSize: '0.65rem' }}>{t('logreader.header.changeFolder')}</button>
+             <button className="tl-btn" onClick={refreshFiles} style={{ fontSize: '0.65rem' }}>{t('logreader.header.refreshList')}</button>
           </div>
         </header>
 
         {/* Dashboard Scroll Area */}
         <div ref={scrollRef} style={{ flex: 1, overflowY: 'auto', padding: '1.25rem' }}>
-          
+
           {loading ? (
-            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>Processing data...</div>
+            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--gold)' }}>{t('logreader.main.processing')}</div>
           ) : !stats ? (
             <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed rgba(212,175,55,0.2)', borderRadius: 8 }}>
               <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
                 <span style={{ fontSize: '2rem', display: 'block', marginBottom: '1rem' }}>📡</span>
-                Select a log and target to see combat statistics.
+                {t('logreader.main.selectLog')}
               </div>
             </div>
           ) : (
@@ -923,10 +926,10 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
               {/* Combat Sessions (Pulls) at the TOP */}
               <div style={{ marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
-                  <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Combat Sessions (Pulls)</div>
+                  <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t('logreader.pulls.title')}</div>
                   {userSplits.length > 0 && (
                     <button className="tl-btn-ghost" onClick={() => setUserSplits([])} style={{ fontSize: '0.6rem', padding: '0.15rem 0.5rem' }}>
-                      Limpar Cortes ({userSplits.length})
+                      {t('logreader.pulls.clearCuts')} ({userSplits.length})
                     </button>
                   )}
                 </div>
@@ -940,13 +943,13 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                     borderRadius: 5,
                     border: `1px solid ${isInRanking ? 'rgba(61,214,140,0.4)' : 'rgba(212,175,55,0.3)'}`,
                     background: isInRanking ? 'rgba(61,214,140,0.08)' : 'rgba(212,175,55,0.08)',
-                    color: isInRanking ? '#3dd68c' : '#d4af37',
+                    color: isInRanking ? 'var(--green)' : 'var(--gold)',
                     fontSize: '0.72rem',
                     fontWeight: 700,
                     cursor: isInRanking ? 'default' : 'pointer',
                   }}
                 >
-                  {isInRanking ? '✓ Enviado para Ranking' : '↗ Enviar para Ranking'}
+                  {isInRanking ? `✓ ${t('logreader.pulls.sentToRanking')}` : `↗ ${t('logreader.pulls.sendToRanking')}`}
                 </button>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '10px' }}>
                    <div
@@ -955,8 +958,8 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                       padding: '0.75rem', borderRadius: 6, border: '1px solid', borderColor: selPullId === 'all' ? 'var(--gold)' : 'rgba(255,255,255,0.06)', background: selPullId === 'all' ? 'linear-gradient(135deg, rgba(212,175,55,0.14) 0%, rgba(212,175,55,0.03) 100%)' : 'rgba(0,0,0,0.2)', cursor: 'pointer', transition: 'all 0.15s'
                     }}
                   >
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: selPullId === 'all' ? 'var(--gold)' : '#e2e4ec' }}>All Combat</div>
-                    <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 2 }}>Full log data for this target</div>
+                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: selPullId === 'all' ? 'var(--gold)' : 'var(--text)' }}>{t('logreader.pulls.allCombat')}</div>
+                    <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 2 }}>{t('logreader.pulls.fullLogData')}</div>
                   </div>
                   {enrichedPulls.map(p => {
                     const ep = currentLogEnriched.find(e => e.id === p.id)
@@ -971,11 +974,11 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: selPullId === p.id ? 'var(--gold)' : '#e2e4ec' }}>Pull #{p.id}</div>
-                        <div style={{ fontSize: '0.7rem', fontFamily: 'JetBrains Mono, monospace', color: selPullId === p.id ? '#f0cc55' : '#a8b5d4' }}>{fmtCompact(p.dps)} DPS</div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: selPullId === p.id ? 'var(--gold)' : 'var(--text)' }}>{`${t('logreader.pulls.pullNumber')}${p.id}`}</div>
+                        <div style={{ fontSize: '0.7rem', fontFamily: 'JetBrains Mono, monospace', color: selPullId === p.id ? 'var(--gold-l)' : '#a8b5d4' }}>{fmtCompact(p.dps)} DPS</div>
                       </div>
                       {rankInfo && (
-                        <div style={{ fontSize: '0.62rem', color: rankInfo.rank <= 3 ? '#d4af37' : '#7a8099', marginTop: 2 }}>
+                        <div style={{ fontSize: '0.62rem', color: rankInfo.rank <= 3 ? 'var(--gold)' : 'var(--text-soft)', marginTop: 2 }}>
                           #{rankInfo.rank}/{rankInfo.clusterSize} · {rankInfo.clusterLabel}
                         </div>
                       )}
@@ -990,7 +993,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                         </div>
                       )}
                       <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginTop: 3 }}>
-                        <span style={{ color: '#e2e4ec' }}>{fmtCompact(p.damage)}</span> dmg · <span style={{ color: '#e2e4ec' }}>{fmtDuration(p.endTime - p.startTime)}</span>
+                        <span style={{ color: 'var(--text)' }}>{fmtCompact(p.damage)}</span> dmg · <span style={{ color: 'var(--text)' }}>{fmtDuration(p.endTime - p.startTime)}</span>
                       </div>
                       {selPullId === p.id && (
                         <button
@@ -1003,7 +1006,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                           }}
                           style={{ fontSize: '0.55rem', marginTop: '0.4rem', padding: '0.1rem 0.5rem', width: '100%' }}
                         >
-                          ✂ Dividir Pull
+                          ✂ {t('logreader.pulls.splitPull')}
                         </button>
                       )}
                     </div>
@@ -1026,7 +1029,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                   return (
                     <div style={{ marginTop: '0.75rem', padding: '1rem', background: 'rgba(212,175,55,0.05)', border: '1px solid rgba(212,175,55,0.2)', borderRadius: 8 }}>
                       <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--gold)', marginBottom: '0.75rem', fontWeight: 700 }}>
-                        ✂ Cortar Pull #{selPullId}
+                        ✂ {`${t('logreader.split.title')}${selPullId}`}
                       </div>
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
@@ -1046,17 +1049,17 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
 
                       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem' }}>
                         <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6, padding: '0.5rem' }}>
-                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginBottom: 4 }}>Antes · 0s → {Math.round(splitOffsetSec)}s</div>
-                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(befDmg)}</div>
+                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginBottom: 4 }}>{`${t('logreader.split.before')} · 0s → ${Math.round(splitOffsetSec)}s`}</div>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(befDmg)}</div>
                           <div style={{ fontSize: '0.7rem', color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(befDps)} DPS</div>
-                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 2 }}>{bef.length} hits</div>
+                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 2 }}>{bef.length} {t('logreader.split.hits')}</div>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', color: 'rgba(212,175,55,0.6)', fontSize: '1.2rem', padding: '0 0.25rem' }}>✂</div>
                         <div style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 6, padding: '0.5rem' }}>
-                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginBottom: 4 }}>{Math.round(splitOffsetSec)}s → {Math.floor(durSec)}s</div>
-                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(aftDmg)}</div>
+                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginBottom: 4 }}>{`${t('logreader.split.after')} · ${Math.round(splitOffsetSec)}s → ${Math.floor(durSec)}s`}</div>
+                          <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(aftDmg)}</div>
                           <div style={{ fontSize: '0.7rem', color: 'var(--gold)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(aftDps)} DPS</div>
-                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 2 }}>{aft.length} hits</div>
+                          <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: 2 }}>{aft.length} {t('logreader.split.hits')}</div>
                         </div>
                       </div>
 
@@ -1070,10 +1073,10 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                           }}
                           style={{ fontSize: '0.65rem' }}
                         >
-                          Confirmar Corte
+                          {t('logreader.split.confirm')}
                         </button>
                         <button className="tl-btn-ghost" onClick={() => setSplitMode(false)} style={{ fontSize: '0.65rem' }}>
-                          Cancelar
+                          {t('common.cancel')}
                         </button>
                       </div>
                     </div>
@@ -1084,37 +1087,37 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
               {/* Target Overview */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                 <div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#e2e4ec', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '12px' }}>
                     {selTarget} 
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '4px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Normalization</span>
-                      <input 
-                        type="range" min="0.1" max="2.0" step="0.1" 
-                        value={chartInterval} 
+                      <span style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t('logreader.stats.normalizationLabel')}</span>
+                      <input
+                        type="range" min="0.1" max="2.0" step="0.1"
+                        value={chartInterval}
                         onChange={(e) => setChartInterval(parseFloat(e.target.value))}
                         style={{ width: 100, height: 4, cursor: 'pointer', accentColor: 'var(--gold)' }}
                       />
                       <span style={{ fontSize: '0.7rem', color: 'var(--gold)', minWidth: 30 }}>{chartInterval.toFixed(1)}s</span>
                     </div>
                     {selPullId !== 'all' && (
-                       <div className="tl-tag-gold" style={{ fontSize: '0.6rem' }}>Pull #{selPullId} Isolated</div>
+                       <div className="tl-tag-gold" style={{ fontSize: '0.6rem' }}>{`Pull #${selPullId} ${t('logreader.stats.pullIsolatedSuffix')}`}</div>
                     )}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '2.5rem', textAlign: 'right' }}>
                   <div>
-                    <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Total Damage</div>
+                    <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t('logreader.stats.totalDamage')}</div>
                     <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--gold)', fontFamily: 'JetBrains Mono' }}>{fmtFull(stats.totalDmg)}</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>DPS</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono' }}>{fmtFull(stats.dps)}</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', fontFamily: 'JetBrains Mono' }}>{fmtFull(stats.dps)}</div>
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Duration</div>
-                    <div style={{ fontSize: '1.2rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono' }}>{fmtDuration(stats.durationMs)}</div>
+                    <div style={{ fontSize: '0.6rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t('logreader.stats.duration')}</div>
+                    <div style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--text)', fontFamily: 'JetBrains Mono' }}>{fmtDuration(stats.durationMs)}</div>
                   </div>
                 </div>
               </div>
@@ -1137,7 +1140,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                           minWidth: 100,
                         }}>
                           <div style={{ fontSize: '0.58rem', color, fontWeight: 700, marginBottom: 3 }}>{w.name}</div>
-                          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#e2e4ec', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(w.value)}</div>
+                          <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--text)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(w.value)}</div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', marginTop: 2 }}>
                             <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>{fmtCompact(dps)} DPS</span>
                             <span style={{ fontSize: '0.6rem', color: `${color}cc` }}>{ratio.toFixed(2)}%</span>
@@ -1152,60 +1155,60 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
               <div style={{ marginBottom: '2rem', background: 'rgba(0,0,0,0.2)', borderRadius: 6, border: '1px solid rgba(255,255,255,0.04)', padding: '1.25rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Cronologia de Dano</div>
+                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>{t('logreader.chart.title')}</div>
                     <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', padding: '2px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                      <button 
+                      <button
                         onClick={() => setGroupBy('weapon')}
-                        style={{ 
+                        style={{
                           fontSize: '0.55rem', padding: '0.2rem 0.6rem', borderRadius: '3px', border: 'none',
                           background: groupBy === 'weapon' ? 'var(--gold)' : 'transparent',
                           color: groupBy === 'weapon' ? '#000' : 'var(--text-muted)',
                           cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s'
                         }}
                       >
-                        POR ARMA
+                        {t('logreader.chart.byWeapon')}
                       </button>
-                      <button 
+                      <button
                         onClick={() => setGroupBy('skill')}
-                        style={{ 
+                        style={{
                           fontSize: '0.55rem', padding: '0.2rem 0.6rem', borderRadius: '3px', border: 'none',
                           background: groupBy === 'skill' ? 'var(--gold)' : 'transparent',
                           color: groupBy === 'skill' ? '#000' : 'var(--text-muted)',
                           cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s'
                         }}
                       >
-                        POR HABILIDADE
+                        {t('logreader.chart.bySkill')}
                       </button>
                     </div>
 
                     <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', padding: '2px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                      <button 
+                      <button
                         onClick={() => setIsStacked(true)}
-                        style={{ 
+                        style={{
                           fontSize: '0.55rem', padding: '0.2rem 0.6rem', borderRadius: '3px', border: 'none',
                           background: isStacked ? 'var(--gold)' : 'transparent',
                           color: isStacked ? '#000' : 'var(--text-muted)',
                           cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s'
                         }}
                       >
-                        EMPILHADO
+                        {t('logreader.chart.stacked')}
                       </button>
-                      <button 
+                      <button
                         onClick={() => setIsStacked(false)}
-                        style={{ 
+                        style={{
                           fontSize: '0.55rem', padding: '0.2rem 0.6rem', borderRadius: '3px', border: 'none',
                           background: !isStacked ? 'var(--gold)' : 'transparent',
                           color: !isStacked ? '#000' : 'var(--text-muted)',
                           cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s'
                         }}
                       >
-                        INDIVIDUAL
+                        {t('logreader.chart.individual')}
                       </button>
                     </div>
                   </div>
                   <div style={{ display: 'flex', gap: '8px' }}>
-                    <button className="tl-btn-ghost" onClick={() => toggleAllSkills(true)} style={{ fontSize: '0.55rem', padding: '0.2rem 0.6rem' }}>Ativar Tudo</button>
-                    <button className="tl-btn-ghost" onClick={() => toggleAllSkills(false)} style={{ fontSize: '0.55rem', padding: '0.2rem 0.6rem' }}>Desativar Tudo</button>
+                    <button className="tl-btn-ghost" onClick={() => toggleAllSkills(true)} style={{ fontSize: '0.55rem', padding: '0.2rem 0.6rem' }}>{t('logreader.chart.enableAll')}</button>
+                    <button className="tl-btn-ghost" onClick={() => toggleAllSkills(false)} style={{ fontSize: '0.55rem', padding: '0.2rem 0.6rem' }}>{t('logreader.chart.disableAll')}</button>
                   </div>
                 </div>
 
@@ -1224,8 +1227,10 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.03)" />
                         <XAxis dataKey="sec" stroke="rgba(255,255,255,0.2)" fontSize={9} tickFormatter={(v) => `${v}s`} hide={false} axisLine={false} tickLine={false} />
                         <YAxis stroke="rgba(255,255,255,0.2)" fontSize={9} tickFormatter={(v) => fmtCompact(v)} domain={[0, 'auto']} axisLine={false} tickLine={false} />
-                        <Tooltip 
-                          contentStyle={{ background: '#0a0b0f', border: '1px solid var(--border-gold)', borderRadius: 4, fontSize: 10, color: '#fff', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
+                        <Tooltip
+                          contentStyle={TOOLTIP_CONTENT}
+                          labelStyle={TOOLTIP_LABEL}
+                          itemStyle={TOOLTIP_ITEM}
                           labelFormatter={(v) => `Tempo: ${v}s`}
                           itemSorter={(item) => -(item.value as number)}
                         />
@@ -1243,14 +1248,14 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                             isAnimationActive={false}
                           />
                         ))}
-                        <Line 
-                          type="monotone" 
-                          dataKey="movingAvg" 
-                          stroke="#f25f5c" 
-                          dot={false} 
-                          strokeWidth={2} 
+                        <Line
+                          type="monotone"
+                          dataKey="movingAvg"
+                          stroke="#f25f5c"
+                          dot={false}
+                          strokeWidth={2}
                           strokeDasharray="5 5"
-                          name="Média Móvel (3s)"
+                          name={t('logreader.chart.movingAvg')}
                           isAnimationActive={false}
                         />
                       </AreaChart>
@@ -1258,7 +1263,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                   </div>
 
                   <div style={{ width: 180, borderLeft: '1px solid rgba(255,255,255,0.06)', paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <div style={{ fontSize: '0.55rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem', textAlign: 'center' }}>Dano por Arma</div>
+                    <div style={{ fontSize: '0.55rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem', textAlign: 'center' }}>{t('logreader.chart.damagePerWeapon')}</div>
                     <div style={{ height: 140 }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
@@ -1301,7 +1306,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                                 const percent = ((data.value / stats.totalDmg) * 100).toFixed(2);
                                 return (
                                   <div style={{ 
-                                    background: '#0a0b0f', 
+                                    background: 'var(--bg-panel)', 
                                     border: `1px solid ${color}44`, 
                                     padding: '8px 12px', 
                                     borderRadius: '6px',
@@ -1344,7 +1349,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                       }}
                     >
                       <div style={{ width: 6, height: 6, borderRadius: '50%', background: disabledSkills.has(name) ? '#444' : getSeriesColor(name) }} />
-                      <span style={{ fontSize: '0.62rem', color: disabledSkills.has(name) ? 'var(--text-muted)' : '#e2e4ec' }}>{name}</span>
+                      <span style={{ fontSize: '0.62rem', color: disabledSkills.has(name) ? 'var(--text-muted)' : 'var(--text)' }}>{name}</span>
                     </button>
                   ))}
                 </div>
@@ -1361,7 +1366,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                   position: 'relative',
                   marginBottom: '1.5rem'
                 }}>
-                  <h4 style={{ fontSize: '0.78rem', color: '#f25f5c', marginBottom: '0.5rem', fontWeight: 600 }}>
+                  <h4 style={{ fontSize: '0.78rem', color: 'var(--red)', marginBottom: '0.5rem', fontWeight: 600 }}>
                     ⚠️ {Array.from(new Set(stats.unmapped.map(s => s.name))).length} Habilidade(s) Não Mapeada(s)
                   </h4>
                   <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.8rem', lineHeight: '1.4' }}>
@@ -1375,7 +1380,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                         borderRadius: '4px', 
                         fontSize: '0.68rem', 
                         border: '1px solid rgba(255,255,255,0.08)', 
-                        color: '#e2e4ec',
+                        color: 'var(--text)',
                         fontFamily: 'JetBrains Mono'
                       }}>
                         {name}
@@ -1387,7 +1392,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
 
               {/* Attack Breakdown Detail (Selected Skill) */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 8 }}>Attack Breakdown</div>
+                <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: 8 }}>{t('logreader.breakdown.title')}</div>
                 {skillDetail ? (
                   <div>
                     <h3 style={{ fontSize: '1.1rem', color: 'var(--gold-l)', marginBottom: '0.75rem' }}>{skillDetail.name}</h3>
@@ -1399,7 +1404,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                   </div>
                 ) : (
                   <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.01)', border: '1px dashed rgba(255,255,255,0.05)', borderRadius: 6, fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center' }}>
-                    Select a skill from the table below to see detailed analysis.
+                    {t('logreader.breakdown.selectSkill')}
                   </div>
                 )}
               </div>
@@ -1414,20 +1419,20 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                        Timeline do Log
+                      <span style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                        {t('logreader.timeline.title')}
                       </span>
                       <button
                         onClick={() => setShowLogTimeline(v => !v)}
-                        style={{ fontSize: '0.7rem', color: '#7a8099', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}
+                        style={{ fontSize: '0.7rem', color: 'var(--text-soft)', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, padding: '2px 8px', cursor: 'pointer' }}
                       >
-                        {showLogTimeline ? 'Ocultar' : 'Mostrar'}
+                        {showLogTimeline ? t('logreader.timeline.hide') : t('logreader.timeline.show')}
                       </button>
                       {showLogTimeline && (
                         <button
                           onClick={() => setTimelineMaximized(true)}
-                          title="Maximizar timeline"
-                          style={{ fontSize: '0.85rem', color: '#7a8099', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, padding: '1px 7px', cursor: 'pointer', lineHeight: 1.2 }}
+                          title={t('logreader.timeline.fullViewTitle')}
+                          style={{ fontSize: '0.85rem', color: 'var(--text-soft)', background: 'none', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 4, padding: '1px 7px', cursor: 'pointer', lineHeight: 1.2 }}
                         >
                           ⛶
                         </button>
@@ -1438,10 +1443,10 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                       style={{
                         fontSize: '0.72rem', padding: '4px 12px',
                         background: 'rgba(124,92,252,0.12)', border: '1px solid rgba(124,92,252,0.3)',
-                        borderRadius: 4, color: '#a78bfa', cursor: 'pointer', fontWeight: 600,
+                        borderRadius: 4, color: 'var(--violet-l)', cursor: 'pointer', fontWeight: 600,
                       }}
                     >
-                      📤 Enviar para Rotação
+                      📤 {t('logreader.timeline.export')}
                     </button>
                   </div>
                   {showLogTimeline && (() => {
@@ -1488,12 +1493,12 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                               }}
                             >
                               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.6rem', flexShrink: 0 }}>
-                                <span style={{ fontSize: '0.72rem', color: '#d4af37', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                                  Timeline do Log — Visualização Completa
+                                <span style={{ fontSize: '0.72rem', color: 'var(--gold)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                  {t('logreader.timeline.fullViewLabel')}
                                 </span>
                                 <button
                                   onClick={() => setTimelineMaximized(false)}
-                                  style={{ background: 'none', border: 'none', color: '#7a8099', cursor: 'pointer', fontSize: '1.3rem', lineHeight: 1 }}
+                                  style={{ background: 'none', border: 'none', color: 'var(--text-soft)', cursor: 'pointer', fontSize: '1.3rem', lineHeight: 1 }}
                                 >
                                   ×
                                 </button>
@@ -1557,7 +1562,7 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                     title={title}
                     style={{
                       padding: '0.6rem 1rem', fontSize: '0.6rem', textTransform: 'uppercase',
-                      color: sortCol === col ? '#f0cc55' : color,
+                      color: sortCol === col ? 'var(--gold-l)' : color,
                       textAlign: align, cursor: 'pointer', userSelect: 'none',
                       whiteSpace: 'nowrap',
                       background: sortCol === col ? 'rgba(212,175,55,0.06)' : undefined,
@@ -1572,16 +1577,16 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
                       <thead>
                         <tr style={{ background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                          {thS('name',      'Habilidade',     'var(--text-muted)', 'left')}
-                          {thS('weapon',    'Arma',           'var(--text-muted)', 'left')}
-                          {thS('damage',    'Dano Total',     'var(--text-muted)')}
+                          {thS('name',      t('logreader.table.title'),     'var(--text-muted)', 'left')}
+                          {thS('weapon',    t('logreader.table.weapon'),           'var(--text-muted)', 'left')}
+                          {thS('damage',    t('logreader.table.totalDamage'),     'var(--text-muted)')}
                           {thS('dps',       'DPS',            'var(--text-muted)')}
-                          {thS('ratio',     'Ratio',          'var(--text-muted)')}
-                          {thS('hits',      'Hits',           'var(--text-muted)')}
-                          {thS('interval',  'Intervalo Médio','#22d3ee',           'right', 'Tempo médio entre usos da habilidade (threshold adaptativo detecta separação intra-cast vs inter-cast)')}
-                          {thS('crit',      'Crit',           '#3dd68c')}
-                          {thS('heavy',     'Heavy',          '#7c5cfc')}
-                          {thS('critHeavy', 'Crit+Heavy',     'var(--gold)')}
+                          {thS('ratio',     t('logreader.table.ratio'),          'var(--text-muted)')}
+                          {thS('hits',      t('logreader.table.hits'),           'var(--text-muted)')}
+                          {thS('interval',  t('logreader.table.averageInterval'),'#22d3ee',           'right', t('logreader.table.intervalTooltip'))}
+                          {thS('crit',      t('logreader.table.crit'),           '#3dd68c')}
+                          {thS('heavy',     t('logreader.table.heavy'),          '#7c5cfc')}
+                          {thS('critHeavy', t('logreader.table.critHeavy'),     'var(--gold)')}
                         </tr>
                       </thead>
                       <tbody>
@@ -1598,27 +1603,27 @@ export function LogReader({ onToggleSplit, isSplitView }: LogReaderProps = {}): 
                                 borderBottom: '1px solid rgba(255,255,255,0.02)',
                                 background: selSkill === s.name ? 'rgba(212,175,55,0.06)' : idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.01)',
                                 cursor: 'pointer',
-                                color: selSkill === s.name ? '#f0cc55' : undefined,
+                                color: selSkill === s.name ? 'var(--gold-l)' : undefined,
                               }}
                             >
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', fontWeight: 500 }}>{s.name}</td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.65rem', color: 'var(--text-soft)' }}>{getWeaponBySkill(s.name) || 'Indefinido'}</td>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.65rem', color: 'var(--text-soft)' }}>{getWeaponBySkill(s.name) || t('logreader.table.undefinedWeapon')}</td>
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', fontFamily: 'JetBrains Mono' }}>{fmtFull(s.damage)}</td>
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', fontFamily: 'JetBrains Mono', color: 'var(--text-soft)' }}>{fmtCompact(s.damage / durationSec)}</td>
                               <td style={{ padding: '0.6rem 1rem', textAlign: 'right' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
                                   <span style={{ fontSize: '0.65rem' }}>{ratio.toFixed(2)}%</span>
                                   <div style={{ width: 40, height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2 }}>
-                                    <div style={{ height: '100%', width: `${ratio}%`, background: ratio > 20 ? 'var(--gold)' : '#7c5cfc', borderRadius: 2 }} />
+                                    <div style={{ height: '100%', width: `${ratio}%`, background: ratio > 20 ? 'var(--gold)' : 'var(--violet)', borderRadius: 2 }} />
                                   </div>
                                 </div>
                               </td>
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: 'var(--text-soft)' }}>{s.hits}</td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#22d3ee', fontFamily: 'JetBrains Mono' }}>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: 'var(--cyan)', fontFamily: 'JetBrains Mono' }}>
                                 {(() => { const v = avgCastInterval(s.timestamps); return v != null ? `${v.toFixed(2)}s` : '—' })()}
                               </td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#3dd68c' }}>{critP.toFixed(2)}%</td>
-                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: '#7c5cfc' }}>{heavyP.toFixed(2)}%</td>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: 'var(--green)' }}>{critP.toFixed(2)}%</td>
+                              <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: 'var(--violet)' }}>{heavyP.toFixed(2)}%</td>
                               <td style={{ padding: '0.6rem 1rem', fontSize: '0.75rem', textAlign: 'right', color: 'var(--gold-l)' }}>{combP.toFixed(2)}%</td>
                             </tr>
                           )

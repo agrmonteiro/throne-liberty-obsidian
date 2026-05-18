@@ -319,8 +319,8 @@ export function Calculator(): React.ReactElement {
     return (
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={barData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
-          <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
-          <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} />
+          <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text)' }} />
+          <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: 'var(--text-soft)' }} />
           <Tooltip formatter={(v: number) => [fmt(v), 'Dano Simples (/s)']} contentStyle={TOOLTIP_CONTENT} labelStyle={TOOLTIP_LABEL} itemStyle={TOOLTIP_ITEM} />
           <Legend formatter={(value) => <span style={{ fontSize: '0.72rem' }}>Clique no Card (Build 1, 2...) para ocultar barras</span>} iconSize={0} />
           <Bar
@@ -342,8 +342,8 @@ export function Calculator(): React.ReactElement {
     return (
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={gainData} margin={{ left: 0, right: 30, top: 10, bottom: 0 }}>
-          <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#e2e4ec' }} />
-          <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
+          <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text)' }} />
+          <YAxis tick={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: 'var(--text-soft)' }} tickFormatter={(v) => fmtPct(v)} />
           <Tooltip formatter={(v: number) => [fmtPct(v), 'Ganho vs Build 1']} contentStyle={TOOLTIP_CONTENT} labelStyle={TOOLTIP_LABEL} itemStyle={TOOLTIP_ITEM} />
           <Legend formatter={(value) => <span style={{ fontSize: '0.72rem' }}>Clique no Card (Build 1, 2...) para ocultar barras</span>} iconSize={0} />
           <Bar
@@ -351,10 +351,10 @@ export function Calculator(): React.ReactElement {
             radius={[4, 4, 0, 0]}
             label={showLabels ? { position: 'top', fontSize: 10, fontFamily: 'JetBrains Mono, monospace', fill: '#a8b5d4', formatter: (v: number) => fmtPct(v) } : undefined}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onClick={(d: any) => setSelPoint({ title: 'Ganho %', buildName: d.name, text: fmtPct(d.gain), color: d.gain > 0 ? '#3dd68c' : d.gain < 0 ? '#f25f5c' : '#474f6b' })}
+            onClick={(d: any) => setSelPoint({ title: 'Ganho %', buildName: d.name, text: fmtPct(d.gain), color: d.gain > 0 ? 'var(--green)' : d.gain < 0 ? 'var(--red)' : 'var(--text-muted)' })}
             style={{ cursor: 'pointer' }}
           >
-            {gainData.map((d, i) => <Cell key={i} fill={d.gain > 0 ? '#3dd68c' : d.gain < 0 ? '#f25f5c' : '#474f6b'} opacity={hidden.has(d.id) ? 0.1 : 0.85} />)}
+            {gainData.map((d, i) => <Cell key={i} fill={d.gain > 0 ? 'var(--green)' : d.gain < 0 ? 'var(--red)' : 'var(--text-muted)'} opacity={hidden.has(d.id) ? 0.1 : 0.85} />)}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -368,30 +368,30 @@ export function Calculator(): React.ReactElement {
     return (
       <ResponsiveContainer width="100%" height={height}>
         <LineChart data={elasticChartData} margin={{ left: 0, right: 20, top: 10, bottom: 0 }}>
-          <XAxis dataKey="iter" tick={{ fontSize: 10, fill: '#7a8099' }} label={{ value: 'Iteração', position: 'insideBottom', offset: -5, fill: '#7a8099', fontSize: 10 }} />
-          <YAxis tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: '#7a8099' }} tickFormatter={(v) => fmtPct(v)} />
+          <XAxis dataKey="iter" tick={{ fontSize: 10, fill: 'var(--text-soft)' }} label={{ value: 'Iteração', position: 'insideBottom', offset: -5, fill: 'var(--text-soft)', fontSize: 10 }} />
+          <YAxis tick={{ fontSize: 9, fontFamily: 'JetBrains Mono, monospace', fill: 'var(--text-soft)' }} tickFormatter={(v) => fmtPct(v)} />
           <Tooltip content={({ active, payload, label }) => {
             if (!active || !payload?.length) return null
             const sorted = [...(payload ?? [])].sort((a: any, b: any) => (b.value as number) - (a.value as number))
             return (
               <div style={{ background: 'var(--bg-panel)', border: '1px solid var(--border-gold)', borderRadius: 8, boxShadow: '0 4px 24px rgba(0,0,0,0.55), 0 0 12px var(--gold-glow)', fontFamily: 'JetBrains Mono, monospace', fontSize: 'calc(var(--base-font-size) * 0.72)', padding: '8px 12px', maxWidth: 560 }}>
-                <div style={{ color: '#d4af37', fontWeight: 700, marginBottom: 6, fontSize: 'calc(var(--base-font-size) * 0.79)' }}>Iteração {label}</div>
+                <div style={{ color: 'var(--gold)', fontWeight: 700, marginBottom: 6, fontSize: 'calc(var(--base-font-size) * 0.79)' }}>Iteração {label}</div>
                 <div style={{ display: 'grid', gridTemplateColumns: sorted.length > 1 ? 'repeat(2, 1fr)' : '1fr', gap: '0 16px' }}>
                   {sorted.map((p: any) => {
                     const s = elasticPointDetails[p.dataKey]?.[label as number]
                     return (
                       <div key={p.dataKey} style={{ marginBottom: 5, paddingTop: 4, borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                         <div style={{ color: p.stroke, fontWeight: 700, marginBottom: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.dataKey}</div>
-                        <div style={{ color: '#3dd68c' }}>Ganho: {(p.value as number) >= 0 ? '+' : ''}{fmtPct(p.value as number)}</div>
+                        <div style={{ color: 'var(--green)' }}>Ganho: {(p.value as number) >= 0 ? '+' : ''}{fmtPct(p.value as number)}</div>
                         {s && (<>
                           <div style={{ color: 'var(--text-soft)', marginTop: 2 }}>
                             {(() => {
                               const tc = s.critHitChance + (s.bossCritChance ?? 0)
                               const zero = tc <= 0
                               return <>
-                                Crit: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{fmtStat(tc)}</span>
+                                Crit: <span style={{ color: zero ? 'var(--orange)' : 'var(--text)', fontWeight: zero ? 700 : undefined }}>{fmtStat(tc)}</span>
                                 {(s.bossCritChance ?? 0) > 0 && <span style={{ color: '#8a9bbf' }}> ({fmtStat(s.critHitChance)}+{fmtStat(s.bossCritChance ?? 0)}b)</span>}
-                                {' → '}<span style={{ color: '#d4af37' }}>{fmtPct(critChanceFromStat(tc, s.targetEndurance) * 100)}</span>
+                                {' → '}<span style={{ color: 'var(--gold)' }}>{fmtPct(critChanceFromStat(tc, s.targetEndurance) * 100)}</span>
                               </>
                             })()}
                           </div>
@@ -400,30 +400,31 @@ export function Calculator(): React.ReactElement {
                               const th = s.heavyAttackChance + (s.bossHeavyChance ?? 0)
                               const zero = th <= 0
                               return <>
-                                Heavy: <span style={{ color: zero ? '#f0965a' : '#e2e4ec', fontWeight: zero ? 700 : undefined }}>{fmtStat(th)}</span>
+                                Heavy: <span style={{ color: zero ? 'var(--orange)' : 'var(--text)', fontWeight: zero ? 700 : undefined }}>{fmtStat(th)}</span>
                                 {(s.bossHeavyChance ?? 0) > 0 && <span style={{ color: '#8a9bbf' }}> ({fmtStat(s.heavyAttackChance)}+{fmtStat(s.bossHeavyChance ?? 0)}b)</span>}
-                                {' → '}<span style={{ color: '#7c5cfc' }}>{fmtPct(heavyChanceFromStat(th) * 100)}</span>
+                                {' → '}<span style={{ color: 'var(--violet)' }}>{fmtPct(heavyChanceFromStat(th) * 100)}</span>
                               </>
                             })()}
                           </div>
-                          <div style={{ color: 'var(--text-soft)' }}>Crit Dmg: <span style={{ color: '#e2e4ec' }}>{s.critDmgPct}%</span></div>
-                          <div style={{ color: 'var(--text-soft)' }}>Skill Boost: <span style={{ color: '#e2e4ec' }}>{s.skillDmgBoost}</span></div>
+                          <div style={{ color: 'var(--text-soft)' }}>Weapon: <span style={{ color: 'var(--text)' }}>{s.minWeaponDmg} - {s.maxWeaponDmg}</span></div>
+                          <div style={{ color: 'var(--text-soft)' }}>Crit Dmg: <span style={{ color: 'var(--text)' }}>{s.critDmgPct}%</span></div>
+                          <div style={{ color: 'var(--text-soft)' }}>Skill Boost: <span style={{ color: 'var(--text)' }}>{s.skillDmgBoost}</span></div>
                           {((s.cdrPct ?? 0) > 0 || (s.attackSpeedPct ?? 0) > 0) && (
                             <div style={{ marginTop: 3, paddingTop: 3, borderTop: '1px dashed rgba(255,255,255,0.08)' }}>
                               {(s.cdrPct ?? 0) > 0 && (
                                 <div style={{ color: 'var(--text-soft)' }}>
-                                  CDR: <span style={{ color: '#e2e4ec' }}>{s.cdrPct}%</span>
-                                  {' → '}<span style={{ color: '#f0965a' }}>{effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0).toFixed(2)}s</span>
+                                  CDR: <span style={{ color: 'var(--text)' }}>{s.cdrPct}%</span>
+                                  {' → '}<span style={{ color: 'var(--orange)' }}>{effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0).toFixed(2)}s</span>
                                 </div>
                               )}
                               {(s.attackSpeedPct ?? 0) > 0 && (
                                 <div style={{ color: 'var(--text-soft)' }}>
-                                  Atk Spd: <span style={{ color: '#e2e4ec' }}>{s.attackSpeedPct}%</span>
-                                  {' → '}<span style={{ color: '#00d4ff' }}>{effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0).toFixed(2)}s</span>
+                                  Atk Spd: <span style={{ color: 'var(--text)' }}>{s.attackSpeedPct}%</span>
+                                  {' → '}<span style={{ color: 'var(--cyan)' }}>{effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0).toFixed(2)}s</span>
                                 </div>
                               )}
                               <div style={{ color: 'var(--text-soft)' }}>
-                                Ciclo: <span style={{ color: '#d4af37', fontWeight: 700 }}>{(effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0) + effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0)).toFixed(2)}s</span>
+                                Ciclo: <span style={{ color: 'var(--gold)', fontWeight: 700 }}>{(effectiveCastTime(s.skillCastTime ?? 2, s.attackSpeedPct ?? 0) + effectiveCooldown(s.skillCooldown ?? 12, s.cdrPct ?? 0)).toFixed(2)}s</span>
                               </div>
                             </div>
                           )}
@@ -470,7 +471,7 @@ export function Calculator(): React.ReactElement {
             <div style={{ fontSize: '0.85rem', color: 'var(--text-soft)', lineHeight: 1.6, fontFamily: 'Inter, sans-serif' }}>
               <p>As fórmulas abaixo foram mapeadas e validadas pela comunidade Theorycrafter e representam a ordem oficial de operações utilizada pelo motor (engine) do jogo:</p>
 
-              <h3 style={{ marginTop: '1.2rem', color: '#e2e4ec', fontSize: '0.9rem' }}>1. Dano Base da Skill</h3>
+              <h3 style={{ marginTop: '1.2rem', color: 'var(--text)', fontSize: '0.9rem' }}>1. Dano Base da Skill</h3>
               <div style={{ background: 'var(--bg)', padding: '0.6rem 0.8rem', borderRadius: 4, fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', margin: '0.4rem 0', color: '#a8b5d4' }}>
                 Base = (Weapon Dmg * SkillBaseDamage%) + FlatSkillBonus
               </div>
@@ -479,16 +480,16 @@ export function Calculator(): React.ReactElement {
                 <li>O valor <b>Max Weapon Dmg</b> é sempre forçado independente da rolagem caso o hit seja um <b>Crítico</b>.</li>
               </ul>
 
-              <h3 style={{ marginTop: '1.2rem', color: '#e2e4ec', fontSize: '0.9rem' }}>2. Multiplicadores &amp; Diminishing Returns</h3>
-              <p>Múltiplos status utilizam a curva de retornos decrescentes (Diminishing Return, ou DR) seguindo a base de milhar <code style={{ color: '#d4af37' }}>stat / (stat + 1000)</code>.</p>
+              <h3 style={{ marginTop: '1.2rem', color: 'var(--text)', fontSize: '0.9rem' }}>2. Multiplicadores &amp; Diminishing Returns</h3>
+              <p>Múltiplos status utilizam a curva de retornos decrescentes (Diminishing Return, ou DR) seguindo a base de milhar <code style={{ color: 'var(--gold)' }}>stat / (stat + 1000)</code>.</p>
               <ul style={{ paddingLeft: '1.2rem', margin: '0.4rem 0' }}>
-                <li><b>Defesa Alvo:</b> Reduz <code style={{ color: '#d4af37' }}>Defesa / (Defesa + 2500)</code></li>
-                <li><b>Skill Dmg Boost:</b> Multiplica <code style={{ color: '#d4af37' }}>1 + SDB / (SDB + 1000)</code></li>
-                <li><b>Species Boost:</b> Diferente de bônus flat, ele atua como base exponencial: <code style={{ color: '#d4af37' }}>1 + Species / (Species + 1000)</code></li>
-                <li><b>PVE/PvP/Buffs:</b> Escalam diretamente (ex: 40% Monster Damage resulta em <code style={{ color: '#d4af37' }}>1.4</code>).</li>
+                <li><b>Defesa Alvo:</b> Reduz <code style={{ color: 'var(--gold)' }}>Defesa / (Defesa + 2500)</code></li>
+                <li><b>Skill Dmg Boost:</b> Multiplica <code style={{ color: 'var(--gold)' }}>1 + SDB / (SDB + 1000)</code></li>
+                <li><b>Species Boost:</b> Diferente de bônus flat, ele atua como base exponencial: <code style={{ color: 'var(--gold)' }}>1 + Species / (Species + 1000)</code></li>
+                <li><b>PVE/PvP/Buffs:</b> Escalam diretamente (ex: 40% Monster Damage resulta em <code style={{ color: 'var(--gold)' }}>1.4</code>).</li>
               </ul>
 
-              <h3 style={{ marginTop: '1.2rem', color: '#e2e4ec', fontSize: '0.9rem' }}>3. Pipeline Final do Dano (Dano Efetivo)</h3>
+              <h3 style={{ marginTop: '1.2rem', color: 'var(--text)', fontSize: '0.9rem' }}>3. Pipeline Final do Dano (Dano Efetivo)</h3>
               <div style={{ background: 'var(--bg)', padding: '0.6rem 0.8rem', borderRadius: 4, fontFamily: 'JetBrains Mono, monospace', fontSize: '0.8rem', margin: '0.4rem 0', color: '#a8b5d4' }}>
                 Final = ((Base Dmg * [Multipliers]) * Heavy Mult) + Bonus Damage - Dmg Reduction
               </div>
@@ -579,7 +580,7 @@ export function Calculator(): React.ReactElement {
                       className="tl-btn-ghost"
                       title="Replicar estatísticas da coluna esquerda"
                       onClick={() => copyPrevious(i)}
-                      style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00d4ff', borderColor: 'rgba(0,212,255,0.35)', background: 'rgba(0,212,255,0.07)' }}
+                      style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--cyan)', borderColor: 'rgba(0,212,255,0.35)', background: 'rgba(0,212,255,0.07)' }}
                     >
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
                     </button>
@@ -588,7 +589,7 @@ export function Calculator(): React.ReactElement {
                     className="tl-btn-ghost"
                     title="Salvar como nova Build (Manual)"
                     onClick={() => handleSaveStats(i)}
-                    style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3dd68c', borderColor: 'rgba(61,214,140,0.35)', background: 'rgba(61,214,140,0.07)' }}
+                    style={{ padding: '0.1rem 0.3rem', minWidth: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--green)', borderColor: 'rgba(61,214,140,0.35)', background: 'rgba(61,214,140,0.07)' }}
                   >
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
                   </button>
@@ -634,10 +635,10 @@ export function Calculator(): React.ReactElement {
                 {r.totalDmg60s > 0 && (
                   <div style={{ marginTop: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <div style={{ fontSize: '0.67rem', color: 'var(--text-muted)' }}>
-                      60s total: <span style={{ color: '#3dd68c', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}>{fmt(r.totalDmg60s)}</span>
+                      60s total: <span style={{ color: 'var(--green)', fontFamily: 'JetBrains Mono, monospace', fontWeight: 700 }}>{fmt(r.totalDmg60s)}</span>
                     </div>
                     <div style={{ fontSize: '0.67rem', color: 'var(--text-muted)' }}>
-                      DPS/s: <span style={{ color: '#00d4ff', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(r.trueDps)}</span>
+                      DPS/s: <span style={{ color: 'var(--cyan)', fontFamily: 'JetBrains Mono, monospace' }}>{fmt(r.trueDps)}</span>
                       {' · '}{r.casts60s.toFixed(2)}× · {r.cycleTime.toFixed(2)}s
                     </div>
                   </div>
@@ -660,7 +661,7 @@ export function Calculator(): React.ReactElement {
                 <div className="tl-eyebrow" style={{ marginBottom: 6, color: selPoint.color }}>Ponto selecionado · {selPoint.title}</div>
                 <div style={{ fontFamily: 'Noto Serif, serif', color: selPoint.color, fontSize: '1.05rem', fontWeight: 700, marginBottom: 10 }}>{selPoint.buildName}</div>
                 <div style={{ display: 'flex', gap: '1rem', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.85rem' }}>
-                  <span style={{ color: '#e2e4ec', fontWeight: 700 }}>{selPoint.text}</span>
+                  <span style={{ color: 'var(--text)', fontWeight: 700 }}>{selPoint.text}</span>
                 </div>
               </div>
               <button className="tl-btn-ghost" onClick={() => setSelPoint(null)} style={{ padding: '0.25rem 0.6rem', flexShrink: 0 }}>✕</button>
@@ -722,7 +723,7 @@ export function Calculator(): React.ReactElement {
                         <button className="tl-btn-ghost" style={{ padding: '0.05rem 0.3rem', fontSize: '0.65rem' }} onClick={() => setAddConfigs((p) => p.filter((_, i) => i !== idx))}>✕</button>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '0.72rem', color: '#3dd68c', width: 14, textAlign: 'center', flexShrink: 0 }}>+</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--green)', width: 14, textAlign: 'center', flexShrink: 0 }}>+</span>
                         <select
                           className="tl-input"
                           style={{ flex: 1, fontSize: '0.71rem', fontFamily: 'Inter,sans-serif' }}
@@ -762,7 +763,7 @@ export function Calculator(): React.ReactElement {
                       </div>
                       {/* Stat reduzido */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.3rem' }}>
-                        <span style={{ fontSize: '0.72rem', color: '#f25f5c', width: 14, textAlign: 'center', flexShrink: 0 }}>−</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--red)', width: 14, textAlign: 'center', flexShrink: 0 }}>−</span>
                         <select
                           className="tl-input"
                           style={{ flex: 1, fontSize: '0.71rem', fontFamily: 'Inter,sans-serif' }}
@@ -781,7 +782,7 @@ export function Calculator(): React.ReactElement {
                       </div>
                       {/* Stat aumentado */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span style={{ fontSize: '0.72rem', color: '#3dd68c', width: 14, textAlign: 'center', flexShrink: 0 }}>+</span>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--green)', width: 14, textAlign: 'center', flexShrink: 0 }}>+</span>
                         <select
                           className="tl-input"
                           style={{ flex: 1, fontSize: '0.71rem', fontFamily: 'Inter,sans-serif' }}
@@ -804,7 +805,7 @@ export function Calculator(): React.ReactElement {
 
                 {/* Bloco 3: Análise Estatística */}
                 <div style={{ background: 'var(--bg)', borderRadius: 8, padding: '0.75rem', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
-                  <div className="tl-eyebrow" style={{ marginBottom: '0.65rem', fontSize: '0.68rem', color: '#d4af37' }}>Laudo Estatístico</div>
+                  <div className="tl-eyebrow" style={{ marginBottom: '0.65rem', fontSize: '0.68rem', color: 'var(--gold)' }}>Laudo Estatístico</div>
 
                   {!analysis ? (
                     <div style={{ fontSize: '0.72rem', color: 'var(--text-soft)', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '1rem' }}>
@@ -813,24 +814,24 @@ export function Calculator(): React.ReactElement {
                   ) : (
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-soft)', lineHeight: 1.5, display: 'flex', flexDirection: 'column', flex: 1 }}>
                       {analysis.tooLong && (
-                        <div style={{ marginBottom: '0.6rem', padding: '0.5rem', background: 'rgba(242,95,92,0.08)', border: '1px solid rgba(242,95,92,0.25)', borderRadius: 4, color: '#f25f5c', fontSize: '0.7rem' }}>
+                        <div style={{ marginBottom: '0.6rem', padding: '0.5rem', background: 'rgba(242,95,92,0.08)', border: '1px solid rgba(242,95,92,0.25)', borderRadius: 4, color: 'var(--red)', fontSize: '0.7rem' }}>
                           ⚠️ <strong>Atenção:</strong> Projeções longas ({analysis.maxIter} iterações) degradam esta lógica, pois os retornos decrescentes (DR) tornam-se extremos. O ideal é manter entre 1 a 10 iterações.
                         </div>
                       )}
 
                       <div style={{ marginBottom: '0.6rem' }}>
-                        <div style={{ color: '#e2e4ec', fontWeight: 600, marginBottom: 2 }}>Curto Prazo (1-2 saltos)</div>
+                        <div style={{ color: 'var(--text)', fontWeight: 600, marginBottom: 2 }}>Curto Prazo (1-2 saltos)</div>
                         {analysis.bestShort.label ? (
-                          <span>Foco imediato recomendado: <span style={{ color: '#3dd68c', fontWeight: 600 }}>{analysis.bestShort.label}</span>, projetando até {fmtPct(analysis.bestShort.gain)} de ganho.</span>
+                          <span>Foco imediato recomendado: <span style={{ color: 'var(--green)', fontWeight: 600 }}>{analysis.bestShort.label}</span>, projetando até {fmtPct(analysis.bestShort.gain)} de ganho.</span>
                         ) : (
                           <span>Nenhuma das opções apresenta ganho positivo a curto prazo.</span>
                         )}
                       </div>
 
                       <div style={{ marginBottom: '0.8rem' }}>
-                        <div style={{ color: '#e2e4ec', fontWeight: 600, marginBottom: 2 }}>Longo Prazo ({analysis.maxIter} saltos)</div>
+                        <div style={{ color: 'var(--text)', fontWeight: 600, marginBottom: 2 }}>Longo Prazo ({analysis.maxIter} saltos)</div>
                         {analysis.bestLong.label ? (
-                          <span>Com alto investimento, <span style={{ color: '#00d4ff', fontWeight: 600 }}>{analysis.bestLong.label}</span> domina trazendo o maior teto ({fmtPct(analysis.bestLong.gain)}).</span>
+                          <span>Com alto investimento, <span style={{ color: 'var(--cyan)', fontWeight: 600 }}>{analysis.bestLong.label}</span> domina trazendo o maior teto ({fmtPct(analysis.bestLong.gain)}).</span>
                         ) : (
                           <span>Nenhuma opção compensa o investimento a longo prazo.</span>
                         )}
@@ -903,7 +904,7 @@ export function Calculator(): React.ReactElement {
                     <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ Cast efetivo (s)</div>
                       {colStats.map((s, i) => (
-                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#00d4ff', padding: '3px 8px', background: 'rgba(0,212,255,0.05)', borderRadius: 4 }}>
+                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: 'var(--cyan)', padding: '3px 8px', background: 'rgba(0,212,255,0.05)', borderRadius: 4 }}>
                           {effectiveCastTime(s.skillCastTime, s.attackSpeedPct).toFixed(2)}s
                         </div>
                       ))}
@@ -913,7 +914,7 @@ export function Calculator(): React.ReactElement {
                     <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ CD efetivo (s)</div>
                       {colStats.map((s, i) => (
-                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#f0965a', padding: '3px 8px', background: 'rgba(240,150,90,0.05)', borderRadius: 4 }}>
+                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: 'var(--orange)', padding: '3px 8px', background: 'rgba(240,150,90,0.05)', borderRadius: 4 }}>
                           {effectiveCooldown(s.skillCooldown, s.cdrPct).toFixed(2)}s
                         </div>
                       ))}
@@ -923,7 +924,7 @@ export function Calculator(): React.ReactElement {
                     <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ Crit %</div>
                       {colStats.map((s, i) => (
-                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#d4af37', padding: '3px 8px', background: 'rgba(212,175,55,0.05)', borderRadius: 4 }}>
+                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: 'var(--gold)', padding: '3px 8px', background: 'rgba(212,175,55,0.05)', borderRadius: 4 }}>
                           {fmtPct(critChanceFromStat(s.critHitChance + (s.bossCritChance ?? 0), s.targetEndurance) * 100)}
                         </div>
                       ))}
@@ -933,7 +934,7 @@ export function Calculator(): React.ReactElement {
                     <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.35rem', alignItems: 'center' }}>
                       <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', paddingLeft: 8 }}>↳ Heavy %</div>
                       {colStats.map((s, i) => (
-                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: '#7c5cfc', padding: '3px 8px', background: 'rgba(124,92,252,0.05)', borderRadius: 4 }}>
+                        <div key={i} style={{ textAlign: 'right', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', color: 'var(--violet)', padding: '3px 8px', background: 'rgba(124,92,252,0.05)', borderRadius: 4 }}>
                           {fmtPct(heavyChanceFromStat(s.heavyAttackChance + (s.bossHeavyChance ?? 0)) * 100)}
                         </div>
                       ))}

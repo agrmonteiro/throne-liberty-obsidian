@@ -133,7 +133,7 @@ export const useBuilds = create<BuildsState>((set, get) => ({
           // Direct Build object
           build = {
             id:          (obj.id as string) || newId(),
-            name:        (obj.name as string) || 'Importada',
+            name:        (obj.name as string) || 'Build',
             weaponCombo: (obj.weaponCombo as string) || '',
             stats:       { ...DEFAULT_STATS, ...(obj.stats as Partial<BuildStats>) },
             notes:       (obj.notes as string) || '',
@@ -326,7 +326,7 @@ function parseNewScraperFormat(raw: Record<string, unknown>): Build | null {
     }
   }
 
-  const name = String(meta.character_name || meta.slug || 'Build importada')
+  const name = String(meta.character_name || meta.slug || 'Build')
   const sourceUrl = typeof meta.source_url === 'string' ? meta.source_url : undefined
 
   const rawSpec = raw.specialization
@@ -436,7 +436,7 @@ function parseOldFormat(raw: Record<string, unknown>): Build | null {
     }
   }
 
-  const name = String(raw.character_name || raw.folder_name || raw.build_id || 'Build importada')
+  const name = String(raw.character_name || raw.folder_name || raw.build_id || 'Build')
   const wt = raw.weapon_types
   const combo = Array.isArray(wt) ? wt.join('+') : String(raw.folder_name || '')
 

@@ -32,16 +32,18 @@ const BRANCH_LABEL: Record<number, string> = {
 
 // ─── Weapon config ───────────────────────────────────────────────────────────
 
+const CDN = 'https://cdn.tldb.info/db/images/ags/v41/128/image/icon/item_128/equip/weapon'
+
 const WEAPON_INFO: Record<number, { label: string; icon: string; color: string }> = {
-  1:  { label: 'Arco Longo', icon: '🏹', color: '#4ade80' },
-  3:  { label: 'Espadão',    icon: '⚔️',  color: '#ef4444' },
-  4:  { label: 'Besta',      icon: '🎯',  color: '#86efac' },
-  5:  { label: 'Cajado',     icon: '🔮',  color: '#a78bfa' },
-  6:  { label: 'Adagas',     icon: '🗡️',  color: '#f97316' },
-  7:  { label: 'Espada',     icon: '🛡️',  color: '#f59e0b' },
-  9:  { label: 'Varinha',    icon: '✨',  color: '#60a5fa' },
-  25: { label: 'Lança',      icon: '🔱',  color: '#ec4899' },
-  34: { label: 'Orbe',       icon: '🔵',  color: '#22d3ee' },
+  1:  { label: 'Arco Longo', icon: `${CDN}/it_p_bow_10001.png`,      color: '#4ade80' },
+  3:  { label: 'Espadão',    icon: `${CDN}/it_p_sword2h_10001.png`,  color: '#ef4444' },
+  4:  { label: 'Besta',      icon: `${CDN}/it_p_crossbow_10001.png`, color: '#86efac' },
+  5:  { label: 'Cajado',     icon: `${CDN}/it_p_staff_10002.png`,    color: '#a78bfa' },
+  6:  { label: 'Adagas',     icon: `${CDN}/it_p_dagger_10001.png`,   color: '#f97316' },
+  7:  { label: 'Espada',     icon: `${CDN}/it_p_sword_10002.png`,    color: '#f59e0b' },
+  9:  { label: 'Varinha',    icon: `${CDN}/it_p_wand_10002.png`,     color: '#60a5fa' },
+  25: { label: 'Lança',      icon: `${CDN}/it_p_spear_10001.png`,    color: '#ec4899' },
+  34: { label: 'Orbe',       icon: `${CDN}/it_p_orb_00022.png`,      color: '#22d3ee' },
 }
 
 // ─── Math helpers ────────────────────────────────────────────────────────────
@@ -143,10 +145,12 @@ function BackgroundSVG({ weaponIcon, weaponColor }: { weaponIcon: string; weapon
         fill={`${weaponColor}18`} stroke={weaponColor} strokeWidth={1.5}
       />
       {/* Center icon via foreignObject */}
-      <foreignObject x={CX - 14} y={CY - 14} width={28} height={28}>
-        <div style={{ fontSize: '1.1rem', textAlign: 'center', lineHeight: '28px', userSelect: 'none' }}>
-          {weaponIcon}
-        </div>
+      <foreignObject x={CX - 16} y={CY - 16} width={32} height={32}>
+        <img
+          src={weaponIcon} width={32} height={32}
+          style={{ objectFit: 'contain', userSelect: 'none' }}
+          onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+        />
       </foreignObject>
 
       {/* Branch arcs — highlight segment at each occupied column */}
@@ -385,7 +389,12 @@ export function MasteryTrees(): React.ReactElement {
                 transition: 'all 0.15s',
               }}
             >
-              <span>{wi.icon}</span> {wi.label}
+              <img
+                src={wi.icon} width={18} height={18}
+                style={{ objectFit: 'contain', flexShrink: 0 }}
+                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+              />
+              {wi.label}
             </button>
           )
         })}
