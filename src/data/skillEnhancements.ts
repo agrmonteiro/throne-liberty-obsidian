@@ -5,6 +5,7 @@ export type L10n = { en: string; pt: string }
 
 export interface SkillEnhancement {
   id: string
+  weapon: string
   name: L10n
   rawName: L10n                  // nome só do efeito, sem prefixo "SkillName - "
   baseSkillName: L10n
@@ -20,6 +21,7 @@ export interface SkillEnhancement {
 export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   {
     id: "SkillSet_WP_BO_S_AbnormalDispel_Trait_1",
+    weapon: "Longbow",
     name: { en: "Purifying Touch - Additional Removal", pt: "" },
     rawName: { en: "Additional Removal", pt: "" },
     baseSkillName: { en: "Purifying Touch", pt: "" },
@@ -33,6 +35,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_AbnormalDispel_Trait_2",
+    weapon: "Longbow",
     name: { en: "Purifying Touch - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Purifying Touch", pt: "" },
@@ -46,6 +49,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_AbnormalDispel_Trait_3",
+    weapon: "Longbow",
     name: { en: "Purifying Touch - Healing Touch", pt: "" },
     rawName: { en: "Healing Touch", pt: "" },
     baseSkillName: { en: "Purifying Touch", pt: "" },
@@ -59,6 +63,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_AttackMark_Trait_1",
+    weapon: "Longbow",
     name: { en: "Deadly Marker - Bullseye", pt: "" },
     rawName: { en: "Bullseye", pt: "" },
     baseSkillName: { en: "Deadly Marker", pt: "" },
@@ -72,6 +77,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_AttackMark_Trait_2",
+    weapon: "Longbow",
     name: { en: "Deadly Marker - Increases Hit Chance", pt: "" },
     rawName: { en: "Increases Hit Chance", pt: "" },
     baseSkillName: { en: "Deadly Marker", pt: "" },
@@ -85,6 +91,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_BindShot_Trait_1",
+    weapon: "Longbow",
     name: { en: "Ensnaring Arrow - Cooldown Reset", pt: "" },
     rawName: { en: "Cooldown Reset", pt: "" },
     baseSkillName: { en: "Ensnaring Arrow", pt: "" },
@@ -98,6 +105,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_BindShot_Trait_2",
+    weapon: "Longbow",
     name: { en: "Ensnaring Arrow - Duration Increase", pt: "" },
     rawName: { en: "Duration Increase", pt: "" },
     baseSkillName: { en: "Ensnaring Arrow", pt: "" },
@@ -111,6 +119,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_BindShot_Trait_3",
+    weapon: "Longbow",
     name: { en: "Ensnaring Arrow - Hit Chance ▲", pt: "" },
     rawName: { en: "Hit Chance ▲", pt: "" },
     baseSkillName: { en: "Ensnaring Arrow", pt: "" },
@@ -124,6 +133,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_BindShot_Trait_4",
+    weapon: "Longbow",
     name: { en: "Ensnaring Arrow - Shield Removal", pt: "" },
     rawName: { en: "Shield Removal", pt: "" },
     baseSkillName: { en: "Ensnaring Arrow", pt: "" },
@@ -137,6 +147,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_Detection_trait_1",
+    weapon: "Longbow",
     name: { en: "Flash Arrow - Flash Wave", pt: "" },
     rawName: { en: "Flash Wave", pt: "" },
     baseSkillName: { en: "Flash Arrow", pt: "" },
@@ -150,6 +161,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_Detection_trait_2",
+    weapon: "Longbow",
     name: { en: "Flash Arrow - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Flash Arrow", pt: "" },
@@ -163,6 +175,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_Detection_trait_3",
+    weapon: "Longbow",
     name: { en: "Flash Arrow - Blind", pt: "" },
     rawName: { en: "Blind", pt: "" },
     baseSkillName: { en: "Flash Arrow", pt: "" },
@@ -176,6 +189,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_Detection_trait_4",
+    weapon: "Longbow",
     name: { en: "Flash Arrow - Effect Duration ▲", pt: "" },
     rawName: { en: "Effect Duration ▲", pt: "" },
     baseSkillName: { en: "Flash Arrow", pt: "" },
@@ -189,6 +203,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_DoubleShot_Trait_1",
+    weapon: "Longbow",
     name: { en: "Blitz - Limit Break", pt: "" },
     rawName: { en: "Limit Break", pt: "" },
     baseSkillName: { en: "Blitz", pt: "" },
@@ -202,6 +217,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_DoubleShot_Trait_2",
+    weapon: "Longbow",
     name: { en: "Blitz - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Blitz", pt: "" },
@@ -215,6 +231,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_DropShot_Trait_1",
+    weapon: "Longbow",
     name: { en: "Brutal Arrow - Gale Area", pt: "" },
     rawName: { en: "Gale Area", pt: "" },
     baseSkillName: { en: "Brutal Arrow", pt: "" },
@@ -228,6 +245,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_DropShot_Trait_2",
+    weapon: "Longbow",
     name: { en: "Brutal Arrow - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Brutal Arrow", pt: "" },
@@ -241,6 +259,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_MultiShot_Trait_1",
+    weapon: "Longbow",
     name: { en: "Strafing - Gale", pt: "" },
     rawName: { en: "Gale", pt: "" },
     baseSkillName: { en: "Strafing", pt: "" },
@@ -254,6 +273,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_MultiShot_Trait_2",
+    weapon: "Longbow",
     name: { en: "Strafing - Mobility", pt: "" },
     rawName: { en: "Mobility", pt: "" },
     baseSkillName: { en: "Strafing", pt: "" },
@@ -267,6 +287,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_MultiShot_Trait_3",
+    weapon: "Longbow",
     name: { en: "Strafing - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Strafing", pt: "" },
@@ -280,6 +301,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_PowerShot_Trait_1",
+    weapon: "Longbow",
     name: { en: "Decisive Sniping - Charging Time ▲", pt: "" },
     rawName: { en: "Charging Time ▲", pt: "" },
     baseSkillName: { en: "Decisive Sniping", pt: "" },
@@ -293,6 +315,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_PowerShot_Trait_2",
+    weapon: "Longbow",
     name: { en: "Decisive Sniping - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Decisive Sniping", pt: "" },
@@ -306,6 +329,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_PowerShot_Trait_3",
+    weapon: "Longbow",
     name: { en: "Decisive Sniping - Charging Time ▼", pt: "" },
     rawName: { en: "Charging Time ▼", pt: "" },
     baseSkillName: { en: "Decisive Sniping", pt: "" },
@@ -319,6 +343,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_PowerShot_Trait_4",
+    weapon: "Longbow",
     name: { en: "Decisive Sniping - Mobility", pt: "" },
     rawName: { en: "Mobility", pt: "" },
     baseSkillName: { en: "Decisive Sniping", pt: "" },
@@ -332,6 +357,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_PowerShot_Trait_5",
+    weapon: "Longbow",
     name: { en: "Decisive Sniping - Decisive Bombardment", pt: "" },
     rawName: { en: "Decisive Bombardment", pt: "" },
     baseSkillName: { en: "Decisive Sniping", pt: "" },
@@ -345,6 +371,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenAura_Trait_1",
+    weapon: "Longbow",
     name: { en: "Nature's Blessing - Vigorous", pt: "" },
     rawName: { en: "Vigorous", pt: "" },
     baseSkillName: { en: "Nature's Blessing", pt: "" },
@@ -358,6 +385,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenAura_Trait_2",
+    weapon: "Longbow",
     name: { en: "Nature's Blessing - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Nature's Blessing", pt: "" },
@@ -371,6 +399,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenAura_Trait_3",
+    weapon: "Longbow",
     name: { en: "Nature's Blessing - Whirlpool", pt: "" },
     rawName: { en: "Whirlpool", pt: "" },
     baseSkillName: { en: "Nature's Blessing", pt: "" },
@@ -384,6 +413,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenHeal_Trait_1",
+    weapon: "Longbow",
     name: { en: "Healing Touch - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "Healing Touch", pt: "" },
@@ -397,6 +427,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenHeal_Trait_2",
+    weapon: "Longbow",
     name: { en: "Healing Touch - Additional Health Recovery", pt: "" },
     rawName: { en: "Additional Health Recovery", pt: "" },
     baseSkillName: { en: "Healing Touch", pt: "" },
@@ -410,6 +441,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenHeal_Trait_3",
+    weapon: "Longbow",
     name: { en: "Healing Touch - Mana Cost Reduced", pt: "" },
     rawName: { en: "Mana Cost Reduced", pt: "" },
     baseSkillName: { en: "Healing Touch", pt: "" },
@@ -423,6 +455,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenHeal_Trait_4",
+    weapon: "Longbow",
     name: { en: "Healing Touch - Concentration Stance", pt: "" },
     rawName: { en: "Concentration Stance", pt: "" },
     baseSkillName: { en: "Healing Touch", pt: "" },
@@ -436,6 +469,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_StrongShot_Trait_1",
+    weapon: "Longbow",
     name: { en: "Zephyr's Nock - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Zephyr's Nock", pt: "" },
@@ -449,6 +483,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_StrongShot_Trait_2",
+    weapon: "Longbow",
     name: { en: "Zephyr's Nock - Collision", pt: "" },
     rawName: { en: "Collision", pt: "" },
     baseSkillName: { en: "Zephyr's Nock", pt: "" },
@@ -462,6 +497,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_StrongShot_Trait_3",
+    weapon: "Longbow",
     name: { en: "Zephyr's Nock - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Zephyr's Nock", pt: "" },
@@ -475,6 +511,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_TornadoShot_Trait_1",
+    weapon: "Longbow",
     name: { en: "Arrow Vortex - Tornado", pt: "" },
     rawName: { en: "Tornado", pt: "" },
     baseSkillName: { en: "Arrow Vortex", pt: "" },
@@ -488,6 +525,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_BO_S_TornadoShot_Trait_2",
+    weapon: "Longbow",
     name: { en: "Arrow Vortex - Whirlpool", pt: "" },
     rawName: { en: "Whirlpool", pt: "" },
     baseSkillName: { en: "Arrow Vortex", pt: "" },
@@ -501,6 +539,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_AddProjectile_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Mother Nature's Protest - Gale Shot", pt: "" },
     rawName: { en: "Gale Shot", pt: "" },
     baseSkillName: { en: "Mother Nature's Protest", pt: "" },
@@ -514,6 +553,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_AddProjectile_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Mother Nature's Protest - Flame Shot", pt: "" },
     rawName: { en: "Flame Shot", pt: "" },
     baseSkillName: { en: "Mother Nature's Protest", pt: "" },
@@ -527,6 +567,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_AddProjectile_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Mother Nature's Protest - Frost Shot", pt: "" },
     rawName: { en: "Frost Shot", pt: "" },
     baseSkillName: { en: "Mother Nature's Protest", pt: "" },
@@ -540,6 +581,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_AddProjectile_Trait_4",
+    weapon: "Crossbow",
     name: { en: "Mother Nature's Protest - Lightning Shot", pt: "" },
     rawName: { en: "Lightning Shot", pt: "" },
     baseSkillName: { en: "Mother Nature's Protest", pt: "" },
@@ -553,6 +595,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_ArmorBreakShot_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Mortal Mark - Chain Effects", pt: "" },
     rawName: { en: "Chain Effects", pt: "" },
     baseSkillName: { en: "Mortal Mark", pt: "" },
@@ -566,6 +609,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_ArmorBreakShot_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Mortal Mark - Detonation Mark", pt: "" },
     rawName: { en: "Detonation Mark", pt: "" },
     baseSkillName: { en: "Mortal Mark", pt: "" },
@@ -579,6 +623,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_ArmorBreakShot_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Mortal Mark - Stamina Stagnation", pt: "" },
     rawName: { en: "Stamina Stagnation", pt: "" },
     baseSkillName: { en: "Mortal Mark", pt: "" },
@@ -592,6 +637,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BloodToSoul_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Mana Exchange - Effect Boost", pt: "" },
     rawName: { en: "Effect Boost", pt: "" },
     baseSkillName: { en: "Mana Exchange", pt: "" },
@@ -605,6 +651,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BloodToSoul_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Mana Exchange - Stamina Recovery", pt: "" },
     rawName: { en: "Stamina Recovery", pt: "" },
     baseSkillName: { en: "Mana Exchange", pt: "" },
@@ -618,6 +665,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BloodToSoul_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Mana Exchange - Removes CC effect(s)", pt: "" },
     rawName: { en: "Removes CC effect(s)", pt: "" },
     baseSkillName: { en: "Mana Exchange", pt: "" },
@@ -631,6 +679,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BuckShot_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Multi-Shot - Rapid Shot", pt: "" },
     rawName: { en: "Rapid Shot", pt: "" },
     baseSkillName: { en: "Multi-Shot", pt: "" },
@@ -644,6 +693,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BuckShot_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Multi-Shot - Collision Shot", pt: "" },
     rawName: { en: "Collision Shot", pt: "" },
     baseSkillName: { en: "Multi-Shot", pt: "" },
@@ -657,6 +707,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BuckShot_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Multi-Shot - Shield Removal", pt: "" },
     rawName: { en: "Shield Removal", pt: "" },
     baseSkillName: { en: "Multi-Shot", pt: "" },
@@ -670,6 +721,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_RapidShot_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Quick Fire - Gale", pt: "" },
     rawName: { en: "Gale", pt: "" },
     baseSkillName: { en: "Quick Fire", pt: "" },
@@ -683,6 +735,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_RapidShot_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Quick Fire - Min Chain Fire ▲", pt: "" },
     rawName: { en: "Min Chain Fire ▲", pt: "" },
     baseSkillName: { en: "Quick Fire", pt: "" },
@@ -696,6 +749,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_RapidShot_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Quick Fire - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Quick Fire", pt: "" },
@@ -709,6 +763,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_RapidShot_Trait_4",
+    weapon: "Crossbow",
     name: { en: "Quick Fire - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Quick Fire", pt: "" },
@@ -722,6 +777,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_Step_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Nimble Leap - Whirlpool", pt: "" },
     rawName: { en: "Whirlpool", pt: "" },
     baseSkillName: { en: "Nimble Leap", pt: "" },
@@ -735,6 +791,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_Step_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Nimble Leap - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Nimble Leap", pt: "" },
@@ -748,6 +805,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_Step_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Nimble Leap - Cooldown Reset", pt: "" },
     rawName: { en: "Cooldown Reset", pt: "" },
     baseSkillName: { en: "Nimble Leap", pt: "" },
@@ -761,6 +819,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_Step_Trait_4",
+    weapon: "Crossbow",
     name: { en: "Nimble Leap - Immune", pt: "" },
     rawName: { en: "Immune", pt: "" },
     baseSkillName: { en: "Nimble Leap", pt: "" },
@@ -774,6 +833,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_AddShot_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Recoil Shot - Gale", pt: "" },
     rawName: { en: "Gale", pt: "" },
     baseSkillName: { en: "Recoil Shot", pt: "" },
@@ -787,6 +847,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_AddShot_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Recoil Shot - Wave Shot", pt: "" },
     rawName: { en: "Wave Shot", pt: "" },
     baseSkillName: { en: "Recoil Shot", pt: "" },
@@ -800,6 +861,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_AddShot_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Recoil Shot - Off-Hand Weapon Attack ▲", pt: "" },
     rawName: { en: "Off-Hand Weapon Attack ▲", pt: "" },
     baseSkillName: { en: "Recoil Shot", pt: "" },
@@ -813,6 +875,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_RobShot_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Wind Snatcher - Damage Transfer", pt: "" },
     rawName: { en: "Damage Transfer", pt: "" },
     baseSkillName: { en: "Wind Snatcher", pt: "" },
@@ -826,6 +889,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_RobShot_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Wind Snatcher - Stamina Absorption", pt: "" },
     rawName: { en: "Stamina Absorption", pt: "" },
     baseSkillName: { en: "Wind Snatcher", pt: "" },
@@ -839,6 +903,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_WeakPointShot_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Weak Point Shot - Expand Conditions", pt: "" },
     rawName: { en: "Expand Conditions", pt: "" },
     baseSkillName: { en: "Weak Point Shot", pt: "" },
@@ -852,6 +917,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_WeakPointShot_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Weak Point Shot - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Weak Point Shot", pt: "" },
@@ -865,6 +931,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_D_WeakPointShot_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Weak Point Shot - Weaken Shield", pt: "" },
     rawName: { en: "Weaken Shield", pt: "" },
     baseSkillName: { en: "Weak Point Shot", pt: "" },
@@ -878,6 +945,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_FuriousFire_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Merciless Barrage - Annihilation Barrage Shot", pt: "" },
     rawName: { en: "Annihilation Barrage Shot", pt: "" },
     baseSkillName: { en: "Merciless Barrage", pt: "" },
@@ -891,6 +959,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_FuriousFire_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Merciless Barrage - Wild Barrage", pt: "" },
     rawName: { en: "Wild Barrage", pt: "" },
     baseSkillName: { en: "Merciless Barrage", pt: "" },
@@ -904,6 +973,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_FuriousFire_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Merciless Barrage - Gale", pt: "" },
     rawName: { en: "Gale", pt: "" },
     baseSkillName: { en: "Merciless Barrage", pt: "" },
@@ -917,6 +987,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_S_GhostWalk_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Selfless Diffusion - Removes CC", pt: "" },
     rawName: { en: "Removes CC", pt: "" },
     baseSkillName: { en: "Selfless Diffusion", pt: "" },
@@ -930,6 +1001,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_S_GhostWalk_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Selfless Diffusion - Health Concentration Recovery", pt: "" },
     rawName: { en: "Health Concentration Recovery", pt: "" },
     baseSkillName: { en: "Selfless Diffusion", pt: "" },
@@ -943,6 +1015,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_S_GhostWalk_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Selfless Diffusion - Aggro ▼", pt: "" },
     rawName: { en: "Aggro ▼", pt: "" },
     baseSkillName: { en: "Selfless Diffusion", pt: "" },
@@ -956,6 +1029,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_S_GhostWalk_Trait_4",
+    weapon: "Crossbow",
     name: { en: "Selfless Diffusion - Ignore Directions", pt: "" },
     rawName: { en: "Ignore Directions", pt: "" },
     baseSkillName: { en: "Selfless Diffusion", pt: "" },
@@ -969,6 +1043,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_TauntTrap_Trait_1",
+    weapon: "Crossbow",
     name: { en: "Explosive Trap - Shock Bomb", pt: "" },
     rawName: { en: "Shock Bomb", pt: "" },
     baseSkillName: { en: "Explosive Trap", pt: "" },
@@ -982,6 +1057,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_TauntTrap_Trait_2",
+    weapon: "Crossbow",
     name: { en: "Explosive Trap - Set up range ▲", pt: "" },
     rawName: { en: "Set up range ▲", pt: "" },
     baseSkillName: { en: "Explosive Trap", pt: "" },
@@ -995,6 +1071,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_CR_TauntTrap_Trait_3",
+    weapon: "Crossbow",
     name: { en: "Explosive Trap - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "Explosive Trap", pt: "" },
@@ -1008,6 +1085,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BlinkStrike_trait_1",
+    weapon: "Dagger",
     name: { en: "Shadow Strike - Shadowy Escape", pt: "" },
     rawName: { en: "Shadowy Escape", pt: "" },
     baseSkillName: { en: "Shadow Strike", pt: "" },
@@ -1021,6 +1099,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BlinkStrike_trait_2",
+    weapon: "Dagger",
     name: { en: "Shadow Strike - Skill Range ▲", pt: "" },
     rawName: { en: "Skill Range ▲", pt: "" },
     baseSkillName: { en: "Shadow Strike", pt: "" },
@@ -1034,6 +1113,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BlinkStrike_trait_3",
+    weapon: "Dagger",
     name: { en: "Shadow Strike - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Shadow Strike", pt: "" },
@@ -1047,6 +1127,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BlinkStrike_trait_4",
+    weapon: "Dagger",
     name: { en: "Shadow Strike - Effect Accumulation", pt: "" },
     rawName: { en: "Effect Accumulation", pt: "" },
     baseSkillName: { en: "Shadow Strike", pt: "" },
@@ -1060,6 +1141,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BloodStrike_trait_1",
+    weapon: "Dagger",
     name: { en: "Vampiric Strike - Additional Hit", pt: "" },
     rawName: { en: "Additional Hit", pt: "" },
     baseSkillName: { en: "Vampiric Strike", pt: "" },
@@ -1073,6 +1155,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BloodStrike_trait_2",
+    weapon: "Dagger",
     name: { en: "Vampiric Strike - Effect Boost", pt: "" },
     rawName: { en: "Effect Boost", pt: "" },
     baseSkillName: { en: "Vampiric Strike", pt: "" },
@@ -1086,6 +1169,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BloodStrike_trait_3",
+    weapon: "Dagger",
     name: { en: "Vampiric Strike - Shield Health ▼", pt: "" },
     rawName: { en: "Shield Health ▼", pt: "" },
     baseSkillName: { en: "Vampiric Strike", pt: "" },
@@ -1099,6 +1183,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_CriticalStrike_trait_1",
+    weapon: "Dagger",
     name: { en: "Cleaving Moonlight - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Cleaving Moonlight", pt: "" },
@@ -1112,6 +1197,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_CriticalStrike_trait_2",
+    weapon: "Dagger",
     name: { en: "Cleaving Moonlight - Effect Accumulation", pt: "" },
     rawName: { en: "Effect Accumulation", pt: "" },
     baseSkillName: { en: "Cleaving Moonlight", pt: "" },
@@ -1125,6 +1211,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_CriticalStrike_trait_3",
+    weapon: "Dagger",
     name: { en: "Cleaving Moonlight - Attack Speed ▲", pt: "" },
     rawName: { en: "Attack Speed ▲", pt: "" },
     baseSkillName: { en: "Cleaving Moonlight", pt: "" },
@@ -1138,6 +1225,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_CriticalStrike_trait_4",
+    weapon: "Dagger",
     name: { en: "Cleaving Moonlight - Additional Damage", pt: "" },
     rawName: { en: "Additional Damage", pt: "" },
     baseSkillName: { en: "Cleaving Moonlight", pt: "" },
@@ -1151,6 +1239,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DeadlyStrike_trait_1",
+    weapon: "Dagger",
     name: { en: "Brutal Incision - Thundering Bomb", pt: "" },
     rawName: { en: "Thundering Bomb", pt: "" },
     baseSkillName: { en: "Brutal Incision", pt: "" },
@@ -1164,6 +1253,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DeadlyStrike_trait_2",
+    weapon: "Dagger",
     name: { en: "Brutal Incision - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Brutal Incision", pt: "" },
@@ -1177,6 +1267,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DeadlyStrike_trait_3",
+    weapon: "Dagger",
     name: { en: "Brutal Incision - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Brutal Incision", pt: "" },
@@ -1190,6 +1281,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DelayDamage_trait_1",
+    weapon: "Dagger",
     name: { en: "Fatal Stigma - AoE Damage", pt: "" },
     rawName: { en: "AoE Damage", pt: "" },
     baseSkillName: { en: "Fatal Stigma", pt: "" },
@@ -1203,6 +1295,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DelayDamage_trait_2",
+    weapon: "Dagger",
     name: { en: "Fatal Stigma - Cooldown Reset", pt: "" },
     rawName: { en: "Cooldown Reset", pt: "" },
     baseSkillName: { en: "Fatal Stigma", pt: "" },
@@ -1216,6 +1309,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DelayDamage_trait_3",
+    weapon: "Dagger",
     name: { en: "Fatal Stigma - Skill Range ▲", pt: "" },
     rawName: { en: "Skill Range ▲", pt: "" },
     baseSkillName: { en: "Fatal Stigma", pt: "" },
@@ -1229,6 +1323,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DelayDamage_trait_4",
+    weapon: "Dagger",
     name: { en: "Fatal Stigma - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Fatal Stigma", pt: "" },
@@ -1242,6 +1337,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_LegAttack_trait_1",
+    weapon: "Dagger",
     name: { en: "Ankle Strike - Expand Conditions", pt: "" },
     rawName: { en: "Expand Conditions", pt: "" },
     baseSkillName: { en: "Ankle Strike", pt: "" },
@@ -1255,6 +1351,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_LegAttack_trait_2",
+    weapon: "Dagger",
     name: { en: "Ankle Strike - Off-Hand Weapon Activation", pt: "" },
     rawName: { en: "Off-Hand Weapon Activation", pt: "" },
     baseSkillName: { en: "Ankle Strike", pt: "" },
@@ -1268,6 +1365,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonDagger_Trait_1",
+    weapon: "Dagger",
     name: { en: "Knife Throwing - Lightning Throw", pt: "" },
     rawName: { en: "Lightning Throw", pt: "" },
     baseSkillName: { en: "Knife Throwing", pt: "" },
@@ -1281,6 +1379,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonDagger_Trait_2",
+    weapon: "Dagger",
     name: { en: "Knife Throwing - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Knife Throwing", pt: "" },
@@ -1294,6 +1393,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonDagger_Trait_3",
+    weapon: "Dagger",
     name: { en: "Knife Throwing - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Knife Throwing", pt: "" },
@@ -1307,6 +1407,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonDagger_Trait_4",
+    weapon: "Dagger",
     name: { en: "Knife Throwing - Additional Hit", pt: "" },
     rawName: { en: "Additional Hit", pt: "" },
     baseSkillName: { en: "Knife Throwing", pt: "" },
@@ -1320,6 +1421,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonEnchant_trait_1",
+    weapon: "Dagger",
     name: { en: "Inject Venom - Lightning Infusion", pt: "" },
     rawName: { en: "Lightning Infusion", pt: "" },
     baseSkillName: { en: "Inject Venom", pt: "" },
@@ -1333,6 +1435,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonEnchant_trait_2",
+    weapon: "Dagger",
     name: { en: "Inject Venom - Mana Cost Reduced", pt: "" },
     rawName: { en: "Mana Cost Reduced", pt: "" },
     baseSkillName: { en: "Inject Venom", pt: "" },
@@ -1346,6 +1449,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonEnchant_trait_3",
+    weapon: "Dagger",
     name: { en: "Inject Venom - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Inject Venom", pt: "" },
@@ -1359,6 +1463,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonEnchant_trait_4",
+    weapon: "Dagger",
     name: { en: "Inject Venom - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Inject Venom", pt: "" },
@@ -1372,6 +1477,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_ShadowChaser_trait_1",
+    weapon: "Dagger",
     name: { en: "Umbral Spirit - Thunder Spirit", pt: "" },
     rawName: { en: "Thunder Spirit", pt: "" },
     baseSkillName: { en: "Umbral Spirit", pt: "" },
@@ -1385,6 +1491,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_ShadowChaser_trait_2",
+    weapon: "Dagger",
     name: { en: "Umbral Spirit - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Umbral Spirit", pt: "" },
@@ -1398,6 +1505,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_ShadowChaser_trait_3",
+    weapon: "Dagger",
     name: { en: "Umbral Spirit - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "Umbral Spirit", pt: "" },
@@ -1411,6 +1519,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Smoke_trait_1",
+    weapon: "Dagger",
     name: { en: "Phantom Smokescreen - Improved Smokescreen", pt: "" },
     rawName: { en: "Improved Smokescreen", pt: "" },
     baseSkillName: { en: "Phantom Smokescreen", pt: "" },
@@ -1424,6 +1533,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Smoke_trait_2",
+    weapon: "Dagger",
     name: { en: "Phantom Smokescreen - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "Phantom Smokescreen", pt: "" },
@@ -1437,6 +1547,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Smoke_trait_3",
+    weapon: "Dagger",
     name: { en: "Phantom Smokescreen - Back Attack", pt: "" },
     rawName: { en: "Back Attack", pt: "" },
     baseSkillName: { en: "Phantom Smokescreen", pt: "" },
@@ -1450,6 +1561,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_SonicAttacka_trait_1",
+    weapon: "Dagger",
     name: { en: "Frenzied Sword Dance - Mad Sword Dance", pt: "" },
     rawName: { en: "Mad Sword Dance", pt: "" },
     baseSkillName: { en: "Frenzied Sword Dance", pt: "" },
@@ -1463,6 +1575,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_SonicAttacka_trait_2",
+    weapon: "Dagger",
     name: { en: "Frenzied Sword Dance - Effect Accumulation", pt: "" },
     rawName: { en: "Effect Accumulation", pt: "" },
     baseSkillName: { en: "Frenzied Sword Dance", pt: "" },
@@ -1476,6 +1589,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_SonicAttacka_trait_3",
+    weapon: "Dagger",
     name: { en: "Frenzied Sword Dance - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Frenzied Sword Dance", pt: "" },
@@ -1489,6 +1603,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_SonicAttacka_trait_4",
+    weapon: "Dagger",
     name: { en: "Frenzied Sword Dance - AoE Damage", pt: "" },
     rawName: { en: "AoE Damage", pt: "" },
     baseSkillName: { en: "Frenzied Sword Dance", pt: "" },
@@ -1502,6 +1617,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Stealth_trait_1",
+    weapon: "Dagger",
     name: { en: "Camouflage Cloak - CC Immunity", pt: "" },
     rawName: { en: "CC Immunity", pt: "" },
     baseSkillName: { en: "Camouflage Cloak", pt: "" },
@@ -1515,6 +1631,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Stealth_trait_2",
+    weapon: "Dagger",
     name: { en: "Camouflage Cloak - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Camouflage Cloak", pt: "" },
@@ -1528,6 +1645,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Stealth_trait_3",
+    weapon: "Dagger",
     name: { en: "Camouflage Cloak - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "Camouflage Cloak", pt: "" },
@@ -1541,6 +1659,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_GravityCollapse_Trait_1",
+    weapon: "Orb",
     name: { en: "Supernova Collapse - Enhanced Link", pt: "" },
     rawName: { en: "Enhanced Link", pt: "" },
     baseSkillName: { en: "Supernova Collapse", pt: "" },
@@ -1554,6 +1673,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_GravityCollapse_Trait_2",
+    weapon: "Orb",
     name: { en: "Supernova Collapse - Improve Link Effect", pt: "" },
     rawName: { en: "Improve Link Effect", pt: "" },
     baseSkillName: { en: "Supernova Collapse", pt: "" },
@@ -1567,6 +1687,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_GravityCollapse_Trait_3",
+    weapon: "Orb",
     name: { en: "Supernova Collapse - Stamina Stagnation", pt: "" },
     rawName: { en: "Stamina Stagnation", pt: "" },
     baseSkillName: { en: "Supernova Collapse", pt: "" },
@@ -1580,6 +1701,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_GravityCollapse_Trait_4",
+    weapon: "Orb",
     name: { en: "Supernova Collapse - Increase Range", pt: "" },
     rawName: { en: "Increase Range", pt: "" },
     baseSkillName: { en: "Supernova Collapse", pt: "" },
@@ -1593,6 +1715,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Laser_Trait_1",
+    weapon: "Orb",
     name: { en: "Stellar Dash - Damage Boost", pt: "" },
     rawName: { en: "Damage Boost", pt: "" },
     baseSkillName: { en: "Stellar Dash", pt: "" },
@@ -1606,6 +1729,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Laser_Trait_2",
+    weapon: "Orb",
     name: { en: "Stellar Dash - Pierce Damage", pt: "" },
     rawName: { en: "Pierce Damage", pt: "" },
     baseSkillName: { en: "Stellar Dash", pt: "" },
@@ -1619,6 +1743,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Laser_Trait_3",
+    weapon: "Orb",
     name: { en: "Stellar Dash - Additional Use", pt: "" },
     rawName: { en: "Additional Use", pt: "" },
     baseSkillName: { en: "Stellar Dash", pt: "" },
@@ -1632,6 +1757,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbExplosion_Trait_1",
+    weapon: "Orb",
     name: { en: "Interstellar Explosion - Stun", pt: "" },
     rawName: { en: "Stun", pt: "" },
     baseSkillName: { en: "Interstellar Explosion", pt: "" },
@@ -1645,6 +1771,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbExplosion_Trait_2",
+    weapon: "Orb",
     name: { en: "Interstellar Explosion - Orb Explosion Radius", pt: "" },
     rawName: { en: "Orb Explosion Radius", pt: "" },
     baseSkillName: { en: "Interstellar Explosion", pt: "" },
@@ -1658,6 +1785,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbitSlash_Trait_1",
+    weapon: "Orb",
     name: { en: "Void Slash - Healing Wave", pt: "" },
     rawName: { en: "Healing Wave", pt: "" },
     baseSkillName: { en: "Void Slash", pt: "" },
@@ -1671,6 +1799,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbitSlash_Trait_2",
+    weapon: "Orb",
     name: { en: "Void Slash - Reactivate", pt: "" },
     rawName: { en: "Reactivate", pt: "" },
     baseSkillName: { en: "Void Slash", pt: "" },
@@ -1684,6 +1813,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbShoot_Trait_1",
+    weapon: "Orb",
     name: { en: "Summon Constellation - Milky Way", pt: "" },
     rawName: { en: "Milky Way", pt: "" },
     baseSkillName: { en: "Summon Constellation", pt: "" },
@@ -1697,6 +1827,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbShoot_Trait_2",
+    weapon: "Orb",
     name: { en: "Summon Constellation - Damage Boost", pt: "" },
     rawName: { en: "Damage Boost", pt: "" },
     baseSkillName: { en: "Summon Constellation", pt: "" },
@@ -1710,6 +1841,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbShoot_Trait_3",
+    weapon: "Orb",
     name: { en: "Summon Constellation - Shield Block Chance ▼", pt: "" },
     rawName: { en: "Shield Block Chance ▼", pt: "" },
     baseSkillName: { en: "Summon Constellation", pt: "" },
@@ -1723,6 +1855,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbSummon_Trait_1",
+    weapon: "Orb",
     name: { en: "Starcalling - Increase Effect Duration", pt: "" },
     rawName: { en: "Increase Effect Duration", pt: "" },
     baseSkillName: { en: "Starcalling", pt: "" },
@@ -1736,6 +1869,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbSummon_Trait_2",
+    weapon: "Orb",
     name: { en: "Starcalling - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Starcalling", pt: "" },
@@ -1749,6 +1883,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbSummon_Trait_3",
+    weapon: "Orb",
     name: { en: "Starcalling - Reduce Resource Cost", pt: "" },
     rawName: { en: "Reduce Resource Cost", pt: "" },
     baseSkillName: { en: "Starcalling", pt: "" },
@@ -1762,6 +1897,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_PartyBarrier_Trait_1",
+    weapon: "Orb",
     name: { en: "Guardian Defensive Wall - Stun Immunity", pt: "" },
     rawName: { en: "Stun Immunity", pt: "" },
     baseSkillName: { en: "Guardian Defensive Wall", pt: "" },
@@ -1775,6 +1911,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_PartyBarrier_Trait_2",
+    weapon: "Orb",
     name: { en: "Guardian Defensive Wall - Increase Effect Duration", pt: "" },
     rawName: { en: "Increase Effect Duration", pt: "" },
     baseSkillName: { en: "Guardian Defensive Wall", pt: "" },
@@ -1788,6 +1925,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_PartyBarrier_Trait_3",
+    weapon: "Orb",
     name: { en: "Guardian Defensive Wall - Proportionate to Max Health", pt: "" },
     rawName: { en: "Proportionate to Max Health", pt: "" },
     baseSkillName: { en: "Guardian Defensive Wall", pt: "" },
@@ -1801,6 +1939,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Phasing_Trait_1",
+    weapon: "Orb",
     name: { en: "Temporal Leap - Space Transition", pt: "" },
     rawName: { en: "Space Transition", pt: "" },
     baseSkillName: { en: "Temporal Leap", pt: "" },
@@ -1814,6 +1953,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Phasing_Trait_2",
+    weapon: "Orb",
     name: { en: "Temporal Leap - Damage Taken ▼", pt: "" },
     rawName: { en: "Damage Taken ▼", pt: "" },
     baseSkillName: { en: "Temporal Leap", pt: "" },
@@ -1827,6 +1967,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Restoration_Trait_1",
+    weapon: "Orb",
     name: { en: "Restoring Constellation - Time Dilation", pt: "" },
     rawName: { en: "Time Dilation", pt: "" },
     baseSkillName: { en: "Restoring Constellation", pt: "" },
@@ -1840,6 +1981,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Restoration_Trait_2",
+    weapon: "Orb",
     name: { en: "Restoring Constellation - Additional Effects", pt: "" },
     rawName: { en: "Additional Effects", pt: "" },
     baseSkillName: { en: "Restoring Constellation", pt: "" },
@@ -1853,6 +1995,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Restoration_Trait_3",
+    weapon: "Orb",
     name: { en: "Restoring Constellation - Echoes of Distortion", pt: "" },
     rawName: { en: "Echoes of Distortion", pt: "" },
     baseSkillName: { en: "Restoring Constellation", pt: "" },
@@ -1866,6 +2009,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_RollingBall_Trait_1",
+    weapon: "Orb",
     name: { en: "Star Destroyer - Gravity Star Destroyer", pt: "" },
     rawName: { en: "Gravity Star Destroyer", pt: "" },
     baseSkillName: { en: "Star Destroyer", pt: "" },
@@ -1879,6 +2023,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_RollingBall_Trait_2",
+    weapon: "Orb",
     name: { en: "Star Destroyer - Increase Range, Time", pt: "" },
     rawName: { en: "Increase Range, Time", pt: "" },
     baseSkillName: { en: "Star Destroyer", pt: "" },
@@ -1892,6 +2037,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_RollingBall_Trait_3",
+    weapon: "Orb",
     name: { en: "Star Destroyer - Healing Star", pt: "" },
     rawName: { en: "Healing Star", pt: "" },
     baseSkillName: { en: "Star Destroyer", pt: "" },
@@ -1905,6 +2051,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_RollingBall_Trait_4",
+    weapon: "Orb",
     name: { en: "Star Destroyer - Additional Effects", pt: "" },
     rawName: { en: "Additional Effects", pt: "" },
     baseSkillName: { en: "Star Destroyer", pt: "" },
@@ -1918,6 +2065,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Satellite_Trait_1",
+    weapon: "Orb",
     name: { en: "Summon Satellite - Summon Guardian Satellite", pt: "" },
     rawName: { en: "Summon Guardian Satellite", pt: "" },
     baseSkillName: { en: "Summon Satellite", pt: "" },
@@ -1931,6 +2079,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Satellite_Trait_2",
+    weapon: "Orb",
     name: { en: "Summon Satellite - Increase Effect Duration", pt: "" },
     rawName: { en: "Increase Effect Duration", pt: "" },
     baseSkillName: { en: "Summon Satellite", pt: "" },
@@ -1944,6 +2093,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Shield_Trait_1",
+    weapon: "Orb",
     name: { en: "Distortion Veil - Amplification Veil", pt: "" },
     rawName: { en: "Amplification Veil", pt: "" },
     baseSkillName: { en: "Distortion Veil", pt: "" },
@@ -1957,6 +2107,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Shield_Trait_2",
+    weapon: "Orb",
     name: { en: "Distortion Veil - Movement Speed ▲", pt: "" },
     rawName: { en: "Movement Speed ▲", pt: "" },
     baseSkillName: { en: "Distortion Veil", pt: "" },
@@ -1970,6 +2121,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Shield_Trait_3",
+    weapon: "Orb",
     name: { en: "Distortion Veil - Quick Reuse", pt: "" },
     rawName: { en: "Quick Reuse", pt: "" },
     baseSkillName: { en: "Distortion Veil", pt: "" },
@@ -1983,6 +2135,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Shield_Trait_4",
+    weapon: "Orb",
     name: { en: "Distortion Veil - Mana Withdrawal", pt: "" },
     rawName: { en: "Mana Withdrawal", pt: "" },
     baseSkillName: { en: "Distortion Veil", pt: "" },
@@ -1996,6 +2149,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_AbnormalTolerance_trait_1",
+    weapon: "Spear",
     name: { en: "Unyielding Sentinel - Sentinel's Bastion", pt: "" },
     rawName: { en: "Sentinel's Bastion", pt: "" },
     baseSkillName: { en: "Unyielding Sentinel", pt: "" },
@@ -2009,6 +2163,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_AbnormalTolerance_trait_2",
+    weapon: "Spear",
     name: { en: "Unyielding Sentinel - Distant Protection", pt: "" },
     rawName: { en: "Distant Protection", pt: "" },
     baseSkillName: { en: "Unyielding Sentinel", pt: "" },
@@ -2022,6 +2177,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_AbnormalTolerance_trait_3",
+    weapon: "Spear",
     name: { en: "Unyielding Sentinel - Unyielding Shield", pt: "" },
     rawName: { en: "Unyielding Shield", pt: "" },
     baseSkillName: { en: "Unyielding Sentinel", pt: "" },
@@ -2035,6 +2191,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_AbnormalTolerance_trait_4",
+    weapon: "Spear",
     name: { en: "Unyielding Sentinel - Enforcer", pt: "" },
     rawName: { en: "Enforcer", pt: "" },
     baseSkillName: { en: "Unyielding Sentinel", pt: "" },
@@ -2048,6 +2205,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_BloodAura_trait_1",
+    weapon: "Spear",
     name: { en: "Bloodleech Aura - Frequent Bloodleech", pt: "" },
     rawName: { en: "Frequent Bloodleech", pt: "" },
     baseSkillName: { en: "Bloodleech Aura", pt: "" },
@@ -2061,6 +2219,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_BloodAura_trait_2",
+    weapon: "Spear",
     name: { en: "Bloodleech Aura - Bloodleech", pt: "" },
     rawName: { en: "Bloodleech", pt: "" },
     baseSkillName: { en: "Bloodleech Aura", pt: "" },
@@ -2074,6 +2233,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_CrossAttack_trait_1",
+    weapon: "Spear",
     name: { en: "Rising Slash - Bursting Echo", pt: "" },
     rawName: { en: "Bursting Echo", pt: "" },
     baseSkillName: { en: "Rising Slash", pt: "" },
@@ -2087,6 +2247,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_CrossAttack_trait_2",
+    weapon: "Spear",
     name: { en: "Rising Slash - Distant Slash", pt: "" },
     rawName: { en: "Distant Slash", pt: "" },
     baseSkillName: { en: "Rising Slash", pt: "" },
@@ -2100,6 +2261,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_CrossAttack_trait_3",
+    weapon: "Spear",
     name: { en: "Rising Slash - Explosive Damage", pt: "" },
     rawName: { en: "Explosive Damage", pt: "" },
     baseSkillName: { en: "Rising Slash", pt: "" },
@@ -2113,6 +2275,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_CrossAttack_trait_4",
+    weapon: "Spear",
     name: { en: "Rising Slash - Slaughtering Slash", pt: "" },
     rawName: { en: "Slaughtering Slash", pt: "" },
     baseSkillName: { en: "Rising Slash", pt: "" },
@@ -2126,6 +2289,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DashAttack_trait_1",
+    weapon: "Spear",
     name: { en: "Gale Rush - Initiative Blitz", pt: "" },
     rawName: { en: "Initiative Blitz", pt: "" },
     baseSkillName: { en: "Gale Rush", pt: "" },
@@ -2139,6 +2303,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DashAttack_trait_2",
+    weapon: "Spear",
     name: { en: "Gale Rush - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Gale Rush", pt: "" },
@@ -2152,6 +2317,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DashAttack_trait_3",
+    weapon: "Spear",
     name: { en: "Gale Rush - Removes CC effect(s)", pt: "" },
     rawName: { en: "Removes CC effect(s)", pt: "" },
     baseSkillName: { en: "Gale Rush", pt: "" },
@@ -2165,6 +2331,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DashAttack_trait_4",
+    weapon: "Spear",
     name: { en: "Gale Rush - Additional Blitz", pt: "" },
     rawName: { en: "Additional Blitz", pt: "" },
     baseSkillName: { en: "Gale Rush", pt: "" },
@@ -2178,6 +2345,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DefenceAttack_trait_1",
+    weapon: "Spear",
     name: { en: "Cataclysm - Stunning Resolve", pt: "" },
     rawName: { en: "Stunning Resolve", pt: "" },
     baseSkillName: { en: "Cataclysm", pt: "" },
@@ -2191,6 +2359,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DefenceAttack_trait_2",
+    weapon: "Spear",
     name: { en: "Cataclysm - Wreak Havoc", pt: "" },
     rawName: { en: "Wreak Havoc", pt: "" },
     baseSkillName: { en: "Cataclysm", pt: "" },
@@ -2204,6 +2373,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DropAttack_trait_1",
+    weapon: "Spear",
     name: { en: "Death From Above - Tormentor's Guise", pt: "" },
     rawName: { en: "Tormentor's Guise", pt: "" },
     baseSkillName: { en: "Death From Above", pt: "" },
@@ -2217,6 +2387,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DropAttack_trait_2",
+    weapon: "Spear",
     name: { en: "Death From Above - Additional Victims", pt: "" },
     rawName: { en: "Additional Victims", pt: "" },
     baseSkillName: { en: "Death From Above", pt: "" },
@@ -2230,6 +2401,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DropAttack_trait_3",
+    weapon: "Spear",
     name: { en: "Death From Above - Fear Fall", pt: "" },
     rawName: { en: "Fear Fall", pt: "" },
     baseSkillName: { en: "Death From Above", pt: "" },
@@ -2243,6 +2415,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_PushAttack_trait_1",
+    weapon: "Spear",
     name: { en: "Tempest Strike - Constricting Tempest", pt: "" },
     rawName: { en: "Constricting Tempest", pt: "" },
     baseSkillName: { en: "Tempest Strike", pt: "" },
@@ -2256,6 +2429,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_PushAttack_trait_2",
+    weapon: "Spear",
     name: { en: "Tempest Strike - Lasting Storm", pt: "" },
     rawName: { en: "Lasting Storm", pt: "" },
     baseSkillName: { en: "Tempest Strike", pt: "" },
@@ -2269,6 +2443,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_PushAttack_trait_3",
+    weapon: "Spear",
     name: { en: "Tempest Strike - Directional Tempest", pt: "" },
     rawName: { en: "Directional Tempest", pt: "" },
     baseSkillName: { en: "Tempest Strike", pt: "" },
@@ -2282,6 +2457,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidAttack_trait_1",
+    weapon: "Spear",
     name: { en: "Cyclonic Fury - Phoenix Barrage", pt: "" },
     rawName: { en: "Phoenix Barrage", pt: "" },
     baseSkillName: { en: "Cyclonic Fury", pt: "" },
@@ -2295,6 +2471,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidAttack_trait_2",
+    weapon: "Spear",
     name: { en: "Cyclonic Fury - Conditional Damage", pt: "" },
     rawName: { en: "Conditional Damage", pt: "" },
     baseSkillName: { en: "Cyclonic Fury", pt: "" },
@@ -2308,6 +2485,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidAttack_trait_3",
+    weapon: "Spear",
     name: { en: "Cyclonic Fury - Critical Aftermath", pt: "" },
     rawName: { en: "Critical Aftermath", pt: "" },
     baseSkillName: { en: "Cyclonic Fury", pt: "" },
@@ -2321,6 +2499,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidAttack_trait_4",
+    weapon: "Spear",
     name: { en: "Cyclonic Fury - Weaken Shield", pt: "" },
     rawName: { en: "Weaken Shield", pt: "" },
     baseSkillName: { en: "Cyclonic Fury", pt: "" },
@@ -2334,6 +2513,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidThrust_trait_1",
+    weapon: "Spear",
     name: { en: "Vicious Fury - Brutal Fury", pt: "" },
     rawName: { en: "Brutal Fury", pt: "" },
     baseSkillName: { en: "Vicious Fury", pt: "" },
@@ -2347,6 +2527,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidThrust_trait_2",
+    weapon: "Spear",
     name: { en: "Vicious Fury - Explosive Fury", pt: "" },
     rawName: { en: "Explosive Fury", pt: "" },
     baseSkillName: { en: "Vicious Fury", pt: "" },
@@ -2360,6 +2541,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidThrust_trait_3",
+    weapon: "Spear",
     name: { en: "Vicious Fury - Conditional Hit", pt: "" },
     rawName: { en: "Conditional Hit", pt: "" },
     baseSkillName: { en: "Vicious Fury", pt: "" },
@@ -2373,6 +2555,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidThrust_trait_4",
+    weapon: "Spear",
     name: { en: "Vicious Fury - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Vicious Fury", pt: "" },
@@ -2386,6 +2569,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_SpearThrower_trait_1",
+    weapon: "Spear",
     name: { en: "Javelin Surge - Javelin Inferno", pt: "" },
     rawName: { en: "Javelin Inferno", pt: "" },
     baseSkillName: { en: "Javelin Surge", pt: "" },
@@ -2399,6 +2583,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_SpearThrower_trait_2",
+    weapon: "Spear",
     name: { en: "Javelin Surge - Hamstring", pt: "" },
     rawName: { en: "Hamstring", pt: "" },
     baseSkillName: { en: "Javelin Surge", pt: "" },
@@ -2412,6 +2597,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_SpearThrower_trait_3",
+    weapon: "Spear",
     name: { en: "Javelin Surge - Slaying Surge", pt: "" },
     rawName: { en: "Slaying Surge", pt: "" },
     baseSkillName: { en: "Javelin Surge", pt: "" },
@@ -2425,6 +2611,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_StunAttack_trait_1",
+    weapon: "Spear",
     name: { en: "Abyssal Cleave - Ascending Cleave", pt: "" },
     rawName: { en: "Ascending Cleave", pt: "" },
     baseSkillName: { en: "Abyssal Cleave", pt: "" },
@@ -2438,6 +2625,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_StunAttack_trait_2",
+    weapon: "Spear",
     name: { en: "Abyssal Cleave - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Abyssal Cleave", pt: "" },
@@ -2451,6 +2639,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_StunAttack_trait_3",
+    weapon: "Spear",
     name: { en: "Abyssal Cleave - Critical Cleave", pt: "" },
     rawName: { en: "Critical Cleave", pt: "" },
     baseSkillName: { en: "Abyssal Cleave", pt: "" },
@@ -2464,6 +2653,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_ThrustPull_trait_1",
+    weapon: "Spear",
     name: { en: "Culling Arc - Flaming Arc", pt: "" },
     rawName: { en: "Flaming Arc", pt: "" },
     baseSkillName: { en: "Culling Arc", pt: "" },
@@ -2477,6 +2667,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_ThrustPull_trait_2",
+    weapon: "Spear",
     name: { en: "Culling Arc - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Culling Arc", pt: "" },
@@ -2490,6 +2681,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_ThrustPull_trait_3",
+    weapon: "Spear",
     name: { en: "Culling Arc - Damage Increase", pt: "" },
     rawName: { en: "Damage Increase", pt: "" },
     baseSkillName: { en: "Culling Arc", pt: "" },
@@ -2503,6 +2695,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SP_S_ThrustPull_trait_4",
+    weapon: "Spear",
     name: { en: "Culling Arc - Burst", pt: "" },
     rawName: { en: "Burst", pt: "" },
     baseSkillName: { en: "Culling Arc", pt: "" },
@@ -2516,6 +2709,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_AoeTeleport_trait_1",
+    weapon: "Staff",
     name: { en: "Frost Smokescreen - Burning Smokescreen", pt: "" },
     rawName: { en: "Burning Smokescreen", pt: "" },
     baseSkillName: { en: "Frost Smokescreen", pt: "" },
@@ -2529,6 +2723,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_AoeTeleport_trait_2",
+    weapon: "Staff",
     name: { en: "Frost Smokescreen - Apply Designated Ground Targeting", pt: "" },
     rawName: { en: "Apply Designated Ground Targeting", pt: "" },
     baseSkillName: { en: "Frost Smokescreen", pt: "" },
@@ -2542,6 +2737,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_AoeTeleport_trait_3",
+    weapon: "Staff",
     name: { en: "Frost Smokescreen - Additional Damage", pt: "" },
     rawName: { en: "Additional Damage", pt: "" },
     baseSkillName: { en: "Frost Smokescreen", pt: "" },
@@ -2555,6 +2751,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_BringSkill_trait_1",
+    weapon: "Staff",
     name: { en: "Salvation Chain - Redemptive Barrier", pt: "" },
     rawName: { en: "Redemptive Barrier", pt: "" },
     baseSkillName: { en: "Salvation Chain", pt: "" },
@@ -2568,6 +2765,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_BringSkill_trait_2",
+    weapon: "Staff",
     name: { en: "Salvation Chain - Jumping Chain", pt: "" },
     rawName: { en: "Jumping Chain", pt: "" },
     baseSkillName: { en: "Salvation Chain", pt: "" },
@@ -2581,6 +2779,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_BringSkill_trait_3",
+    weapon: "Staff",
     name: { en: "Salvation Chain - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Salvation Chain", pt: "" },
@@ -2594,6 +2793,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_FireCombo_trait_1",
+    weapon: "Staff",
     name: { en: "Fireball Barrage - Fireball Frenzy", pt: "" },
     rawName: { en: "Fireball Frenzy", pt: "" },
     baseSkillName: { en: "Fireball Barrage", pt: "" },
@@ -2607,6 +2807,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_FireCombo_trait_2",
+    weapon: "Staff",
     name: { en: "Fireball Barrage - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Fireball Barrage", pt: "" },
@@ -2620,6 +2821,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_FireCombo_trait_3",
+    weapon: "Staff",
     name: { en: "Fireball Barrage - Mana Burn", pt: "" },
     rawName: { en: "Mana Burn", pt: "" },
     baseSkillName: { en: "Fireball Barrage", pt: "" },
@@ -2633,6 +2835,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_FireCombo_trait_4",
+    weapon: "Staff",
     name: { en: "Fireball Barrage - Mobility", pt: "" },
     rawName: { en: "Mobility", pt: "" },
     baseSkillName: { en: "Fireball Barrage", pt: "" },
@@ -2646,6 +2849,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_FireCombo_trait_5",
+    weapon: "Staff",
     name: { en: "Fireball Barrage - Penetrating Flame", pt: "" },
     rawName: { en: "Penetrating Flame", pt: "" },
     baseSkillName: { en: "Fireball Barrage", pt: "" },
@@ -2659,6 +2863,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_GlobalCoolDownBuff_trait_1",
+    weapon: "Staff",
     name: { en: "High Focus - Targets Expanded", pt: "" },
     rawName: { en: "Targets Expanded", pt: "" },
     baseSkillName: { en: "High Focus", pt: "" },
@@ -2672,6 +2877,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_GlobalCoolDownBuff_trait_2",
+    weapon: "Staff",
     name: { en: "High Focus - Base Damage Boost", pt: "" },
     rawName: { en: "Base Damage Boost", pt: "" },
     baseSkillName: { en: "High Focus", pt: "" },
@@ -2685,6 +2891,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_GlobalCoolDownBuff_trait_3",
+    weapon: "Staff",
     name: { en: "High Focus - Victorious Energy", pt: "" },
     rawName: { en: "Victorious Energy", pt: "" },
     baseSkillName: { en: "High Focus", pt: "" },
@@ -2698,6 +2905,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceFreeze_trait_1",
+    weapon: "Staff",
     name: { en: "Icebound Tomb - Icebound Armor", pt: "" },
     rawName: { en: "Icebound Armor", pt: "" },
     baseSkillName: { en: "Icebound Tomb", pt: "" },
@@ -2711,6 +2919,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceFreeze_trait_2",
+    weapon: "Staff",
     name: { en: "Icebound Tomb - Bind", pt: "" },
     rawName: { en: "Bind", pt: "" },
     baseSkillName: { en: "Icebound Tomb", pt: "" },
@@ -2724,6 +2933,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceFreeze_trait_3",
+    weapon: "Staff",
     name: { en: "Icebound Tomb - Icy Mire", pt: "" },
     rawName: { en: "Icy Mire", pt: "" },
     baseSkillName: { en: "Icebound Tomb", pt: "" },
@@ -2737,6 +2947,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceSpear_trait_1",
+    weapon: "Staff",
     name: { en: "Ice Spear - Ice Spear Bombardment", pt: "" },
     rawName: { en: "Ice Spear Bombardment", pt: "" },
     baseSkillName: { en: "Ice Spear", pt: "" },
@@ -2750,6 +2961,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceSpear_trait_2",
+    weapon: "Staff",
     name: { en: "Ice Spear - Bind", pt: "" },
     rawName: { en: "Bind", pt: "" },
     baseSkillName: { en: "Ice Spear", pt: "" },
@@ -2763,6 +2975,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceSpear_trait_3",
+    weapon: "Staff",
     name: { en: "Ice Spear - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Ice Spear", pt: "" },
@@ -2776,6 +2989,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_MainAttack_trait_1",
+    weapon: "Staff",
     name: { en: "Chain Lightning - Chaining Bolt", pt: "" },
     rawName: { en: "Chaining Bolt", pt: "" },
     baseSkillName: { en: "Chain Lightning", pt: "" },
@@ -2789,6 +3003,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_MainAttack_trait_2",
+    weapon: "Staff",
     name: { en: "Chain Lightning - Damage Transfer", pt: "" },
     rawName: { en: "Damage Transfer", pt: "" },
     baseSkillName: { en: "Chain Lightning", pt: "" },
@@ -2802,6 +3017,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_MainAttack_trait_3",
+    weapon: "Staff",
     name: { en: "Chain Lightning - Damage Transfer", pt: "" },
     rawName: { en: "Damage Transfer", pt: "" },
     baseSkillName: { en: "Chain Lightning", pt: "" },
@@ -2815,6 +3031,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_ManaRengeUp_trait_1",
+    weapon: "Staff",
     name: { en: "Inner Peace - Thunder's Blessing", pt: "" },
     rawName: { en: "Thunder's Blessing", pt: "" },
     baseSkillName: { en: "Inner Peace", pt: "" },
@@ -2828,6 +3045,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_ManaRengeUp_trait_2",
+    weapon: "Staff",
     name: { en: "Inner Peace - Immune to CC", pt: "" },
     rawName: { en: "Immune to CC", pt: "" },
     baseSkillName: { en: "Inner Peace", pt: "" },
@@ -2841,6 +3059,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_ManaRengeUp_trait_3",
+    weapon: "Staff",
     name: { en: "Inner Peace - Effect Duration ▲", pt: "" },
     rawName: { en: "Effect Duration ▲", pt: "" },
     baseSkillName: { en: "Inner Peace", pt: "" },
@@ -2854,6 +3073,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_PowerAttack_trait_1",
+    weapon: "Staff",
     name: { en: "Judgment Lightning - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Judgment Lightning", pt: "" },
@@ -2867,6 +3087,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_PowerAttack_trait_2",
+    weapon: "Staff",
     name: { en: "Judgment Lightning - Damage Transfer", pt: "" },
     rawName: { en: "Damage Transfer", pt: "" },
     baseSkillName: { en: "Judgment Lightning", pt: "" },
@@ -2880,6 +3101,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_PowerAttack_trait_3",
+    weapon: "Staff",
     name: { en: "Judgment Lightning - Damage Transfer", pt: "" },
     rawName: { en: "Damage Transfer", pt: "" },
     baseSkillName: { en: "Judgment Lightning", pt: "" },
@@ -2893,6 +3115,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaAttack_trait_1",
+    weapon: "Staff",
     name: { en: "Serial Fire Bombs - Focused Fire Bombs", pt: "" },
     rawName: { en: "Focused Fire Bombs", pt: "" },
     baseSkillName: { en: "Serial Fire Bombs", pt: "" },
@@ -2906,6 +3129,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaAttack_trait_2",
+    weapon: "Staff",
     name: { en: "Serial Fire Bombs - Mobility", pt: "" },
     rawName: { en: "Mobility", pt: "" },
     baseSkillName: { en: "Serial Fire Bombs", pt: "" },
@@ -2919,6 +3143,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaAttack_trait_3",
+    weapon: "Staff",
     name: { en: "Serial Fire Bombs - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Serial Fire Bombs", pt: "" },
@@ -2932,6 +3157,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaAttack_trait_4",
+    weapon: "Staff",
     name: { en: "Serial Fire Bombs - Projectile Speed Increased", pt: "" },
     rawName: { en: "Projectile Speed Increased", pt: "" },
     baseSkillName: { en: "Serial Fire Bombs", pt: "" },
@@ -2945,6 +3171,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaAttack_trait_5",
+    weapon: "Staff",
     name: { en: "Serial Fire Bombs - Instant Casting", pt: "" },
     rawName: { en: "Instant Casting", pt: "" },
     baseSkillName: { en: "Serial Fire Bombs", pt: "" },
@@ -2958,6 +3185,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaDebuffAttack_trait_1",
+    weapon: "Staff",
     name: { en: "Inferno Wave - Frenzied Lightning Wave", pt: "" },
     rawName: { en: "Frenzied Lightning Wave", pt: "" },
     baseSkillName: { en: "Inferno Wave", pt: "" },
@@ -2971,6 +3199,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaDebuffAttack_trait_2",
+    weapon: "Staff",
     name: { en: "Inferno Wave - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Inferno Wave", pt: "" },
@@ -2984,6 +3213,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaDebuffAttack_trait_3",
+    weapon: "Staff",
     name: { en: "Inferno Wave - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Inferno Wave", pt: "" },
@@ -2997,6 +3227,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaDebuffAttack_trait_4",
+    weapon: "Staff",
     name: { en: "Inferno Wave - Burning", pt: "" },
     rawName: { en: "Burning", pt: "" },
     baseSkillName: { en: "Inferno Wave", pt: "" },
@@ -3010,6 +3241,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaPowerAttack_trait_1",
+    weapon: "Staff",
     name: { en: "Infernal Meteor - Hellfire Rain", pt: "" },
     rawName: { en: "Hellfire Rain", pt: "" },
     baseSkillName: { en: "Infernal Meteor", pt: "" },
@@ -3023,6 +3255,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaPowerAttack_trait_2",
+    weapon: "Staff",
     name: { en: "Infernal Meteor - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Infernal Meteor", pt: "" },
@@ -3036,6 +3269,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaPowerAttack_trait_3",
+    weapon: "Staff",
     name: { en: "Infernal Meteor - Health Recovery Slowed", pt: "" },
     rawName: { en: "Health Recovery Slowed", pt: "" },
     baseSkillName: { en: "Infernal Meteor", pt: "" },
@@ -3049,6 +3283,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_CounterAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Death Blow - Charges Damage", pt: "" },
     rawName: { en: "Charges Damage", pt: "" },
     baseSkillName: { en: "Death Blow", pt: "" },
@@ -3062,6 +3297,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_CounterAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Death Blow - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Death Blow", pt: "" },
@@ -3075,6 +3311,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_CounterAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Death Blow - Damage ▲", pt: "" },
     rawName: { en: "Damage ▲", pt: "" },
     baseSkillName: { en: "Death Blow", pt: "" },
@@ -3088,6 +3325,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DamageReceive_trait_1",
+    weapon: "Greatsword",
     name: { en: "Blood Devotion - Devoted Sanctuary", pt: "" },
     rawName: { en: "Devoted Sanctuary", pt: "" },
     baseSkillName: { en: "Blood Devotion", pt: "" },
@@ -3101,6 +3339,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DamageReceive_trait_2",
+    weapon: "Greatsword",
     name: { en: "Blood Devotion - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "Blood Devotion", pt: "" },
@@ -3114,6 +3353,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DamageReceive_trait_3",
+    weapon: "Greatsword",
     name: { en: "Blood Devotion - Damage Transfer Increase", pt: "" },
     rawName: { en: "Damage Transfer Increase", pt: "" },
     baseSkillName: { en: "Blood Devotion", pt: "" },
@@ -3127,6 +3367,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DamageReceive_trait_4",
+    weapon: "Greatsword",
     name: { en: "Blood Devotion - Damage Increased", pt: "" },
     rawName: { en: "Damage Increased", pt: "" },
     baseSkillName: { en: "Blood Devotion", pt: "" },
@@ -3140,6 +3381,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DamageReceive_trait_5",
+    weapon: "Greatsword",
     name: { en: "Blood Devotion - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Blood Devotion", pt: "" },
@@ -3153,6 +3395,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DashAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Precision Dash - Bind", pt: "" },
     rawName: { en: "Bind", pt: "" },
     baseSkillName: { en: "Precision Dash", pt: "" },
@@ -3166,6 +3409,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DashAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Precision Dash - Skill Range ▲", pt: "" },
     rawName: { en: "Skill Range ▲", pt: "" },
     baseSkillName: { en: "Precision Dash", pt: "" },
@@ -3179,6 +3423,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DashAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Precision Dash - Shield Block Chance decreases", pt: "" },
     rawName: { en: "Shield Block Chance decreases", pt: "" },
     baseSkillName: { en: "Precision Dash", pt: "" },
@@ -3192,6 +3437,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DashAttack_trait_4",
+    weapon: "Greatsword",
     name: { en: "Precision Dash - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Precision Dash", pt: "" },
@@ -3205,6 +3451,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DefenseDebuffAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Willbreaker - Damage Area Change", pt: "" },
     rawName: { en: "Damage Area Change", pt: "" },
     baseSkillName: { en: "Willbreaker", pt: "" },
@@ -3218,6 +3465,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DefenseDebuffAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Willbreaker - Evasion Decrease", pt: "" },
     rawName: { en: "Evasion Decrease", pt: "" },
     baseSkillName: { en: "Willbreaker", pt: "" },
@@ -3231,6 +3479,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DefenseDebuffAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Willbreaker - Aggro ▲", pt: "" },
     rawName: { en: "Aggro ▲", pt: "" },
     baseSkillName: { en: "Willbreaker", pt: "" },
@@ -3244,6 +3493,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_GaiaCrash_trait_1",
+    weapon: "Greatsword",
     name: { en: "Gaia Crash - Frost Cleaving", pt: "" },
     rawName: { en: "Frost Cleaving", pt: "" },
     baseSkillName: { en: "Gaia Crash", pt: "" },
@@ -3257,6 +3507,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_GaiaCrash_trait_2",
+    weapon: "Greatsword",
     name: { en: "Gaia Crash - Attack Speed ▲", pt: "" },
     rawName: { en: "Attack Speed ▲", pt: "" },
     baseSkillName: { en: "Gaia Crash", pt: "" },
@@ -3270,6 +3521,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_GaiaCrash_trait_3",
+    weapon: "Greatsword",
     name: { en: "Gaia Crash - Critical Hit Chance Increase", pt: "" },
     rawName: { en: "Critical Hit Chance Increase", pt: "" },
     baseSkillName: { en: "Gaia Crash", pt: "" },
@@ -3283,6 +3535,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_LeapAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Devastating Smash - Chance Increased", pt: "" },
     rawName: { en: "Chance Increased", pt: "" },
     baseSkillName: { en: "Devastating Smash", pt: "" },
@@ -3296,6 +3549,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_LeapAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Devastating Smash - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Devastating Smash", pt: "" },
@@ -3309,6 +3563,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_MainAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Valiant Brawl - Cruel Smite", pt: "" },
     rawName: { en: "Cruel Smite", pt: "" },
     baseSkillName: { en: "Valiant Brawl", pt: "" },
@@ -3322,6 +3577,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_MainAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Valiant Brawl - Damage Increased", pt: "" },
     rawName: { en: "Damage Increased", pt: "" },
     baseSkillName: { en: "Valiant Brawl", pt: "" },
@@ -3335,6 +3591,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_MainAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Valiant Brawl - Aggro ▲", pt: "" },
     rawName: { en: "Aggro ▲", pt: "" },
     baseSkillName: { en: "Valiant Brawl", pt: "" },
@@ -3348,6 +3605,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_MainAttack_trait_4",
+    weapon: "Greatsword",
     name: { en: "Valiant Brawl - Weaken Shield", pt: "" },
     rawName: { en: "Weaken Shield", pt: "" },
     baseSkillName: { en: "Valiant Brawl", pt: "" },
@@ -3361,6 +3619,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_PowerAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Guillotine Blade - Charges Damage", pt: "" },
     rawName: { en: "Charges Damage", pt: "" },
     baseSkillName: { en: "Guillotine Blade", pt: "" },
@@ -3374,6 +3633,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_PowerAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Guillotine Blade - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Guillotine Blade", pt: "" },
@@ -3387,6 +3647,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_PowerAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Guillotine Blade - AoE Damage", pt: "" },
     rawName: { en: "AoE Damage", pt: "" },
     baseSkillName: { en: "Guillotine Blade", pt: "" },
@@ -3400,6 +3661,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_ShieldBuff_trait_1",
+    weapon: "Greatsword",
     name: { en: "DaVinci's Courage - DaVinci's Chill", pt: "" },
     rawName: { en: "DaVinci's Chill", pt: "" },
     baseSkillName: { en: "DaVinci's Courage", pt: "" },
@@ -3413,6 +3675,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_ShieldBuff_trait_2",
+    weapon: "Greatsword",
     name: { en: "DaVinci's Courage - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "DaVinci's Courage", pt: "" },
@@ -3426,6 +3689,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_ShieldBuff_trait_3",
+    weapon: "Greatsword",
     name: { en: "DaVinci's Courage - Damage Reduction", pt: "" },
     rawName: { en: "Damage Reduction", pt: "" },
     baseSkillName: { en: "DaVinci's Courage", pt: "" },
@@ -3439,6 +3703,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_ShieldBuff_trait_4",
+    weapon: "Greatsword",
     name: { en: "DaVinci's Courage - Instant Healing", pt: "" },
     rawName: { en: "Instant Healing", pt: "" },
     baseSkillName: { en: "DaVinci's Courage", pt: "" },
@@ -3452,6 +3717,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_SpinAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Devastating Tornado - Ice Tornado", pt: "" },
     rawName: { en: "Ice Tornado", pt: "" },
     baseSkillName: { en: "Devastating Tornado", pt: "" },
@@ -3465,6 +3731,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_SpinAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Devastating Tornado - Resistance Increase", pt: "" },
     rawName: { en: "Resistance Increase", pt: "" },
     baseSkillName: { en: "Devastating Tornado", pt: "" },
@@ -3478,6 +3745,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_SpinAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Devastating Tornado - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Devastating Tornado", pt: "" },
@@ -3491,6 +3759,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_SpinAttack_trait_4",
+    weapon: "Greatsword",
     name: { en: "Devastating Tornado - Additional Damage", pt: "" },
     rawName: { en: "Additional Damage", pt: "" },
     baseSkillName: { en: "Devastating Tornado", pt: "" },
@@ -3504,6 +3773,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Stunning Blow - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Stunning Blow", pt: "" },
@@ -3517,6 +3787,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Stunning Blow - Damage Increased", pt: "" },
     rawName: { en: "Damage Increased", pt: "" },
     baseSkillName: { en: "Stunning Blow", pt: "" },
@@ -3530,6 +3801,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Stunning Blow - Aggro ▲", pt: "" },
     rawName: { en: "Aggro ▲", pt: "" },
     baseSkillName: { en: "Stunning Blow", pt: "" },
@@ -3543,6 +3815,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunAttack_trait_4",
+    weapon: "Greatsword",
     name: { en: "Stunning Blow - Hit Chance Increase", pt: "" },
     rawName: { en: "Hit Chance Increase", pt: "" },
     baseSkillName: { en: "Stunning Blow", pt: "" },
@@ -3556,6 +3829,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunAttack_trait_5",
+    weapon: "Greatsword",
     name: { en: "Stunning Blow - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Stunning Blow", pt: "" },
@@ -3569,6 +3843,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_UpperAttack_trait_1",
+    weapon: "Greatsword",
     name: { en: "Ascending Slash - Charging Slash", pt: "" },
     rawName: { en: "Charging Slash", pt: "" },
     baseSkillName: { en: "Ascending Slash", pt: "" },
@@ -3582,6 +3857,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_UpperAttack_trait_2",
+    weapon: "Greatsword",
     name: { en: "Ascending Slash - Damage Increased", pt: "" },
     rawName: { en: "Damage Increased", pt: "" },
     baseSkillName: { en: "Ascending Slash", pt: "" },
@@ -3595,6 +3871,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_UpperAttack_trait_3",
+    weapon: "Greatsword",
     name: { en: "Ascending Slash - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Ascending Slash", pt: "" },
@@ -3608,6 +3885,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_UpperAttack_trait_4",
+    weapon: "Greatsword",
     name: { en: "Ascending Slash - Effect Duration Increase", pt: "" },
     rawName: { en: "Effect Duration Increase", pt: "" },
     baseSkillName: { en: "Ascending Slash", pt: "" },
@@ -3621,6 +3899,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_BuffAttack_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Counter Barrier - Concentrated Barrier", pt: "" },
     rawName: { en: "Concentrated Barrier", pt: "" },
     baseSkillName: { en: "Counter Barrier", pt: "" },
@@ -3634,6 +3913,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_BuffAttack_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Counter Barrier - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Counter Barrier", pt: "" },
@@ -3647,6 +3927,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_BuffAttack_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Counter Barrier - Damage Increased", pt: "" },
     rawName: { en: "Damage Increased", pt: "" },
     baseSkillName: { en: "Counter Barrier", pt: "" },
@@ -3660,6 +3941,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DashAttack_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Strategic Rush - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Strategic Rush", pt: "" },
@@ -3673,6 +3955,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DashAttack_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Strategic Rush - Affected Targets ▲", pt: "" },
     rawName: { en: "Affected Targets ▲", pt: "" },
     baseSkillName: { en: "Strategic Rush", pt: "" },
@@ -3686,6 +3969,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DashAttack_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Strategic Rush - Movement Speed Slowed", pt: "" },
     rawName: { en: "Movement Speed Slowed", pt: "" },
     baseSkillName: { en: "Strategic Rush", pt: "" },
@@ -3699,6 +3983,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DashAttack_trait_4",
+    weapon: "Sword & Shield",
     name: { en: "Strategic Rush - Shield Block Chance Decrease", pt: "" },
     rawName: { en: "Shield Block Chance Decrease", pt: "" },
     baseSkillName: { en: "Strategic Rush", pt: "" },
@@ -3712,6 +3997,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DebuffAttack_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Shield Strike - Piercing Strike", pt: "" },
     rawName: { en: "Piercing Strike", pt: "" },
     baseSkillName: { en: "Shield Strike", pt: "" },
@@ -3725,6 +4011,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DebuffAttack_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Shield Strike - Aggro ▲", pt: "" },
     rawName: { en: "Aggro ▲", pt: "" },
     baseSkillName: { en: "Shield Strike", pt: "" },
@@ -3738,6 +4025,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DebuffAttack_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Shield Strike - Critical Hit Chance ▼", pt: "" },
     rawName: { en: "Critical Hit Chance ▼", pt: "" },
     baseSkillName: { en: "Shield Strike", pt: "" },
@@ -3751,6 +4039,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ManaAttack_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Witty Retort - Stamina Recovery", pt: "" },
     rawName: { en: "Stamina Recovery", pt: "" },
     baseSkillName: { en: "Witty Retort", pt: "" },
@@ -3764,6 +4053,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ManaAttack_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Witty Retort - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Witty Retort", pt: "" },
@@ -3777,6 +4067,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_MaxHealthUp_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Immortal Pride - Blessing of Immortality", pt: "" },
     rawName: { en: "Blessing of Immortality", pt: "" },
     baseSkillName: { en: "Immortal Pride", pt: "" },
@@ -3790,6 +4081,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_MaxHealthUp_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Immortal Pride - Mana Cost Reduced", pt: "" },
     rawName: { en: "Mana Cost Reduced", pt: "" },
     baseSkillName: { en: "Immortal Pride", pt: "" },
@@ -3803,6 +4095,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_MaxHealthUp_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Immortal Pride - Health Regen", pt: "" },
     rawName: { en: "Health Regen", pt: "" },
     baseSkillName: { en: "Immortal Pride", pt: "" },
@@ -3816,6 +4109,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_MaxHealthUp_trait_4",
+    weapon: "Sword & Shield",
     name: { en: "Immortal Pride - All Defense ▲", pt: "" },
     rawName: { en: "All Defense ▲", pt: "" },
     baseSkillName: { en: "Immortal Pride", pt: "" },
@@ -3829,6 +4123,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PullSkill_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Chain Hook - Controlling Rake", pt: "" },
     rawName: { en: "Controlling Rake", pt: "" },
     baseSkillName: { en: "Chain Hook", pt: "" },
@@ -3842,6 +4137,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PullSkill_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Chain Hook - Skill Range ▲", pt: "" },
     rawName: { en: "Skill Range ▲", pt: "" },
     baseSkillName: { en: "Chain Hook", pt: "" },
@@ -3855,6 +4151,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PullSkill_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Chain Hook - Wrath Attack", pt: "" },
     rawName: { en: "Wrath Attack", pt: "" },
     baseSkillName: { en: "Chain Hook", pt: "" },
@@ -3868,6 +4165,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PullSkill_trait_4",
+    weapon: "Sword & Shield",
     name: { en: "Chain Hook - Rear Chain Hook", pt: "" },
     rawName: { en: "Rear Chain Hook", pt: "" },
     baseSkillName: { en: "Chain Hook", pt: "" },
@@ -3881,6 +4179,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PushAttack_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Fierce Clash - Desperate Clash", pt: "" },
     rawName: { en: "Desperate Clash", pt: "" },
     baseSkillName: { en: "Fierce Clash", pt: "" },
@@ -3894,6 +4193,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PushAttack_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Fierce Clash - Damage Increase", pt: "" },
     rawName: { en: "Damage Increase", pt: "" },
     baseSkillName: { en: "Fierce Clash", pt: "" },
@@ -3907,6 +4207,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PushAttack_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Fierce Clash - Chance Increased", pt: "" },
     rawName: { en: "Chance Increased", pt: "" },
     baseSkillName: { en: "Fierce Clash", pt: "" },
@@ -3920,6 +4221,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldBuff_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Stalwart Bastion - Righteous Fury", pt: "" },
     rawName: { en: "Righteous Fury", pt: "" },
     baseSkillName: { en: "Stalwart Bastion", pt: "" },
@@ -3933,6 +4235,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldBuff_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Stalwart Bastion - Movement Speed Increase", pt: "" },
     rawName: { en: "Movement Speed Increase", pt: "" },
     baseSkillName: { en: "Stalwart Bastion", pt: "" },
@@ -3946,6 +4249,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldBuff_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Stalwart Bastion - Stalwart Ego", pt: "" },
     rawName: { en: "Stalwart Ego", pt: "" },
     baseSkillName: { en: "Stalwart Bastion", pt: "" },
@@ -3959,6 +4263,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldBuff_trait_4",
+    weapon: "Sword & Shield",
     name: { en: "Stalwart Bastion - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Stalwart Bastion", pt: "" },
@@ -3972,6 +4277,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldThrow_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Shield Throw - Whirling Shield", pt: "" },
     rawName: { en: "Whirling Shield", pt: "" },
     baseSkillName: { en: "Shield Throw", pt: "" },
@@ -3985,6 +4291,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldThrow_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Shield Throw - Aggro ▲", pt: "" },
     rawName: { en: "Aggro ▲", pt: "" },
     baseSkillName: { en: "Shield Throw", pt: "" },
@@ -3998,6 +4305,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldThrow_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Shield Throw - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Shield Throw", pt: "" },
@@ -4011,6 +4319,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldThrow_trait_4",
+    weapon: "Sword & Shield",
     name: { en: "Shield Throw - Endurance ▼", pt: "" },
     rawName: { en: "Endurance ▼", pt: "" },
     baseSkillName: { en: "Shield Throw", pt: "" },
@@ -4024,6 +4333,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Provoking Roar - Cleaving Roar", pt: "" },
     rawName: { en: "Cleaving Roar", pt: "" },
     baseSkillName: { en: "Provoking Roar", pt: "" },
@@ -4037,6 +4347,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Provoking Roar - Effect Duration ▲", pt: "" },
     rawName: { en: "Effect Duration ▲", pt: "" },
     baseSkillName: { en: "Provoking Roar", pt: "" },
@@ -4050,6 +4361,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Provoking Roar - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Provoking Roar", pt: "" },
@@ -4063,6 +4375,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff_trait_4",
+    weapon: "Sword & Shield",
     name: { en: "Provoking Roar - Additional Damage", pt: "" },
     rawName: { en: "Additional Damage", pt: "" },
     baseSkillName: { en: "Provoking Roar", pt: "" },
@@ -4076,6 +4389,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_VictoryAttack_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "A Shot at Victory - Annihilation Blade", pt: "" },
     rawName: { en: "Annihilation Blade", pt: "" },
     baseSkillName: { en: "A Shot at Victory", pt: "" },
@@ -4089,6 +4403,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_VictoryAttack_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "A Shot at Victory - Effect Boost", pt: "" },
     rawName: { en: "Effect Boost", pt: "" },
     baseSkillName: { en: "A Shot at Victory", pt: "" },
@@ -4102,6 +4417,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_VictoryAttack_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "A Shot at Victory - Effect Duration ▲", pt: "" },
     rawName: { en: "Effect Duration ▲", pt: "" },
     baseSkillName: { en: "A Shot at Victory", pt: "" },
@@ -4115,6 +4431,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_WhirlwindSlash_trait_1",
+    weapon: "Sword & Shield",
     name: { en: "Annihilating Slash - Movement Speed Slowed", pt: "" },
     rawName: { en: "Movement Speed Slowed", pt: "" },
     baseSkillName: { en: "Annihilating Slash", pt: "" },
@@ -4128,6 +4445,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_WhirlwindSlash_trait_2",
+    weapon: "Sword & Shield",
     name: { en: "Annihilating Slash - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Annihilating Slash", pt: "" },
@@ -4141,6 +4459,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_WhirlwindSlash_trait_3",
+    weapon: "Sword & Shield",
     name: { en: "Annihilating Slash - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Annihilating Slash", pt: "" },
@@ -4154,6 +4473,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Corruption_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Touch of Despair - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Touch of Despair", pt: "" },
@@ -4167,6 +4487,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Corruption_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Touch of Despair - Effect Duration ▲", pt: "" },
     rawName: { en: "Effect Duration ▲", pt: "" },
     baseSkillName: { en: "Touch of Despair", pt: "" },
@@ -4180,6 +4501,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Corruption_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Touch of Despair - Curse", pt: "" },
     rawName: { en: "Curse", pt: "" },
     baseSkillName: { en: "Touch of Despair", pt: "" },
@@ -4193,6 +4515,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseArea_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Corrupted Magic Circle - Decaying Touch", pt: "" },
     rawName: { en: "Decaying Touch", pt: "" },
     baseSkillName: { en: "Corrupted Magic Circle", pt: "" },
@@ -4206,6 +4529,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseArea_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Corrupted Magic Circle - Rotten Marsh", pt: "" },
     rawName: { en: "Rotten Marsh", pt: "" },
     baseSkillName: { en: "Corrupted Magic Circle", pt: "" },
@@ -4219,6 +4543,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseArea_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Corrupted Magic Circle - Additional Damage", pt: "" },
     rawName: { en: "Additional Damage", pt: "" },
     baseSkillName: { en: "Corrupted Magic Circle", pt: "" },
@@ -4232,6 +4557,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseBurst_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Curse Explosion - Dark Explosion", pt: "" },
     rawName: { en: "Dark Explosion", pt: "" },
     baseSkillName: { en: "Curse Explosion", pt: "" },
@@ -4245,6 +4571,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseBurst_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Curse Explosion - Damage Increased", pt: "" },
     rawName: { en: "Damage Increased", pt: "" },
     baseSkillName: { en: "Curse Explosion", pt: "" },
@@ -4258,6 +4585,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseBurst_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Curse Explosion - Focus target", pt: "" },
     rawName: { en: "Focus target", pt: "" },
     baseSkillName: { en: "Curse Explosion", pt: "" },
@@ -4271,6 +4599,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseSpread_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Karmic Haze - Witching Hour", pt: "" },
     rawName: { en: "Witching Hour", pt: "" },
     baseSkillName: { en: "Karmic Haze", pt: "" },
@@ -4284,6 +4613,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseSpread_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Karmic Haze - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Karmic Haze", pt: "" },
@@ -4297,6 +4627,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseSpread_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Karmic Haze - Additional Damage", pt: "" },
     rawName: { en: "Additional Damage", pt: "" },
     baseSkillName: { en: "Karmic Haze", pt: "" },
@@ -4310,6 +4641,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Decay_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Time for Punishment - Enchanting Time", pt: "" },
     rawName: { en: "Enchanting Time", pt: "" },
     baseSkillName: { en: "Time for Punishment", pt: "" },
@@ -4323,6 +4655,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Decay_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Time for Punishment - Effect Duration ▲", pt: "" },
     rawName: { en: "Effect Duration ▲", pt: "" },
     baseSkillName: { en: "Time for Punishment", pt: "" },
@@ -4336,6 +4669,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Decay_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Time for Punishment - Burning Time", pt: "" },
     rawName: { en: "Burning Time", pt: "" },
     baseSkillName: { en: "Time for Punishment", pt: "" },
@@ -4349,6 +4683,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_DefenseUp_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Blessed Barrier - Valorous Barrier", pt: "" },
     rawName: { en: "Valorous Barrier", pt: "" },
     baseSkillName: { en: "Blessed Barrier", pt: "" },
@@ -4362,6 +4697,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_DefenseUp_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Blessed Barrier - Targets Expanded", pt: "" },
     rawName: { en: "Targets Expanded", pt: "" },
     baseSkillName: { en: "Blessed Barrier", pt: "" },
@@ -4375,6 +4711,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_DefenseUp_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Blessed Barrier - Duration Increased", pt: "" },
     rawName: { en: "Duration Increased", pt: "" },
     baseSkillName: { en: "Blessed Barrier", pt: "" },
@@ -4388,6 +4725,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealAll_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Clay's Salvation - Janice's Rage", pt: "" },
     rawName: { en: "Janice's Rage", pt: "" },
     baseSkillName: { en: "Clay's Salvation", pt: "" },
@@ -4401,6 +4739,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealAll_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Clay's Salvation - Weaken Removal", pt: "" },
     rawName: { en: "Weaken Removal", pt: "" },
     baseSkillName: { en: "Clay's Salvation", pt: "" },
@@ -4414,6 +4753,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealAll_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Clay's Salvation - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Clay's Salvation", pt: "" },
@@ -4427,6 +4767,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealField_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Fountain of Life - Mana Recovery", pt: "" },
     rawName: { en: "Mana Recovery", pt: "" },
     baseSkillName: { en: "Fountain of Life", pt: "" },
@@ -4440,6 +4781,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealField_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Fountain of Life - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Fountain of Life", pt: "" },
@@ -4453,6 +4795,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealField_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Fountain of Life - Effect Duration ▲", pt: "" },
     rawName: { en: "Effect Duration ▲", pt: "" },
     baseSkillName: { en: "Fountain of Life", pt: "" },
@@ -4466,6 +4809,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Heal_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Swift Healing - Healing Transfers", pt: "" },
     rawName: { en: "Healing Transfers", pt: "" },
     baseSkillName: { en: "Swift Healing", pt: "" },
@@ -4479,6 +4823,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Heal_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Swift Healing - Consecutive Use", pt: "" },
     rawName: { en: "Consecutive Use", pt: "" },
     baseSkillName: { en: "Swift Healing", pt: "" },
@@ -4492,6 +4837,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Heal_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Swift Healing - Skill Range ▲", pt: "" },
     rawName: { en: "Skill Range ▲", pt: "" },
     baseSkillName: { en: "Swift Healing", pt: "" },
@@ -4505,6 +4851,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Heal_trait_4",
+    weapon: "Wand & Tome",
     name: { en: "Swift Healing - Mana Recovery", pt: "" },
     rawName: { en: "Mana Recovery", pt: "" },
     baseSkillName: { en: "Swift Healing", pt: "" },
@@ -4518,6 +4865,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_LinkLaser_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Ray of Disaster - Targets Expanded", pt: "" },
     rawName: { en: "Targets Expanded", pt: "" },
     baseSkillName: { en: "Ray of Disaster", pt: "" },
@@ -4531,6 +4879,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_LinkLaser_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Ray of Disaster - Movement Speed Slowed", pt: "" },
     rawName: { en: "Movement Speed Slowed", pt: "" },
     baseSkillName: { en: "Ray of Disaster", pt: "" },
@@ -4544,6 +4893,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_LinkLaser_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Ray of Disaster - Cooldown ▼", pt: "" },
     rawName: { en: "Cooldown ▼", pt: "" },
     baseSkillName: { en: "Ray of Disaster", pt: "" },
@@ -4557,6 +4907,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_LinkLaser_trait_4",
+    weapon: "Wand & Tome",
     name: { en: "Ray of Disaster - Concentration Effect Time", pt: "" },
     rawName: { en: "Concentration Effect Time", pt: "" },
     baseSkillName: { en: "Ray of Disaster", pt: "" },
@@ -4570,6 +4921,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_MagicShield_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Invincible Wall - Targets Expanded", pt: "" },
     rawName: { en: "Targets Expanded", pt: "" },
     baseSkillName: { en: "Invincible Wall", pt: "" },
@@ -4583,6 +4935,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_MagicShield_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Invincible Wall - Range Increase", pt: "" },
     rawName: { en: "Range Increase", pt: "" },
     baseSkillName: { en: "Invincible Wall", pt: "" },
@@ -4596,6 +4949,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_MagicShield_trait_3",
+    weapon: "Wand & Tome",
     name: { en: "Invincible Wall - Evasion, Endurance Increase", pt: "" },
     rawName: { en: "Evasion, Endurance Increase", pt: "" },
     baseSkillName: { en: "Invincible Wall", pt: "" },
@@ -4609,6 +4963,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Sleep_trait_1",
+    weapon: "Wand & Tome",
     name: { en: "Cursed Nightmare - Deep Sleep", pt: "" },
     rawName: { en: "Deep Sleep", pt: "" },
     baseSkillName: { en: "Cursed Nightmare", pt: "" },
@@ -4622,6 +4977,7 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Sleep_trait_2",
+    weapon: "Wand & Tome",
     name: { en: "Cursed Nightmare - Enhanced Nightmare", pt: "" },
     rawName: { en: "Enhanced Nightmare", pt: "" },
     baseSkillName: { en: "Cursed Nightmare", pt: "" },
@@ -4633,17 +4989,4 @@ export const SKILL_ENHANCEMENTS: SkillEnhancement[] = [
     requiredPoints: 5,
     description: { en: "Instantly falls asleep unless affected by Movement Speed decrease.", pt: "" },
   },
-  {
-    id: "SkillSet_WP_WA_GR_S_Sleep_trait_3",
-    name: { en: "Cursed Nightmare - Enhanced Mire", pt: "" },
-    rawName: { en: "Enhanced Mire", pt: "" },
-    baseSkillName: { en: "Cursed Nightmare", pt: "" },
-    skillSetId: "SkillSet_WP_WA_GR_S_Sleep",
-    groupId: "kGroup_01",
-    grade: "Common",
-    effect: { en: "Creates a Movement Speed decrease area", pt: "" },
-    unlockLevel: 15,
-    requiredPoints: 5,
-    description: { en: "Movement Speed decrease duration increases by 2s, when Movement Speed decrease is applied. Also creates a 5m radius zone which decreases Movement Speed and Attack Speed by 30% with a(n) 80% chance for 3s.", pt: "" },
-  }
 ]

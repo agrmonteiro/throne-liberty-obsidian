@@ -36,7 +36,7 @@ export interface Skill {
 export const SKILLS: Skill[] = [
   {
     id: "SkillSet_WP_BO_S_AbnormalDispel",
-    name: { en: "Purifying Touch", pt: "" },
+    name: { en: "Purifying Touch", pt: "Toque Purificador" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -49,7 +49,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_AbnormalShield",
-    name: { en: "Devoted Shield", pt: "" },
+    name: { en: "Devoted Shield", pt: "Escudo Devoto" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "passive",
@@ -62,7 +62,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_AttackMark",
-    name: { en: "Deadly Marker", pt: "" },
+    name: { en: "Deadly Marker", pt: "Marcador Letal" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -75,7 +75,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_AuraDefenceUp",
-    name: { en: "Distorted Sanctuary", pt: "" },
+    name: { en: "Distorted Sanctuary", pt: "Santuário Distorcido" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "passive",
@@ -88,7 +88,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_BindAccuracyBoost",
-    name: { en: "Steady Aim", pt: "" },
+    name: { en: "Steady Aim", pt: "Pontaria Firme" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "passive",
@@ -101,7 +101,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_BindShot",
-    name: { en: "Ensnaring Arrow", pt: "" },
+    name: { en: "Ensnaring Arrow", pt: "Flecha Aprisionadora" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -114,7 +114,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_CounterMove",
-    name: { en: "Overtaker", pt: "" },
+    name: { en: "Overtaker", pt: "Dominador" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "defensive",
@@ -127,7 +127,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_Detection",
-    name: { en: "Flash Arrow", pt: "" },
+    name: { en: "Flash Arrow", pt: "Flecha Relâmpago" },
     weapon: "Longbow",
     grade: "Epic",
     type: "active",
@@ -140,7 +140,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_DistanceCritical",
-    name: { en: "Sniper's Sense", pt: "" },
+    name: { en: "Sniper's Sense", pt: "Senso de Atirador" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "passive",
@@ -153,7 +153,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_DoubleShot",
-    name: { en: "Blitz", pt: "" },
+    name: { en: "Blitz", pt: "Blitz" },
     weapon: "Longbow",
     grade: "Epic",
     type: "active",
@@ -167,7 +167,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_DropShot",
-    name: { en: "Brutal Arrow", pt: "" },
+    name: { en: "Brutal Arrow", pt: "Flecha Brutal" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -180,7 +180,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_InplaceAttack",
-    name: { en: "Rapidfire Stance", pt: "" },
+    name: { en: "Rapidfire Stance", pt: "Postura de Rápido Fogo" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "passive",
@@ -193,7 +193,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_MultiShot",
-    name: { en: "Strafing", pt: "" },
+    name: { en: "Strafing", pt: "Enfiada Lateral" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -207,7 +207,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_NatureForce",
-    name: { en: "Earth's Blessing", pt: "" },
+    name: { en: "Earth's Blessing", pt: "Bênção da Terra" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "passive",
@@ -220,7 +220,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_PowerShot",
-    name: { en: "Decisive Sniping", pt: "" },
+    name: { en: "Decisive Sniping", pt: "Disparo Decisivo" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -234,7 +234,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenAura",
-    name: { en: "Nature's Blessing", pt: "" },
+    name: { en: "Nature's Blessing", pt: "Bênção da Natureza" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -247,7 +247,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_RegenHeal",
-    name: { en: "Healing Touch", pt: "" },
+    name: { en: "Healing Touch", pt: "Toque Curativo" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -260,7 +260,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_StrongShot",
-    name: { en: "Zephyr's Nock", pt: "" },
+    name: { en: "Zephyr's Nock", pt: "Encaixe de Zéfiro" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -273,7 +273,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_TornadoShot",
-    name: { en: "Arrow Vortex", pt: "" },
+    name: { en: "Arrow Vortex", pt: "Vórtice de Flechas" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "active",
@@ -286,7 +286,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_BO_S_WindBonusProjectile",
-    name: { en: "Roxie's Arrowhead", pt: "" },
+    name: { en: "Roxie's Arrowhead", pt: "Ponta de Flecha de Roxie" },
     weapon: "Longbow",
     grade: "Uncommon",
     type: "passive",
@@ -299,7 +299,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_AddProjectile",
-    name: { en: "Mother Nature's Protest", pt: "" },
+    name: { en: "Mother Nature's Protest", pt: "Protesto da Mãe Natureza" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -312,7 +312,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_ArmorBreakShot",
-    name: { en: "Mortal Mark", pt: "" },
+    name: { en: "Mortal Mark", pt: "Marca Mortal" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -326,7 +326,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BloodToSoul",
-    name: { en: "Mana Exchange", pt: "" },
+    name: { en: "Mana Exchange", pt: "Troca de Mana" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -340,7 +340,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_BuckShot",
-    name: { en: "Multi-Shot", pt: "" },
+    name: { en: "Multi-Shot", pt: "Tiro Múltiplo" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -354,7 +354,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_DistanceRangeAcc",
-    name: { en: "Eagle Vision", pt: "" },
+    name: { en: "Eagle Vision", pt: "Visão de Águia" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "passive",
@@ -367,7 +367,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_PeaceTimeBuff",
-    name: { en: "Nature's Power", pt: "" },
+    name: { en: "Nature's Power", pt: "Poder da Natureza" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "passive",
@@ -380,7 +380,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_RapidShot",
-    name: { en: "Quick Fire", pt: "" },
+    name: { en: "Quick Fire", pt: "Fogo Rápido" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -393,7 +393,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_Step",
-    name: { en: "Nimble Leap", pt: "" },
+    name: { en: "Nimble Leap", pt: "Salto Ágil" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -407,7 +407,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_CR_S_WeakenAttackBonus",
-    name: { en: "Bloodlust", pt: "" },
+    name: { en: "Bloodlust", pt: "Sede de Sangue" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "passive",
@@ -420,7 +420,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_D_AddShot",
-    name: { en: "Recoil Shot", pt: "" },
+    name: { en: "Recoil Shot", pt: "Tiro de Recuo" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -433,7 +433,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_D_RobShot",
-    name: { en: "Wind Snatcher", pt: "" },
+    name: { en: "Wind Snatcher", pt: "Ladrão de Vento" },
     weapon: "Crossbow",
     grade: "Epic",
     type: "active",
@@ -446,7 +446,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_D_WeakPointShot",
-    name: { en: "Weak Point Shot", pt: "" },
+    name: { en: "Weak Point Shot", pt: "Tiro no Ponto Fraco" },
     weapon: "Crossbow",
     grade: "Epic",
     type: "active",
@@ -459,7 +459,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_FuriousFire",
-    name: { en: "Merciless Barrage", pt: "" },
+    name: { en: "Merciless Barrage", pt: "Barragem Implacável" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -472,7 +472,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_S_ActionSkill",
-    name: { en: "Rupturing Parry", pt: "" },
+    name: { en: "Rupturing Parry", pt: "Parada Explosiva" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "defensive",
@@ -485,7 +485,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_S_AfterImage",
-    name: { en: "Detection", pt: "" },
+    name: { en: "Detection", pt: "Detecção" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "passive",
@@ -498,7 +498,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_S_CriticalAttack",
-    name: { en: "Piercing Strike", pt: "" },
+    name: { en: "Piercing Strike", pt: "Golpe Perfurante" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "passive",
@@ -511,7 +511,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_S_GhostWalk",
-    name: { en: "Selfless Diffusion", pt: "" },
+    name: { en: "Selfless Diffusion", pt: "Difusão Desinteressada" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -524,7 +524,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_S_OffHandMaxDmg",
-    name: { en: "Ambidexterity", pt: "" },
+    name: { en: "Ambidexterity", pt: "Ambidestria" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "passive",
@@ -537,7 +537,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_S_WeakenAccuracy",
-    name: { en: "Corrupt Nail", pt: "" },
+    name: { en: "Corrupt Nail", pt: "Prego Corrompido" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "passive",
@@ -550,7 +550,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_CR_TauntTrap",
-    name: { en: "Explosive Trap", pt: "" },
+    name: { en: "Explosive Trap", pt: "Armadilha Explosiva" },
     weapon: "Crossbow",
     grade: "Uncommon",
     type: "active",
@@ -563,7 +563,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_BA_S_KillMoveSpeed",
-    name: { en: "Assassin's Step", pt: "" },
+    name: { en: "Assassin's Step", pt: "Passo do Assassino" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "passive",
@@ -576,7 +576,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BlinkStrike",
-    name: { en: "Shadow Strike", pt: "" },
+    name: { en: "Shadow Strike", pt: "Golpe da Sombra" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -589,7 +589,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_BloodStrike",
-    name: { en: "Vampiric Strike", pt: "" },
+    name: { en: "Vampiric Strike", pt: "Golpe Vampírico" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -603,7 +603,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_CounterMove",
-    name: { en: "Block Blade", pt: "" },
+    name: { en: "Block Blade", pt: "Lâmina Bloqueadora" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "defensive",
@@ -616,7 +616,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_CriticalStrike",
-    name: { en: "Cleaving Moonlight", pt: "" },
+    name: { en: "Cleaving Moonlight", pt: "Luz Lunar Cortante" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -629,7 +629,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DeadlyStrike",
-    name: { en: "Brutal Incision", pt: "" },
+    name: { en: "Brutal Incision", pt: "Incisão Brutal" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -643,7 +643,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_DelayDamage",
-    name: { en: "Fatal Stigma", pt: "" },
+    name: { en: "Fatal Stigma", pt: "Estigma Fatal" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -657,7 +657,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_LegAttack",
-    name: { en: "Ankle Strike", pt: "" },
+    name: { en: "Ankle Strike", pt: "Golpe no Tornozelo" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -670,7 +670,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_MoveSkillEvasion",
-    name: { en: "Shadow Walker", pt: "" },
+    name: { en: "Shadow Walker", pt: "Caminhante da Sombra" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "passive",
@@ -683,7 +683,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonDagger",
-    name: { en: "Knife Throwing", pt: "" },
+    name: { en: "Knife Throwing", pt: "Arremesso de Adaga" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -697,7 +697,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_PoisonEnchant",
-    name: { en: "Inject Venom", pt: "" },
+    name: { en: "Inject Venom", pt: "Injetar Veneno" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -711,7 +711,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_ShadowChaser",
-    name: { en: "Umbral Spirit", pt: "" },
+    name: { en: "Umbral Spirit", pt: "Espírito Umbral" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -725,7 +725,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Smoke",
-    name: { en: "Phantom Smokescreen", pt: "" },
+    name: { en: "Phantom Smokescreen", pt: "Cortina de Fumaça Fantasmagórica" },
     weapon: "Dagger",
     grade: "Epic",
     type: "active",
@@ -738,7 +738,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_SonicAttacka",
-    name: { en: "Frenzied Sword Dance", pt: "" },
+    name: { en: "Frenzied Sword Dance", pt: "Dança da Espada Frenética" },
     weapon: "Dagger",
     grade: "Epic",
     type: "active",
@@ -751,7 +751,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_DA_S_Stealth",
-    name: { en: "Camouflage Cloak", pt: "" },
+    name: { en: "Camouflage Cloak", pt: "Capa de Camuflagem" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "active",
@@ -764,7 +764,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_S_CriticalDamageUp",
-    name: { en: "Wrathful Edge", pt: "" },
+    name: { en: "Wrathful Edge", pt: "Borda da Ira" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "passive",
@@ -777,7 +777,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_S_EvasionBuff",
-    name: { en: "Assassination Stance", pt: "" },
+    name: { en: "Assassination Stance", pt: "Postura de Assassinato" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "passive",
@@ -790,7 +790,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_S_MeleeAccuracy",
-    name: { en: "Assassin's Instincts", pt: "" },
+    name: { en: "Assassin's Instincts", pt: "Instintos de Assassino" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "passive",
@@ -803,7 +803,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_S_PoisonBuff",
-    name: { en: "Murderous Energy", pt: "" },
+    name: { en: "Murderous Energy", pt: "Energia Assassina" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "passive",
@@ -816,7 +816,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_DA_S_PoisonTargetOffHandAttack",
-    name: { en: "Destructive Fang", pt: "" },
+    name: { en: "Destructive Fang", pt: "Presa Destrutiva" },
     weapon: "Dagger",
     grade: "Uncommon",
     type: "passive",
@@ -829,7 +829,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_GravityCollapse",
-    name: { en: "Supernova Collapse", pt: "" },
+    name: { en: "Supernova Collapse", pt: "Colapso de Supernova" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -842,7 +842,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Laser",
-    name: { en: "Stellar Dash", pt: "" },
+    name: { en: "Stellar Dash", pt: "Avanço Estelar" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -855,7 +855,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbExplosion",
-    name: { en: "Interstellar Explosion", pt: "" },
+    name: { en: "Interstellar Explosion", pt: "Explosão Interestelar" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -868,7 +868,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbitSlash",
-    name: { en: "Void Slash", pt: "" },
+    name: { en: "Void Slash", pt: "Corte do Vazio" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -881,7 +881,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbShoot",
-    name: { en: "Summon Constellation", pt: "" },
+    name: { en: "Summon Constellation", pt: "Invocar Constelação" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -894,7 +894,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_OrbSummon",
-    name: { en: "Starcalling", pt: "" },
+    name: { en: "Starcalling", pt: "Chamado Estelar" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -907,7 +907,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_PartyBarrier",
-    name: { en: "Guardian Defensive Wall", pt: "" },
+    name: { en: "Guardian Defensive Wall", pt: "Muro Defensivo do Guardião" },
     weapon: "Orb",
     grade: "Epic",
     type: "active",
@@ -920,7 +920,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Phasing",
-    name: { en: "Temporal Leap", pt: "" },
+    name: { en: "Temporal Leap", pt: "Salto Temporal" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -933,7 +933,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Restoration",
-    name: { en: "Restoring Constellation", pt: "" },
+    name: { en: "Restoring Constellation", pt: "Constelação Restauradora" },
     weapon: "Orb",
     grade: "Epic",
     type: "active",
@@ -946,7 +946,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_RollingBall",
-    name: { en: "Star Destroyer", pt: "" },
+    name: { en: "Star Destroyer", pt: "Destruidor de Estrelas" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -959,7 +959,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Satellite",
-    name: { en: "Summon Satellite", pt: "" },
+    name: { en: "Summon Satellite", pt: "Invocar Satélite" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -972,7 +972,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Active_Shield",
-    name: { en: "Distortion Veil", pt: "" },
+    name: { en: "Distortion Veil", pt: "Véu de Distorsão" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "active",
@@ -985,7 +985,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_DefenseActionSkill",
-    name: { en: "Barrier", pt: "" },
+    name: { en: "Barrier", pt: "Barreira" },
     weapon: "Orb",
     grade: "0",
     type: "defensive",
@@ -998,7 +998,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Passive_CastingMastery",
-    name: { en: "Pulsating Galaxy", pt: "" },
+    name: { en: "Pulsating Galaxy", pt: "Galáxia Pulsante" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "passive",
@@ -1011,7 +1011,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Passive_Circulation",
-    name: { en: "Stellar Cycle", pt: "" },
+    name: { en: "Stellar Cycle", pt: "Ciclo Estelar" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "passive",
@@ -1024,7 +1024,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Passive_ExpandRift",
-    name: { en: "Rift Fracture", pt: "" },
+    name: { en: "Rift Fracture", pt: "Fratura de Fissura" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "passive",
@@ -1037,7 +1037,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Passive_OrbControl",
-    name: { en: "Astral Overseer", pt: "" },
+    name: { en: "Astral Overseer", pt: "Supervisor Astral" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "passive",
@@ -1050,7 +1050,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Passive_ShieldUp",
-    name: { en: "Eternal Veil", pt: "" },
+    name: { en: "Eternal Veil", pt: "Véu Eterno" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "passive",
@@ -1063,7 +1063,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Passive_SoulLink",
-    name: { en: "Constellation Link", pt: "" },
+    name: { en: "Constellation Link", pt: "Ligação de Constelação" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "passive",
@@ -1076,7 +1076,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ORB_Passive_SubProjectile",
-    name: { en: "Stellar Echo", pt: "" },
+    name: { en: "Stellar Echo", pt: "Eco Estelar" },
     weapon: "Orb",
     grade: "Uncommon",
     type: "passive",
@@ -1089,7 +1089,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_AbnormalTolerance",
-    name: { en: "Unyielding Sentinel", pt: "" },
+    name: { en: "Unyielding Sentinel", pt: "Sentinela Indomável" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1103,7 +1103,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_BloodAura",
-    name: { en: "Bloodleech Aura", pt: "" },
+    name: { en: "Bloodleech Aura", pt: "Aura de Sanguesuga" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1116,7 +1116,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_CounterMove",
-    name: { en: "Patient Block", pt: "" },
+    name: { en: "Patient Block", pt: "Bloqueio Paciente" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "defensive",
@@ -1129,7 +1129,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_CrossAttack",
-    name: { en: "Rising Slash", pt: "" },
+    name: { en: "Rising Slash", pt: "Corte Ascendente" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1143,7 +1143,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DashAttack",
-    name: { en: "Gale Rush", pt: "" },
+    name: { en: "Gale Rush", pt: "Avanço de Ventania" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1156,7 +1156,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DefenceAttack",
-    name: { en: "Cataclysm", pt: "" },
+    name: { en: "Cataclysm", pt: "Cataclismo" },
     weapon: "Spear",
     grade: "Epic",
     type: "active",
@@ -1170,7 +1170,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_DropAttack",
-    name: { en: "Death From Above", pt: "" },
+    name: { en: "Death From Above", pt: "Morte de Cima" },
     weapon: "Spear",
     grade: "Epic",
     type: "active",
@@ -1183,7 +1183,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_Passive_AttackedBuff",
-    name: { en: "Malice Surge", pt: "" },
+    name: { en: "Malice Surge", pt: "Pulso de Malícia" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "passive",
@@ -1196,7 +1196,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_Passive_ComboBuff",
-    name: { en: "Retaliatory Strike", pt: "" },
+    name: { en: "Retaliatory Strike", pt: "Golpe Retaliador" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "passive",
@@ -1209,7 +1209,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_Passive_KillBonus",
-    name: { en: "Death Knell", pt: "" },
+    name: { en: "Death Knell", pt: "Sino da Morte" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "passive",
@@ -1222,7 +1222,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_Passive_LowHPAttack",
-    name: { en: "Mortal Wrath", pt: "" },
+    name: { en: "Mortal Wrath", pt: "Ira Mortal" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "passive",
@@ -1235,7 +1235,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_Passive_MoveBuff",
-    name: { en: "Nimble Steps", pt: "" },
+    name: { en: "Nimble Steps", pt: "Passos Ágeis" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "passive",
@@ -1248,7 +1248,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_Passive_TwoHandWeaponBonus",
-    name: { en: "Imposing Form", pt: "" },
+    name: { en: "Imposing Form", pt: "Forma Imponente" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "passive",
@@ -1261,7 +1261,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_Passive_WeakenkBonus",
-    name: { en: "Fatal Precision", pt: "" },
+    name: { en: "Fatal Precision", pt: "Precisão Fatal" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "passive",
@@ -1274,7 +1274,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_PushAttack",
-    name: { en: "Tempest Strike", pt: "" },
+    name: { en: "Tempest Strike", pt: "Golpe de Tempestade" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1288,7 +1288,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidAttack",
-    name: { en: "Cyclonic Fury", pt: "" },
+    name: { en: "Cyclonic Fury", pt: "Fúria Ciclônica" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1302,7 +1302,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_RapidThrust",
-    name: { en: "Vicious Fury", pt: "" },
+    name: { en: "Vicious Fury", pt: "Fúria Viciosamente" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1316,7 +1316,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_SpearThrower",
-    name: { en: "Javelin Surge", pt: "" },
+    name: { en: "Javelin Surge", pt: "Pulso de Dardo" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1330,7 +1330,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_StunAttack",
-    name: { en: "Abyssal Cleave", pt: "" },
+    name: { en: "Abyssal Cleave", pt: "Fenda Abissal" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1344,7 +1344,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SP_S_ThrustPull",
-    name: { en: "Culling Arc", pt: "" },
+    name: { en: "Culling Arc", pt: "Arco Depurador" },
     weapon: "Spear",
     grade: "Uncommon",
     type: "active",
@@ -1357,7 +1357,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_AddProjectile",
-    name: { en: "Manaball Eruption", pt: "" },
+    name: { en: "Manaball Eruption", pt: "Erupção de Bola de Mana" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "passive",
@@ -1370,7 +1370,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_AoeTeleport",
-    name: { en: "Frost Smokescreen", pt: "" },
+    name: { en: "Frost Smokescreen", pt: "Cortina de Fumaça Gélida" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1384,7 +1384,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_BringSkill",
-    name: { en: "Salvation Chain", pt: "" },
+    name: { en: "Salvation Chain", pt: "Corrente da Salvação" },
     weapon: "Staff",
     grade: "Epic",
     type: "active",
@@ -1398,7 +1398,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_BurnTargetAddDamage",
-    name: { en: "Flame Condensation", pt: "" },
+    name: { en: "Flame Condensation", pt: "Condensação de Chama" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "passive",
@@ -1411,7 +1411,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_CounterMove",
-    name: { en: "Mystic Shield", pt: "" },
+    name: { en: "Mystic Shield", pt: "Escudo Místico" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "defensive",
@@ -1424,7 +1424,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_FireCombo",
-    name: { en: "Fireball Barrage", pt: "" },
+    name: { en: "Fireball Barrage", pt: "Barragem de Bolas de Fogo" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1437,7 +1437,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_GlobalCoolDownBuff",
-    name: { en: "High Focus", pt: "" },
+    name: { en: "High Focus", pt: "Foco Elevado" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1450,7 +1450,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceFreeze",
-    name: { en: "Icebound Tomb", pt: "" },
+    name: { en: "Icebound Tomb", pt: "Sepultura Congelada" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1464,7 +1464,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_IceSpear",
-    name: { en: "Ice Spear", pt: "" },
+    name: { en: "Ice Spear", pt: "Lança de Gelo" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1478,7 +1478,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_MainAttack",
-    name: { en: "Chain Lightning", pt: "" },
+    name: { en: "Chain Lightning", pt: "Corrente de Raios" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1491,7 +1491,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_ManaRegenBuff",
-    name: { en: "Asceticism", pt: "" },
+    name: { en: "Asceticism", pt: "Ascetismo" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "passive",
@@ -1504,7 +1504,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_ManaRengeUp",
-    name: { en: "Inner Peace", pt: "" },
+    name: { en: "Inner Peace", pt: "Paz Interior" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1518,7 +1518,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_MaxManaUp",
-    name: { en: "Mana Amp", pt: "" },
+    name: { en: "Mana Amp", pt: "Amplificador de Mana" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "passive",
@@ -1531,7 +1531,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_PowerAttack",
-    name: { en: "Judgment Lightning", pt: "" },
+    name: { en: "Judgment Lightning", pt: "Raio de Julgamento" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1545,7 +1545,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_SilenceToleranceBuff",
-    name: { en: "Echoic Barrier", pt: "" },
+    name: { en: "Echoic Barrier", pt: "Barreira Ecoante" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "passive",
@@ -1558,7 +1558,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_SkillPowerAmplificationBuff",
-    name: { en: "Forbidden Sanctuary", pt: "" },
+    name: { en: "Forbidden Sanctuary", pt: "Santuário Proibido" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "passive",
@@ -1571,7 +1571,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_SlowDuration",
-    name: { en: "Frost Master", pt: "" },
+    name: { en: "Frost Master", pt: "Mestre do Gelo" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "passive",
@@ -1584,7 +1584,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaAttack",
-    name: { en: "Serial Fire Bombs", pt: "" },
+    name: { en: "Serial Fire Bombs", pt: "Bombas de Fogo em Série" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1598,7 +1598,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaDebuffAttack",
-    name: { en: "Inferno Wave", pt: "" },
+    name: { en: "Inferno Wave", pt: "Onda de Inferno" },
     weapon: "Staff",
     grade: "Uncommon",
     type: "active",
@@ -1612,7 +1612,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_ST_S_WideAreaPowerAttack",
-    name: { en: "Infernal Meteor", pt: "" },
+    name: { en: "Infernal Meteor", pt: "Meteoro Infernal" },
     weapon: "Staff",
     grade: "Epic",
     type: "active",
@@ -1625,8 +1625,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ArmorUp",
-    name: { en: "Aegis Shield", pt: "" },
-    weapon: "Sword",
+    name: { en: "Aegis Shield", pt: "Escudo Égide" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -1638,8 +1638,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_AroundCountBuff",
-    name: { en: "Impenetrable", pt: "" },
-    weapon: "Sword",
+    name: { en: "Impenetrable", pt: "Impenetrável" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -1651,8 +1651,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_BlockSuccecsToleranceUp",
-    name: { en: "Gerad's Patience", pt: "" },
-    weapon: "Sword",
+    name: { en: "Gerad's Patience", pt: "Paciência de Gerad" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -1664,8 +1664,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_BlockSucceedRewardMana",
-    name: { en: "Resilient Mind", pt: "" },
-    weapon: "Sword",
+    name: { en: "Resilient Mind", pt: "Mente Resiliente" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -1677,8 +1677,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_BuffAttack",
-    name: { en: "Counter Barrier", pt: "" },
-    weapon: "Sword",
+    name: { en: "Counter Barrier", pt: "Barreira Contra-Ataque" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 45,
@@ -1691,8 +1691,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_CounterMove",
-    name: { en: "Shield Survival Technique", pt: "" },
-    weapon: "Sword",
+    name: { en: "Shield Survival Technique", pt: "Técnica de Sobrevivência com Escudo" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "defensive",
     cooldownSec: undefined,
@@ -1704,8 +1704,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_CrashSucceedBuff",
-    name: { en: "Morale Boost", pt: "" },
-    weapon: "Sword",
+    name: { en: "Morale Boost", pt: "Aumento de Moral" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -1717,8 +1717,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DashAttack",
-    name: { en: "Strategic Rush", pt: "" },
-    weapon: "Sword",
+    name: { en: "Strategic Rush", pt: "Avanço Estratégico" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 18,
@@ -1731,8 +1731,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_DebuffAttack",
-    name: { en: "Shield Strike", pt: "" },
-    weapon: "Sword",
+    name: { en: "Shield Strike", pt: "Golpe de Escudo" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 6,
@@ -1744,8 +1744,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ManaAttack",
-    name: { en: "Witty Retort", pt: "" },
-    weapon: "Sword",
+    name: { en: "Witty Retort", pt: "Resposta Espirituosa" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 21,
@@ -1757,8 +1757,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_MaxHealthUp",
-    name: { en: "Immortal Pride", pt: "" },
-    weapon: "Sword",
+    name: { en: "Immortal Pride", pt: "Orgulho Imortal" },
+    weapon: "Sword & Shield",
     grade: "Epic",
     type: "active",
     cooldownSec: 90,
@@ -1771,8 +1771,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PullSkill",
-    name: { en: "Chain Hook", pt: "" },
-    weapon: "Sword",
+    name: { en: "Chain Hook", pt: "Gancho de Corrente" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 21,
@@ -1785,8 +1785,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_PushAttack",
-    name: { en: "Fierce Clash", pt: "" },
-    weapon: "Sword",
+    name: { en: "Fierce Clash", pt: "Choque Feroz" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 22,
@@ -1799,8 +1799,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldBuff",
-    name: { en: "Stalwart Bastion", pt: "" },
-    weapon: "Sword",
+    name: { en: "Stalwart Bastion", pt: "Bastião Inabalável" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 90,
@@ -1813,8 +1813,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_ShieldThrow",
-    name: { en: "Shield Throw", pt: "" },
-    weapon: "Sword",
+    name: { en: "Shield Throw", pt: "Arremesso de Escudo" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 33,
@@ -1827,8 +1827,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff",
-    name: { en: "Provoking Roar", pt: "" },
-    weapon: "Sword",
+    name: { en: "Provoking Roar", pt: "Rugido Provocante" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 30,
@@ -1841,8 +1841,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_TauntBuff_Attack",
-    name: { en: "Spectrum of Agony", pt: "" },
-    weapon: "Sword",
+    name: { en: "Spectrum of Agony", pt: "Espectro da Agonia" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -1854,8 +1854,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_TheCloserEvasionUP",
-    name: { en: "Skillful Evasion", pt: "" },
-    weapon: "Sword",
+    name: { en: "Skillful Evasion", pt: "Evasão Hábil" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -1867,8 +1867,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_VictoryAttack",
-    name: { en: "A Shot at Victory", pt: "" },
-    weapon: "Sword",
+    name: { en: "A Shot at Victory", pt: "Um Disparo para Vitória" },
+    weapon: "Sword & Shield",
     grade: "Epic",
     type: "active",
     cooldownSec: 24,
@@ -1881,8 +1881,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW_SH_S_WhirlwindSlash",
-    name: { en: "Annihilating Slash", pt: "" },
-    weapon: "Sword",
+    name: { en: "Annihilating Slash", pt: "Corte Aniquilador" },
+    weapon: "Sword & Shield",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 24,
@@ -1895,7 +1895,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_CounterAttack",
-    name: { en: "Death Blow", pt: "" },
+    name: { en: "Death Blow", pt: "Golpe Mortal" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -1909,7 +1909,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_CounterMove",
-    name: { en: "Iron Point Parry", pt: "" },
+    name: { en: "Iron Point Parry", pt: "Aparação de Ponta de Ferro" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "defensive",
@@ -1922,7 +1922,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_CurrentHpBuff",
-    name: { en: "Vital Force", pt: "" },
+    name: { en: "Vital Force", pt: "Força Vital" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "passive",
@@ -1935,7 +1935,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DamageReceive",
-    name: { en: "Blood Devotion", pt: "" },
+    name: { en: "Blood Devotion", pt: "Devoção Sangrenta" },
     weapon: "Greatsword",
     grade: "Epic",
     type: "active",
@@ -1949,7 +1949,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DashAttack",
-    name: { en: "Precision Dash", pt: "" },
+    name: { en: "Precision Dash", pt: "Avanço de Precisão" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -1963,7 +1963,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_DefenseDebuffAttack",
-    name: { en: "Willbreaker", pt: "" },
+    name: { en: "Willbreaker", pt: "Quebra-Vontade" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -1977,7 +1977,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_GaiaCrash",
-    name: { en: "Gaia Crash", pt: "" },
+    name: { en: "Gaia Crash", pt: "Colisão de Gaia" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -1991,7 +1991,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_HittedBuff",
-    name: { en: "Indomitable Armor", pt: "" },
+    name: { en: "Indomitable Armor", pt: "Armadura Indômita" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "passive",
@@ -2004,7 +2004,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_LeapAttack",
-    name: { en: "Devastating Smash", pt: "" },
+    name: { en: "Devastating Smash", pt: "Pancada Devastadora" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -2017,7 +2017,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_MainAttack",
-    name: { en: "Valiant Brawl", pt: "" },
+    name: { en: "Valiant Brawl", pt: "Briga Valente" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -2030,7 +2030,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_MaxHPUp",
-    name: { en: "Robust Constitution", pt: "" },
+    name: { en: "Robust Constitution", pt: "Constituição Robusta" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "passive",
@@ -2043,7 +2043,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_PowerAttack",
-    name: { en: "Guillotine Blade", pt: "" },
+    name: { en: "Guillotine Blade", pt: "Lâmina da Guilhotina" },
     weapon: "Greatsword",
     grade: "Epic",
     type: "active",
@@ -2057,7 +2057,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_ShieldBuff",
-    name: { en: "DaVinci's Courage", pt: "" },
+    name: { en: "DaVinci's Courage", pt: "Coragem de DaVinci" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -2071,7 +2071,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_SkillMaster",
-    name: { en: "Barbarian's Dash", pt: "" },
+    name: { en: "Barbarian's Dash", pt: "Avanço do Bárbaro" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "passive",
@@ -2084,7 +2084,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_SpinAttack",
-    name: { en: "Devastating Tornado", pt: "" },
+    name: { en: "Devastating Tornado", pt: "Tornado Devastador" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -2098,7 +2098,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunAttack",
-    name: { en: "Stunning Blow", pt: "" },
+    name: { en: "Stunning Blow", pt: "Golpe Atordoante" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -2111,7 +2111,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunMaster",
-    name: { en: "Victor's Morale", pt: "" },
+    name: { en: "Victor's Morale", pt: "Moral do Vencedor" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "passive",
@@ -2124,7 +2124,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunSuccecsDamageBoost",
-    name: { en: "Raging Frenzy", pt: "" },
+    name: { en: "Raging Frenzy", pt: "Frenesi Furioso" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "passive",
@@ -2137,7 +2137,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_StunTargetCritical",
-    name: { en: "Cold Warrior", pt: "" },
+    name: { en: "Cold Warrior", pt: "Guerreiro Frio" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "passive",
@@ -2150,7 +2150,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_SW2_S_UpperAttack",
-    name: { en: "Ascending Slash", pt: "" },
+    name: { en: "Ascending Slash", pt: "Corte Ascendente" },
     weapon: "Greatsword",
     grade: "Uncommon",
     type: "active",
@@ -2164,8 +2164,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Corruption",
-    name: { en: "Touch of Despair", pt: "" },
-    weapon: "Wand",
+    name: { en: "Touch of Despair", pt: "Toque do Desespero" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 6,
@@ -2177,8 +2177,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CounterMove",
-    name: { en: "Chaotic Shield", pt: "" },
-    weapon: "Wand",
+    name: { en: "Chaotic Shield", pt: "Escudo Caótico" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "defensive",
     cooldownSec: undefined,
@@ -2190,8 +2190,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseArea",
-    name: { en: "Corrupted Magic Circle", pt: "" },
-    weapon: "Wand",
+    name: { en: "Corrupted Magic Circle", pt: "Círculo Mágico Corrompido" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 36,
@@ -2204,8 +2204,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseAttackHeal",
-    name: { en: "Vampiric Contract", pt: "" },
-    weapon: "Wand",
+    name: { en: "Vampiric Contract", pt: "Contrato Vampírico" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -2217,8 +2217,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseBurst",
-    name: { en: "Curse Explosion", pt: "" },
-    weapon: "Wand",
+    name: { en: "Curse Explosion", pt: "Explosão de Maldição" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 21,
@@ -2231,8 +2231,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseDuration",
-    name: { en: "Wraith's Beckon", pt: "" },
-    weapon: "Wand",
+    name: { en: "Wraith's Beckon", pt: "Chamado do Espectro" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -2244,8 +2244,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseKillBonus",
-    name: { en: "Full of Corruption", pt: "" },
-    weapon: "Wand",
+    name: { en: "Full of Corruption", pt: "Cheio de Corrupção" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -2257,8 +2257,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_CurseSpread",
-    name: { en: "Karmic Haze", pt: "" },
-    weapon: "Wand",
+    name: { en: "Karmic Haze", pt: "Neblina Kármica" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 42,
@@ -2271,8 +2271,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_DayHealNightCurse",
-    name: { en: "Devotion and Emptiness", pt: "" },
-    weapon: "Wand",
+    name: { en: "Devotion and Emptiness", pt: "Devoção e Vazio" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -2284,8 +2284,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Decay",
-    name: { en: "Time for Punishment", pt: "" },
-    weapon: "Wand",
+    name: { en: "Time for Punishment", pt: "Hora da Punição" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 21,
@@ -2298,8 +2298,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_DefenseUp",
-    name: { en: "Blessed Barrier", pt: "" },
-    weapon: "Wand",
+    name: { en: "Blessed Barrier", pt: "Barreira Abençoada" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 30,
@@ -2312,8 +2312,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Heal",
-    name: { en: "Swift Healing", pt: "" },
-    weapon: "Wand",
+    name: { en: "Swift Healing", pt: "Cura Rápida" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 12,
@@ -2325,8 +2325,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealAll",
-    name: { en: "Clay's Salvation", pt: "" },
-    weapon: "Wand",
+    name: { en: "Clay's Salvation", pt: "Salvação de Clay" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 45,
@@ -2339,8 +2339,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealEffectUpWhenSkillDamageTaken",
-    name: { en: "Saint's Oath", pt: "" },
-    weapon: "Wand",
+    name: { en: "Saint's Oath", pt: "Juramento do Santo" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -2352,8 +2352,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealEfficiencyByMaxCost",
-    name: { en: "Noble Revival", pt: "" },
-    weapon: "Wand",
+    name: { en: "Noble Revival", pt: "Ressurreição Nobre" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -2365,8 +2365,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_HealField",
-    name: { en: "Fountain of Life", pt: "" },
-    weapon: "Wand",
+    name: { en: "Fountain of Life", pt: "Fonte da Vida" },
+    weapon: "Wand & Tome",
     grade: "Epic",
     type: "active",
     cooldownSec: 36,
@@ -2379,8 +2379,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_LinkLaser",
-    name: { en: "Ray of Disaster", pt: "" },
-    weapon: "Wand",
+    name: { en: "Ray of Disaster", pt: "Raio da Desventura" },
+    weapon: "Wand & Tome",
     grade: "Epic",
     type: "active",
     cooldownSec: 36,
@@ -2392,8 +2392,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_MagicShield",
-    name: { en: "Invincible Wall", pt: "" },
-    weapon: "Wand",
+    name: { en: "Invincible Wall", pt: "Muro Invencível" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 30,
@@ -2406,8 +2406,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_Sleep",
-    name: { en: "Cursed Nightmare", pt: "" },
-    weapon: "Wand",
+    name: { en: "Cursed Nightmare", pt: "Pesadelo Amaldiçoado" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "active",
     cooldownSec: 30,
@@ -2419,8 +2419,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SkillSet_WP_WA_GR_S_SupportAllyCostRegenUp",
-    name: { en: "Selfless Soul", pt: "" },
-    weapon: "Wand",
+    name: { en: "Selfless Soul", pt: "Alma Desinteressada" },
+    weapon: "Wand & Tome",
     grade: "Uncommon",
     type: "passive",
     cooldownSec: undefined,
@@ -2432,7 +2432,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "SW2_S_DamageReceive_SP",
-    name: { en: "Devoted Sanctuary", pt: "" },
+    name: { en: "Devoted Sanctuary", pt: "Santuário Devoto" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -2448,7 +2448,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_CycloneShot",
-    name: { en: "Tornado", pt: "" },
+    name: { en: "Tornado", pt: "Tornado" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2462,7 +2462,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_DoubleShot_Trait1",
-    name: { en: "Limit Break", pt: "" },
+    name: { en: "Limit Break", pt: "Limite Rompido" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2478,7 +2478,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_MultiShot_Move",
-    name: { en: "Strafing", pt: "" },
+    name: { en: "Strafing", pt: "Enfiada Lateral" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2494,7 +2494,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PheonixArrow_Charge",
-    name: { en: "Flash Wave", pt: "" },
+    name: { en: "Flash Wave", pt: "Onda de Relâmpago" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2508,7 +2508,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge",
-    name: { en: "Decisive Sniping", pt: "" },
+    name: { en: "Decisive Sniping", pt: "Disparo Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2524,7 +2524,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge_CanMove",
-    name: { en: "Decisive Sniping", pt: "" },
+    name: { en: "Decisive Sniping", pt: "Disparo Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2540,7 +2540,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge_CanMove_NoneTarget",
-    name: { en: "Decisive Bombardment", pt: "" },
+    name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2556,7 +2556,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge_NoneTarget",
-    name: { en: "Decisive Bombardment", pt: "" },
+    name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2572,7 +2572,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1",
-    name: { en: "Decisive Sniping", pt: "" },
+    name: { en: "Decisive Sniping", pt: "Disparo Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2588,7 +2588,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1_CanMove",
-    name: { en: "Decisive Sniping", pt: "" },
+    name: { en: "Decisive Sniping", pt: "Disparo Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2604,7 +2604,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1_CanMove_NoneTarget",
-    name: { en: "Decisive Bombardment", pt: "" },
+    name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2620,7 +2620,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_S_PowerShot_Charge_Trait1_NoneTarget",
-    name: { en: "Decisive Bombardment", pt: "" },
+    name: { en: "Decisive Bombardment", pt: "Bombardeio Decisivo" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2636,7 +2636,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_BO_SiegeMode",
-    name: { en: "Concentration Stance", pt: "" },
+    name: { en: "Concentration Stance", pt: "Postura de Concentração" },
     weapon: "Longbow",
     grade: "Common",
     type: "active",
@@ -2650,7 +2650,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_CircleFire",
-    name: { en: "Annihilation Barrage Shot", pt: "" },
+    name: { en: "Annihilation Barrage Shot", pt: "Disparo de Barragem de Aniquilação" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2664,7 +2664,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_CR_D_S_S_RapidShot_Hero",
-    name: { en: "Quick Fire", pt: "" },
+    name: { en: "Quick Fire", pt: "Fogo Rápido" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2678,7 +2678,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_CR_S_ArmorBreakShot_Hero_Trait2",
-    name: { en: "Detonation Mark", pt: "" },
+    name: { en: "Detonation Mark", pt: "Marca de Detonação" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2694,7 +2694,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_CR_S_BloodToSoul",
-    name: { en: "Mana Exchange", pt: "" },
+    name: { en: "Mana Exchange", pt: "Troca de Mana" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2710,7 +2710,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_CR_S_BuckShot_Trait1",
-    name: { en: "Rapid Shot", pt: "" },
+    name: { en: "Rapid Shot", pt: "Disparo Rápido" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2726,7 +2726,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_CR_S_BuckShot_Trait2",
-    name: { en: "Collision Shot", pt: "" },
+    name: { en: "Collision Shot", pt: "Tiro de Colisão" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2742,7 +2742,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_CR_S_Step_Trait2",
-    name: { en: "Nimble Leap", pt: "" },
+    name: { en: "Nimble Leap", pt: "Salto Ágil" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2758,7 +2758,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_ElementalBolt",
-    name: { en: "Mother Nature's Protest", pt: "" },
+    name: { en: "Mother Nature's Protest", pt: "Protesto da Mãe Natureza" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2772,7 +2772,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_FuriousFire_Boss_T2_CR_01",
-    name: { en: "Wild Barrage", pt: "" },
+    name: { en: "Wild Barrage", pt: "Barragem Selvagem" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2786,7 +2786,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_CR_S_AddShot",
-    name: { en: "Recoil Shot", pt: "" },
+    name: { en: "Recoil Shot", pt: "Tiro de Recuo" },
     weapon: "Crossbow",
     grade: "Common",
     type: "active",
@@ -2800,7 +2800,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_DA_DA_S_BloodStrike_SP",
-    name: { en: "Vampiric Strike", pt: "" },
+    name: { en: "Vampiric Strike", pt: "Golpe Vampírico" },
     weapon: "Dagger",
     grade: "Common",
     type: "active",
@@ -2816,7 +2816,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_DA_DA_S_DeadlyStrike_SP",
-    name: { en: "Thundering Bomb", pt: "" },
+    name: { en: "Thundering Bomb", pt: "Bomba Trovejante" },
     weapon: "Dagger",
     grade: "Common",
     type: "active",
@@ -2832,7 +2832,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_DA_DA_S_DelayDamage_SP",
-    name: { en: "Fatal Stigma", pt: "" },
+    name: { en: "Fatal Stigma", pt: "Estigma Fatal" },
     weapon: "Dagger",
     grade: "Common",
     type: "active",
@@ -2848,7 +2848,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_DA_DA_S_PoisonDagger_SP",
-    name: { en: "Lightning Throw", pt: "" },
+    name: { en: "Lightning Throw", pt: "Arremesso de Raio" },
     weapon: "Dagger",
     grade: "Common",
     type: "active",
@@ -2864,7 +2864,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_DA_DA_S_PoisonEnchant_SP",
-    name: { en: "Lightning Infusion", pt: "" },
+    name: { en: "Lightning Infusion", pt: "Infusão de Raio" },
     weapon: "Dagger",
     grade: "Common",
     type: "active",
@@ -2880,7 +2880,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_DA_DA_S_ShadowChaser_SP",
-    name: { en: "Thunder Spirit", pt: "" },
+    name: { en: "Thunder Spirit", pt: "Espírito de Trovão" },
     weapon: "Dagger",
     grade: "Common",
     type: "active",
@@ -2896,7 +2896,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_DA_DA_S_SonicAttack_SP",
-    name: { en: "Mad Sword Dance", pt: "" },
+    name: { en: "Mad Sword Dance", pt: "Dança da Espada Louca" },
     weapon: "Dagger",
     grade: "Common",
     type: "active",
@@ -2910,7 +2910,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_ChasingOrb",
-    name: { en: "Healing Star", pt: "" },
+    name: { en: "Healing Star", pt: "Estrela Curativa" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -2924,7 +2924,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_OrbitSlashHeal",
-    name: { en: "Healing Wave", pt: "" },
+    name: { en: "Healing Wave", pt: "Onda de Cura" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -2938,7 +2938,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_OrbShootPos",
-    name: { en: "Milky Way", pt: "" },
+    name: { en: "Milky Way", pt: "Via Láctea" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -2952,7 +2952,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_PartyBarrier_Trait3",
-    name: { en: "Guardian Defensive Wall", pt: "" },
+    name: { en: "Guardian Defensive Wall", pt: "Muro Defensivo do Guardião" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -2966,7 +2966,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_Phasing_Trait1",
-    name: { en: "Space Transition", pt: "" },
+    name: { en: "Space Transition", pt: "Transição Espacial" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -2980,7 +2980,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_RollingBall_Trait1",
-    name: { en: "Gravity Star Destroyer", pt: "" },
+    name: { en: "Gravity Star Destroyer", pt: "Destruidor de Estrela Gravitacional" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -2994,7 +2994,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_RollingBall_Trait1_Trait2",
-    name: { en: "Gravity Star Destroyer", pt: "" },
+    name: { en: "Gravity Star Destroyer", pt: "Destruidor de Estrela Gravitacional" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -3008,7 +3008,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_RollingBall_Trait2",
-    name: { en: "Star Destroyer", pt: "" },
+    name: { en: "Star Destroyer", pt: "Destruidor de Estrelas" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -3022,7 +3022,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_Satellite_trait1",
-    name: { en: "Summon Guardian Satellite", pt: "" },
+    name: { en: "Summon Guardian Satellite", pt: "Invocar Satélite Guardião" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -3036,7 +3036,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_ShieldSelf",
-    name: { en: "Amplification Veil", pt: "" },
+    name: { en: "Amplification Veil", pt: "Véu de Amplificação" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -3050,7 +3050,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_TimeDelay",
-    name: { en: "Time Dilation", pt: "" },
+    name: { en: "Time Dilation", pt: "Dilatação Temporal" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -3064,7 +3064,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ORB_Active_TimeDelay_Trait1",
-    name: { en: "Echoes of Distortion", pt: "" },
+    name: { en: "Echoes of Distortion", pt: "Ecos de Distorsão" },
     weapon: "Orb",
     grade: "Common",
     type: "active",
@@ -3078,7 +3078,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_AbnormalTolerance_SP",
-    name: { en: "Sentinel's Bastion", pt: "" },
+    name: { en: "Sentinel's Bastion", pt: "Bastião do Sentinela" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3094,7 +3094,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_AbnormalTolerance_SP2",
-    name: { en: "Enforcer", pt: "" },
+    name: { en: "Enforcer", pt: "Executor" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3110,7 +3110,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_CrossAttack_SP",
-    name: { en: "Slaughtering Slash", pt: "" },
+    name: { en: "Slaughtering Slash", pt: "Corte Massacre" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3126,7 +3126,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_DefenceAttack_SP",
-    name: { en: "Wreak Havoc", pt: "" },
+    name: { en: "Wreak Havoc", pt: "Causar Caos" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3142,7 +3142,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_DefenceAttack_SP_Strong",
-    name: { en: "Wreak Havoc", pt: "" },
+    name: { en: "Wreak Havoc", pt: "Causar Caos" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3158,7 +3158,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_DefenceAttack_Strong",
-    name: { en: "Cataclysm", pt: "" },
+    name: { en: "Cataclysm", pt: "Cataclismo" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3174,7 +3174,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_PushAttack_SP",
-    name: { en: "Constricting Tempest", pt: "" },
+    name: { en: "Constricting Tempest", pt: "Tempestade Constritora" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3190,7 +3190,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_PushAttack_Stay",
-    name: { en: "Tempest Strike", pt: "" },
+    name: { en: "Tempest Strike", pt: "Golpe de Tempestade" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3206,7 +3206,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_RapidAttack_SP",
-    name: { en: "Phoenix Barrage", pt: "" },
+    name: { en: "Phoenix Barrage", pt: "Barragem de Fênix" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3222,7 +3222,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_RapidThrust_5Hit",
-    name: { en: "Brutal Fury", pt: "" },
+    name: { en: "Brutal Fury", pt: "Fúria Brutal" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3238,7 +3238,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_RapidThrust_SP",
-    name: { en: "Explosive Fury", pt: "" },
+    name: { en: "Explosive Fury", pt: "Fúria Explosiva" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3254,7 +3254,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_SpearThrower_SP",
-    name: { en: "Javelin Inferno", pt: "" },
+    name: { en: "Javelin Inferno", pt: "Inferno de Dardo" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3270,7 +3270,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SP_S_StunAttack_SP",
-    name: { en: "Ascending Cleave", pt: "" },
+    name: { en: "Ascending Cleave", pt: "Fenda Ascendente" },
     weapon: "Spear",
     grade: "Common",
     type: "active",
@@ -3286,7 +3286,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_AoeTeleport_FieldArea",
-    name: { en: "Frost Smokescreen", pt: "" },
+    name: { en: "Frost Smokescreen", pt: "Cortina de Fumaça Gélida" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3302,7 +3302,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_AoeTeleport_FieldArea_trait1",
-    name: { en: "Burning Smokescreen", pt: "" },
+    name: { en: "Burning Smokescreen", pt: "Cortina de Fumaça Ardente" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3318,7 +3318,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_AoeTeleport_Hero_trait1",
-    name: { en: "Burning Smokescreen", pt: "" },
+    name: { en: "Burning Smokescreen", pt: "Cortina de Fumaça Ardente" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3334,7 +3334,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_BringSkill_Move",
-    name: { en: "Jumping Chain", pt: "" },
+    name: { en: "Jumping Chain", pt: "Corrente Saltante" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3350,7 +3350,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_BringSkill_Shield",
-    name: { en: "Redemptive Barrier", pt: "" },
+    name: { en: "Redemptive Barrier", pt: "Barreira Redentora" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3366,7 +3366,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_Firecombo_Canmove",
-    name: { en: "Fireball Barrage", pt: "" },
+    name: { en: "Fireball Barrage", pt: "Barragem de Bolas de Fogo" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3380,7 +3380,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_GlobalCoolDownUp_trait1",
-    name: { en: "High Focus", pt: "" },
+    name: { en: "High Focus", pt: "Foco Elevado" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3394,7 +3394,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_IceFreeze_Self",
-    name: { en: "Icebound Armor", pt: "" },
+    name: { en: "Icebound Armor", pt: "Armadura Congelada" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3410,7 +3410,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_IceSpear_Onetarget",
-    name: { en: "Ice Spear Bombardment", pt: "" },
+    name: { en: "Ice Spear Bombardment", pt: "Bombardeio de Lança de Gelo" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3426,7 +3426,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_IceSpear_Onetarget_trait_2",
-    name: { en: "Ice Spear Bombardment", pt: "" },
+    name: { en: "Ice Spear Bombardment", pt: "Bombardeio de Lança de Gelo" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3442,7 +3442,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_IceSpear_trait_2",
-    name: { en: "Ice Spear", pt: "" },
+    name: { en: "Ice Spear", pt: "Lança de Gelo" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3458,7 +3458,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_ManaRengeUp_Legend",
-    name: { en: "Inner Peace", pt: "" },
+    name: { en: "Inner Peace", pt: "Paz Interior" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3474,7 +3474,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_Meteor_Attack_Seperate",
-    name: { en: "Hellfire Rain", pt: "" },
+    name: { en: "Hellfire Rain", pt: "Chuva de Fogo Infernal" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3488,7 +3488,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_PowerAttack_Casting",
-    name: { en: "Judgment Lightning", pt: "" },
+    name: { en: "Judgment Lightning", pt: "Raio de Julgamento" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3504,7 +3504,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_WideAreaAttack_Charge",
-    name: { en: "Focused Fire Bombs", pt: "" },
+    name: { en: "Focused Fire Bombs", pt: "Bombas de Fogo Focadas" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3520,7 +3520,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_WideAreaAttack_Charge_Canmove",
-    name: { en: "Focused Fire Bombs", pt: "" },
+    name: { en: "Focused Fire Bombs", pt: "Bombas de Fogo Focadas" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3536,7 +3536,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_WideAreaAttack_Hero_1_Canmove",
-    name: { en: "Serial Fire Bombs", pt: "" },
+    name: { en: "Serial Fire Bombs", pt: "Bombas de Fogo em Série" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3552,7 +3552,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_WideAreaAttack_Hero_1_Canmove_trait5",
-    name: { en: "Serial Fire Bombs", pt: "" },
+    name: { en: "Serial Fire Bombs", pt: "Bombas de Fogo em Série" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3568,7 +3568,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_WideAreaAttack_Hero_1_trait5",
-    name: { en: "Serial Fire Bombs", pt: "" },
+    name: { en: "Serial Fire Bombs", pt: "Bombas de Fogo em Série" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3584,7 +3584,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_ST_S_WideAreaDebuffAttack_Hero_trait1",
-    name: { en: "Frenzied Lightning Wave", pt: "" },
+    name: { en: "Frenzied Lightning Wave", pt: "Onda de Raio Frenética" },
     weapon: "Staff",
     grade: "Common",
     type: "active",
@@ -3600,8 +3600,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_S_MaxHealthUp_trait1",
-    name: { en: "Blessing of Immortality", pt: "" },
-    weapon: "Sword",
+    name: { en: "Blessing of Immortality", pt: "Bênção da Imortalidade" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 90,
@@ -3616,8 +3616,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_BuffAttack_Charge",
-    name: { en: "Concentrated Barrier", pt: "" },
-    weapon: "Sword",
+    name: { en: "Concentrated Barrier", pt: "Barreira Concentrada" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 45,
@@ -3632,8 +3632,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_DashAttack_trait1",
-    name: { en: "Strategic Rush", pt: "" },
-    weapon: "Sword",
+    name: { en: "Strategic Rush", pt: "Avanço Estratégico" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 18,
@@ -3648,8 +3648,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_DashAttack_trait1_2",
-    name: { en: "Strategic Rush", pt: "" },
-    weapon: "Sword",
+    name: { en: "Strategic Rush", pt: "Avanço Estratégico" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 18,
@@ -3664,8 +3664,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_DashAttack_trait2",
-    name: { en: "Strategic Rush", pt: "" },
-    weapon: "Sword",
+    name: { en: "Strategic Rush", pt: "Avanço Estratégico" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 18,
@@ -3680,8 +3680,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_PullSkill_Hero_trait1",
-    name: { en: "Controlling Rake", pt: "" },
-    weapon: "Sword",
+    name: { en: "Controlling Rake", pt: "Rastrelo Controlador" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 21,
@@ -3696,8 +3696,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_PullSkill_Hero_trait1_3",
-    name: { en: "Controlling Rake", pt: "" },
-    weapon: "Sword",
+    name: { en: "Controlling Rake", pt: "Rastrelo Controlador" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 21,
@@ -3712,8 +3712,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_PullSkill_Hero_trait3",
-    name: { en: "Chain Hook", pt: "" },
-    weapon: "Sword",
+    name: { en: "Chain Hook", pt: "Gancho de Corrente" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 21,
@@ -3728,8 +3728,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_PushAttack_Earth",
-    name: { en: "Desperate Clash", pt: "" },
-    weapon: "Sword",
+    name: { en: "Desperate Clash", pt: "Choque Desesperado" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 22,
@@ -3744,8 +3744,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_ShieldBuff_trait1",
-    name: { en: "Righteous Fury", pt: "" },
-    weapon: "Sword",
+    name: { en: "Righteous Fury", pt: "Fúria Justa" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 90,
@@ -3760,8 +3760,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_ShieldBuff_trait3",
-    name: { en: "Stalwart Bastion", pt: "" },
-    weapon: "Sword",
+    name: { en: "Stalwart Bastion", pt: "Bastião Inabalável" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 90,
@@ -3776,8 +3776,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_ShieldBuff_trait3_1",
-    name: { en: "Righteous Fury", pt: "" },
-    weapon: "Sword",
+    name: { en: "Righteous Fury", pt: "Fúria Justa" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 90,
@@ -3792,8 +3792,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_ShieldThrow_trait1",
-    name: { en: "Whirling Shield", pt: "" },
-    weapon: "Sword",
+    name: { en: "Whirling Shield", pt: "Escudo Giratório" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 33,
@@ -3808,8 +3808,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_TauntBuff_Hero_Trait1",
-    name: { en: "Provoking Roar", pt: "" },
-    weapon: "Sword",
+    name: { en: "Provoking Roar", pt: "Rugido Provocante" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 30,
@@ -3824,8 +3824,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_VictoryAttack_Earth",
-    name: { en: "Annihilation Blade", pt: "" },
-    weapon: "Sword",
+    name: { en: "Annihilation Blade", pt: "Lâmina de Aniquilação" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 24,
@@ -3840,8 +3840,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW_SH_S_WhirlwindSlash_trait3",
-    name: { en: "Annihilating Slash", pt: "" },
-    weapon: "Sword",
+    name: { en: "Annihilating Slash", pt: "Corte Aniquilador" },
+    weapon: "Sword & Shield",
     grade: "Common",
     type: "active",
     cooldownSec: 24,
@@ -3856,7 +3856,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_CounterAttack_SP",
-    name: { en: "Death Blow", pt: "" },
+    name: { en: "Death Blow", pt: "Golpe Mortal" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3872,7 +3872,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_DashAttack_SP",
-    name: { en: "Precision Dash", pt: "" },
+    name: { en: "Precision Dash", pt: "Avanço de Precisão" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3888,7 +3888,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_DefenseDebuffAttack_SP",
-    name: { en: "Willbreaker", pt: "" },
+    name: { en: "Willbreaker", pt: "Quebra-Vontade" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3904,7 +3904,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_GaiaCrash_SP",
-    name: { en: "Frost Cleaving", pt: "" },
+    name: { en: "Frost Cleaving", pt: "Fenda Gélida" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3920,7 +3920,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_PowerAttack_SP",
-    name: { en: "Guillotine Blade", pt: "" },
+    name: { en: "Guillotine Blade", pt: "Lâmina da Guilhotina" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3936,7 +3936,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_ShieldBuff_SP",
-    name: { en: "DaVinci's Chill", pt: "" },
+    name: { en: "DaVinci's Chill", pt: "Frieza de DaVinci" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3952,7 +3952,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_SpinAttack_1_SP",
-    name: { en: "Ice Tornado", pt: "" },
+    name: { en: "Ice Tornado", pt: "Tornado de Gelo" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3968,7 +3968,7 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_SW2_S_UpperAttack_SP",
-    name: { en: "Charging Slash", pt: "" },
+    name: { en: "Charging Slash", pt: "Corte Carregado" },
     weapon: "Greatsword",
     grade: "Common",
     type: "active",
@@ -3984,8 +3984,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_CurseArea_Onetarget",
-    name: { en: "Decaying Touch", pt: "" },
-    weapon: "Wand",
+    name: { en: "Decaying Touch", pt: "Toque Decadente" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 18,
@@ -4000,8 +4000,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_CurseBurst_Hero",
-    name: { en: "Curse Explosion", pt: "" },
-    weapon: "Wand",
+    name: { en: "Curse Explosion", pt: "Explosão de Maldição" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 15,
@@ -4016,8 +4016,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_CurseSpread",
-    name: { en: "Karmic Haze", pt: "" },
-    weapon: "Wand",
+    name: { en: "Karmic Haze", pt: "Neblina Kármica" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 42,
@@ -4032,8 +4032,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_Decay_trait1",
-    name: { en: "Enchanting Time", pt: "" },
-    weapon: "Wand",
+    name: { en: "Enchanting Time", pt: "Tempo Encantador" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 21,
@@ -4048,8 +4048,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_DefenseUp_trait2",
-    name: { en: "Blessed Barrier", pt: "" },
-    weapon: "Wand",
+    name: { en: "Blessed Barrier", pt: "Barreira Abençoada" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 30,
@@ -4064,8 +4064,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_HealAll_trait1",
-    name: { en: "Janice's Rage", pt: "" },
-    weapon: "Wand",
+    name: { en: "Janice's Rage", pt: "Ira de Janice" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 45,
@@ -4080,8 +4080,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_HealField_trait2",
-    name: { en: "Fountain of Life", pt: "" },
-    weapon: "Wand",
+    name: { en: "Fountain of Life", pt: "Fonte da Vida" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 36,
@@ -4096,8 +4096,8 @@ export const SKILLS: Skill[] = [
   },
   {
     id: "WP_WA_GR_S_MagicShield",
-    name: { en: "Invincible Wall", pt: "" },
-    weapon: "Wand",
+    name: { en: "Invincible Wall", pt: "Muro Invencível" },
+    weapon: "Wand & Tome",
     grade: "Common",
     type: "active",
     cooldownSec: 30,
