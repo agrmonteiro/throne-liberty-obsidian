@@ -31,6 +31,7 @@ export interface Skill {
   variantOf?: string             // ID da skill raiz (SkillSet_*) — só presente em variantes
   variantType?: SkillVariantFlag[] // flags que descrevem este estado: charge, canmove, hero…
   variantIds?: string[]           // IDs das variantes desta raiz — só presente na skill raiz
+  requiredTraits?: string[]       // IDs de traits que precisam estar ativos para esta variante existir
 }
 
 export const SKILLS: Skill[] = [

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
-import { MASTERY_TREES } from '../data/masteryTrees'
-import type { MasteryNode } from '../data/masteryTrees'
+import { MASTERY_TREES } from '../data/catalog'
+import type { MasteryNode } from '../data/catalog'
 
 // ─── Layout constants ────────────────────────────────────────────────────────
 

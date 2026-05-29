@@ -34,12 +34,12 @@ Thumbs.db
 # TypeScript cache
 *.tsbuildinfo
 
-# Debug / temp files
-test_write_check.txt
-reddit_dump.json
-reddit_formula.json
-reddit_formula.md
-clean.md
+# Debug / temp files (ancorados na raiz — não ignorar cópias arquivadas em .planning/archive/)
+/test_write_check.txt
+/reddit_dump.json
+/reddit_formula.json
+/reddit_formula.md
+/clean.md
 
 # Scraper: artefatos de build PyInstaller e cache intermediário
 build/scraper_standalone/
@@ -50,6 +50,13 @@ scratch/
 capturas_treinamento/
 .claude/worktrees/
 
-# Arquivos raiz pendentes de análise
+# Leftovers de agentes / scraping
+/all_skills_en.txt
+/skills_list.txt
+/translate_skills.py
+electron.vite.config.*.mjs
+graphify-out/
+
+# Duplicatas obsoletas na raiz (fonte real em src/)
 /App.tsx
 /Dashboard.tsx

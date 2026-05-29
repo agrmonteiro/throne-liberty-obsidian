@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { SKILLS } from '../data/skills'
+import { SKILLS } from '../data/catalog'
 
 
 const FILE = 'skills-db.json'
