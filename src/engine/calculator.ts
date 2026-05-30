@@ -18,6 +18,7 @@ import type {
   SensitivityEntry,
   ElasticityPoint,
 } from './types'
+import { fmt, fmtPct, fmtDec, fmtStat } from './fmt'
 
 const DR = 1000   // divisor padrão de diminishing returns
 
@@ -180,6 +181,121 @@ export function calcResult(stats: BuildStats, baselineAvg: number): DamageResult
     totalDmg60s,
     trueDps,
   }
+}
+
+// ─── Breakdown (transparência do cálculo) ────────────────────────────────────
+// Reproduz a pipeline de calcAverageDPS/calcResult expondo cada número intermediário
+// para o usuário entender COMO o DPS foi montado.
+
+export interface BreakdownRow {
+  label: string
+  value: string
+  /** Fórmula ou observação curta */
+  note?: string
+}
+export interface BreakdownGroup {
+  title: string
+  rows: BreakdownRow[]
+}
+
+export function calcBreakdown(stats: BuildStats): BreakdownGroup[] {
+  const x = (n: number) => `×${fmtDec(n, 3)}`
+
+  // Chances
+  const totalCrit  = stats.critHitChance + (stats.bossCritChance ?? 0)
+  const totalHeavy = stats.heavyAttackChance + (stats.bossHeavyChance ?? 0)
+  const critChance  = critChanceFromStat(totalCrit, stats.targetEndurance)
+  const heavyChance = heavyChanceFromStat(totalHeavy)
+
+  // Dano base
+  const avgWeapon  = (stats.minWeaponDmg + stats.maxWeaponDmg) / 2
+  const baseNormal = baseSkillDamage(avgWeapon, stats)
+  const baseCrit   = baseSkillDamage(stats.maxWeaponDmg, stats)
+
+  // Multiplicadores
+  const defReduction = stats.targetDefense > 0 ? stats.targetDefense / (stats.targetDefense + 2500) : 0
+  const defMult      = 1 - defReduction
+  const sdbMult      = stats.skillDmgBoost > 0 ? 1 + stats.skillDmgBoost / (stats.skillDmgBoost + DR) : 1
+  const speciesMult  = 1 + stats.speciesDmgBoost / (stats.speciesDmgBoost + DR)
+  const monsterMult  = 1 + stats.monsterDmgBoostPct / 100
+  const dmgBuff      = 1 + stats.dmgBuffPct / 100
+  const baseMult     = defMult * sdbMult * speciesMult * monsterMult * dmgBuff
+  const critDmgMult  = 1 + stats.critDmgPct / 100
+  const heavyMult    = 2.0 + stats.heavyAttackDmgComp / 100
+
+  // Cenários
+  const dmgNormal    = baseNormal * baseMult
+  const dmgCrit      = baseCrit * baseMult * critDmgMult
+  const dmgHeavy     = baseNormal * baseMult * heavyMult
+  const dmgCritHeavy = baseCrit * baseMult * critDmgMult * heavyMult
+  const pNormal    = (1 - critChance) * (1 - heavyChance)
+  const pCritOnly  = critChance * (1 - heavyChance)
+  const pHeavyOnly = (1 - critChance) * heavyChance
+  const pCritHeavy = critChance * heavyChance
+  const avgPreBonus = pNormal * dmgNormal + pCritOnly * dmgCrit + pHeavyOnly * dmgHeavy + pCritHeavy * dmgCritHeavy
+  const finalDamage = Math.max(0, avgPreBonus + stats.bonusDmg)
+
+  // Ciclo
+  const castEf = effectiveCastTime(stats.skillCastTime ?? 2, stats.attackSpeedPct ?? 0)
+  const cdEf   = effectiveCooldown(stats.skillCooldown ?? 12, stats.cdrPct ?? 0)
+  const cycle  = castEf + cdEf
+  const trueDps = cycle > 0 ? finalDamage / cycle : 0
+
+  return [
+    {
+      title: '1. Chances de acerto',
+      rows: [
+        { label: 'Chance de crítico', value: fmtPct(critChance * 100), note: `${fmtStat(totalCrit)} ÷ (${fmtStat(totalCrit)}${stats.targetEndurance > 0 ? ` − ${fmtStat(stats.targetEndurance)}` : ''} + 1000)` },
+        { label: 'Chance de pesado',  value: fmtPct(heavyChance * 100), note: `${fmtStat(totalHeavy)} ÷ (${fmtStat(totalHeavy)} + 1000)` },
+      ],
+    },
+    {
+      title: '2. Dano base da habilidade',
+      rows: [
+        { label: 'Base (hit normal)', value: fmt(baseNormal), note: `arma média ${fmtStat(avgWeapon)} × ${fmtStat(stats.skillBaseDamagePct)}% + ${fmtStat(stats.skillBonusBaseDmg)}` },
+        { label: 'Base (crítico)',    value: fmt(baseCrit),   note: `usa arma máxima ${fmtStat(stats.maxWeaponDmg)}` },
+      ],
+    },
+    {
+      title: '3. Multiplicadores (produto)',
+      rows: [
+        { label: 'Defesa do alvo',     value: x(defMult),     note: defReduction > 0 ? `−${fmtPct(defReduction * 100)}` : 'sem redução' },
+        { label: 'Ampliação de skill', value: x(sdbMult) },
+        { label: 'Espécie',            value: x(speciesMult) },
+        { label: 'Dano PvE',           value: x(monsterMult) },
+        { label: 'Buff de dano',       value: x(dmgBuff) },
+        { label: 'Multiplicador total', value: x(baseMult), note: 'produto dos acima' },
+        { label: 'Dano crítico',       value: x(critDmgMult), note: `+${fmtStat(stats.critDmgPct)}% no crítico` },
+        { label: 'Ataque pesado',      value: x(heavyMult),   note: `2,0 + ${fmtStat(stats.heavyAttackDmgComp)}%` },
+      ],
+    },
+    {
+      title: '4. Cenários (chance × dano)',
+      rows: [
+        { label: 'Normal',       value: fmt(dmgNormal),    note: `${fmtPct(pNormal * 100)} de chance` },
+        { label: 'Só crítico',   value: fmt(dmgCrit),      note: `${fmtPct(pCritOnly * 100)} de chance` },
+        { label: 'Só pesado',    value: fmt(dmgHeavy),     note: `${fmtPct(pHeavyOnly * 100)} de chance` },
+        { label: 'Crit + pesado', value: fmt(dmgCritHeavy), note: `${fmtPct(pCritHeavy * 100)} de chance` },
+      ],
+    },
+    {
+      title: '5. Resultado',
+      rows: [
+        { label: 'Média ponderada', value: fmt(avgPreBonus), note: 'soma dos cenários' },
+        { label: 'Bônus de dano',   value: `+${fmt(stats.bonusDmg)}`, note: 'somado pós-multiplicadores' },
+        { label: 'Dano por cast',   value: fmt(finalDamage) },
+      ],
+    },
+    {
+      title: '6. Ciclo & DPS',
+      rows: [
+        { label: 'Cast efetivo',  value: `${fmtDec(castEf)}s`, note: `${fmtStat(stats.skillCastTime)}s ÷ (1 + ${Math.min(stats.attackSpeedPct, 150)}%)` },
+        { label: 'Recarga efetiva', value: `${fmtDec(cdEf)}s`, note: `${fmtStat(stats.skillCooldown)}s ÷ (1 + ${Math.min(stats.cdrPct, 120)}%)` },
+        { label: 'Tempo de ciclo', value: `${fmtDec(cycle)}s`, note: 'cast + recarga' },
+        { label: 'DPS real',       value: fmt(trueDps), note: 'dano por cast ÷ ciclo' },
+      ],
+    },
+  ]
 }
 
 // ─── Sensitivity (weight) ────────────────────────────────────────────────────

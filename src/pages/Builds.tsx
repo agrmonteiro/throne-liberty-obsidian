@@ -875,6 +875,7 @@ export function Builds(): React.ReactElement {
                                     <NumericInput
                                       className="tl-input"
                                       value={editData.stats[field.key] as number}
+                                      min={0}
                                       max={field.max}
                                       onChange={(v) => updateCalcField(field.key, v)}
                                     />

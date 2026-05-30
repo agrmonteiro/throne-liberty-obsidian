@@ -21,11 +21,11 @@ export const STAT_HELP: Partial<Record<keyof BuildStats, StatHelp>> = {
     where: 'Tooltip da habilidade / Questlog. Se não tiver, deixe 0.',
   },
   monsterDmgBoostPct: {
-    help: 'Multiplicador de dano contra monstros (PvE). Padrão 120 = ×1,2. Inclui bônus de dano em masmorras e contra monstros.',
+    help: 'Bônus de dano em PvE (contra monstros), em %. No cálculo entra como ×(1 + valor/100) — ex: 120 → ×2,2. Use 0 para neutro.',
     where: 'Personagem → Atributos → seção de dano PvE / "Dano contra Monstros".',
   },
   dmgBuffPct: {
-    help: 'Soma dos buffs de dano ativos (comida, poções, bênçãos). Padrão 120. Use 100 para neutro (sem buff).',
+    help: 'Soma dos buffs de dano ativos (comida, poções, bênçãos), em %. Entra como ×(1 + valor/100) — ex: 120 → ×2,2. Use 0 para neutro.',
     where: 'Some os buffs temporários ativos durante o combate que quer simular.',
   },
   skillCooldown: {

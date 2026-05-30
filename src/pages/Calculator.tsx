@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, ResponsiveContainer, LineChart, Line, Legend } from 'recharts'
 import { useBuilds } from '../store/useBuilds'
-import { calcResult, calcElasticity, calcSensitivity, critChanceFromStat, heavyChanceFromStat, effectiveCastTime, effectiveCooldown } from '../engine/calculator'
+import { calcResult, calcElasticity, calcSensitivity, calcBreakdown, critChanceFromStat, heavyChanceFromStat, effectiveCastTime, effectiveCooldown } from '../engine/calculator'
 import type { ElasticityTest } from '../engine/calculator'
 import { TOOLTIP_CONTENT, TOOLTIP_LABEL, TOOLTIP_ITEM } from '../styles/chartStyles'
 import { DEFAULT_STATS } from '../engine/types'
@@ -100,6 +100,7 @@ export function Calculator(): React.ReactElement {
   const [selPoint, setSelPoint] = useState<{ title: string; buildName: string; text: string; color: string } | null>(null)
   const [showLabels, setShowLabels] = useState(true)
   const [showFormula, setShowFormula] = useState(false)
+  const [breakdownCol, setBreakdownCol] = useState<number | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
 
   const [addConfigs, setAddConfigs] = useState<Array<{ stat: StatKey; step: number }>>(
@@ -500,6 +501,34 @@ export function Calculator(): React.ReactElement {
         </div>
       )}
 
+      {/* ── Breakdown Modal (cálculo desta build, com números reais) ─────────── */}
+      {breakdownCol !== null && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(5, 7, 16, 0.8)', backdropFilter: 'blur(4px)' }} onClick={() => setBreakdownCol(null)} />
+          <div className="tl-panel tl-modal-slide" style={{ position: 'relative', width: 560, maxWidth: '92%', maxHeight: '85vh', overflowY: 'auto', border: `1px solid ${COLORS[breakdownCol]}` }}>
+            <button className="tl-btn-ghost" style={{ position: 'absolute', top: '1rem', right: '1rem', padding: '0.4rem' }} onClick={() => setBreakdownCol(null)}>✕</button>
+            <h2 style={{ fontSize: '1.15rem', marginBottom: '0.25rem', color: COLORS[breakdownCol] }}>🔍 Como o DPS foi calculado</h2>
+            <div style={{ fontSize: '0.78rem', color: 'var(--text-soft)', marginBottom: '1rem' }}>
+              Build {breakdownCol + 1} — passo a passo com os seus números, na ordem que o jogo aplica.
+            </div>
+            {calcBreakdown(colStats[breakdownCol]).map((group) => (
+              <div key={group.title} style={{ marginBottom: '0.85rem' }}>
+                <div className="tl-eyebrow" style={{ marginBottom: 5, color: 'var(--text-soft)' }}>{group.title}</div>
+                {group.rows.map((row) => (
+                  <div key={row.label} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '0.75rem', padding: '0.28rem 0', borderBottom: '1px solid var(--border)' }}>
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text)' }}>{row.label}</div>
+                      {row.note && <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono, monospace' }}>{row.note}</div>}
+                    </div>
+                    <div className="font-mono" style={{ fontSize: '0.82rem', fontWeight: 700, color: COLORS[breakdownCol], whiteSpace: 'nowrap', flexShrink: 0 }}>{row.value}</div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ── Fullscreen overlay ──────────────────────────────────────────────── */}
       {maximized && (
         <div
@@ -627,9 +656,17 @@ export function Calculator(): React.ReactElement {
                 title={isHid ? 'Mostrar no gráfico' : 'Ocultar do gráfico'}
                 style={{ borderColor: isBest ? COLORS[i] : undefined, opacity: isHid ? 0.32 : 1, cursor: 'pointer', transition: 'opacity 0.22s, border-color 0.22s', userSelect: 'none' }}
               >
-                <div className="tl-eyebrow" style={{ color: COLORS[i], marginBottom: 6 }}>
-                  {bId}{isBest ? <span className="tl-tag tl-tag-gold" style={{ marginLeft: 6 }}>BEST</span> : null}
-                  {isHid && <span className="tl-tag" style={{ marginLeft: 6, background: 'rgba(255,255,255,0.04)', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: '0.6rem' }}>oculto</span>}
+                <div className="tl-eyebrow" style={{ color: COLORS[i], marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
+                  <span>{bId}{isBest ? <span className="tl-tag tl-tag-gold" style={{ marginLeft: 6 }}>BEST</span> : null}</span>
+                  {isHid && <span className="tl-tag" style={{ background: 'rgba(255,255,255,0.04)', color: 'var(--text-muted)', border: '1px solid var(--border)', fontSize: '0.6rem' }}>oculto</span>}
+                  {r.avgDamage > 0 && (
+                    <button
+                      className="tl-btn-ghost"
+                      title="Ver como o DPS foi calculado"
+                      onClick={(e) => { e.stopPropagation(); setBreakdownCol(i) }}
+                      style={{ marginLeft: 'auto', padding: '0.1rem 0.35rem', fontSize: '0.65rem', lineHeight: 1.3, color: COLORS[i], borderColor: 'var(--border)' }}
+                    >🔍 cálculo</button>
+                  )}
                 </div>
                 <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginBottom: 2 }}>dano por cast</div>
                 <div className="tl-dmg">{r.avgDamage > 0 ? fmt(r.avgDamage) : '—'}</div>
@@ -897,6 +934,7 @@ export function Calculator(): React.ReactElement {
                               backgroundColor: isDiff ? `${COLORS[i]}15` : undefined
                             }}
                             value={s[field.key] as number}
+                            min={0}
                             max={field.max}
                             onChange={(v) => updateField(i, field.key, v)}
                           />
