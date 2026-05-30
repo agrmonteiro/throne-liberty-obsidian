@@ -6,6 +6,8 @@ import type { Build, BuildStats } from '../engine/types'
 import { useT } from '../i18n/useT'
 import { fmt, fmtPct } from '../engine/fmt'
 import { NumericInput } from '../components/NumericInput'
+import { HelpTip } from '../components/HelpTip'
+import { STAT_HELP } from '../engine/statHelp'
 const now  = () => new Date().toISOString()
 
 // ─── Stat groups for the full stats editor ───────────────────────────────────
@@ -866,7 +868,10 @@ export function Builds(): React.ReactElement {
                               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '0.5rem' }}>
                                 {CALC_FIELDS.filter((f) => f.group === group).map((field) => (
                                   <div key={field.key}>
-                                    <div className="tl-eyebrow" style={{ marginBottom: 3 }}>{field.label}{field.max !== undefined && <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: 4 }}>/ {field.max}</span>}</div>
+                                    <div className="tl-eyebrow" style={{ marginBottom: 3, display: 'flex', alignItems: 'center', gap: 5 }}>
+                                      <span>{field.label}{field.max !== undefined && <span style={{ color: 'var(--text-muted)', fontWeight: 400, marginLeft: 4 }}>/ {field.max}</span>}</span>
+                                      {STAT_HELP[field.key] && <HelpTip help={STAT_HELP[field.key]!.help} where={STAT_HELP[field.key]!.where} />}
+                                    </div>
                                     <NumericInput
                                       className="tl-input"
                                       value={editData.stats[field.key] as number}

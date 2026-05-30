@@ -9,6 +9,8 @@ import type { BuildStats } from '../engine/types'
 
 import { fmt, fmtPct, fmtStat } from '../engine/fmt'
 import { NumericInput } from '../components/NumericInput'
+import { HelpTip } from '../components/HelpTip'
+import { STAT_HELP } from '../engine/statHelp'
 
 const COLS = 4
 const COLORS = ['#d4af37', '#7c5cfc', '#00d4ff', '#3dd68c']
@@ -54,7 +56,6 @@ interface FieldDef {
   key: StatKey
   label: string
   group: 'skill' | 'build' | 'target'
-  tooltip?: string
   max?: number
 }
 
@@ -63,24 +64,24 @@ const FIELDS: FieldDef[] = [
   { key: 'skillBonusBaseDmg', label: 'Skill Bonus Base Dmg', group: 'skill' },
   { key: 'monsterDmgBoostPct', label: 'Monster Dmg Boost %', group: 'skill' },
   { key: 'dmgBuffPct', label: 'Damage Buff %', group: 'skill' },
-  { key: 'skillCooldown', label: 'Cooldown Base (s)', group: 'skill', tooltip: 'Cooldown base da skill em segundos' },
-  { key: 'skillCastTime', label: 'Tempo de Cast (s)', group: 'skill', tooltip: 'Tempo de cast da skill em segundos' },
+  { key: 'skillCooldown', label: 'Cooldown Base (s)', group: 'skill' },
+  { key: 'skillCastTime', label: 'Tempo de Cast (s)', group: 'skill' },
   { key: 'minWeaponDmg', label: 'Min Weapon Base Dmg', group: 'build' },
   { key: 'maxWeaponDmg', label: 'Max Weapon Base Dmg', group: 'build' },
-  { key: 'cdrPct', label: 'Cooldown Speed %', group: 'build', tooltip: 'Redução de cooldown em % — hard cap: 120%', max: 120 },
-  { key: 'attackSpeedPct', label: 'Attack Speed %', group: 'build', tooltip: 'Velocidade de ataque adicional em % — hard cap: 150%', max: 150 },
+  { key: 'cdrPct', label: 'Cooldown Speed %', group: 'build', max: 120 },
+  { key: 'attackSpeedPct', label: 'Attack Speed %', group: 'build', max: 150 },
   { key: 'critHitChance', label: 'Crit Hit Chance', group: 'build' },
-  { key: 'bossCritChance', label: 'Boss Crit Chance', group: 'build', tooltip: 'Bônus EXTRA vs Chefe — inserir apenas a diferença (quest log boss − crit normal). Ex: quest log mostra 700 boss e 500 normal → inserir 200.' },
+  { key: 'bossCritChance', label: 'Boss Crit Chance', group: 'build' },
   { key: 'heavyAttackChance', label: 'Heavy Attack Chance', group: 'build' },
-  { key: 'bossHeavyChance', label: 'Boss Heavy Chance', group: 'build', tooltip: 'Bônus EXTRA vs Chefe — inserir apenas a diferença (quest log boss − heavy normal). Ex: quest log mostra 400 boss e 300 normal → inserir 100.' },
-  { key: 'heavyAttackDmgComp', label: 'Heavy Dmg Compl. *', group: 'build', tooltip: 'Só o complemento acima de +100% (ex: jogo 114% → inserir 14)' },
+  { key: 'bossHeavyChance', label: 'Boss Heavy Chance', group: 'build' },
+  { key: 'heavyAttackDmgComp', label: 'Heavy Dmg Compl. *', group: 'build' },
   { key: 'skillDmgBoost', label: 'Skill Damage Boost', group: 'build' },
   { key: 'bonusDmg', label: 'Bonus Damage', group: 'build' },
   { key: 'critDmgPct', label: 'Crit Damage %', group: 'build' },
   { key: 'speciesDmgBoost', label: 'Species Dmg Boost', group: 'build' },
   { key: 'targetDefense', label: "Target's Defense", group: 'target' },
   { key: 'targetEvasion', label: "Target's Evasion", group: 'target' },
-  { key: 'targetEndurance', label: "Target's Endurance", group: 'target', tooltip: 'Endurance do alvo — reduz a crit chance efetiva antes do DR' },
+  { key: 'targetEndurance', label: "Target's Endurance", group: 'target' },
 ]
 
 export function Calculator(): React.ReactElement {
@@ -869,7 +870,10 @@ export function Calculator(): React.ReactElement {
               {FIELDS.filter((f) => f.group === group).map((field) => (
                 <React.Fragment key={field.key}>
                   <div style={{ display: 'grid', gridTemplateColumns: '180px repeat(4, 1fr)', gap: '0.4rem', marginBottom: '0.2rem', alignItems: 'center' }}>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-soft)' }} title={field.tooltip}>{field.label}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-soft)', display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span>{field.label}</span>
+                      {STAT_HELP[field.key] && <HelpTip help={STAT_HELP[field.key]!.help} where={STAT_HELP[field.key]!.where} />}
+                    </div>
                     {colStats.map((s, i) => {
                       const isDiff = i > 0 && s[field.key] !== colStats[0][field.key]
                       const weight = sensitivities[i].get(field.key)

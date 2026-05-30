@@ -34,6 +34,26 @@ export interface Translations {
     chart: string; activeBuild: string; switchBuild: string; noBuild: string
     features: { calc: string; calcSub: string; comp: string; compSub: string; sens: string; sensSub: string }
     chartTooltipDps: string
+    gettingStarted: {
+      title: string; subtitle: string; toggleShow: string; toggleHide: string; cta: string
+      steps: {
+        build:    { title: string; desc: string }
+        calc:     { title: string; desc: string }
+        improve:  { title: string; desc: string }
+        validate: { title: string; desc: string }
+      }
+    }
+    toolsGuide: {
+      title: string; subtitle: string; whenLabel: string
+      items: {
+        builds:      { name: string; what: string; when: string }
+        calculator:  { name: string; what: string; when: string }
+        comparator:  { name: string; what: string; when: string }
+        sensitivity: { name: string; what: string; when: string }
+        logreader:   { name: string; what: string; when: string }
+        pullranking: { name: string; what: string; when: string }
+      }
+    }
   }
   calculator: {
     title: string; subtitle: string
@@ -78,7 +98,7 @@ export interface Translations {
   }
   builds: {
     title: string; subtitle: string
-    newBuild: string; import: string; export: string; delete: string
+    newBuild: string; import: string; export: string
     stats: { dps: string; crit: string; heavy: string; critDmg: string; weapon: string; skillBoost: string }
     editor: {
       title: string; name: string; weapon: string; save: string; cancel: string
@@ -265,6 +285,32 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
         sens: 'Sensibilidade', sensSub: 'Qual atributo dá mais DPS por unidade? Classificação e barras de impacto.',
       },
       chartTooltipDps: 'DPS Real (/s)',
+      gettingStarted: {
+        title: 'Comece aqui',
+        subtitle: 'Quatro passos para tirar proveito do Command Lab. Clique em qualquer passo para abrir a ferramenta.',
+        toggleShow: 'Ver guia de primeiros passos',
+        toggleHide: 'Ocultar guia',
+        cta: 'Abrir',
+        steps: {
+          build:    { title: 'Adicione sua build',       desc: 'Cole a URL do Questlog, importe de um print do jogo ou crie manualmente. É a partir daqui que tudo funciona.' },
+          calc:     { title: 'Veja seu DPS estimado',     desc: 'A Calculadora aplica as fórmulas oficiais do jogo aos seus atributos e mostra o dano por segundo.' },
+          improve:  { title: 'Descubra o que melhorar',   desc: 'A Sensibilidade revela qual atributo rende mais DPS por ponto investido — onde gastar pedras e gemas.' },
+          validate: { title: 'Valide no combate real',    desc: 'O Leitor de Logs lê os logs do jogo e mostra seu dano real; o Ranking compara seus melhores pulls.' },
+        },
+      },
+      toolsGuide: {
+        title: 'Ferramentas & quando usar',
+        subtitle: 'O que cada parte do Command Lab faz. Clique para abrir.',
+        whenLabel: 'Quando usar',
+        items: {
+          builds:      { name: 'Builds',       what: 'Guarda suas builds: importa do Questlog, de um print ou monta manualmente.', when: 'Antes de tudo — para registrar seus atributos.' },
+          calculator:  { name: 'Calculadora',  what: 'Estima o DPS aplicando as fórmulas do jogo; compara até 4 builds lado a lado.', when: 'Para saber quanto dano sua build faz.' },
+          comparator:  { name: 'Comparador',   what: 'Gráfico radar normalizado mostrando os pontos fortes e fracos de cada build.', when: 'Para enxergar diferenças entre builds de relance.' },
+          sensitivity: { name: 'Sensibilidade', what: 'Classifica os atributos pelo ganho de DPS por ponto investido.', when: 'Para decidir qual atributo subir em seguida.' },
+          logreader:   { name: 'Leitor de Logs', what: 'Lê os logs de combate do jogo e quebra o dano por pull e habilidade.', when: 'Para medir seu desempenho real no jogo.' },
+          pullranking: { name: 'Ranking de Pulls', what: 'Rankeia seus pulls de combate por dano e DPS, filtrando por alvo e arma.', when: 'Para comparar seus melhores resultados.' },
+        },
+      },
     },
     calculator: {
       title: 'Calculadora PvE',
@@ -327,7 +373,7 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     },
     builds: {
       title: 'Builds', subtitle: 'Gerencie suas builds. Importe do quest log ou edite manualmente.',
-      newBuild: 'Nova Build', import: 'Importar', export: 'Exportar', delete: 'Deletar',
+      newBuild: 'Nova Build', import: 'Importar', export: 'Exportar',
       stats: { dps: 'DPS', crit: 'Acerto Crítico', heavy: 'Ataque Pesado', critDmg: 'Dano Crítico %', weapon: 'Arma Máxima', skillBoost: 'Amp. de Habilidade' },
       editor: {
         title: 'Editar Build', name: 'Nome da Build', weapon: 'Combo de Armas', save: 'Salvar', cancel: 'Cancelar',
@@ -567,6 +613,32 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
         sens: 'Sensitivity', sensSub: 'Which stat gives the most DPS per unit? Ranking and impact bars.',
       },
       chartTooltipDps: 'Real DPS (/s)',
+      gettingStarted: {
+        title: 'Start here',
+        subtitle: 'Four steps to get the most out of Command Lab. Click any step to open the tool.',
+        toggleShow: 'Show getting-started guide',
+        toggleHide: 'Hide guide',
+        cta: 'Open',
+        steps: {
+          build:    { title: 'Add your build',          desc: 'Paste a Questlog URL, import from an in-game screenshot or create one manually. Everything starts here.' },
+          calc:     { title: 'See your estimated DPS',   desc: 'The Calculator applies the game formulas to your stats and shows damage per second.' },
+          improve:  { title: 'Find what to improve',     desc: 'Sensitivity reveals which stat gives the most DPS per point — where to spend your stones and gems.' },
+          validate: { title: 'Validate in real combat',  desc: 'The Log Reader parses your game logs and shows real damage; Ranking compares your best pulls.' },
+        },
+      },
+      toolsGuide: {
+        title: 'Tools & when to use them',
+        subtitle: 'What each part of Command Lab does. Click to open.',
+        whenLabel: 'When to use',
+        items: {
+          builds:      { name: 'Builds',       what: 'Stores your builds: import from Questlog, from a screenshot or build manually.', when: 'First of all — to record your stats.' },
+          calculator:  { name: 'Calculator',   what: 'Estimates DPS using the game formulas; compares up to 4 builds side by side.', when: 'To know how much damage your build does.' },
+          comparator:  { name: 'Comparator',   what: 'Normalized radar chart showing the strengths and weaknesses of each build.', when: 'To see differences between builds at a glance.' },
+          sensitivity: { name: 'Sensitivity',  what: 'Ranks stats by DPS gained per point invested.', when: 'To decide which stat to raise next.' },
+          logreader:   { name: 'Log Reader',   what: 'Reads the game combat logs and breaks down damage per pull and skill.', when: 'To measure your real in-game performance.' },
+          pullranking: { name: 'Pull Ranking', what: 'Ranks your combat pulls by damage and DPS, filtering by target and weapon.', when: 'To compare your best results.' },
+        },
+      },
     },
     calculator: {
       title: 'PvE Calculator',
@@ -629,7 +701,7 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
     },
     builds: {
       title: 'Builds', subtitle: 'Manage your builds. Import from quest log or edit manually.',
-      newBuild: 'New Build', import: 'Import', export: 'Export', delete: 'Delete',
+      newBuild: 'New Build', import: 'Import', export: 'Export',
       stats: { dps: 'DPS', crit: 'Crit', heavy: 'Heavy', critDmg: 'Crit Dmg %', weapon: 'Max Weapon', skillBoost: 'Skill Boost' },
       editor: {
         title: 'Edit Build', name: 'Build Name', weapon: 'Weapon Combo', save: 'Save', cancel: 'Cancel',

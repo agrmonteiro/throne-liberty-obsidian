@@ -123,6 +123,8 @@ export default function App(): React.ReactElement {
                 </div>
               )}
             </>
+          ) : page === 'dashboard' ? (
+            <Dashboard onNavigate={setPage} />
           ) : (
             <PageComponent />
           )}
