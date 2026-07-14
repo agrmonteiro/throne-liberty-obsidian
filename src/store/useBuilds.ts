@@ -22,37 +22,6 @@ interface BuildsState {
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-declare global {
-  interface Window {
-    dataAPI: {
-      read:                  (filename: string)                   => Promise<unknown>
-      write:                 (filename: string, data: unknown)    => Promise<{ ok: boolean; error?: string }>
-      importFile:            ()                                   => Promise<unknown>
-      exportFile:            (data: unknown, name: string)        => Promise<{ ok: boolean; path?: string }>
-      dir:                   ()                                   => Promise<string>
-      questlogImportPython:  (url: string)                        => Promise<unknown>
-      questlogCancel:        ()                                   => Promise<{ ok: boolean }>
-      onProgress:            (cb: (payload: { stage: 'starting' | 'downloading-browser' | 'extracting' | 'done' }) => void) => void
-      offProgress:           () => void
-      onLog:                 (cb: (payload: { line: string }) => void) => void
-      offLog:                () => void
-      // Combat log folder management
-      combatlogPickFolder:   ()                                   => Promise<string | null | { error: string }>
-      combatlogGetFolder:    ()                                   => Promise<string | null>
-      combatlogListFiles:    (folder: string)                     => Promise<{ name: string; path: string; sizeBytes: number; mtime: number }[]>
-      combatlogReadFile:     (filePath: string)                   => Promise<string | null>
-      combatlogDeleteFile:   (filePath: string)                   => Promise<{ ok: boolean; error?: string }>
-      // Scraper setup
-      scraperGetPath:        ()                                   => Promise<string | null>
-      scraperSetPath:        (p: string)                          => Promise<{ ok: boolean; error?: string }>
-      scraperPickFile:       ()                                   => Promise<string | null>
-      scraperDetect:         ()                                   => Promise<{ scraperFound: boolean; scraperPath: string | null; pythonOk: boolean; pythonVersion: string }>
-      scraperOpenLog:        ()                                   => Promise<{ ok: boolean; error?: string }>
-      scraperReadLog:        ()                                   => Promise<string>
-    }
-  }
-}
-
 const FILE = 'builds.json'
 
 async function readBuilds(): Promise<BuildMap> {

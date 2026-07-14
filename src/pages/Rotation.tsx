@@ -74,6 +74,7 @@ const WEAPON_COLOR: Record<string, string> = {
   'Sword & Shield': '#f59e0b',
   'Spear':          '#ec4899',
   'Orb':            'var(--cyan)',
+  'Gauntlets':      '#f97316',
   'Item/Proc':      '#94a3b8',
 }
 

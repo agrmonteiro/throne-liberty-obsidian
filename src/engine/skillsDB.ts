@@ -12,6 +12,7 @@ interface SkillEntry {
   weapon: string
   category?: SkillCategory
   icon?: string
+  aliases?: string[]
 }
 
 const MASTER_LIST: SkillEntry[] = [
@@ -122,6 +123,41 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Invocar Satélite",      pt: "Invocar Satélite",         weapon: "Orb",         category: 'proc' },
   { en: "Chaotic Shield",        pt: "Escudo Caótico",          weapon: "Orb",       category: 'active' },
 
+  // ─── MANOPLAS (Gauntlets) ──────────────────────────────────────────
+  { en: "Consecutive Hits",      pt: "Golpes Consecutivos",      weapon: "Gauntlets", category: 'active' },
+  { en: "Critical Hit",          pt: "Acerto Crítico",           weapon: "Gauntlets", category: 'active', aliases: ["Charge Attack"] },
+  { en: "Eclipse of Blood",      pt: "Eclipse de Sangue",        weapon: "Gauntlets", category: 'active' },
+  { en: "Mobility Strike",       pt: "Golpe de Mobilidade",      weapon: "Gauntlets", category: 'active' },
+  { en: "Chain Strike",          pt: "Golpe em Cadeia",          weapon: "Gauntlets", category: 'active', aliases: ["Chain Strike: Thrust", "Chain Strike: Uppercut", "Chain Strike: Smash Down", "Thrust", "Uppercut", "Smash Down"] },
+  { en: "Explosive Flurry",      pt: "Rajada Explosiva",         weapon: "Gauntlets", category: 'active', aliases: ["Explosive Fury", "Gatling Attack"] },
+  { en: "Fortitude Crustacean",  pt: "Casco de Fortitude",       weapon: "Gauntlets", category: 'active', aliases: ["Fortifying Shell", "Turtle Stance", "Indomitable Armor"] },
+  { en: "Sweep",                 pt: "Varredura",                weapon: "Gauntlets", category: 'active', aliases: ["Bulldozer", "Hook"] },
+  { en: "Earthquake",            pt: "Terremoto",                weapon: "Gauntlets", category: 'active' },
+  { en: "Unshakable Stance",     pt: "Postura Inabalável",       weapon: "Gauntlets", category: 'active' },
+  { en: "Iron Mountain Blow",    pt: "Golpe da Montanha de Ferro", weapon: "Gauntlets", category: 'active' },
+  { en: "One-Inch Punch",        pt: "Soco de Uma Polegada",     weapon: "Gauntlets", category: 'active', aliases: ["Short Jab"] },
+  { en: "Trance",                pt: "Transe",                   weapon: "Gauntlets", category: 'active', aliases: ["Battle Trance"] },
+  { en: "Taunt",                 pt: "Provocação",               weapon: "Gauntlets", category: 'active' },
+  { en: "Threat Boost",          pt: "Aumento de Ameaça",        weapon: "Gauntlets", category: 'active' },
+  { en: "Consecutive Claws",     pt: "Garras Consecutivas",      weapon: "Gauntlets", category: 'active', aliases: ["Swift Claw"] },
+  { en: "Chain Scratch",         pt: "Arranhão em Cadeia",       weapon: "Gauntlets", category: 'active' },
+  { en: "Vampirism",             pt: "Vampirismo",               weapon: "Gauntlets", category: 'active', aliases: ["Drain Life"] },
+  { en: "Pain Harvest",          pt: "Colheita de Dor",          weapon: "Gauntlets", category: 'active' },
+  { en: "Evaporation",           pt: "Evaporação",               weapon: "Gauntlets", category: 'active', aliases: ["Camouflage"] },
+  { en: "Absorbing Grasp",       pt: "Aperto Absorvente",        weapon: "Gauntlets", category: 'active' },
+  { en: "Blood Spiral",          pt: "Espiral de Sangue",        weapon: "Gauntlets", category: 'active' },
+  { en: "Bloodstorm",            pt: "Tempestade de Sangue",    weapon: "Gauntlets", category: 'active', aliases: ["Bloodstorm Dance", "Blood Gale Frenzy", "Blood Wind"] },
+  { en: "Blood Talon",           pt: "Garra de Sangue",          weapon: "Gauntlets", category: 'active' },
+  { en: "Blood Explosion",       pt: "Explosão de Sangue",       weapon: "Gauntlets", category: 'active' },
+  { en: "Sharp Angle",           pt: "Ângulo Afiado",            weapon: "Gauntlets", category: 'active' },
+  { en: "Moonlight",             pt: "Luar",                     weapon: "Gauntlets", category: 'active' },
+  { en: "Physique Training",     pt: "Treinamento Físico",       weapon: "Gauntlets", category: 'proc', aliases: ["Receipt Training"] },
+  { en: "Breakthrough",          pt: "Ruptura",                  weapon: "Gauntlets", category: 'proc', aliases: ["Unpredictable"] },
+  { en: "Momentum",              pt: "Momentum",                 weapon: "Gauntlets", category: 'proc' },
+  { en: "Hardening",             pt: "Endurecimento",            weapon: "Gauntlets", category: 'proc' },
+  { en: "Master of Provocation", pt: "Mestre da Provocação",     weapon: "Gauntlets", category: 'proc' },
+  { en: "Bloody Claws",          pt: "Garras Sangrentas",        weapon: "Gauntlets", category: 'proc' },
+
   // ─── EFEITOS DE ITENS, MAESTRIAS E PROCS (Categorizados) ──────────
   { en: "Abyssal Explosion",     pt: "Explosão Abissal",        weapon: "Wand & Tome", category: 'active' },
   { en: "Mana Sphere",           pt: "Esfera de Mana",          weapon: "Wand & Tome", category: 'active' },
@@ -143,8 +179,9 @@ MASTER_LIST.forEach(entry => {
     category: entry.category || 'active', 
     icon: entry.icon 
   }
-  if (entry.en) SKILLS_DB[entry.en] = mapping
-  if (entry.pt) SKILLS_DB[entry.pt] = mapping
+  for (const name of [entry.en, entry.pt, ...(entry.aliases ?? [])]) {
+    if (name) SKILLS_DB[name] = mapping
+  }
 })
 
 export function getSkillInfo(skillName: string): SkillMapping | null {

@@ -10,6 +10,7 @@ const WEAPON_COLORS: Record<string, string> = {
   'Dagger': '#3DD68C', 'Adaga': '#3DD68C',
   'Spear': '#F25F5C', 'Lança': '#F25F5C',
   'Orb': '#FF00FF', 'Orbe': '#FF00FF',
+  'Gauntlets': '#F97316', 'Manopla': '#F97316', 'Manoplas': '#F97316',
   'Greatsword': '#B71C1C', 'Espadão': '#B71C1C',
   'Crossbow': '#00BCD4', 'Besta': '#00BCD4',
   'Sword & Shield': '#1976D2', 'Espada e Escudo': '#1976D2',

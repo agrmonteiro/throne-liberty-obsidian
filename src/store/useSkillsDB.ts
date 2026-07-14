@@ -54,7 +54,31 @@ async function write(entries: SkillDBEntry[]): Promise<void> {
 }
 
 // Seed inicial gerado a partir do MASTER_LIST do skillsDB.ts
-const SEED: Omit<SkillDBEntry, 'id'>[] = [
+type SeedSkill = Omit<SkillDBEntry, 'id' | 'nameEn'>
+
+const GAUNTLET_SEED: SeedSkill[] = [
+  'Consecutive Hits', 'Critical Hit', 'Eclipse of Blood', 'Mobility Strike', 'Chain Strike',
+  'Explosive Flurry', 'Fortitude Crustacean', 'Sweep', 'Earthquake', 'Unshakable Stance',
+  'Iron Mountain Blow', 'One-Inch Punch', 'Trance', 'Taunt', 'Threat Boost',
+  'Consecutive Claws', 'Chain Scratch', 'Vampirism', 'Pain Harvest', 'Evaporation',
+  'Absorbing Grasp', 'Blood Spiral', 'Bloodstorm', 'Blood Talon', 'Blood Explosion', 'Sharp Angle',
+].map(name => ({
+  name,
+  weaponType: 'Gauntlets',
+  category: 'active',
+  castTime: 1,
+  cooldown: 0,
+  manaCost: 0,
+  grade: '',
+  description: '',
+  skillDmgPct: 0,
+  bonusBaseDmg: 0,
+  hits: 1,
+  monsterBonus: 0,
+  dmgBonus: 0,
+}))
+
+const SEED: SeedSkill[] = [
   // Staff
   { name: 'Bola de Fogo em Série',         weaponType: 'Staff',        category: 'active',  castTime: 1,    cooldown: 0,  manaCost: 0, grade: '', description: '', skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Onda Infernal',                  weaponType: 'Staff',        category: 'active',  castTime: 1,    cooldown: 15, skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
@@ -153,6 +177,7 @@ const SEED: Omit<SkillDBEntry, 'id'>[] = [
   { name: 'Copiar Satélite',                weaponType: 'Orb',          category: 'proc',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Invocar Satélite',               weaponType: 'Orb',          category: 'proc',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Escudo Caótico',                 weaponType: 'Orb',          category: 'active',  castTime: 1,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
+  ...GAUNTLET_SEED,
   // Item / Proc
   { name: 'Ascensão Dracônica',             weaponType: 'Item/Proc',    category: 'item',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Fome de Tevent em Fúria',        weaponType: 'Item/Proc',    category: 'item',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
@@ -261,8 +286,9 @@ export const useSkillsDB = create<SkillsDBState>((set, get) => ({
       }
     })
 
-    set({ entries: updatedEntries })
-    write(updatedEntries)
+    const hasGauntlets = updatedEntries.some(entry => entry.weaponType === 'Gauntlets')
+    const entries = hasGauntlets ? updatedEntries : [...updatedEntries, ...DEFAULT_ENTRIES.filter(entry => entry.weaponType === 'Gauntlets')]
+    set({ entries })
+    write(entries)
   }
 }))
-
