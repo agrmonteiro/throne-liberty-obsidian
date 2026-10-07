@@ -7,6 +7,7 @@ import { Sensitivity }  from './pages/Sensitivity'
 import { Builds }       from './pages/Builds'
 import { LogReader }    from './pages/LogReader'
 import { Rotation }     from './pages/Rotation'
+import { Macro }        from './pages/Macro'
 import { Settings }     from './pages/Settings'
 import { PullRanking }  from './pages/PullRanking'
 import { SkillsDB }     from './pages/SkillsDB'
@@ -18,7 +19,7 @@ import { MigrationNotifier } from './components/MigrationNotifier'
 import { useAutoScale }      from './hooks/useAutoScale'
 import { useT }              from './i18n/useT'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'settings' | 'pullranking' | 'skillsdb' | 'masterytrees'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'macro' | 'settings' | 'pullranking' | 'skillsdb' | 'masterytrees'
 
 export default function App(): React.ReactElement {
   const [page, setPage]                     = useState<Page>('dashboard')
@@ -69,6 +70,7 @@ export default function App(): React.ReactElement {
     builds:       Builds,
     logreader:    LogReader,
     rotation:     Rotation,
+    macro:        Macro,
     settings:     Settings,
     pullranking:  PullRanking,
     skillsdb:     SkillsDB,

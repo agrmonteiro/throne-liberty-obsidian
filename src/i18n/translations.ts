@@ -7,7 +7,7 @@ export interface Translations {
     title: string
     tagline: string
     groups: { overview: string; manage: string; analysis: string; preferences: string }
-    nav: { dashboard: string; builds: string; calculator: string; comparator: string; sensitivity: string; rotation: string; logreader: string; settings: string; skillsdb: string; masterytrees: string }
+    nav: { dashboard: string; builds: string; calculator: string; comparator: string; sensitivity: string; rotation: string; macro: string; logreader: string; settings: string; skillsdb: string; masterytrees: string }
     footer: string
     checking: string
     upToDate: string
@@ -246,7 +246,7 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       title: 'Command Lab',
       tagline: 'Análise de elite, na palma da sua mão',
       groups: { overview: 'Visão Geral', manage: 'Gerenciar', analysis: 'Análise', preferences: 'Preferências' },
-      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'Calculadora PvE', comparator: 'Comparador', sensitivity: 'Sensibilidade', rotation: 'Rotação', logreader: 'Leitor de Logs', settings: 'Configurações', skillsdb: 'Banco de Skills', masterytrees: 'Maestrias' },
+      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'Calculadora PvE', comparator: 'Comparador', sensitivity: 'Sensibilidade', rotation: 'Rotação', macro: 'Macro Razer', logreader: 'Leitor de Logs', settings: 'Configurações', skillsdb: 'Banco de Skills', masterytrees: 'Maestrias' },
       footer: 'Electron + React',
       checking: 'Verificando versão…',
       upToDate: 'Versão atual já é a última',
@@ -574,7 +574,7 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       title: 'Command Lab',
       tagline: 'Elite analysis, at your fingertips',
       groups: { overview: 'Overview', manage: 'Manage', analysis: 'Analysis', preferences: 'Preferences' },
-      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'PvE Calculator', comparator: 'Comparator', sensitivity: 'Sensitivity', rotation: 'Rotation', logreader: 'Log Reader', settings: 'Settings', skillsdb: 'Skills DB', masterytrees: 'Masteries' },
+      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'PvE Calculator', comparator: 'Comparator', sensitivity: 'Sensitivity', rotation: 'Rotation', macro: 'Razer Macro', logreader: 'Log Reader', settings: 'Settings', skillsdb: 'Skills DB', masterytrees: 'Masteries' },
       footer: 'Electron + React',
       checking: 'Checking version…',
       upToDate: 'Already on latest version',

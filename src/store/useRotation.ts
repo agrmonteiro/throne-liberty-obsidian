@@ -70,7 +70,12 @@ export const useRotation = create<RotationState>((set, get) => ({
     set({ loading: true })
     const rotations = await readRotations()
     const ids = Object.keys(rotations)
-    set({ rotations, loading: false, activeRotationId: ids[0] ?? null })
+    const selectedId = get().activeRotationId
+    set({
+      rotations,
+      loading: false,
+      activeRotationId: selectedId && rotations[selectedId] ? selectedId : ids[0] ?? null,
+    })
   },
 
   saveRotation: async (rotation) => {
