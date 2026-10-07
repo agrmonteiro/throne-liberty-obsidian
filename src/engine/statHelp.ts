@@ -57,19 +57,19 @@ export const STAT_HELP: Partial<Record<keyof BuildStats, StatHelp>> = {
     where: 'Personagem → Atributos → seção Ofensiva → "Acerto Crítico".',
   },
   bossCritChance: {
-    help: 'Bônus EXTRA de crítico apenas contra Chefes — insira só a diferença (valor vs-Chefe menos o crítico normal). Ex: quest log mostra 700 contra chefe e 500 normal → digite 200.',
-    where: 'Compare "Acerto Crítico" normal e vs-Chefe no quest log. Sem esse dado, deixe 0.',
+    help: 'Bônus EXTRA de crítico apenas contra Chefes. No print da aba rosa de chefe, use diretamente o valor exibido.',
+    where: 'Personagem → Atributos → aba com ícone de chifres em fundo rosa. Sem esse dado, deixe 0.',
   },
   heavyAttackChance: {
     help: 'Seu atributo BRUTO de Ataque Pesado (o número, não a %). O app converte em chance real.',
     where: 'Personagem → Atributos → "Ataque Pesado".',
   },
   bossHeavyChance: {
-    help: 'Bônus EXTRA de ataque pesado apenas contra Chefes — insira só a diferença. Ex: quest log mostra 400 contra chefe e 300 normal → digite 100.',
-    where: 'Compare "Ataque Pesado" normal e vs-Chefe no quest log. Sem esse dado, deixe 0.',
+    help: 'Bônus EXTRA de ataque pesado apenas contra Chefes. No print da aba rosa de chefe, use diretamente o valor exibido.',
+    where: 'Personagem → Atributos → aba com ícone de chifres em fundo rosa. Sem esse dado, deixe 0.',
   },
   heavyAttackDmgComp: {
-    help: 'Dano extra do Ataque Pesado ACIMA de 100%. Digite só o complemento: se o jogo mostra 114%, digite 14.',
+    help: 'Complemento do Dano de Ataque Pesado sobre 100%. Ex.: se o jogo mostra 114%, digite 14; se mostra 95,6%, digite -4,4.',
     where: 'Personagem → Atributos → "Dano de Ataque Pesado".',
   },
   skillDmgBoost: {

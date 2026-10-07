@@ -8,6 +8,7 @@ import { fmt, fmtPct } from '../engine/fmt'
 import { NumericInput } from '../components/NumericInput'
 import { HelpTip } from '../components/HelpTip'
 import { STAT_HELP } from '../engine/statHelp'
+import { parseBuildOcrText, statsPatchFromOcrRaw } from '../engine/buildOcr'
 const now  = () => new Date().toISOString()
 
 // ─── Stat groups for the full stats editor ───────────────────────────────────
@@ -15,7 +16,7 @@ const now  = () => new Date().toISOString()
 const RAW_STAT_GROUPS: [string, string[]][] = [
   ['Geral', [
     'Combat Power', 'Max Damage', 'Attack Speed', 'Attack Speed %',
-    'Range', 'Range %', 'Bonus Damage', 'Species Damage Boost',
+    'Range', 'Range %', 'Block Chance', 'Bonus Damage', 'Species Damage Boost',
   ]],
   ['Crítico & Heavy', [
     'Melee Critical Hit Chance', 'Magic Critical Hit Chance', 'Ranged Critical Hit Chance',
@@ -28,6 +29,7 @@ const RAW_STAT_GROUPS: [string, string[]][] = [
     'Melee Evasion', 'Ranged Evasion', 'Magic Evasion',
     'Melee Endurance', 'Ranged Endurance', 'Magic Endurance',
     'Melee Heavy Attack Evasion', 'Ranged Heavy Attack Evasion', 'Magic Heavy Attack Evasion',
+    'Critical Damage Resistance', 'Heavy Attack Damage Resistance',
   ]],
   ['Vida & Mana', [
     'Max Health', 'Health Regen', 'Max Mana', 'Mana Regen', 'Mana Cost Efficiency',
@@ -60,7 +62,8 @@ const RAW_STAT_GROUPS: [string, string[]][] = [
     'Boss Melee Hit Chance', 'Boss Ranged Hit Chance', 'Boss Magic Hit Chance',
     'Boss Melee Evasion', 'Boss Ranged Evasion', 'Boss Magic Evasion',
     'Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance',
-    'Boss Ranged Heavy Attack Evasion',
+    'Boss Melee Heavy Attack Evasion', 'Boss Ranged Heavy Attack Evasion', 'Boss Magic Heavy Attack Evasion',
+    'Boss Bonus Damage',
   ]],
   ['Especial', [
     'Side Heavy Attack Chance', 'Side Evasion', 'Front Heavy Attack Evasion',
@@ -74,6 +77,7 @@ const ATTRIBUTE_NAMES = ['Strength', 'Dexterity', 'Wisdom', 'Perception', 'Forti
 // ─── Calculator fields (subset used for DPS engine) ──────────────────────────
 
 type StatKey = keyof BuildStats
+type OcrSummary = Array<{ fileName: string; attributes: string[]; stats: string[] }>
 const CALC_FIELDS: Array<{ key: StatKey; label: string; group: string; max?: number }> = [
   { key: 'minWeaponDmg',       label: 'Min Weapon Dmg',      group: 'Arma'      },
   { key: 'maxWeaponDmg',       label: 'Max Weapon Dmg',      group: 'Arma'      },
@@ -138,8 +142,17 @@ export function Builds(): React.ReactElement {
   const [status,        setStatus]        = useState<string | null>(null)
   const [statusErr,     setStatusErr]     = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
+  const [isReadingOcr,  setIsReadingOcr]  = useState(false)
+  const [ocrTargetId,   setOcrTargetId]   = useState('')
+  const [ocrProgress,   setOcrProgress]   = useState<OcrProgress | null>(null)
+  const [ocrSummary,    setOcrSummary]    = useState<OcrSummary>([])
   const [lastLog,       setLastLog]       = useState<string | null>(null)
   const [queue,         setQueue]         = useState<QueueItem[]>([])
+
+  useEffect(() => {
+    window.dataAPI.onOcrProgress(setOcrProgress)
+    return () => window.dataAPI.offOcrProgress()
+  }, [])
 
   function startEdit(b: Build) {
     setEditId(b.id)
@@ -174,6 +187,63 @@ export function Builds(): React.ReactElement {
     const build = await importFromFile()
     if (build) showStatus(`Importado: ${build.name}`, false)
     else showStatus(t('builds.status.importCancelled'), true)
+  }
+
+  async function handleOcrImport() {
+    setIsReadingOcr(true)
+    setOcrSummary([])
+    setOcrProgress({ current: 0, total: 0, percent: 0, fileName: '', status: 'Selecione os prints para iniciar.' })
+    try {
+      const result = await window.dataAPI.ocrImportBuild()
+      if (!result) return
+      if (result.error) {
+        showStatus(result.error, true)
+        return
+      }
+      const parsedPrints = (result.results ?? [])
+        .map((item) => ({ fileName: item.fileName, parsed: parseBuildOcrText(item.text, item.fileName) }))
+        .filter((item) => item.parsed.recognizedFields > 0)
+      if (parsedPrints.length === 0) {
+        showStatus('Nenhum atributo foi reconhecido. Use prints nítidos da tela de atributos.', true)
+        return
+      }
+
+      const targetBuild = ocrTargetId ? builds[ocrTargetId] : undefined
+      const baseBuild = targetBuild ?? createEmpty(parsedPrints[0].parsed.name)
+      const importedFiles = (result.results ?? []).map((item) => item.fileName)
+      const recognizedFields = parsedPrints.reduce((total, item) => total + item.parsed.recognizedFields, 0)
+      const rawStats = parsedPrints.reduce(
+        (currentStats, item) => ({ ...currentStats, ...item.parsed.rawStats }),
+        baseBuild.rawStats ?? {},
+      )
+      const build = {
+        ...baseBuild,
+        stats: { ...baseBuild.stats, ...statsPatchFromOcrRaw(rawStats, baseBuild.stats) },
+        rawStats,
+        rawAttributes: parsedPrints.reduce(
+          (currentAttributes, item) => ({ ...currentAttributes, ...item.parsed.rawAttributes }),
+          baseBuild.rawAttributes ?? {},
+        ),
+        editedAt: targetBuild ? now() : undefined,
+        notes: [
+          baseBuild.notes,
+          `OCR complementado com: ${importedFiles.join(', ')}. Revise os valores antes de usar a build.`,
+        ].filter(Boolean).join('\n'),
+      }
+      await saveBuild(build)
+      setActive(build.id)
+      startEdit(build)
+      setOcrSummary(parsedPrints.map(({ fileName, parsed }) => ({
+        fileName,
+        attributes: Object.entries(parsed.rawAttributes).map(([label, value]) => `${label}: ${value.display}`),
+        stats: Object.entries(parsed.rawStats).map(([label, value]) => `${label}: ${value}`),
+      })))
+      const failures = result.failures?.length ? ` ${result.failures.length} print(s) não foram lidos.` : ''
+      showStatus(`OCR complementou ${recognizedFields} campo(s) de ${parsedPrints.length} print(s). Revise e salve a build.${failures}`, false, Infinity)
+    } finally {
+      setIsReadingOcr(false)
+      setOcrProgress(null)
+    }
   }
 
   function handleUrlImport() {
@@ -595,6 +665,79 @@ export function Builds(): React.ReactElement {
               {t('builds.questlog.button')}
             </button>
           </div>
+        </div>
+
+        <div className="tl-panel" style={{ marginBottom: '1.25rem', borderColor: 'rgba(124, 92, 252, 0.45)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <div className="tl-eyebrow" style={{ marginBottom: 5 }}>Importar print (OCR)</div>
+              <div style={{ color: 'var(--text-soft)', fontSize: '0.78rem' }}>
+                Selecione vários prints do mesmo personagem. Apenas os campos reconhecidos serão preenchidos ou complementados.
+              </div>
+            </div>
+            <select
+              className="tl-input"
+              value={ocrTargetId}
+              onChange={(event) => setOcrTargetId(event.target.value)}
+              disabled={isReadingOcr}
+              style={{ width: 210, fontFamily: 'Inter,sans-serif' }}
+            >
+              <option value="">Criar nova build</option>
+              {buildList.map((build) => <option key={build.id} value={build.id}>Complementar: {build.name}</option>)}
+            </select>
+            <button
+              className="tl-btn"
+              onClick={handleOcrImport}
+              disabled={isReadingOcr}
+              style={{ whiteSpace: 'nowrap', background: 'rgba(124, 92, 252, 0.2)', borderColor: 'rgba(124, 92, 252, 0.6)' }}
+            >
+              {isReadingOcr ? 'Lendo prints…' : '📷 Importar prints'}
+            </button>
+          </div>
+          {isReadingOcr && ocrProgress && (
+            <div style={{ marginTop: '0.85rem' }} aria-live="polite">
+              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', marginBottom: 6, color: 'var(--text-soft)', fontSize: '0.76rem' }}>
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{ocrProgress.status}</span>
+                <span style={{ flexShrink: 0, fontFamily: 'JetBrains Mono, monospace' }}>
+                  {ocrProgress.total > 0 ? `${ocrProgress.current}/${ocrProgress.total} · ${ocrProgress.percent}%` : 'Aguardando…'}
+                </span>
+              </div>
+              <div style={{ height: 8, overflow: 'hidden', borderRadius: 999, background: 'rgba(124, 92, 252, 0.16)', border: '1px solid rgba(124, 92, 252, 0.35)' }}>
+                <div
+                  role="progressbar"
+                  aria-label="Progresso da leitura OCR"
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={ocrProgress.percent}
+                  style={{ height: '100%', width: `${ocrProgress.percent}%`, minWidth: ocrProgress.percent > 0 ? 6 : 0, borderRadius: 'inherit', background: 'linear-gradient(90deg, #7c5cfc, #bdaeff)', transition: 'width 180ms ease-out' }}
+                />
+              </div>
+              {ocrProgress.foundFields && ocrProgress.foundFields.length > 0 && (
+                <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginTop: 8 }}>
+                  {ocrProgress.foundFields.map((field) => (
+                    <span key={field} className="tl-tag" style={{ color: '#c9bfff', borderColor: 'rgba(124, 92, 252, 0.45)' }}>{field}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {ocrSummary.length > 0 && (
+            <div style={{ marginTop: '0.9rem', paddingTop: '0.75rem', borderTop: '1px solid rgba(124, 92, 252, 0.22)' }}>
+              <div className="tl-eyebrow" style={{ marginBottom: 7 }}>Resumo da última leitura</div>
+              <div style={{ maxHeight: 180, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {ocrSummary.map((item) => (
+                  <div key={item.fileName} style={{ fontSize: '0.74rem', color: 'var(--text-soft)' }}>
+                    <div style={{ color: '#c9bfff', fontFamily: 'JetBrains Mono, monospace', marginBottom: 4 }}>{item.fileName}</div>
+                    <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
+                      {[...item.attributes, ...item.stats].map((field) => (
+                        <span key={`${item.fileName}-${field}`} className="tl-tag">{field}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Other actions */}

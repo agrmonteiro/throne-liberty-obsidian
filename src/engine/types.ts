@@ -17,7 +17,7 @@ export interface BuildStats {
   heavyAttackChance:    number  // raw stat (not %)
   bossCritChance:       number  // added to critHitChance before DR
   bossHeavyChance:      number  // added to heavyAttackChance before DR
-  heavyAttackDmgComp:   number  // complement over 100% base (e.g. 14 means game shows 114%)
+  heavyAttackDmgComp:   number  // complement over 100% base (e.g. -4.4 means game shows 95.6%)
   skillDmgBoost:        number
   monsterDmgBoostPct:   number
   dmgBuffPct:           number
@@ -185,6 +185,21 @@ export interface CastEvent {
   castAt:   number   // segundos (múltiplo de 0.5)
 }
 
+export interface RazerMacroEvent {
+  atMs:   number
+  key:    string
+  holdMs: number
+  extraGapMs?: number
+}
+
+export interface RazerMacro {
+  name:       string
+  durationMs: number
+  globalGapMs?: number
+  events:     RazerMacroEvent[]
+  keyLabels:  Record<string, string>
+}
+
 export interface RotationRule {
   id:        string
   triggerId: string   // id de skill | dot | buff
@@ -200,6 +215,7 @@ export interface Rotation {
   buffs:                 RotationBuff[]
   rules:                 RotationRule[]
   timeline:              CastEvent[]
+  razerMacro?:           RazerMacro
   createdAt:             string
   editedAt?:             string
   importedFromBuildId?:  string

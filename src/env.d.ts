@@ -16,11 +16,31 @@ type ScraperDetection = {
   pythonVersion: string
 }
 
+type OcrImportResult = {
+  results?: Array<{ text: string; fileName: string }>
+  failures?: string[]
+  error?: string
+}
+
+type OcrProgress = {
+  current: number
+  total: number
+  percent: number
+  fileName: string
+  status: string
+  foundFields?: string[]
+}
+
 interface DataAPI {
   read: (filename: string) => Promise<any>
   write: (filename: string, data: unknown) => Promise<DataWriteResult>
   importFile: () => Promise<any>
+  ocrImportBuild: () => Promise<OcrImportResult | null>
+  onOcrProgress: (cb: (payload: OcrProgress) => void) => void
+  offOcrProgress: () => void
   exportFile: (data: unknown, defaultName: string) => Promise<{ ok: boolean; path?: string; error?: string }>
+  importRazerMacro: () => Promise<{ name: string; xml: string } | null>
+  exportRazerMacro: (xml: string, defaultName: string) => Promise<{ ok: boolean; path?: string; error?: string }>
   dir: () => Promise<string>
   pickLogFiles: () => Promise<Array<{ name: string; content: string }>>
   questlogImportPython: (url: string) => Promise<any>

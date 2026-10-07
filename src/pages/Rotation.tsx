@@ -5,6 +5,7 @@ import { useLogTimeline } from '../store/useLogTimeline'
 import type { LogTimelineData } from '../store/useLogTimeline'
 import { calcRotationResult, effectiveCDRPct, calcSkillAvgDamage, calcDotResult, calcTimelineDps } from '../engine/rotationEngine'
 import { NumericInput } from '../components/NumericInput'
+import { RazerMacroPanel } from '../components/RazerMacroPanel'
 import { useT } from '../i18n/useT'
 import { useSkillsDB, filterSkillsByWeapons } from '../store/useSkillsDB'
 import type { SkillDBEntry } from '../store/useSkillsDB'
@@ -1491,7 +1492,7 @@ export function Rotation(): React.ReactElement {
   const t = useT()
   const {
     rotations, activeRotationId,
-    loadFromDisk, createEmpty, deleteRotation, setActive, updateCharacter,
+    loadFromDisk, createEmpty, deleteRotation, setActive, updateCharacter, saveRotation,
   } = useRotation()
   const { builds } = useBuilds()
   const { data: logTimeline, load: loadLogTimeline } = useLogTimeline()
@@ -1618,6 +1619,11 @@ export function Rotation(): React.ReactElement {
             <div style={{ fontSize: '0.95rem', color: 'var(--gold-l)', fontWeight: 700 }}>
               {rotation.name}
             </div>
+
+            <RazerMacroPanel rotation={rotation} onChange={razerMacro => {
+              const current = useRotation.getState().rotations[rotation.id]
+              if (current) void saveRotation({ ...current, razerMacro })
+            }} />
 
             {/* Painel do personagem */}
             <CharacterPanel

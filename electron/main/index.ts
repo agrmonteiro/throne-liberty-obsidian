@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import electronUpdaterPkg from 'electron-updater'
@@ -6,9 +6,134 @@ const { autoUpdater } = electronUpdaterPkg
 import fs from 'fs'
 import path from 'path'
 import { spawn, execSync } from 'child_process'
+import { createWorker } from 'tesseract.js'
 
 // ─── Data directory (AppData/Roaming/Tier2 Command Lab/data) ──────────────────
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
+
+type OcrWord = {
+  text: string
+  bbox: { x0: number; y0: number; x1: number; y1: number }
+}
+
+type OcrArea = {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+const OCR_BASE_PANEL_OPEN = '[OCR_BASE_PANEL]'
+const OCR_BASE_PANEL_CLOSE = '[/OCR_BASE_PANEL]'
+const OCR_BOSS_PANEL_OPEN = '[OCR_BOSS_PANEL]'
+const OCR_BOSS_PANEL_CLOSE = '[/OCR_BOSS_PANEL]'
+const BASE_DATA_AREA: OcrArea = { left: 0.20, top: 0.17, width: 0.39, height: 0.75 }
+const BOSS_DATA_AREA: OcrArea = { left: 0.59, top: 0.20, width: 0.35, height: 0.72 }
+
+function normalizeOcrText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+}
+
+function hasBossPanelContext(value: string): boolean {
+  const normalized = normalizeOcrText(value)
+  return /\b(?:boss|chef(?:e|es)?)\b/.test(normalized)
+    && /(chance|acerto|ataque pesado|tolerancia|esquiva|bonus de dano|reducao de dano)/.test(normalized)
+}
+
+function appendOcrPanel(text: string, openMarker: string, closeMarker: string, panelText: string): string {
+  return panelText.trim() ? `${text}\n${openMarker}\n${panelText}\n${closeMarker}` : text
+}
+
+function ocrAreaRectangle(imageWidth: number, imageHeight: number, area: OcrArea): { left: number; top: number; width: number; height: number } {
+  return {
+    left: Math.round(imageWidth * area.left),
+    top: Math.round(imageHeight * area.top),
+    width: Math.round(imageWidth * area.width),
+    height: Math.round(imageHeight * area.height),
+  }
+}
+
+function textInsideOcrArea(words: OcrWord[] | null | undefined, imageWidth: number, imageHeight: number, area: OcrArea): string {
+  const rectangle = ocrAreaRectangle(imageWidth, imageHeight, area)
+  const right = rectangle.left + rectangle.width
+  const bottom = rectangle.top + rectangle.height
+  return (words ?? [])
+    .filter((word) => {
+      const centerX = (word.bbox.x0 + word.bbox.x1) / 2
+      const centerY = (word.bbox.y0 + word.bbox.y1) / 2
+      return centerX >= rectangle.left && centerX <= right && centerY >= rectangle.top && centerY <= bottom
+    })
+    .sort((left, rightWord) => left.bbox.y0 - rightWord.bbox.y0 || left.bbox.x0 - rightWord.bbox.x0)
+    .map((word) => word.text)
+    .join(' ')
+}
+
+const ATTRIBUTE_PANEL_ROWS = [
+  { label: 'Força', position: 0.428 },
+  { label: 'Destreza', position: 0.509 },
+  { label: 'Sabedoria', position: 0.589 },
+  { label: 'Percepção', position: 0.67 },
+  { label: 'Fortaleza', position: 0.75 },
+]
+
+function collectAttributePanelValues(
+  words: OcrWord[] | null | undefined,
+  imageWidth: number,
+  imageHeight: number,
+  values: Map<string, number>,
+): void {
+  for (const word of words ?? []) {
+    const value = Number(word.text.replace(/\D/g, ''))
+    const centerY = (word.bbox.y0 + word.bbox.y1) / 2
+    const insideValueColumn = word.bbox.x0 >= imageWidth * 0.19 && word.bbox.x1 <= imageWidth * 0.25
+    if (!insideValueColumn || !Number.isInteger(value) || value < 1 || value > 300) continue
+
+    const closestRow = ATTRIBUTE_PANEL_ROWS
+      .map((row) => ({ row, distance: Math.abs(centerY - imageHeight * row.position) }))
+      .sort((left, right) => left.distance - right.distance)[0]
+    if (closestRow && closestRow.distance <= imageHeight * 0.045) {
+      values.set(closestRow.row.label, value)
+    }
+  }
+}
+
+function parseOcrInteger(value: string): number {
+  const compact = value.replace(/[^\d.,]/g, '')
+  if (!compact) return 0
+  const separator = Math.max(compact.lastIndexOf(','), compact.lastIndexOf('.'))
+  if (separator === -1) return Number(compact) || 0
+
+  const before = compact.slice(0, separator).replace(/[.,]/g, '')
+  const after = compact.slice(separator + 1).replace(/[.,]/g, '')
+  return Number(`${before}${after}`) || 0
+}
+
+function collectPrimaryWeaponDamage(words: OcrWord[] | null | undefined): [number, number] | undefined {
+  const primaryWord = (words ?? []).find((word) => word.text.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .startsWith('principal'))
+  if (!primaryWord) return undefined
+
+  const primaryCenterY = (primaryWord.bbox.y0 + primaryWord.bbox.y1) / 2
+  const lineText = (words ?? [])
+    .filter((word) => (
+      word.bbox.x0 >= primaryWord.bbox.x0
+      && word.bbox.x0 <= primaryWord.bbox.x0 + 600
+      && Math.abs(((word.bbox.y0 + word.bbox.y1) / 2) - primaryCenterY) <= 18
+    ))
+    .sort((left, right) => left.bbox.x0 - right.bbox.x0)
+    .map((word) => word.text)
+    .join(' ')
+  const values = lineText.match(/\d+(?:[.,]\d+)?/g)?.map(parseOcrInteger) ?? []
+  if (values.length < 2) return undefined
+
+  const [minDamage, maxDamage] = values.slice(-2)
+  return minDamage > 0 && maxDamage >= minDamage ? [minDamage, maxDamage] : undefined
+}
 
 // ─── Data migration (Throne & Liberty → Tier2 Command Lab) ────────────────────
 function migrateOldDataDir(): { files: string[] } | null {
@@ -147,6 +272,152 @@ ipcMain.handle('data:import-file', async () => {
   }
 })
 
+ipcMain.handle('builds:ocr-import', async (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender)
+  const result = await dialog.showOpenDialog(win ?? undefined, {
+    title: 'Selecionar prints da build',
+    filters: [{ name: 'Imagens', extensions: ['png', 'jpg', 'jpeg', 'webp', 'bmp'] }],
+    properties: ['openFile', 'multiSelections'],
+  })
+  if (result.canceled || result.filePaths.length === 0) return null
+
+  try {
+    const total = result.filePaths.length
+    let activeIndex = 0
+    let activeFileName = ''
+    const sendProgress = (status: string, fraction = 0, foundFields: string[] = []) => {
+      if (event.sender.isDestroyed()) return
+      const normalizedFraction = Math.max(0, Math.min(1, fraction))
+      event.sender.send('builds:ocr-progress', {
+        current: activeIndex,
+        total,
+        percent: Math.round(((activeIndex + normalizedFraction) / total) * 100),
+        fileName: activeFileName,
+        status,
+        foundFields,
+      })
+    }
+
+    sendProgress('Preparando o leitor OCR…')
+    const worker = await createWorker('por+eng', 1, {
+      cachePath: path.join(DATA_DIR, 'ocr-cache'),
+      logger: ({ status, progress }) => {
+        console.info(`[ocr] ${status} ${Math.round(progress * 100)}%`)
+        sendProgress(status, progress)
+      },
+    })
+    try {
+      const results: Array<{ text: string; fileName: string }> = []
+      const failures: string[] = []
+      for (const [index, imagePath] of result.filePaths.entries()) {
+        activeIndex = index
+        activeFileName = path.basename(imagePath)
+        sendProgress(`Lendo ${activeFileName}…`)
+        try {
+          const sizeBytes = fs.statSync(imagePath).size
+          if (sizeBytes > 20 * 1024 * 1024) {
+            failures.push(`${path.basename(imagePath)}: excede o limite de 20 MB`)
+            activeIndex = index + 1
+            sendProgress(`${activeFileName} ignorado (acima de 20 MB)`)
+            continue
+          }
+          const { data } = await worker.recognize(imagePath, {
+            tessedit_pageseg_mode: '6',
+          }, { blocks: true })
+          let text = data.text
+          let weaponDamage = collectPrimaryWeaponDamage(data.words as OcrWord[] | undefined)
+          if (!weaponDamage && text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().includes('dano base')) {
+            sendProgress(`Refinando dano da arma principal em ${activeFileName}…`)
+            const weaponPass = await worker.recognize(imagePath, {
+              tessedit_pageseg_mode: '11',
+            }, { blocks: true })
+            weaponDamage = collectPrimaryWeaponDamage(weaponPass.data.words as OcrWord[] | undefined)
+          }
+          if (weaponDamage) text += `\nPrincipal Dano Base ${weaponDamage[0]} ~ ${weaponDamage[1]}`
+          const imageSize = nativeImage.createFromPath(imagePath).getSize()
+          if (imageSize.width > 0 && imageSize.height > 0) {
+            const bossAreaText = textInsideOcrArea(data.words as OcrWord[] | undefined, imageSize.width, imageSize.height, BOSS_DATA_AREA)
+            const isBossPanel = hasBossPanelContext(bossAreaText)
+              || (bossAreaText.length > 0 && hasBossPanelContext(text))
+            if (isBossPanel) {
+              sendProgress(`Separando painel base e painel de chefe em ${activeFileName}…`)
+              const basePass = await worker.recognize(imagePath, {
+                tessedit_pageseg_mode: '11',
+                rectangle: ocrAreaRectangle(imageSize.width, imageSize.height, BASE_DATA_AREA),
+              })
+              const bossPass = await worker.recognize(imagePath, {
+                tessedit_pageseg_mode: '11',
+                rectangle: ocrAreaRectangle(imageSize.width, imageSize.height, BOSS_DATA_AREA),
+              })
+              text = appendOcrPanel(text, OCR_BASE_PANEL_OPEN, OCR_BASE_PANEL_CLOSE, basePass.data.text)
+              text = appendOcrPanel(text, OCR_BOSS_PANEL_OPEN, OCR_BOSS_PANEL_CLOSE, bossPass.data.text)
+            }
+          }
+          const normalizedText = text.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+          if (normalizedText.includes('pontos de atributo') || normalizedText.includes('destreza')) {
+            sendProgress(`Lendo painel de atributos em ${activeFileName}…`)
+            const imageSize = nativeImage.createFromPath(imagePath).getSize()
+            if (imageSize.width > 0 && imageSize.height > 0) {
+              const attributeValues = new Map<string, number>()
+              collectAttributePanelValues(data.words as OcrWord[] | undefined, imageSize.width, imageSize.height, attributeValues)
+              const panelPass = await worker.recognize(imagePath, {
+                tessedit_pageseg_mode: '11',
+                rectangle: {
+                  left: Math.round(imageSize.width * 0.164),
+                  top: Math.round(imageSize.height * 0.224),
+                  width: Math.round(imageSize.width * 0.133),
+                  height: Math.round(imageSize.height * 0.53),
+                },
+              }, { blocks: true })
+              text = `${text}\n${panelPass.data.text}`
+              collectAttributePanelValues(panelPass.data.words as OcrWord[] | undefined, imageSize.width, imageSize.height, attributeValues)
+
+              for (const attribute of ATTRIBUTE_PANEL_ROWS) {
+                const valuePass = await worker.recognize(imagePath, {
+                  tessedit_pageseg_mode: '7',
+                  tessedit_char_whitelist: '0123456789',
+                  rectangle: {
+                    left: Math.round(imageSize.width * 0.199),
+                    top: Math.round(imageSize.height * (attribute.position - 0.02)),
+                    width: Math.round(imageSize.width * 0.049),
+                    height: Math.round(imageSize.height * 0.046),
+                  },
+                })
+                const value = valuePass.data.text.replace(/\D/g, '')
+                if (Number(value) >= 20 && Number(value) <= 300) attributeValues.set(attribute.label, Number(value))
+              }
+              await worker.setParameters({ tessedit_char_whitelist: '' })
+              text += [...attributeValues.entries()]
+                .map(([label, value]) => `\n${label} ${value}`)
+                .join('')
+              sendProgress(
+                `Atributos localizados em ${activeFileName}`,
+                1,
+                [...attributeValues.entries()].map(([label, value]) => `${label}: ${value}`),
+              )
+            }
+          }
+          results.push({ text, fileName: path.basename(imagePath) })
+        } catch {
+          failures.push(`${path.basename(imagePath)}: não foi possível ler a imagem`)
+        }
+        activeIndex = index + 1
+        sendProgress(`${activeFileName} concluído`)
+      }
+      if (results.length === 0) {
+        return { error: 'Nenhum print pôde ser processado.', failures }
+      }
+      sendProgress('OCR concluído')
+      return { results, failures }
+    } finally {
+      await worker.terminate()
+    }
+  } catch (error) {
+    console.error('[ocr] Falha ao processar screenshot:', error)
+    return { error: 'Não foi possível ler o print. Use uma imagem nítida da tela de atributos.' }
+  }
+})
+
 // Export builds to a user-selected path
 ipcMain.handle('data:export-file', async (_event, data: unknown, defaultName: string) => {
   const result = await dialog.showSaveDialog({
@@ -157,6 +428,36 @@ ipcMain.handle('data:export-file', async (_event, data: unknown, defaultName: st
   if (result.canceled || !result.filePath) return { ok: false }
   try {
     fs.writeFileSync(result.filePath, JSON.stringify(data, null, 2), 'utf-8')
+    return { ok: true, path: result.filePath }
+  } catch (err) {
+    return { ok: false, error: String(err) }
+  }
+})
+
+// File paths come from the OS dialogs; the renderer only receives XML text.
+ipcMain.handle('macro:import-xml', async () => {
+  const result = await dialog.showOpenDialog({
+    title: 'Importar macro Razer',
+    filters: [{ name: 'Macro XML', extensions: ['xml'] }],
+    properties: ['openFile'],
+  })
+  if (result.canceled || !result.filePaths[0]) return null
+  const filePath = result.filePaths[0]
+  if (fs.statSync(filePath).size > 5_000_000) throw new Error('A macro excede 5 MB.')
+  return { name: path.basename(filePath), xml: fs.readFileSync(filePath, 'utf-8') }
+})
+
+ipcMain.handle('macro:export-xml', async (_event, xml: string, defaultName: string) => {
+  if (typeof xml !== 'string' || xml.length > 5_000_000) return { ok: false, error: 'XML inválido ou muito grande.' }
+  const safeName = path.basename(String(defaultName)).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 40) || 'Macro'
+  const result = await dialog.showSaveDialog({
+    title: 'Exportar macro Razer',
+    defaultPath: `${safeName}.xml`,
+    filters: [{ name: 'Macro XML', extensions: ['xml'] }],
+  })
+  if (result.canceled || !result.filePath) return { ok: false }
+  try {
+    fs.writeFileSync(result.filePath, xml, 'utf-8')
     return { ok: true, path: result.filePath }
   } catch (err) {
     return { ok: false, error: String(err) }

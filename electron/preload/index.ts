@@ -5,15 +5,20 @@ import { electronAPI } from '@electron-toolkit/preload'
 // removeAllListeners would destroy listeners registered by other components.
 type ProgressPayload = { stage: 'starting' | 'downloading-browser' | 'extracting' | 'done' }
 type LogPayload      = { line: string }
+type OcrProgressPayload = { current: number; total: number; percent: number; fileName: string; status: string; foundFields?: string[] }
 let _progressCb: ((_e: Electron.IpcRendererEvent, p: ProgressPayload) => void) | null = null
 let _logCb:      ((_e: Electron.IpcRendererEvent, p: LogPayload)      => void) | null = null
+let _ocrProgressCb: ((_e: Electron.IpcRendererEvent, p: OcrProgressPayload) => void) | null = null
 
 // ─── Data API exposed to renderer ─────────────────────────────────────────────
 const dataAPI = {
   read:                  (filename: string)                   => ipcRenderer.invoke('data:read', filename),
   write:                 (filename: string, data: unknown)    => ipcRenderer.invoke('data:write', filename, data),
   importFile:            ()                                   => ipcRenderer.invoke('data:import-file'),
+  ocrImportBuild:        ()                                   => ipcRenderer.invoke('builds:ocr-import'),
   exportFile:            (data: unknown, defaultName: string) => ipcRenderer.invoke('data:export-file', data, defaultName),
+  importRazerMacro:       ()                                   => ipcRenderer.invoke('macro:import-xml'),
+  exportRazerMacro:       (xml: string, defaultName: string)   => ipcRenderer.invoke('macro:export-xml', xml, defaultName),
   dir:                   ()                                   => ipcRenderer.invoke('data:dir'),
   questlogImportPython:  (url: string)                        => ipcRenderer.invoke('questlog:import-python', url),
   questlogCancel:        ()                                   => ipcRenderer.invoke('questlog:cancel'),
@@ -32,6 +37,14 @@ const dataAPI = {
   },
   offLog:                () => {
     if (_logCb) { ipcRenderer.removeListener('questlog:log', _logCb); _logCb = null }
+  },
+  onOcrProgress:         (cb: (payload: OcrProgressPayload) => void) => {
+    if (_ocrProgressCb) ipcRenderer.removeListener('builds:ocr-progress', _ocrProgressCb)
+    _ocrProgressCb = (_event, payload) => cb(payload)
+    ipcRenderer.on('builds:ocr-progress', _ocrProgressCb)
+  },
+  offOcrProgress:        () => {
+    if (_ocrProgressCb) { ipcRenderer.removeListener('builds:ocr-progress', _ocrProgressCb); _ocrProgressCb = null }
   },
   // Combat log folder management
   combatlogPickFolder:   ()                                   => ipcRenderer.invoke('combatlog:pick-folder'),

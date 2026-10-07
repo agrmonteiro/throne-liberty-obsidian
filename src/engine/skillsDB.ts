@@ -46,7 +46,7 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Karmic Haze",           pt: "Névoa Cármica",           weapon: "Wand & Tome", category: 'active' },
   { en: "Time Dilation",         pt: "Dilatação do Tempo",      weapon: "Wand & Tome", category: 'active' },
   { en: "Counterspell",         pt: "Feitiço de Contra-ataque", weapon: "Wand & Tome", category: 'active' },
-  { en: "Cursed Nightmare",      pt: "Pesadelo Amaldiçoado",    weapon: "Wand & Tome", category: 'active' },
+  { en: "Cursed Nightmare",      pt: "Pesadelo Amaldiçoado",    weapon: "Wand & Tome", category: 'active', aliases: ["Pesadelo Maldito"] },
 
   // ─── CAJADO (Staff) ──────────────────────────────────────────────
   { en: "Serial Fireball",       pt: "Bola de Fogo em Série",   weapon: "Staff", category: 'active' },
@@ -124,7 +124,7 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Chaotic Shield",        pt: "Escudo Caótico",          weapon: "Orb",       category: 'active' },
 
   // ─── MANOPLAS (Gauntlets) ──────────────────────────────────────────
-  { en: "Consecutive Hits",      pt: "Golpes Consecutivos",      weapon: "Gauntlets", category: 'active' },
+  { en: "Consecutive Hits",      pt: "Golpes Consecutivos",      weapon: "Gauntlets", category: 'active', aliases: ["Acertos Consecutivos"] },
   { en: "Critical Hit",          pt: "Acerto Crítico",           weapon: "Gauntlets", category: 'active', aliases: ["Charge Attack"] },
   { en: "Eclipse of Blood",      pt: "Eclipse de Sangue",        weapon: "Gauntlets", category: 'active' },
   { en: "Mobility Strike",       pt: "Golpe de Mobilidade",      weapon: "Gauntlets", category: 'active' },
@@ -135,7 +135,7 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Earthquake",            pt: "Terremoto",                weapon: "Gauntlets", category: 'active' },
   { en: "Unshakable Stance",     pt: "Postura Inabalável",       weapon: "Gauntlets", category: 'active' },
   { en: "Iron Mountain Blow",    pt: "Golpe da Montanha de Ferro", weapon: "Gauntlets", category: 'active' },
-  { en: "One-Inch Punch",        pt: "Soco de Uma Polegada",     weapon: "Gauntlets", category: 'active', aliases: ["Short Jab"] },
+  { en: "One-Inch Punch",        pt: "Soco de Uma Polegada",     weapon: "Gauntlets", category: 'active', aliases: ["Short Jab", "Soquinho"] },
   { en: "Trance",                pt: "Transe",                   weapon: "Gauntlets", category: 'active', aliases: ["Battle Trance"] },
   { en: "Taunt",                 pt: "Provocação",               weapon: "Gauntlets", category: 'active' },
   { en: "Threat Boost",          pt: "Aumento de Ameaça",        weapon: "Gauntlets", category: 'active' },
@@ -157,12 +157,20 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Hardening",             pt: "Endurecimento",            weapon: "Gauntlets", category: 'proc' },
   { en: "Master of Provocation", pt: "Mestre da Provocação",     weapon: "Gauntlets", category: 'proc' },
   { en: "Bloody Claws",          pt: "Garras Sangrentas",        weapon: "Gauntlets", category: 'proc' },
+  { en: "Claw",                  pt: "Garra",                    weapon: "Gauntlets", category: 'active' },
+  { en: "Bloody Claw",           pt: "Garra Sangrenta",          weapon: "Gauntlets", category: 'active' },
+  { en: "Bloody Explosion",      pt: "Explosão Sangrenta",       weapon: "Gauntlets", category: 'active' },
+  { en: "Magic Circle Expansion", pt: "Expansão de Círculo Mágico", weapon: "Gauntlets", category: 'active' },
+  { en: "Obliterating Swamp",    pt: "Pântano Obliterante",      weapon: "Gauntlets", category: 'active' },
+  { en: "Piercing Spear",        pt: "Lança Perfurante",         weapon: "Gauntlets", category: 'active' },
+  { en: "Mirage",                pt: "Miragem",                  weapon: "Gauntlets", category: 'active' },
 
   // ─── EFEITOS DE ITENS, MAESTRIAS E PROCS (Categorizados) ──────────
   { en: "Abyssal Explosion",     pt: "Explosão Abissal",        weapon: "Wand & Tome", category: 'active' },
   { en: "Mana Sphere",           pt: "Esfera de Mana",          weapon: "Wand & Tome", category: 'active' },
   { en: "Dragon's Ascension",    pt: "Ascensão Dracônica",      weapon: "Item/Proc",  category: 'item' },
   { en: "Tevent's Famine",       pt: "Fome de Tevent em Fúria", weapon: "Item/Proc",  category: 'item' },
+  { en: "Shake Torch",           pt: "Agitar Tocha",            weapon: "Item/Proc",  category: 'item' },
   { en: "Decay Touch",           pt: "Toque em Degradação",     weapon: "Item/Proc",  category: 'proc' },
   { en: "Destructive Spear",     pt: "Lança Destruidora",        weapon: "Item/Proc",  category: 'mastery' },
   { en: "Mortal Viper",           pt: "Víbora Mortal",            weapon: "Item/Proc",  category: 'mastery' },

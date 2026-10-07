@@ -62,6 +62,9 @@ const GAUNTLET_SEED: SeedSkill[] = [
   'Iron Mountain Blow', 'One-Inch Punch', 'Trance', 'Taunt', 'Threat Boost',
   'Consecutive Claws', 'Chain Scratch', 'Vampirism', 'Pain Harvest', 'Evaporation',
   'Absorbing Grasp', 'Blood Spiral', 'Bloodstorm', 'Blood Talon', 'Blood Explosion', 'Sharp Angle',
+  'Garra', 'Garra Sangrenta', 'Explosão Sangrenta', 'Expansão de Círculo Mágico',
+  'Pântano Obliterante', 'Lança Perfurante',
+  'Miragem',
 ].map(name => ({
   name,
   weaponType: 'Gauntlets',
@@ -181,6 +184,7 @@ const SEED: SeedSkill[] = [
   // Item / Proc
   { name: 'Ascensão Dracônica',             weaponType: 'Item/Proc',    category: 'item',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Fome de Tevent em Fúria',        weaponType: 'Item/Proc',    category: 'item',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
+  { name: 'Agitar Tocha',                   weaponType: 'Item/Proc',    category: 'item',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Toque em Degradação',            weaponType: 'Item/Proc',    category: 'proc',    castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Lança Destruidora',              weaponType: 'Item/Proc',    category: 'mastery', castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
   { name: 'Víbora Mortal',                  weaponType: 'Item/Proc',    category: 'mastery', castTime: 0,    cooldown: 0,  skillDmgPct: 0, bonusBaseDmg: 0, hits: 1,  monsterBonus: 0, dmgBonus: 0 },
@@ -286,8 +290,17 @@ export const useSkillsDB = create<SkillsDBState>((set, get) => ({
       }
     })
 
-    const hasGauntlets = updatedEntries.some(entry => entry.weaponType === 'Gauntlets')
-    const entries = hasGauntlets ? updatedEntries : [...updatedEntries, ...DEFAULT_ENTRIES.filter(entry => entry.weaponType === 'Gauntlets')]
+    const existingNames = new Set(
+      updatedEntries
+        .flatMap(entry => [entry.name, entry.nameEn])
+        .filter((name): name is string => Boolean(name))
+        .map(name => name.toLocaleLowerCase('pt-BR')),
+    )
+    const missingRequiredEntries = DEFAULT_ENTRIES.filter(entry =>
+      (entry.weaponType === 'Gauntlets' || entry.name === 'Agitar Tocha') &&
+      !existingNames.has(entry.name.toLocaleLowerCase('pt-BR')),
+    )
+    const entries = [...updatedEntries, ...missingRequiredEntries]
     set({ entries })
     write(entries)
   }
