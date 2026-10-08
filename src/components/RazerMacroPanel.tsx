@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import type { Rotation, RazerMacro, RazerMacroEvent } from '../engine/types'
-import { MACRO_KEYS, parseRazerMacro, scheduleRazerMacro, serializeRazerMacro, validateRazerMacro } from '../engine/razerMacro'
+import { MACRO_KEYS, parseRazerMacro, scheduleRazerMacro, serializeRazerMacro } from '../engine/razerMacro'
 
 interface Props {
   rotation: Rotation
@@ -66,32 +66,6 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
     }
   }
 
-  function fromTimeline(): void {
-    try {
-      if (!(rotation.timeline ?? []).length) throw new Error('A Timeline ainda não tem habilidades marcadas.')
-      const labels = macro?.keyLabels ?? defaults
-      const keyForName = (name: string): string | undefined => Object.entries(labels)
-        .find(([, label]) => label.trim().toLocaleLowerCase() === name.trim().toLocaleLowerCase())?.[0]
-      const events: RazerMacroEvent[] = (rotation.timeline ?? []).map(cast => {
-        const name = cast.itemType === 'skill'
-          ? rotation.skills.find(skill => skill.id === cast.itemId)?.skillName
-          : cast.itemType === 'buff'
-            ? (rotation.buffs ?? []).find(buff => buff.id === cast.itemId)?.buffName
-            : (rotation.dots ?? []).find(dot => dot.id === cast.itemId)?.dotName
-        const key = name && keyForName(name)
-        if (!key) throw new Error(`Associe uma tecla ao item "${name || cast.itemId}" antes de gerar.`)
-        return { atMs: Math.round(cast.castAt * 1000), key, holdMs: 30 }
-      }).sort((a, b) => a.atMs - b.atMs)
-      const durationMs = Math.max(1000, events[events.length - 1].atMs + 500)
-      const next: RazerMacro = { name: macro?.name || 'TL_R1', durationMs, events, keyLabels: { ...labels } }
-      validateRazerMacro(next)
-      onChange(next)
-      setStatus(`${events.length} toques criados da Timeline. Ajuste o ritmo fino antes de exportar.`)
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : String(error))
-    }
-  }
-
   function updateEvent(index: number, patch: Partial<RazerMacroEvent>): void {
     if (!macro) return
     update({ events: macro.events.map((event, i) => i === index ? { ...event, ...patch } : event) })
@@ -112,7 +86,6 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
         <strong style={{ color: 'var(--gold)', fontSize: '0.78rem', marginRight: 'auto' }}>Macro Razer · {macro ? `${macro.events.length} toques` : 'sem arquivo'}</strong>
         <button style={buttonStyle} disabled={busy} onClick={importXml}>Importar XML</button>
         {!macro && <button style={buttonStyle} onClick={() => onChange({ name: 'TL_R1', durationMs: 1000, events: [{ atMs: 0, key: 'E', holdMs: 30 }], keyLabels: { ...defaults } })}>Criar vazia</button>}
-        <button style={buttonStyle} disabled={busy} onClick={fromTimeline}>Criar da Timeline</button>
         <button style={buttonStyle} disabled={busy || !macro} onClick={exportXml}>Exportar XML</button>
       </div>
       <p style={{ color: 'var(--text-muted)', fontSize: '0.68rem', margin: '6px 0 8px' }}>
