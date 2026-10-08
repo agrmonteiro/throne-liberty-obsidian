@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import type { Rotation, RazerMacro, RazerMacroEvent } from '../engine/types'
-import { MACRO_KEYS, parseRazerMacro, scheduleRazerMacro, serializeRazerMacro } from '../engine/razerMacro'
+import { MACRO_KEYS, parseRazerMacro, scheduleRazerMacro, serializeRazerMacro, validateRazerMacro } from '../engine/razerMacro'
 
 interface Props {
   rotation: Rotation
@@ -28,6 +28,7 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
   const macro = rotation.razerMacro
   const [status, setStatus] = useState('')
   const [busy, setBusy] = useState(false)
+  const [allHoldMs, setAllHoldMs] = useState(macro?.events[0]?.holdMs ?? 30)
 
   function update(patch: Partial<RazerMacro>): void {
     if (!macro) return
@@ -43,6 +44,7 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
       const parsed = parseRazerMacro(picked.xml)
       const labels = parsed.name === 'TL_MV_V1' ? { ...defaults, ...macro?.keyLabels } : macro?.keyLabels ?? {}
       onChange({ ...parsed, keyLabels: { ...labels } })
+      setAllHoldMs(parsed.events[0]?.holdMs ?? 30)
       setStatus(`${parsed.events.length} toques importados de ${picked.name}.`)
     } catch (error) {
       setStatus(`Falha na importação: ${error instanceof Error ? error.message : String(error)}`)
@@ -69,6 +71,24 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
   function updateEvent(index: number, patch: Partial<RazerMacroEvent>): void {
     if (!macro) return
     update({ events: macro.events.map((event, i) => i === index ? { ...event, ...patch } : event) })
+  }
+
+  function applyHoldToAll(): void {
+    if (!macro) return
+    if (!Number.isInteger(allHoldMs) || allHoldMs < 1) {
+      setStatus('Falha: informe um tempo de tecla inteiro e maior que zero.')
+      return
+    }
+    const events = macro.events.map(event => ({ ...event, holdMs: allHoldMs }))
+    const durationMs = events.reduce((end, event) => Math.max(end, event.atMs + event.holdMs), macro.durationMs)
+    const next = { ...macro, events, durationMs }
+    try {
+      validateRazerMacro(next)
+      onChange(next)
+      setStatus(`Tempo de tecla de ${allHoldMs} ms aplicado aos ${events.length} toques.`)
+    } catch (error) {
+      setStatus(`Falha: ${error instanceof Error ? error.message : String(error)}`)
+    }
   }
 
   let preview: ReturnType<typeof scheduleRazerMacro> | null = null
@@ -100,6 +120,15 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
           <label>Intervalo geral (ms) <input aria-label="Intervalo mínimo geral em milissegundos" type="number" min={0} max={60000} value={macro.globalGapMs ?? 0} onChange={event => update({ globalGapMs: Number(event.target.value) })} style={{ ...inputStyle, width: 80, marginLeft: 4 }} /></label>
           <span style={{ color: 'var(--gold-l)' }}>Ciclo exportado: {preview ? (preview.durationMs / 1000).toFixed(2) : '—'} s</span>
           <span style={{ color: 'var(--text-muted)' }}>Repetição contínua configurada no Synapse.</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'end', gap: 8, marginBottom: 9 }}>
+          <label style={{ color: 'var(--text-soft)', fontSize: '0.72rem' }}>
+            Tempo de cada tecla (ms)
+            <input aria-label="Tempo para todos os toques em milissegundos" type="number" min={1} step={1}
+              value={allHoldMs} onChange={event => setAllHoldMs(Number(event.target.value))}
+              style={{ ...inputStyle, width: 85, marginLeft: 6 }} />
+          </label>
+          <button style={buttonStyle} disabled={busy} onClick={applyHoldToAll}>Aplicar a todos</button>
         </div>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.68rem', margin: '0 0 8px' }}>
           O intervalo geral é o mínimo entre soltar uma tecla e pressionar a próxima. O extra de cada linha aumenta a pausa antes daquele toque e desloca os seguintes.
