@@ -44,6 +44,7 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
       const parsed = parseRazerMacro(picked.xml)
       const labels = parsed.name === 'TL_MV_V1' ? { ...defaults, ...macro?.keyLabels } : macro?.keyLabels ?? {}
       if (parsed.name === 'TL_MA_BUFF_V10') labels.M3 = 'Corte Selvagem de Lâmina'
+      if (parsed.name === 'TL_MA_BUFF_V11') labels['/'] = 'Corte Selvagem de Lâmina'
       onChange({ ...parsed, keyLabels: { ...labels } })
       setAllHoldMs(parsed.events[0]?.holdMs ?? 30)
       setStatus(`${parsed.events.length} toques importados de ${picked.name}.`)

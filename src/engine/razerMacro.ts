@@ -1,10 +1,11 @@
 import type { RazerMacro, RazerMacroEvent } from './types'
 
-export const MACRO_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'E', 'M3'] as const
+export const MACRO_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '/', 'E', 'M3'] as const
 const KEY_CODES: Record<string, { make: number; scan: number }> = Object.fromEntries([
   ...Array.from({ length: 10 }, (_, digit) => [String(digit), { make: 48 + digit, scan: digit === 0 ? 11 : digit + 1 }]),
   ['-', { make: 189, scan: 12 }],
   ['=', { make: 187, scan: 13 }],
+  ['/', { make: 191, scan: 53 }],
   ['E', { make: 69, scan: 18 }],
 ])
 const CODE_KEYS = Object.fromEntries(Object.entries(KEY_CODES).map(([key, code]) => [String(code.make), key]))
