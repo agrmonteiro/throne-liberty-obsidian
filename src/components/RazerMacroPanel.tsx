@@ -43,6 +43,7 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
       if (!picked) return
       const parsed = parseRazerMacro(picked.xml)
       const labels = parsed.name === 'TL_MV_V1' ? { ...defaults, ...macro?.keyLabels } : macro?.keyLabels ?? {}
+      if (parsed.name === 'TL_MA_BUFF_V10') labels.M3 = 'Corte Selvagem de Lâmina'
       onChange({ ...parsed, keyLabels: { ...labels } })
       setAllHoldMs(parsed.events[0]?.holdMs ?? 30)
       setStatus(`${parsed.events.length} toques importados de ${picked.name}.`)
@@ -136,7 +137,7 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
         <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', marginBottom: 5 }}>Teclas e habilidades desta rotação</div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 9 }}>
           {MACRO_KEYS.map(key => <label key={key} style={{ fontSize: '0.68rem', color: 'var(--text-soft)' }}>
-            {key} <input aria-label={`Habilidade na tecla ${key}`} list="macro-skill-names" value={macro.keyLabels[key] ?? ''}
+            {key === 'M3' ? 'M3 (rodinha)' : key} <input aria-label={`Habilidade na tecla ${key}`} list="macro-skill-names" value={macro.keyLabels[key] ?? ''}
               onChange={event => update({ keyLabels: { ...macro.keyLabels, [key]: event.target.value } })}
               placeholder="Habilidade" style={{ ...inputStyle, width: 135 }} />
           </label>)}
@@ -150,7 +151,7 @@ export function RazerMacroPanel({ rotation, onChange }: Props): React.ReactEleme
             <thead><tr style={{ color: 'var(--text-soft)', textAlign: 'left' }}><th>Base (ms)</th><th>Tecla</th><th>Toque (ms)</th><th>Extra (ms)</th><th>Saída (ms)</th><th>Habilidade</th><th /></tr></thead>
             <tbody>{macro.events.map((event, index) => <tr key={index} style={{ borderTop: '1px solid rgba(255,255,255,0.05)' }}>
               <td><input aria-label={`Início do toque ${index + 1}`} type="number" min={0} value={event.atMs} onChange={e => updateEvent(index, { atMs: Number(e.target.value) })} style={{ ...inputStyle, width: 85 }} /></td>
-              <td><select aria-label={`Tecla do toque ${index + 1}`} value={event.key} onChange={e => updateEvent(index, { key: e.target.value })} style={inputStyle}>{MACRO_KEYS.map(key => <option key={key} value={key}>{key}</option>)}</select></td>
+              <td><select aria-label={`Tecla do toque ${index + 1}`} value={event.key} onChange={e => updateEvent(index, { key: e.target.value })} style={inputStyle}>{MACRO_KEYS.map(key => <option key={key} value={key}>{key === 'M3' ? 'M3 · rodinha' : key}</option>)}</select></td>
               <td><input aria-label={`Duração do toque ${index + 1}`} type="number" min={1} value={event.holdMs} onChange={e => updateEvent(index, { holdMs: Number(e.target.value) })} style={{ ...inputStyle, width: 75 }} /></td>
               <td><input aria-label={`Intervalo extra antes do toque ${index + 1}`} type="number" min={0} max={60000} value={event.extraGapMs ?? 0} onChange={e => updateEvent(index, { extraGapMs: Number(e.target.value) })} style={{ ...inputStyle, width: 75 }} /></td>
               <td style={{ color: 'var(--gold-l)' }}>{effectiveAt[index] ?? '—'}</td>

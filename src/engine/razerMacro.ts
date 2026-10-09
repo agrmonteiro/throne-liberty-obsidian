@@ -1,6 +1,6 @@
 import type { RazerMacro, RazerMacroEvent } from './types'
 
-export const MACRO_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'E'] as const
+export const MACRO_KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'E', 'M3'] as const
 const KEY_CODES: Record<string, { make: number; scan: number }> = Object.fromEntries([
   ...Array.from({ length: 10 }, (_, digit) => [String(digit), { make: 48 + digit, scan: digit === 0 ? 11 : digit + 1 }]),
   ['-', { make: 189, scan: 12 }],
@@ -28,7 +28,7 @@ export function validateRazerMacro(macro: RazerMacro): void {
     throw new Error('O intervalo geral deve estar entre 0 e 60.000 ms.')
   }
   for (const event of macro.events) {
-    if (!KEY_CODES[event.key]) throw new Error(`Tecla não suportada: ${event.key}`)
+    if (event.key !== 'M3' && !KEY_CODES[event.key]) throw new Error(`Tecla não suportada: ${event.key}`)
     if (!Number.isInteger(event.atMs) || event.atMs < 0) throw new Error('Tempo de início inválido.')
     if (!Number.isInteger(event.holdMs) || event.holdMs < 1) throw new Error('Duração do toque inválida.')
     if (!Number.isInteger(event.extraGapMs ?? 0) || (event.extraGapMs ?? 0) < 0 || (event.extraGapMs ?? 0) > 60000) {
@@ -99,13 +99,25 @@ export function parseRazerMacro(xml: string): RazerMacro {
       atMs += Math.round(seconds * 1000)
       continue
     }
-    if (type !== '1') throw new Error(`O XML contém um evento não suportado (tipo ${type}).`)
-    const keyEvent = item.getElementsByTagName('KeyEvent')[0]
-    const key = CODE_KEYS[childText(keyEvent, 'Makecode')]
-    if (!key) throw new Error('O XML contém uma tecla não suportada.')
-    const state = childText(keyEvent, 'State')
-    const id = childText(item, 'Id')
-    if (!id) throw new Error('Um pressionamento está sem identificador.')
+    let key: string
+    let state: string
+    let id: string
+    if (type === '1') {
+      const keyEvent = item.getElementsByTagName('KeyEvent')[0]
+      key = CODE_KEYS[childText(keyEvent, 'Makecode')]
+      if (!key) throw new Error('O XML contém uma tecla não suportada.')
+      state = childText(keyEvent, 'State')
+      id = childText(item, 'Id')
+      if (!id) throw new Error('Um pressionamento está sem identificador.')
+    } else if (type === '2') {
+      const mouseEvent = item.getElementsByTagName('MouseEvent')[0]
+      if (childText(mouseEvent, 'MouseButton') !== '3') throw new Error('O XML contém um botão do mouse não suportado.')
+      key = 'M3'
+      state = childText(mouseEvent, 'State')
+      id = 'mouse:3'
+    } else {
+      throw new Error(`O XML contém um evento não suportado (tipo ${type}).`)
+    }
     if (state === '0') {
       if (active.has(id)) throw new Error('O XML contém pressionamentos sem soltura.')
       active.set(id, { key, atMs })
@@ -151,9 +163,13 @@ export function serializeRazerMacro(macro: RazerMacro): string {
       lines.push(`      <MacroEvent><Type>0</Type><Number>${((edge.at - cursor) / 1000).toFixed(6)}</Number><selected>false</selected></MacroEvent>`)
       cursor = edge.at
     }
-    const { make, scan } = KEY_CODES[edge.key]
-    const flag = edge.state === 1 ? '<flag>1</flag>' : ''
-    lines.push(`      <MacroEvent><Type>1</Type><Id>${idBase + edge.index}</Id><KeyEvent><Makecode>${make}</Makecode><State>${edge.state}</State>${flag}</KeyEvent><flag>${edge.state}</flag><selected>false</selected><isPairing>false</isPairing><ScanCode>${scan}</ScanCode></MacroEvent>`)
+    if (edge.key === 'M3') {
+      lines.push(`      <MacroEvent><Type>2</Type><MouseEvent><MouseButton>3</MouseButton><State>${edge.state}</State></MouseEvent></MacroEvent>`)
+    } else {
+      const { make, scan } = KEY_CODES[edge.key]
+      const flag = edge.state === 1 ? '<flag>1</flag>' : ''
+      lines.push(`      <MacroEvent><Type>1</Type><Id>${idBase + edge.index}</Id><KeyEvent><Makecode>${make}</Makecode><State>${edge.state}</State>${flag}</KeyEvent><flag>${edge.state}</flag><selected>false</selected><isPairing>false</isPairing><ScanCode>${scan}</ScanCode></MacroEvent>`)
+    }
   }
   if (scheduled.durationMs > cursor) {
     lines.push(`      <MacroEvent><Type>0</Type><Number>${((scheduled.durationMs - cursor) / 1000).toFixed(6)}</Number><selected>false</selected></MacroEvent>`)
