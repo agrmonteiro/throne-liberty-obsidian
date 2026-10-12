@@ -83,9 +83,12 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Brutal Incision",       pt: "Incisão Brutal",          weapon: "Dagger", category: 'active' },
   { en: "Knife Throwing",        pt: "Arremesso de Faca",       weapon: "Dagger", category: 'active' },
   { en: "Fatal Stigma",          pt: "Estigma Fatal",           weapon: "Dagger", category: 'active' },
-  { en: "Cleaving Moonlight",    pt: "Luar Cortante",           weapon: "Dagger", category: 'active' },
-  { en: "Frenzied Sword Dance",  pt: "Dança de Espadas Frenética", weapon: "Dagger", category: 'active' },
-  { en: "Inject Venom",          pt: "Injetar Veneno",          weapon: "Dagger", category: 'active' },
+  { en: "Cleaving Moonlight",    pt: "Luar Cortante",           weapon: "Dagger", category: 'active', aliases: ["Fenda Enluarada", "Luz Lunar Cortante"] },
+  { en: "Frenzied Sword Dance",  pt: "Dança de Espadas Frenética", weapon: "Dagger", category: 'active', aliases: ["Dança da Espada Frenética"] },
+  { en: "Inject Venom",          pt: "Injetar Veneno",          weapon: "Dagger", category: 'active', aliases: ["Injeção Letal"] },
+  { en: "Umbral Spirit",         pt: "Espírito Umbral",         weapon: "Dagger", category: 'active' },
+  { en: "Lightning Throw",       pt: "Arremesso de Relâmpago",  weapon: "Dagger", category: 'active', aliases: ["Arremesso de Raio"] },
+  { en: "Venomous Edge",         pt: "Limite Venenoso",         weapon: "Dagger", category: 'mastery' },
 
   // ─── ESPADÃO (Greatsword) ─────────────────────────────────────────
   { en: "Double Slash",          pt: "Golpe Duplo",             weapon: "Greatsword", category: 'active' },
