@@ -87,6 +87,7 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Frenzied Sword Dance",  pt: "Dança de Espadas Frenética", weapon: "Dagger", category: 'active', aliases: ["Dança da Espada Frenética"] },
   { en: "Inject Venom",          pt: "Injetar Veneno",          weapon: "Dagger", category: 'active', aliases: ["Injeção Letal"] },
   { en: "Umbral Spirit",         pt: "Espírito Umbral",         weapon: "Dagger", category: 'active' },
+  { en: "Thunder Spirit",        pt: "Espírito do Trovão",      weapon: "Dagger", category: 'active', aliases: ["Espírito de Trovão"] },
   { en: "Lightning Throw",       pt: "Arremesso de Relâmpago",  weapon: "Dagger", category: 'active', aliases: ["Arremesso de Raio"] },
   { en: "Venomous Edge",         pt: "Limite Venenoso",         weapon: "Dagger", category: 'mastery' },
 
@@ -148,7 +149,8 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Pain Harvest",          pt: "Colheita de Dor",          weapon: "Gauntlets", category: 'active' },
   { en: "Evaporation",           pt: "Evaporação",               weapon: "Gauntlets", category: 'active', aliases: ["Camouflage"] },
   { en: "Absorbing Grasp",       pt: "Aperto Absorvente",        weapon: "Gauntlets", category: 'active' },
-  { en: "Blood Spiral",          pt: "Espiral de Sangue",        weapon: "Gauntlets", category: 'active' },
+  { en: "Blood Spiral",          pt: "Espiral de Sangue",        weapon: "Gauntlets", category: 'active', aliases: ["Espiral Sangrenta"] },
+  { en: "Espetada Rápida",       pt: "Espetada Rápida",          weapon: "Gauntlets", category: 'active' },
   { en: "Bloodstorm",            pt: "Tempestade de Sangue",    weapon: "Gauntlets", category: 'active', aliases: ["Bloodstorm Dance", "Blood Gale Frenzy", "Blood Wind"] },
   { en: "Blood Talon",           pt: "Garra de Sangue",          weapon: "Gauntlets", category: 'active' },
   { en: "Blood Explosion",       pt: "Explosão de Sangue",       weapon: "Gauntlets", category: 'active' },
@@ -178,6 +180,7 @@ const MASTER_LIST: SkillEntry[] = [
   { en: "Destructive Spear",     pt: "Lança Destruidora",        weapon: "Item/Proc",  category: 'mastery' },
   { en: "Mortal Viper",           pt: "Víbora Mortal",            weapon: "Item/Proc",  category: 'mastery' },
   { en: "Clockwork Bomb",         pt: "Bomba Relógio",            weapon: "Item/Proc",  category: 'mastery' },
+  { en: "Lightning Speed",        pt: "Velocidade da Luz",        weapon: "Geral",      category: 'mastery' },
 
   { en: "Basic Shot",            pt: "Disparo Básico",          weapon: "Longbow",    category: 'active' },
 ]
