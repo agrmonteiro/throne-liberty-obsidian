@@ -5,11 +5,49 @@ import electronUpdaterPkg from 'electron-updater'
 const { autoUpdater } = electronUpdaterPkg
 import fs from 'fs'
 import path from 'path'
+import { pathToFileURL } from 'url'
 import { spawn, execSync } from 'child_process'
 import { createWorker } from 'tesseract.js'
+import { listGameWindows, focusGameWindow, captureGameWindow, recognizeGameCapture } from './gameWindow'
 
 // ─── Data directory (AppData/Roaming/Tier2 Command Lab/data) ──────────────────
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
+
+ipcMain.handle('combat-lab:list-windows', () => listGameWindows())
+ipcMain.handle('combat-lab:capture-window', async (event, sourceId: string) => {
+  const owner = BrowserWindow.fromWebContents(event.sender)
+  const wasVisible = owner?.isVisible() ?? false
+  if (wasVisible) {
+    owner!.hide()
+    await focusGameWindow(sourceId)
+    await new Promise(resolve => setTimeout(resolve, 450))
+  }
+  try { return await captureGameWindow(sourceId, DATA_DIR) }
+  finally {
+    if (wasVisible && owner && !owner.isDestroyed()) { owner.show(); owner.focus() }
+  }
+})
+ipcMain.handle('combat-lab:ocr-capture', (_event, imagePath: string, area?: { x: number; y: number; width: number; height: number }) => recognizeGameCapture(imagePath, DATA_DIR, area))
+ipcMain.handle('combat-lab:pick-video', async () => {
+  const result = await dialog.showOpenDialog({ title: 'Vídeo da build', properties: ['openFile'], filters: [{ name: 'Vídeo', extensions: ['mp4', 'webm', 'mov', 'm4v'] }] })
+  if (result.canceled || !result.filePaths[0]) return null
+  const filePath = result.filePaths[0]
+  return { name: path.basename(filePath), url: pathToFileURL(filePath).href, size: fs.statSync(filePath).size }
+})
+ipcMain.handle('combat-lab:save-frame', (_event, dataUrl: string, videoName: string, atSec: number) => {
+  if (typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/png;base64,') || dataUrl.length > 30_000_000) throw new Error('Quadro de vídeo inválido ou muito grande.')
+  if (!Number.isFinite(atSec) || atSec < 0 || atSec > 86400) throw new Error('Tempo de vídeo inválido.')
+  const png = Buffer.from(dataUrl.slice('data:image/png;base64,'.length), 'base64')
+  const image = nativeImage.createFromBuffer(png)
+  if (image.isEmpty() || image.getSize().width < 500 || image.getSize().height < 300) throw new Error('Quadro do vídeo está vazio.')
+  const dir = path.join(DATA_DIR, 'combat-lab-captures')
+  fs.mkdirSync(dir, { recursive: true })
+  const imagePath = path.join(dir, `video_${Date.now()}.png`)
+  fs.writeFileSync(imagePath, png)
+  const { width, height } = image.getSize()
+  const rect = { left: 0, top: 0, right: width, bottom: height }
+  return { sourceId: 'video', title: `${path.basename(videoName)} · ${atSec.toFixed(1)} s`, videoName: path.basename(videoName), videoAtSec: atSec, imageDataUrl: dataUrl, imagePath, width, height, bounds: { ...rect, pid: 0, process: 'video' }, imageBounds: rect }
+})
 
 type OcrWord = {
   text: string

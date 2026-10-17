@@ -36,6 +36,11 @@ interface DataAPI {
   write: (filename: string, data: unknown) => Promise<DataWriteResult>
   importFile: () => Promise<any>
   ocrImportBuild: () => Promise<OcrImportResult | null>
+  combatLabListWindows: () => Promise<Array<{ sourceId: string; title: string }>>
+  combatLabCapture: (sourceId: string) => Promise<GameCaptureResult>
+  combatLabOcr: (imagePath: string, area?: { x: number; y: number; width: number; height: number }) => Promise<{ text: string; confidence: number }>
+  combatLabPickVideo: () => Promise<{ name: string; url: string; size: number } | null>
+  combatLabSaveFrame: (dataUrl: string, videoName: string, atSec: number) => Promise<GameCaptureResult>
   onOcrProgress: (cb: (payload: OcrProgress) => void) => void
   offOcrProgress: () => void
   exportFile: (data: unknown, defaultName: string) => Promise<{ ok: boolean; path?: string; error?: string }>
@@ -63,6 +68,19 @@ interface DataAPI {
   scraperOpenLog: () => Promise<DataWriteResult>
   scraperReadLog: () => Promise<string>
   scraperReinstallPlaywright: () => Promise<{ ok: boolean; output?: string; error?: string }>
+}
+
+type GameCaptureResult = {
+  sourceId: string
+  title: string
+  videoName?: string
+  videoAtSec?: number
+  imageDataUrl: string
+  imagePath: string
+  width: number
+  height: number
+  bounds: { left: number; top: number; right: number; bottom: number; pid: number; process: string }
+  imageBounds: { left: number; top: number; right: number; bottom: number }
 }
 
 interface UpdateAPI {
