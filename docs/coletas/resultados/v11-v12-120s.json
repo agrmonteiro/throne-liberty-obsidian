@@ -1,0 +1,318 @@
+{
+  "status": "comparacao_descritiva_uma_amostra_por_macro; condicoes_de_buff_nao_certificadas",
+  "baseline": {
+    "macro": "V11 reteste",
+    "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261017_220155.txt",
+    "video": "C:/Users/admin/Downloads/TL_COMBATE_V11_RETESTE_2026-10-17.mp4",
+    "windowStartLogTime": "2026-10-17T22:03:41.882000",
+    "windowDurationSec": 120,
+    "totalDamage": 49680876.0,
+    "dps": 414007.3,
+    "fullLogSpanSec": 121.79900002479553,
+    "lastWindowDamageSec": 119.99500012397766,
+    "damageEvents": 6388,
+    "damageByMinute": [
+      24456756.0,
+      25224120.0
+    ],
+    "cumulativeDamageBySec": {
+      "15": 4368838.0,
+      "30": 11266564.0,
+      "60": 24456756.0,
+      "90": 36126098.0,
+      "120": 49680876.0
+    },
+    "skills": {
+      "Golpe Sombrio": {
+        "damage": 262884.0,
+        "damageEvents": 24,
+        "critEvents": 18,
+        "heavyEvents": 15
+      },
+      "Garras Consecutivas": {
+        "damage": 14848139.0,
+        "damageEvents": 779,
+        "critEvents": 321,
+        "heavyEvents": 252
+      },
+      "Tempestade de Sangue": {
+        "damage": 4588061.0,
+        "damageEvents": 339,
+        "critEvents": 167,
+        "heavyEvents": 139
+      },
+      "Garra": {
+        "damage": 2294670.0,
+        "damageEvents": 288,
+        "critEvents": 108,
+        "heavyEvents": 95
+      },
+      "Fenda Enluarada": {
+        "damage": 2777520.0,
+        "damageEvents": 146,
+        "critEvents": 113,
+        "heavyEvents": 101
+      },
+      "Estigma Fatal": {
+        "damage": 4740319.0,
+        "damageEvents": 11,
+        "critEvents": 7,
+        "heavyEvents": 4
+      },
+      "Injeção Letal": {
+        "damage": 1837450.0,
+        "damageEvents": 1003,
+        "critEvents": 30,
+        "heavyEvents": 23
+      },
+      "Limite Venenoso": {
+        "damage": 10122472.0,
+        "damageEvents": 1148,
+        "critEvents": 916,
+        "heavyEvents": 741
+      },
+      "Arremesso de Relâmpago": {
+        "damage": 294406.0,
+        "damageEvents": 76,
+        "critEvents": 66,
+        "heavyEvents": 44
+      },
+      "Espírito Umbral": {
+        "damage": 6645114.0,
+        "damageEvents": 2475,
+        "critEvents": 1929,
+        "heavyEvents": 1558
+      },
+      "Lança Perfurante": {
+        "damage": 287784.0,
+        "damageEvents": 7,
+        "critEvents": 5,
+        "heavyEvents": 4
+      },
+      "Dança da Espada Frenética": {
+        "damage": 982057.0,
+        "damageEvents": 92,
+        "critEvents": 73,
+        "heavyEvents": 53
+      }
+    },
+    "gapsAtLeast1Sec": []
+  },
+  "candidate": {
+    "macro": "V12",
+    "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261017_215633.txt",
+    "video": "C:/Users/admin/Downloads/TL_COMBATE_V12_2026-10-17.mp4",
+    "windowStartLogTime": "2026-10-17T21:57:16.350000",
+    "windowDurationSec": 120,
+    "totalDamage": 48634178.0,
+    "dps": 405284.81666666665,
+    "fullLogSpanSec": 128.75200009346008,
+    "lastWindowDamageSec": 119.7900002002716,
+    "damageEvents": 6022,
+    "damageByMinute": [
+      22560543.0,
+      26073635.0
+    ],
+    "cumulativeDamageBySec": {
+      "15": 4456408.0,
+      "30": 10793675.0,
+      "60": 22560543.0,
+      "90": 32859805.0,
+      "120": 48634178.0
+    },
+    "skills": {
+      "Golpe Sombrio": {
+        "damage": 303954.0,
+        "damageEvents": 26,
+        "critEvents": 21,
+        "heavyEvents": 15
+      },
+      "Garras Consecutivas": {
+        "damage": 15315025.0,
+        "damageEvents": 805,
+        "critEvents": 321,
+        "heavyEvents": 258
+      },
+      "Garra": {
+        "damage": 2014188.0,
+        "damageEvents": 285,
+        "critEvents": 104,
+        "heavyEvents": 80
+      },
+      "Tempestade de Sangue": {
+        "damage": 4793703.0,
+        "damageEvents": 331,
+        "critEvents": 157,
+        "heavyEvents": 141
+      },
+      "Fenda Enluarada": {
+        "damage": 2478490.0,
+        "damageEvents": 135,
+        "critEvents": 107,
+        "heavyEvents": 82
+      },
+      "Estigma Fatal": {
+        "damage": 4799402.0,
+        "damageEvents": 10,
+        "critEvents": 7,
+        "heavyEvents": 6
+      },
+      "Limite Venenoso": {
+        "damage": 9679521.0,
+        "damageEvents": 1101,
+        "critEvents": 858,
+        "heavyEvents": 700
+      },
+      "Injeção Letal": {
+        "damage": 1442494.0,
+        "damageEvents": 1018,
+        "critEvents": 21,
+        "heavyEvents": 17
+      },
+      "Arremesso de Relâmpago": {
+        "damage": 354975.0,
+        "damageEvents": 89,
+        "critEvents": 76,
+        "heavyEvents": 57
+      },
+      "Espírito Umbral": {
+        "damage": 6212755.0,
+        "damageEvents": 2117,
+        "critEvents": 1644,
+        "heavyEvents": 1368
+      },
+      "Lança Perfurante": {
+        "damage": 266129.0,
+        "damageEvents": 7,
+        "critEvents": 7,
+        "heavyEvents": 3
+      },
+      "Dança da Espada Frenética": {
+        "damage": 973542.0,
+        "damageEvents": 98,
+        "critEvents": 77,
+        "heavyEvents": 53
+      }
+    },
+    "gapsAtLeast1Sec": []
+  },
+  "deltaDamage": -1046698.0,
+  "deltaPct": -2.1068428825610885,
+  "skillDeltas": [
+    {
+      "skill": "Garras Consecutivas",
+      "v11Damage": 14848139.0,
+      "v12Damage": 15315025.0,
+      "deltaDamage": 466886.0,
+      "deltaPct": 3.1444075247409886,
+      "v11DamageEvents": 779,
+      "v12DamageEvents": 805
+    },
+    {
+      "skill": "Limite Venenoso",
+      "v11Damage": 10122472.0,
+      "v12Damage": 9679521.0,
+      "deltaDamage": -442951.0,
+      "deltaPct": -4.375917266059126,
+      "v11DamageEvents": 1148,
+      "v12DamageEvents": 1101
+    },
+    {
+      "skill": "Espírito Umbral",
+      "v11Damage": 6645114.0,
+      "v12Damage": 6212755.0,
+      "deltaDamage": -432359.0,
+      "deltaPct": -6.506419603937575,
+      "v11DamageEvents": 2475,
+      "v12DamageEvents": 2117
+    },
+    {
+      "skill": "Injeção Letal",
+      "v11Damage": 1837450.0,
+      "v12Damage": 1442494.0,
+      "deltaDamage": -394956.0,
+      "deltaPct": -21.494788973849634,
+      "v11DamageEvents": 1003,
+      "v12DamageEvents": 1018
+    },
+    {
+      "skill": "Fenda Enluarada",
+      "v11Damage": 2777520.0,
+      "v12Damage": 2478490.0,
+      "deltaDamage": -299030.0,
+      "deltaPct": -10.766079092139746,
+      "v11DamageEvents": 146,
+      "v12DamageEvents": 135
+    },
+    {
+      "skill": "Garra",
+      "v11Damage": 2294670.0,
+      "v12Damage": 2014188.0,
+      "deltaDamage": -280482.0,
+      "deltaPct": -12.223195492162276,
+      "v11DamageEvents": 288,
+      "v12DamageEvents": 285
+    },
+    {
+      "skill": "Tempestade de Sangue",
+      "v11Damage": 4588061.0,
+      "v12Damage": 4793703.0,
+      "deltaDamage": 205642.0,
+      "deltaPct": 4.482111288407009,
+      "v11DamageEvents": 339,
+      "v12DamageEvents": 331
+    },
+    {
+      "skill": "Arremesso de Relâmpago",
+      "v11Damage": 294406.0,
+      "v12Damage": 354975.0,
+      "deltaDamage": 60569.0,
+      "deltaPct": 20.57328994653642,
+      "v11DamageEvents": 76,
+      "v12DamageEvents": 89
+    },
+    {
+      "skill": "Estigma Fatal",
+      "v11Damage": 4740319.0,
+      "v12Damage": 4799402.0,
+      "deltaDamage": 59083.0,
+      "deltaPct": 1.2463929115319017,
+      "v11DamageEvents": 11,
+      "v12DamageEvents": 10
+    },
+    {
+      "skill": "Golpe Sombrio",
+      "v11Damage": 262884.0,
+      "v12Damage": 303954.0,
+      "deltaDamage": 41070.0,
+      "deltaPct": 15.622860272972105,
+      "v11DamageEvents": 24,
+      "v12DamageEvents": 26
+    },
+    {
+      "skill": "Lança Perfurante",
+      "v11Damage": 287784.0,
+      "v12Damage": 266129.0,
+      "deltaDamage": -21655.0,
+      "deltaPct": -7.524740777805572,
+      "v11DamageEvents": 7,
+      "v12DamageEvents": 7
+    },
+    {
+      "skill": "Dança da Espada Frenética",
+      "v11Damage": 982057.0,
+      "v12Damage": 973542.0,
+      "deltaDamage": -8515.0,
+      "deltaPct": -0.8670576147820297,
+      "v11DamageEvents": 92,
+      "v12DamageEvents": 98
+    }
+  ],
+  "notes": [
+    "Primeiros 120 s desde o primeiro dano em cada log, final exclusivo.",
+    "V11 original de 52,50 M não usada como controle, por suspeita de comida/buff diferente.",
+    "Uma tentativa por versão; não demonstra diferença estatisticamente estável.",
+    "Hits e procs não equivalem a conjurações ou falhas de input.",
+    "Confirmar mesmos buffs, equipamento, alvo e estado inicial antes de atribuir causalidade à macro."
+  ]
+}

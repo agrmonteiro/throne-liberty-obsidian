@@ -1,0 +1,209 @@
+{
+  "macro": "V13",
+  "attempt": 2,
+  "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261017_223020.txt",
+  "video": "C:\\Users\\admin\\Downloads\\TL_COMBATE_V13_T2_2026-10-17.mp4",
+  "windowStartLogTime": "2026-10-17T22:30:38.407000",
+  "windowDurationSec": 120,
+  "fullLogSpanSec": 128.118,
+  "lastWindowDamageSec": 119.981,
+  "totalDamage": 50004623,
+  "dps": 416705.19166666665,
+  "damageEvents": 6231,
+  "skills": {
+    "Golpe Sombrio": {
+      "damage": 306808,
+      "damageEvents": 29,
+      "critEvents": 23,
+      "heavyEvents": 15
+    },
+    "Garras Consecutivas": {
+      "damage": 14922052,
+      "damageEvents": 780,
+      "critEvents": 302,
+      "heavyEvents": 259
+    },
+    "Tempestade de Sangue": {
+      "damage": 4722282,
+      "damageEvents": 320,
+      "critEvents": 154,
+      "heavyEvents": 137
+    },
+    "Dança da Espada Frenética": {
+      "damage": 1074485,
+      "damageEvents": 88,
+      "critEvents": 76,
+      "heavyEvents": 57
+    },
+    "Espírito Umbral": {
+      "damage": 6473153,
+      "damageEvents": 2260,
+      "critEvents": 1807,
+      "heavyEvents": 1408
+    },
+    "Injeção Letal": {
+      "damage": 1634748,
+      "damageEvents": 1075,
+      "critEvents": 22,
+      "heavyEvents": 20
+    },
+    "Limite Venenoso": {
+      "damage": 9914936,
+      "damageEvents": 1138,
+      "critEvents": 877,
+      "heavyEvents": 716
+    },
+    "Garra": {
+      "damage": 2323536,
+      "damageEvents": 292,
+      "critEvents": 117,
+      "heavyEvents": 93
+    },
+    "Fenda Enluarada": {
+      "damage": 2723866,
+      "damageEvents": 146,
+      "critEvents": 118,
+      "heavyEvents": 87
+    },
+    "Lança Perfurante": {
+      "damage": 337858,
+      "damageEvents": 7,
+      "critEvents": 7,
+      "heavyEvents": 5
+    },
+    "Arremesso de Relâmpago": {
+      "damage": 325131,
+      "damageEvents": 86,
+      "critEvents": 61,
+      "heavyEvents": 61
+    },
+    "Estigma Fatal": {
+      "damage": 5245768,
+      "damageEvents": 10,
+      "critEvents": 7,
+      "heavyEvents": 5
+    }
+  },
+  "damageByMinute": [
+    23670848,
+    26333775
+  ],
+  "cumulativeDamageBySec": {
+    "15": 4087987,
+    "30": 9541267,
+    "60": 23670848,
+    "90": 37032982,
+    "120": 50004623
+  },
+  "supportDiagnostics": {
+    "Arremesso de Relâmpago": {
+      "damageGroups": 10,
+      "groupStartSec": [
+        8.14,
+        19.617,
+        29.676,
+        40.445,
+        51.255,
+        61.298,
+        71.432,
+        83.586,
+        96.53,
+        118.09
+      ],
+      "medianGroupIntervalSec": 10.810000000000002,
+      "maxGroupIntervalSec": 21.560000000000002
+    },
+    "Golpe Sombrio": {
+      "damageGroups": 20,
+      "groupStartSec": [
+        0.0,
+        6.968,
+        12.969,
+        20.678,
+        26.807,
+        32.422,
+        38.146,
+        43.467,
+        50.445,
+        56.125,
+        62.866,
+        68.337,
+        74.611,
+        80.12,
+        86.289,
+        91.875,
+        97.398,
+        103.091,
+        110.018,
+        116.056
+      ],
+      "medianGroupIntervalSec": 6.0009999999999994,
+      "maxGroupIntervalSec": 7.709000000000001
+    },
+    "Dança da Espada Frenética": {
+      "damageGroups": 9,
+      "groupStartSec": [
+        3.343,
+        21.834,
+        34.756,
+        36.934,
+        47.703,
+        69.293,
+        87.134,
+        101.602,
+        118.865
+      ],
+      "medianGroupIntervalSec": 15.865499999999997,
+      "maxGroupIntervalSec": 21.590000000000003
+    },
+    "Fenda Enluarada": {
+      "damageGroups": 33,
+      "groupStartSec": [
+        6.498,
+        11.955,
+        16.278,
+        20.19,
+        21.142,
+        28.143,
+        31.37,
+        36.234,
+        38.871,
+        40.005,
+        42.131,
+        45.376,
+        47.019,
+        50.732,
+        51.827,
+        55.064,
+        59.427,
+        64.281,
+        71.984,
+        75.037,
+        76.64,
+        78.824,
+        84.158,
+        85.824,
+        91.422,
+        92.32,
+        94.426,
+        102.131,
+        103.546,
+        109.023,
+        112.978,
+        116.568,
+        117.627
+      ],
+      "medianGroupIntervalSec": 3.2409999999999997,
+      "maxGroupIntervalSec": 7.704999999999998
+    }
+  },
+  "deltaPctVsV11": 0.6516531632815736,
+  "deltaPctVsV13T1": -1.8521033416720623,
+  "meanV13Damage": 50476430.0,
+  "meanV13DeltaPctVsV11": 1.6013284467850442,
+  "limitations": [
+    "V13 com duas amostras e V11 controle com uma; condições de buffs não certificadas.",
+    "Grupos de dano por intervalo de 0,75 s não equivalem a usos ou duração real de debuffs.",
+    "Janela de 120 s desde o primeiro dano, limite final exclusivo; danos posteriores excluídos."
+  ]
+}

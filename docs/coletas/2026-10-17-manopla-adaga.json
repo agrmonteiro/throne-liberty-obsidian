@@ -1,0 +1,2511 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-17",
+  "equipmentPreset": "manopla_plat",
+  "skillPreset": "manopla_farm",
+  "state": "fora_do_eclipse",
+  "specializationCollection": {
+    "status": "textos_das_opcoes_selecionadas_revisados_visualmente_calculo_pendente",
+    "manoplas": {
+      "overviewFrame": "capturas_treinamento/nucleos_manual/especializacoes-manoplas-inicial.png",
+      "overviewLimitations": "Janela do Codex encobre parte inferior direita; não usar para inferir opções encobertas.",
+      "pointsUsed": 34,
+      "reviewedOptions": [
+        {
+          "skill": "Golpe em Cadeia",
+          "name": "Dano ▲",
+          "position": 1,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Aumenta o dano em 15%.",
+          "damageIncreasePct": 15,
+          "sourceFrame": "capturas_treinamento/nucleos_manual/golpe-em-cadeia-dano.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar se o bônus já está incluído no tooltip da habilidade"
+          ]
+        },
+        {
+          "skill": "Golpe em Cadeia",
+          "name": "Recarga ▼",
+          "position": 3,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Reduz a Recarga da Habilidade em 15%.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/013.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "cooldownReductionPct": 15
+        },
+        {
+          "skill": "Espetada Rápida",
+          "name": "Dano ▲",
+          "position": 3,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Amplia o Dano de Habilidade em 15%.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/015.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "damageIncreasePct": 15
+        },
+        {
+          "skill": "Eclipse de Sangue",
+          "name": "Custo de Mana Reduzido",
+          "position": 1,
+          "selected": true,
+          "pointCost": 7,
+          "description": "Reduz o Custo de Vigor em 1 por segundo.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/019.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "vigorCostReductionPerSec": 1,
+          "note": "Título diz Mana; descrição diz Vigor. Preservar a descrição observada."
+        },
+        {
+          "skill": "Ampliação de Ameaça",
+          "name": "Efeitos de Encantamentos",
+          "position": 1,
+          "selected": true,
+          "pointCost": 7,
+          "description": "Ampliação de Ameaça: amplia o aumento de Chance de Bloqueio em 20%. Corte Lunar: amplia o aumento do Dano Base em 20%.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/023.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "blockBuffIncreasePct": 20,
+          "transformedBaseDamageBuffIncreasePct": 20,
+          "note": "20% de ampliação do bônus; não tratar como 20 pontos percentuais de Dano Base."
+        },
+        {
+          "skill": "Ampliação de Ameaça",
+          "name": "Recuperação de Vigor",
+          "position": 3,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Restaura de imediato 15 de Vigor ao conjurar a habilidade.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/025.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "vigorRestoreFlat": 15
+        }
+      ],
+      "selectedOptionPositionsBySkill": {
+        "Golpe em Cadeia": [
+          1,
+          3
+        ],
+        "Espetada Rápida": [
+          3
+        ],
+        "Eclipse de Sangue": [
+          1
+        ],
+        "Ampliação de Ameaça": [
+          1,
+          3
+        ]
+      },
+      "selectionBasis": "anéis roxos visíveis na lista; textos individuais ainda pendentes"
+    },
+    "video": "C:/Users/admin/Downloads/TL_ESPECIALIZACOES_MANUAL_2026-10-17.mp4",
+    "videoDurationSec": 47.5,
+    "extractedFrames": 95,
+    "frameSamplingFps": 2,
+    "frameDirectory": "capturas_treinamento/especializacoes_manual/quadros",
+    "adagas": {
+      "pointsUsed": 75,
+      "reviewedOptions": [
+        {
+          "skill": "Fenda Enluarada",
+          "name": "Uso consecutivo",
+          "position": 1,
+          "selected": true,
+          "pointCost": 10,
+          "description": "Pode ser usada mais 1 vez dentro de 3 s.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/035.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "additionalUses": 1,
+          "reuseWindowSec": 3
+        },
+        {
+          "skill": "Fenda Enluarada",
+          "name": "Acumulação de Efeito",
+          "position": 2,
+          "selected": true,
+          "pointCost": 7,
+          "description": "Aplica Fraqueza: Nuvens de Trovão. Dura 6 s; diminui a Tolerância à Distância, Corpo a Corpo e Mágica em 20.8 por acúmulo. Acumulável até 20 vezes. Não acumulável com a Especialização de Dano Adicional.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/037.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "thundercloudDurationSec": 6,
+          "toleranceReductionPerStack": 20.8,
+          "maxThundercloudStacks": 20
+        },
+        {
+          "skill": "Injeção Letal",
+          "name": "Custo de Mana Reduzido",
+          "position": 2,
+          "selected": true,
+          "pointCost": 3,
+          "description": "Reduz Custo de Mana em 25%.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/039.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "manaCostReductionPct": 25
+        },
+        {
+          "skill": "Golpe Sombrio",
+          "name": "Acumulação de Efeito",
+          "position": 4,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Aplica Fraqueza: Nuvens de Trovão. Dura 6 s; diminui a Tolerância à Distância, Corpo a Corpo e Mágica em 21.2 por acúmulo. Acumulável até 20 vezes.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/041.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "thundercloudDurationSec": 6,
+          "toleranceReductionPerStack": 21.2,
+          "maxThundercloudStacks": 20
+        },
+        {
+          "skill": "Espírito Umbral",
+          "name": "Dano ▲",
+          "position": 2,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Amplia o dano adicional de ataques de Veneno em 30%. Não acumulável com a Especialização de Espírito do Trovão.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/043.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "poisonAdditionalAttackDamageIncreasePct": 30
+        },
+        {
+          "skill": "Espírito Umbral",
+          "name": "Duração Aumentada",
+          "position": 3,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Aumenta duração em 1,5 s.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/047.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "additionalDurationSec": 1.5
+        },
+        {
+          "skill": "Arremesso de Relâmpago",
+          "name": "Arremesso de Relâmpago",
+          "position": 1,
+          "selected": true,
+          "pointCost": 7,
+          "description": "Lança 5 Adagas na direção designada até 3,43 vezes o Alcance de Ataque. Cada Adaga perfura os alvos, causando 60% do Dano Base e aplicando Fraqueza que reduz a Tolerância à Distância, Corpo a Corpo e Mágica em 155 por 6 s. Se o alvo tiver Encharcado ou Nuvens de Trovão, causa o mesmo dano a um inimigo aleatório em um raio de 5 m.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/051.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "knifeCountInSpecializationText": 5,
+          "damageBasePctPerKnife": 60,
+          "toleranceReductionFlat": 155,
+          "debuffDurationSec": 6,
+          "chainRadiusM": 5
+        },
+        {
+          "skill": "Arremesso de Relâmpago",
+          "name": "Recarga ▼",
+          "position": 2,
+          "selected": true,
+          "pointCost": 3,
+          "description": "Reduz a recarga em 3 s.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/053.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "cooldownReductionSec": 3
+        },
+        {
+          "skill": "Arremesso de Relâmpago",
+          "name": "Acerto Adicional",
+          "position": 4,
+          "selected": true,
+          "pointCost": 3,
+          "description": "Aumenta o número de facas em 1.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/055.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "additionalKnifeCount": 1
+        },
+        {
+          "skill": "Massacre",
+          "name": "Dano em Área",
+          "position": 1,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Causa o mesmo dano aos alvos em um raio de 3 m do alvo. Ignora a Chance de Bloqueio do alvo.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/057.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "areaRadiusM": 3,
+          "ignoresBlock": true
+        },
+        {
+          "skill": "Massacre",
+          "name": "Redefinição da Recarga",
+          "position": 2,
+          "selected": true,
+          "pointCost": 3,
+          "description": "Se o alvo morrer enquanto estiver Marcado, a recarga da Habilidade será redefinida. Se o alvo morrer devido a Estigma Fatal, a recarga será redefinida.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/059.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "resetOnMarkedTargetDeath": true,
+          "note": "Não supor reset periódico contra boneco ou chefe que não morre."
+        },
+        {
+          "skill": "Massacre",
+          "name": "Dano ▲",
+          "position": 4,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Aumenta o dano proporcionalmente à perda de Vida do alvo.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/061.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "scalesWithTargetMissingHealth": true,
+          "note": "Tooltip não informa coeficiente; fórmula pendente."
+        },
+        {
+          "skill": "Dança da Espada Frenética",
+          "name": "Dança da Espada Frenética",
+          "position": 1,
+          "selected": true,
+          "pointCost": 5,
+          "description": "Aproxima-se do alvo e causa 194% do Dano Base + 43 de dano. Ataca 3 vezes consecutivas e se coloca nas costas do alvo. Pode ser usada mais uma vez em até 3 s. Após se mover, todo ataque é considerado um ataque pelas costas por 2 s. Aumenta o dano em 50% contra monstros.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/063.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "damageBasePct": 194,
+          "damageFlat": 43,
+          "consecutiveHits": 3,
+          "additionalUses": 1,
+          "reuseWindowSec": 3,
+          "backAttackWindowSec": 2,
+          "monsterDamageIncreasePct": 50
+        },
+        {
+          "skill": "Dança da Espada Frenética",
+          "name": "Acumulação de Efeito",
+          "position": 2,
+          "selected": true,
+          "pointCost": 3,
+          "description": "Aplica Fraqueza: Nuvens de Trovão. Dura 6 s; diminui a Tolerância à Distância, Corpo a Corpo e Mágica em 20.4 por acúmulo. Acumulável até 20 vezes.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/065.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "thundercloudDurationSec": 6,
+          "toleranceReductionPerStack": 20.4,
+          "maxThundercloudStacks": 20
+        },
+        {
+          "skill": "Dança da Espada Frenética",
+          "name": "Recarga ▼",
+          "position": 3,
+          "selected": true,
+          "pointCost": 3,
+          "description": "Reduz a Recarga da Habilidade em 15%.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/066.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "cooldownReductionPct": 15
+        },
+        {
+          "skill": "Dança da Espada Frenética",
+          "name": "Dano em Área",
+          "position": 4,
+          "selected": true,
+          "pointCost": 3,
+          "description": "Causa 60% do Dano Base a todos os inimigos em um raio de 3 m do local de chegada.",
+          "sourceFrame": "capturas_treinamento/especializacoes_manual/quadros/068.png",
+          "textReviewed": true,
+          "calculationEnabled": false,
+          "pending": [
+            "verificar bônus já incluídos no tooltip e status observados"
+          ],
+          "arrivalAreaDamageBasePct": 60,
+          "arrivalRadiusM": 3
+        }
+      ],
+      "selectedOptionPositionsBySkill": {
+        "Fenda Enluarada": [
+          1,
+          2
+        ],
+        "Golpe Sombrio": [
+          4
+        ],
+        "Injeção Letal": [
+          2
+        ],
+        "Espírito Umbral": [
+          2,
+          3
+        ],
+        "Arremesso de Relâmpago": [
+          1,
+          2,
+          4
+        ],
+        "Massacre": [
+          1,
+          2,
+          4
+        ],
+        "Dança da Espada Frenética": [
+          1,
+          2,
+          3,
+          4
+        ]
+      }
+    },
+    "reviewNotes": [
+      "Codex sobrepõe parte da tela no início; tooltips registrados possuem texto legível nos quadros indicados.",
+      "Descrições transcritas e revisadas visualmente; não dependem de OCR não validado.",
+      "Não somar automaticamente aumentos de dano e reduções de recarga aos valores já efetivos do tooltip.",
+      "Texto comparativo de habilidade pode mostrar forma base; priorizar texto da especialização ativa ao modelar transformação."
+    ]
+  },
+  "objective": {
+    "durationSec": 120,
+    "metric": "totalDamage",
+    "latencyMs": 100
+  },
+  "status": "coleta_parcial",
+  "collectionExclusions": [
+    {
+      "category": "Habilidades de Transcendência",
+      "reason": "Usuário confirmou que não são de combate; excluir da coleta e da simulação de DPS."
+    }
+  ],
+  "sources": {
+    "itemsVideo": "C:/Users/admin/Downloads/TL_ITENS_V6_COLETA.mp4",
+    "itemsFrames": "capturas_treinamento/itens_v6/quadros",
+    "skillsVideo": "C:/Users/admin/Downloads/TL_SKILLS_V3.mp4",
+    "skillsFrames": "capturas_treinamento/skills_v3"
+  },
+  "observedCooldowns": {
+    "basis": "tooltip_no_personagem_atual_nao_assumir_cooldown_base",
+    "reviewed": true,
+    "secondsByKey": {
+      "1": 43.7,
+      "2": 7.3,
+      "3": 13.1,
+      "4": 5.1,
+      "5": 3.7,
+      "6": 2.9,
+      "7": 12.4,
+      "8": 7.3,
+      "9": 8.7,
+      "0": 14.6,
+      "-": 14.6,
+      "=": 14.6
+    },
+    "namesByKey": {
+      "1": "Êxtase",
+      "2": "Espetada Rápida",
+      "3": "Massacre",
+      "4": "Golpe Sombrio",
+      "5": "Golpe em Cadeia",
+      "6": "Fenda Enluarada",
+      "7": "Dança da Espada Frenética",
+      "8": "Arremesso de Relâmpago",
+      "9": "Injeção Letal",
+      "0": "Eclipse de Sangue",
+      "-": "Espírito Umbral",
+      "=": "Ampliação de Ameaça"
+    },
+    "notes": "Não reduzir novamente esses números pela recarga total sem conhecer a base. Os danos e os tempos das formas transformadas exigem captura própria."
+  },
+  "conditionalEffects": [
+    {
+      "name": "Efeito de Material da Armadura: Manoplas",
+      "sourceSlot": "materiais de armadura; exceto mantos",
+      "sourceFrame": "capturas_treinamento/nucleos_manual/material-manoplas.png",
+      "textReviewed": true,
+      "activeMaterials": [
+        {
+          "name": "Mithril",
+          "equippedCount": 1,
+          "maxHealthPctTotal": 3.6,
+          "criticalDamagePctTotal": 3
+        },
+        {
+          "name": "Placa",
+          "equippedCount": 4,
+          "maxHealthPctPerPiece": 1.8,
+          "maxHealthPctTotal": 7.2,
+          "criticalDamagePctPerPiece": 1.5,
+          "criticalDamagePctTotal": 6
+        }
+      ],
+      "inactiveMaterials": [
+        "Couro (0)",
+        "Tecido (0)"
+      ],
+      "calculationEnabled": false,
+      "pending": [
+        "verificar bônus já incluídos nos status totais",
+        "confirmar aplicação conforme arma ativa; não somar automaticamente materiais das duas armas"
+      ]
+    },
+    {
+      "name": "Efeito de Material da Armadura: Adagas",
+      "sourceSlot": "materiais de armadura; exceto mantos",
+      "sourceFrame": "capturas_treinamento/nucleos_manual/material-adagas.png",
+      "textReviewed": true,
+      "activeMaterials": [
+        {
+          "name": "Mithril",
+          "equippedCount": 1,
+          "criticalHitChanceFlat": 80,
+          "evasionFlat": 60
+        },
+        {
+          "name": "Placa",
+          "equippedCount": 4,
+          "maxHealthPctPerPiece": 1.4,
+          "maxHealthPctTotal": 5.6,
+          "criticalDamageResistancePctPerPiece": 1.2,
+          "criticalDamageResistancePctTotal": 4.8
+        }
+      ],
+      "inactiveMaterials": [
+        "Couro (0)",
+        "Tecido (0)"
+      ],
+      "calculationEnabled": false,
+      "pending": [
+        "verificar bônus já incluídos nos status totais",
+        "confirmar aplicação conforme arma ativa; não somar automaticamente materiais das duas armas"
+      ]
+    },
+    {
+      "name": "Fúria Nobre",
+      "sourceSlot": "habilidade passiva de Guardião",
+      "sourceFrame": "capturas_treinamento/nucleos_manual/furia-nobre.png",
+      "textReviewed": true,
+      "description": "Aumenta o Poder de Ataque Total em 3%, a Chance de Acerto em 100, e a Velocidade de Recarga em 5%. Membros da equipe dentro de um raio de 15 m recebem esse efeito por 5 s.",
+      "totalAttackPowerPct": 3,
+      "hitChanceFlat": 100,
+      "cooldownSpeedPct": 5,
+      "partyRadiusM": 15,
+      "partyEffectDurationSec": 5,
+      "calculationEnabled": false,
+      "pending": [
+        "confirmar condição de ativação e duração no próprio personagem",
+        "verificar bônus já incluídos nos status totais e cooldowns observados",
+        "validar empilhamento e renovação do efeito em equipe"
+      ]
+    },
+    {
+      "name": "Mandíbulas do Predador",
+      "sourceSlot": "habilidade passiva de pedra preciosa",
+      "sourceFrame": "capturas_treinamento/nucleos_manual/mandibulas-do-predador.png",
+      "textReviewed": true,
+      "trigger": "causar dano com habilidade de Controle",
+      "description": "Ao causar dano com habilidade de Controle, o Dano Base aumenta em 4% por 3 s.",
+      "baseDamagePct": 4,
+      "durationSec": 3,
+      "calculationEnabled": false,
+      "pending": [
+        "identificar habilidades de Controle da build com dano",
+        "validar ativação e renovação em combate",
+        "regra de duração da vantagem e empilhamento"
+      ]
+    },
+    {
+      "name": "Corte Selvagem de Lâmina",
+      "sourceSlot": "habilidade de pedra preciosa",
+      "sourceFrame": "capturas_treinamento/nucleos_manual/corte-selvagem.png",
+      "textReviewed": true,
+      "trigger": "ativação manual",
+      "key": "/",
+      "keySource": "atalho informado pelo usuário; barra principal do teclado",
+      "baseDamageFlat": 22,
+      "durationSec": 10,
+      "observedCooldownSec": 120,
+      "cooldownBasis": "tooltip_no_personagem_atual_nao_assumir_cooldown_base",
+      "calculationEnabled": false,
+      "pending": [
+        "regra de duração da vantagem",
+        "confirmar empilhamento e aplicação às duas armas",
+        "validar ativação e duração no combate"
+      ]
+    },
+    {
+      "name": "Contágio",
+      "sourceSlot": "habilidade de equipamento; item exato pendente",
+      "sourceFrame": "capturas_treinamento/nucleos_manual/contagio.png",
+      "textReviewed": true,
+      "trigger": "término de Estigma Fatal",
+      "description": "Quando o efeito Estigma Fatal termina, aplica Estigma Fatal a até 4 alvos em um raio de 4 m após 0,4 s. O Estigma Fatal transferido causa dano reduzido em 50% após 0,4 s.",
+      "maxTransferTargets": 4,
+      "transferRadiusM": 4,
+      "transferDelaySec": 0.4,
+      "transferredDamageReductionPct": 50,
+      "calculationEnabled": false,
+      "pending": [
+        "identificar equipamento de origem",
+        "interação com Massacre",
+        "validar transferência, seleção de alvos e encadeamento em log"
+      ]
+    },
+    {
+      "name": "Emboscada",
+      "sourceSlot": "adaga",
+      "sourceFrame": "capturas_treinamento/itens_v6/quadros/07.png",
+      "textReviewed": true,
+      "trigger": "usar Golpe Sombrio",
+      "durationSec": 3,
+      "branches": [
+        {
+          "condition": "chance de acerto crítico inferior a 3000",
+          "criticalHitChanceFlat": 700
+        },
+        {
+          "condition": "chance de acerto crítico igual ou superior a 3000",
+          "criticalDamagePct": 35
+        }
+      ],
+      "calculationEnabled": false,
+      "pending": [
+        "chance crítica total atual",
+        "regra de duração da vantagem",
+        "ordem e tipo de empilhamento"
+      ]
+    },
+    {
+      "name": "Batalha",
+      "sourceSlot": "núcleo da manopla",
+      "sourceFrame": "capturas_treinamento/itens_v6/quadros/04.png",
+      "confirmationFrame": "capturas_treinamento/nucleos_manual/batalha.png",
+      "confirmationMethod": "tooltip aberto manualmente em Habilidades de Arma e revisado visualmente em 2026-10-17",
+      "textReviewed": true,
+      "trigger": "acerto crítico ou ataque pesado",
+      "blockChancePctPerStack": 1.6,
+      "durationSec": 3,
+      "maxStacks": 10,
+      "calculationEnabled": false,
+      "pending": [
+        "interações com maestrias e passivas de bloqueio",
+        "regra de renovação dos acúmulos"
+      ]
+    },
+    {
+      "name": "Conjunto de Nove Vidas",
+      "sourceFrame": "capturas_treinamento/itens_v6/quadros/10.png",
+      "equippedPieces": 4,
+      "textReviewed": true,
+      "staticCriticalDamagePct": 20,
+      "proc": {
+        "trigger": "acertar",
+        "criticalDamagePct": 20,
+        "durationSec": 6,
+        "cooldownSec": 15
+      },
+      "calculationEnabled": false,
+      "pending": [
+        "empilhamento do bônus fixo com o proc",
+        "duração efetiva",
+        "validar ativações no combate"
+      ]
+    },
+    {
+      "name": "Massacre",
+      "sourceSlot": "núcleo do colar Convicção Sufocante",
+      "sourceFrame": "capturas_treinamento/itens_v6/quadros/28.png",
+      "confirmationFrame": "capturas_treinamento/nucleos_manual/massacre.png",
+      "confirmationMethod": "tooltip revisado visualmente no painel Habilidades de Arma em 2026-10-17",
+      "textReviewed": true,
+      "description": "Transforma Dano em Área de Estigma Fatal em Massacre; amplia alcance em 2 m e causa dano proporcional a Veneno e Nuvens de Trovão no alvo marcado. Amplia Estigma Fatal contra monstros em 60%; reduz em JxJ em 90%.",
+      "calculationEnabled": false,
+      "pending": [
+        "evitar somar novamente bônus já incluído no tooltip de Massacre",
+        "fórmula dos acúmulos"
+      ]
+    }
+  ],
+  "excludedOldWeaponEffects": [
+    {
+      "name": "Chamado do Trovão",
+      "reason": "Não aparece na adaga equipada deste vídeo. A arma atual mostra Emboscada; não reutilizar a passiva da arma antiga neste snapshot."
+    }
+  ],
+  "remaining": [
+    "núcleos e efeitos pelo painel de Habilidades",
+    "luvas e calças: localizar quadros legíveis ou complementar coleta",
+    "status e substatus completos",
+    "maestrias ativas das duas armas e gerais",
+    "especializações: reconciliar textos com tooltip efetivo e validar fórmulas",
+    "formas transformadas durante Eclipse",
+    "log de combate contínuo de 120 segundos por build"
+  ],
+  "masteryCollection": {
+    "video": "C:/Users/admin/Downloads/TL_MAESTRIAS_MANUAL_2026-10-17.mp4",
+    "durationSec": 148.6,
+    "samplingFps": 2,
+    "frameCount": 297,
+    "frameDirectory": "capturas_treinamento/maestrias_manual/quadros",
+    "status": "54_nos_e_4_maestrias_gerais_revisados_mecanicas_pendentes_de_validacao",
+    "observedWeaponPanels": [
+      {
+        "weapon": "Adagas",
+        "masteryLevel": 212,
+        "masteryCap": 220,
+        "progressPct": 71.4,
+        "overviewFrame": "capturas_treinamento/maestrias_manual/quadros/0037.png"
+      },
+      {
+        "weapon": "Manoplas",
+        "masteryLevel": 213,
+        "masteryCap": 220,
+        "progressPct": 9.5,
+        "overviewFrame": "capturas_treinamento/maestrias_manual/quadros/0190.png"
+      }
+    ],
+    "generalMasteryLevelObserved": 1685,
+    "generalMasteryTooltipsCoverage": "quatro tooltips confirmados entre aproximadamente 8 e 16 segundos; não requer nova coleta",
+    "reviewNotes": [
+      "As duas árvores de armas aparecem no vídeo.",
+      "Não assumir que todo nó mostrado ou consultado está ativo; conferir alocação, requisitos e efeitos aplicados.",
+      "Textos e bônus ainda não foram liberados para cálculo.",
+      "Não somar novamente bônus de maestria já presentes nos status totais do personagem.",
+      "Revisados quadros intermediários para recuperar tooltips breves.",
+      "Nomes iguais podem representar nós de raridades ou posições distintas; identificar por arma, quadro, posição e valores.",
+      "Totais dos status são a base numérica atual; nós individuais servem para explicar condições e comparação, sem somar duas vezes.",
+      "Correção: os tooltips gerais estavam presentes no início do vídeo, à esquerda da região recortada inicialmente. Recuperados nos quadros 0018, 0023, 0026 e 0031."
+    ],
+    "reviewedNodes": [
+      {
+        "name": "Intensidade de Velocidade de Recarga",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0043.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "evitar somar bônus já incluídos nos status totais",
+          "validar aplicação conforme arma ativa"
+        ],
+        "allocatedLevel": 10,
+        "cooldownSpeedPct": 3.6,
+        "stunResistanceFlat": -45
+      },
+      {
+        "name": "Intensidade de Dano Crítico",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0067.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "evitar somar bônus já incluídos nos status totais",
+          "validar aplicação conforme arma ativa"
+        ],
+        "allocatedLevel": 10,
+        "criticalDamagePct": 3.6,
+        "meleeEnduranceFlat": -36,
+        "rangedEnduranceFlat": -36,
+        "magicEnduranceFlat": -36,
+        "dexterityFlat": 2
+      },
+      {
+        "name": "Especialista em Dano Máximo",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0083.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "evitar somar bônus já incluídos nos status totais",
+          "validar aplicação conforme arma ativa"
+        ],
+        "allocatedLevel": 10,
+        "manaRegenFlat": 15,
+        "maxDamageFlat": 3
+      },
+      {
+        "name": "Limite Venenoso",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0091.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "evitar somar bônus já incluídos nos status totais",
+          "validar aplicação conforme arma ativa"
+        ],
+        "trigger": "acertar Ataque Pesado Corpo a Corpo",
+        "targetCondition": "alvos com Injeção Letal a até 3 m do alvo do usuário",
+        "damageBasePct": 70,
+        "damageFlat": 10,
+        "damageIncreasePctPerPoisonStack": 3,
+        "appliesAdditionalEffects": false,
+        "description": "Limite da Ira causa dano aos alvos com Injeção Letal; dano aumenta 3% por acúmulo de Veneno."
+      },
+      {
+        "name": "Aumento Inferior de Duração da Vantagem",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0107.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "evitar somar bônus já incluídos nos status totais",
+          "validar aplicação conforme arma ativa"
+        ],
+        "allocatedLevel": 10,
+        "benefitDurationPct": 2.1
+      },
+      {
+        "name": "Aumento Inferior de Velocidade de Ataque",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0115.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "evitar somar bônus já incluídos nos status totais",
+          "validar aplicação conforme arma ativa"
+        ],
+        "allocatedLevel": 10,
+        "attackSpeedPct": 2.1
+      },
+      {
+        "name": "Especialização em Ampliação de Dano de Habilidade",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0139.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "skillDamageBoost": 12,
+        "weakenResistanceFlat": 30
+      },
+      {
+        "name": "Intensidade de CM",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0147.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "controlChancesFlat": 50,
+        "manaCostEfficiencyPct": -2.6
+      },
+      {
+        "name": "Especialização em Resistência a Dano de Habilidade",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0155.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 2,
+        "skillDamageResistance": 1.6,
+        "bindChanceFlat": 4,
+        "note": "Usar coluna atual; 2,4 e 6 são prévias do próximo nível, não valores ativos."
+      },
+      {
+        "name": "Poder Hábil",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0163.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "criticalDamagePct": 8,
+        "criticalDamageCondition": "Destreza >= 80",
+        "totalEvasionFlat": 120,
+        "totalEvasionCondition": "Força >= 80"
+      },
+      {
+        "name": "Instinto e Restrições",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0171.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "normalState": {
+          "totalDefensePct": 12,
+          "baseDamagePct": -10
+        },
+        "eclipseState": {
+          "baseDamagePct": 12,
+          "totalDefensePct": -10
+        },
+        "note": "Estados alternativos; não somar simultaneamente as quatro alterações."
+      },
+      {
+        "name": "Supressão de Ameaça",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0185.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "sourcePassive": "Mestre da Provocação",
+        "aggroReductionPct": 30,
+        "baseDamageIncreasePctMax": 3.25,
+        "note": "Bônus proporcional ao grau de evolução; verificar valor efetivo antes de usar o máximo."
+      },
+      {
+        "name": "Golpe de Misericórdia",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0179.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "criticalHitChanceForAttackSkillsFlat": 150
+      },
+      {
+        "name": "Maestria de Ataque Pesado da Fortaleza",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0187.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "meleeHeavyAttackChanceFlat": 57.6,
+        "rangedHeavyAttackChanceFlat": 57.6,
+        "magicHeavyAttackChanceFlat": 57.6,
+        "criticalDamageResistancePct": -2.9,
+        "strengthFlat": 2
+      },
+      {
+        "name": "Especialização em Ataque Pesado Corpo a Corpo",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0195.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "meleeHeavyAttackChanceFlat": 16,
+        "benefitDurationPct": 1.1
+      },
+      {
+        "name": "Concentração em Regeneração de Vigor",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0203.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "vigorRegen": 7.2,
+        "collisionResistanceFlat": -45
+      },
+      {
+        "name": "Especialização em Resistência de CM Total",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0211.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "controlResistancesFlat": 13.3,
+        "meleeDefenseFlat": 32
+      },
+      {
+        "name": "Especialização em Chance de Fraqueza",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0219.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "weakenChanceFlat": 30,
+        "bonusDamageFlat": 10
+      },
+      {
+        "name": "Cura Recebida ▲",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0227.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "healingReceivedPct": 2.7
+      },
+      {
+        "name": "Especialização em Vida Máxima",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0231.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "maxHealthFlat": 128,
+        "stunResistanceFlat": 20
+      },
+      {
+        "name": "Frenesi Sanguinário",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0235.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "sourcePassive": "Endurecimento",
+        "blockChancePctPerBleedHit": 0.5,
+        "blockChanceIncreasePctMax": 2.2,
+        "note": "Substitui efeito de Endurecimento. Aumento máximo depende do nível da passiva; renovação e limite de acúmulos ainda pendentes."
+      },
+      {
+        "name": "Especialização em Redução de Dano",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0247.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com totais observados sem dupla contagem",
+          "validar condições e renovação no combate"
+        ],
+        "allocatedLevel": 10,
+        "fearChanceFlat": 30,
+        "damageReductionFlat": 10
+      },
+      {
+        "name": "Sombra Fugaz",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0039.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "description": "Manto de Camuflagem e Fumaça Fantasma aumentam a Esquiva Total em 250, mas a duração é reduzida em 1 s.",
+        "totalEvasionFlat": 250,
+        "durationReductionSec": 1
+      },
+      {
+        "name": "Especialização em Defesa Mágica",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0049.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "magicDefenseFlat": 48,
+        "maxVigorFlat": 5
+      },
+      {
+        "name": "Especialização em Dano Crítico",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0055.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "criticalDamagePct": 1.2,
+        "amitoyHealingPct": 24
+      },
+      {
+        "name": "Forma Impiedosa",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0061.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "daggerAttackSkillDamageIncreasePct": 4,
+        "scope": "habilidades do tipo Ataque com Adagas"
+      },
+      {
+        "name": "Ataque Primal",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0063.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "daggerBasicAttackDamageIncreasePct": 150,
+        "manaCostPerBasicAttack": 10,
+        "additionalDamageVsShieldedTargetsPct": 100,
+        "additionalDamageAppliesAdditionalEffects": false
+      },
+      {
+        "name": "Especialização em Bônus de Dano",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0073.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "attackSpeedPct": 1.3,
+        "weakenChanceFlat": 25,
+        "note": "Título diz Bônus de Dano, mas valores e descrição dão velocidade de ataque e chance de Fraqueza."
+      },
+      {
+        "name": "Intensidade do Acerto Crítico Corpo a Corpo",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0077.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "meleeCriticalHitChanceFlat": 60,
+        "meleeDefenseFlat": -60
+      },
+      {
+        "name": "Mordida Perfurante",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0097.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "sourcePassive": "Presas Destrutivas",
+        "targetDamageReductionFlat": -14,
+        "description": "Efeito de Presas Destrutivas também reduz a Redução de Dano do alvo em 14."
+      },
+      {
+        "name": "Buscador de Sangue",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0103.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "sourcePassive": "Instinto Assassino",
+        "meleeCriticalDamageHealingPct": 5,
+        "description": "Instinto Assassino restaura Vida em 5% dos Acertos Críticos Corpo a Corpo, mas reduz a Chance de Acerto em 150%.",
+        "interpretationStatus": "redução de acerto ambígua; não converter em penalidade numérica sem validação",
+        "pendingInterpretation": "Tooltip escreve 150%; não assumir -150 pontos nem -150% de crítico."
+      },
+      {
+        "name": "Especialização em Velocidade de Movimento",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0111.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "movementSpeedPct": 1.1,
+        "baseDamageFlat": 2
+      },
+      {
+        "name": "Intensidade de Velocidade de Ataque",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0119.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "attackSpeedPct": 3.2,
+        "criticalDamageResistancePct": -1.6
+      },
+      {
+        "name": "Chance Ofensiva de Fraqueza",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0121.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "weakenChanceFlat": 20,
+        "bonusDamageFlat": 6
+      },
+      {
+        "name": "Intensidade do Dano da Arma Secundária",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0125.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "offhandBaseDamageDisplayedFlat": 10,
+        "controlResistancesFlat": -25,
+        "note": "Linha diz Dano Base da Arma Secundária; descrição diz Dano Máximo. Não aplicar a mínimo e máximo sem confirmar."
+      },
+      {
+        "name": "Especialização em Velocidade de Recarga",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0129.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "magicEvasionFlat": 30,
+        "cooldownSpeedPct": 1
+      },
+      {
+        "name": "Aumento de Alcance de Ataque",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0149.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "rangeBonusPct": 4
+      },
+      {
+        "name": "Velocidade de Combate",
+        "weapon": "Adagas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0151.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "sourcePassive": "Passo de Assassino",
+        "attackSpeedPctWhilePassiveActive": 15,
+        "note": "Depende de ativação de Passo de Assassino; não assumir ativo contra alvo único sem mortes."
+      },
+      {
+        "name": "Especialização em Velocidade de Movimento",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0173.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "movementSpeedPct": 1.6,
+        "baseDamageFlat": 3
+      },
+      {
+        "name": "Velocidade de Ataque ▲",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0177.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "attackSpeedPct": 3.2
+      },
+      {
+        "name": "Especialização em Regeneração de Mana",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0183.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "manaRegenFlat": 15,
+        "maxDamageFlat": 3
+      },
+      {
+        "name": "Intensidade do Acerto Crítico Corpo a Corpo",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0191.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "meleeCriticalHitChanceFlat": 60,
+        "magicDefenseFlat": -60
+      },
+      {
+        "name": "Regeneração de Vigor ▲",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0199.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "vigorRegen": 4
+      },
+      {
+        "name": "Intensidade de Velocidade de Recarga",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0201.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 3,
+        "cooldownSpeedPct": 0.9,
+        "bindResistanceFlat": -11.25,
+        "note": "Coluna atual; não usar prévia de nível 4 ou máximo."
+      },
+      {
+        "name": "Intensidade do Dano de Corpo a Corpo",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0207.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "meleeDamageAmplificationPct": 2.4,
+        "magicDefenseFlat": -48
+      },
+      {
+        "name": "Especialização em Duração da Vantagem",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0213.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "benefitDurationPct": 1.1,
+        "skillDamageBoost": 8
+      },
+      {
+        "name": "Especialização em Chance de Fraqueza",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0215.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "rarity": "Incomum",
+        "allocatedLevel": 10,
+        "weakenChanceFlat": 25,
+        "attackSpeedPct": 1.3
+      },
+      {
+        "name": "Treinamento de Tolerância",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0223.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "sourcePassive": "Treinamento Físico",
+        "removesMaxHealthIncrease": true,
+        "vigorRegenIncreaseCurrent": 2.4,
+        "vigorRegenIncreaseMax": 9,
+        "note": "Substitui aumento de Vida Máxima por regeneração de Vigor; escala com nível da passiva."
+      },
+      {
+        "name": "Resistência a Colisão ▲",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0233.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "collisionResistanceFlat": 40
+      },
+      {
+        "name": "Intensidade de Alcance de Ataque",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0239.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "rangeBonusPct": 6,
+        "manaRegenFlat": -22.5
+      },
+      {
+        "name": "Explosão de Carne",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0241.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "sourcePassive": "Garras Sangrentas",
+        "targetHeavyAttackDamageResistancePct": -4,
+        "durationSec": 6,
+        "targetCondition": "alvo com Sangramento"
+      },
+      {
+        "name": "Especialização em Regeneração de Vida",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0245.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "healthRegenFlat": 20,
+        "blockChancePct": 2.7
+      },
+      {
+        "name": "Virada de Jogo",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0251.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "vigorRestoreFlat": 12,
+        "trigger": "defender com sucesso usando Habilidade Defensiva"
+      },
+      {
+        "name": "Impacto Duplo",
+        "weapon": "Manoplas",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0253.png",
+        "textReviewed": true,
+        "active": true,
+        "calculationEnabled": false,
+        "pending": [
+          "conferir inclusão nos totais; não somar novamente",
+          "validar condições no combate"
+        ],
+        "allocatedLevel": 10,
+        "criticalDamagePctPer10Dexterity": 1.2,
+        "criticalDamageResistancePctPer10Fortitude": 1.2
+      }
+    ],
+    "reviewedNodeCount": 54,
+    "generalMasteries": [
+      {
+        "name": "Potencial",
+        "category": "maestria geral; não vinculada a arma",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0018.png",
+        "description": "Aumenta Destreza, Fortaleza, Percepção, Força e Sabedoria em 1.",
+        "textReviewed": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com status totais sem dupla contagem",
+          "validar ativação e duração no combate"
+        ],
+        "attributesFlatEach": 1
+      },
+      {
+        "name": "Lança Perfurante",
+        "category": "maestria geral; não vinculada a arma",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0023.png",
+        "description": "Ao acertar 10 Habilidades de Ataque dispara uma Lança Destruidora a um único alvo que causa 600% do Dano Base. Máximo de 1 acúmulo por habilidade. Recarga de 12 s para reativação. Ignora Chance de Bloqueio. Não pode ser usado com Lança Destruidora. Habilidades inaplicáveis: Protesto da Mãe Natureza, Espírito Umbral, Espírito do Trovão, Raio do Desastre.",
+        "textReviewed": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com status totais sem dupla contagem",
+          "validar ativação e duração no combate"
+        ],
+        "requiredAttackSkillHits": 10,
+        "maxStacksPerSkill": 1,
+        "damageBasePct": 600,
+        "reactivationCooldownSec": 12,
+        "ignoresBlock": true,
+        "excludedSkills": [
+          "Protesto da Mãe Natureza",
+          "Espírito Umbral",
+          "Espírito do Trovão",
+          "Raio do Desastre"
+        ]
+      },
+      {
+        "name": "Velocidade da Luz",
+        "category": "maestria geral; não vinculada a arma",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0026.png",
+        "description": "Ativada quando você se move por 10 s. Ao acertar um ataque, um raio que se encadeia é disparado por 3 s e causará 40% do seu Dano Base. O Raio em Cadeia é ativado no máximo 10 vezes por segundo. Se o alvo estiver Encharcado ou for infligido pelo seu efeito de Geada, o raio será transferido para outros inimigos em um raio de 5 m, até 2 vezes adicionais. Recarga: 30 s. Não aplica efeitos adicionais do raio.",
+        "textReviewed": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com status totais sem dupla contagem",
+          "validar ativação e duração no combate"
+        ],
+        "damageBasePct": 40,
+        "lightningWindowSec": 3,
+        "maxActivationsPerSec": 10,
+        "chainRadiusM": 5,
+        "additionalChainsMax": 2,
+        "cooldownSec": 30,
+        "appliesAdditionalEffects": false,
+        "movementConditionText": "Ativada quando você se move por 10s",
+        "note": "Preservar redação do gatilho; validar se exige movimento contínuo e como a janela é iniciada. Não tratar como +400% constante de DPS."
+      },
+      {
+        "name": "Preparativos de Batalha",
+        "category": "maestria geral; não vinculada a arma",
+        "sourceFrame": "capturas_treinamento/maestrias_manual/quadros/0031.png",
+        "description": "Ao atacar ou sofrer dano, aumenta o Dano Base em 3% por 3 s e aumenta a Chance de Acerto de CM Total em 125. Recarga 30 s.",
+        "textReviewed": true,
+        "calculationEnabled": false,
+        "pending": [
+          "reconciliar com status totais sem dupla contagem",
+          "validar ativação e duração no combate"
+        ],
+        "trigger": "atacar ou sofrer dano",
+        "baseDamagePct": 3,
+        "durationSec": 3,
+        "totalControlHitChanceFlat": 125,
+        "cooldownSec": 30
+      }
+    ]
+  },
+  "statusCollection": {
+    "video": "C:/Users/admin/Downloads/TL_STATUS_MANUAL_2026-10-17.mp4",
+    "durationSec": 127.4,
+    "captureTargetFps": 30,
+    "samplingFps": 2,
+    "frameCount": 255,
+    "frameDirectory": "capturas_treinamento/status_manual/quadros",
+    "status": "valores_principais_revisados_demais_substatus_pendentes",
+    "basis": "totais_observados_no_personagem_nao_somar_novamente_itens_maestrias_e_materiais",
+    "movingLabelsReview": "Comparados vários momentos da mesma linha, mantendo categoria, posição e valor associados. Duração da Vantagem confirmada também pelo tooltip no quadro 0190.",
+    "reviewedGroups": [
+      {
+        "name": "atributos_e_armas",
+        "sourceFrames": [
+          "capturas_treinamento/status_manual/quadros/0050.png",
+          "capturas_treinamento/status_manual/quadros/0170.png"
+        ],
+        "textReviewed": true,
+        "values": {
+          "strength": 102,
+          "dexterity": 130,
+          "wisdom": 129,
+          "perception": 45,
+          "fortitude": 22,
+          "mainHandDamageMin": 328,
+          "mainHandDamageMax": 1058,
+          "offHandDamageMin": 314,
+          "offHandDamageMax": 1030,
+          "attackIntervalSec": 0.385,
+          "rangeM": 3.85,
+          "blockChancePct": 39.7,
+          "damageReductionFlat": 161
+        }
+      },
+      {
+        "name": "gerais",
+        "sourceFrames": [
+          "capturas_treinamento/status_manual/quadros/0050.png",
+          "capturas_treinamento/status_manual/quadros/0170.png"
+        ],
+        "textReviewed": true,
+        "values": {
+          "maxHealth": 40801,
+          "maxMana": 21015,
+          "maxVigor": 123,
+          "manaCostEfficiencyPct": 37.33,
+          "cooldownSpeedPct": 105.9,
+          "attackSpeedPct": 101.3,
+          "vigorRegen": 70.4,
+          "healthRegen": 470,
+          "manaRegen": 1643.5,
+          "rangeBonusPct": 10
+        }
+      },
+      {
+        "name": "acerto_e_critico",
+        "sourceFrames": [
+          "capturas_treinamento/status_manual/quadros/0050.png",
+          "capturas_treinamento/status_manual/quadros/0090.png",
+          "capturas_treinamento/status_manual/quadros/0130.png"
+        ],
+        "textReviewed": true,
+        "values": {
+          "meleeHitChanceFlat": 442,
+          "rangedHitChanceFlat": 442,
+          "magicHitChanceFlat": 442,
+          "meleeCriticalHitChanceFlat": 3042,
+          "rangedCriticalHitChanceFlat": 2230,
+          "magicCriticalHitChanceFlat": 2266
+        }
+      },
+      {
+        "name": "dano_e_duracoes",
+        "sourceFrames": [
+          "capturas_treinamento/status_manual/quadros/0170.png",
+          "capturas_treinamento/status_manual/quadros/0180.png",
+          "capturas_treinamento/status_manual/quadros/0190.png",
+          "capturas_treinamento/status_manual/quadros/0200.png"
+        ],
+        "textReviewed": true,
+        "values": {
+          "meleeHeavyAttackChanceFlat": 1544.6,
+          "rangedHeavyAttackChanceFlat": 1211.6,
+          "magicHeavyAttackChanceFlat": 1301.6,
+          "skillDamageBoost": 605.4,
+          "bonusDamageFlat": 150,
+          "criticalDamageBonusPct": 84.6,
+          "heavyAttackDamageBonusPct": 132.7,
+          "benefitDurationPct": 56.8,
+          "benefitDurationBasePct": 22.5,
+          "benefitDurationEquipmentPct": 34.3,
+          "debuffDurationPct": -11.54,
+          "blockChancePenetrationPct": 28.2
+        }
+      },
+      {
+        "name": "contra_chefes",
+        "sourceFrames": [
+          "capturas_treinamento/status_manual/quadros/0090.png"
+        ],
+        "textReviewed": true,
+        "values": {
+          "meleeCriticalHitChanceVsBossFlat": 12,
+          "rangedCriticalHitChanceVsBossFlat": 12,
+          "magicCriticalHitChanceVsBossFlat": 12,
+          "meleeHitChanceVsBossFlat": 12,
+          "rangedHitChanceVsBossFlat": 12,
+          "magicHitChanceVsBossFlat": 12,
+          "meleeHeavyAttackChanceVsBossFlat": 663,
+          "rangedHeavyAttackChanceVsBossFlat": 471,
+          "magicHeavyAttackChanceVsBossFlat": 471,
+          "bonusDamageVsBossFlat": 7
+        }
+      }
+    ],
+    "pending": [
+      "revisar demais categorias e substatus do vídeo",
+      "confirmar quais buffs estavam ativos na coleta",
+      "reconciliar totais com equipamentos e maestrias sem dupla contagem",
+      "validar duração efetiva por buff e recarga no combate; não aplicar 56,8% indiscriminadamente a todo efeito",
+      "confirmar tipo do alvo antes de aplicar bônus contra chefes ou espécies"
+    ]
+  },
+  "priorityAnalysis": {
+    "status": "hipoteses_para_validacao_nao_ranking_otimizado",
+    "objective": {
+      "durationSec": 120,
+      "metric": "totalDamage",
+      "latencyMs": 100
+    },
+    "observations": [
+      {
+        "finding": "Dano Base depende do estado Eclipse com Instinto e Restrições",
+        "evidenceFrame": "capturas_treinamento/maestrias_manual/quadros/0171.png",
+        "consequence": "Separar dano e janelas de buffs dentro e fora do Eclipse."
+      },
+      {
+        "finding": "Crítico corpo a corpo observado de 3042 supera limiar 3000 da Emboscada",
+        "consequence": "Testar Golpe Sombrio antes dos ataques de maior dano para aproveitar bônus condicional de dano crítico por 3 s; duração real e critério usado pela arma precisam de validação."
+      },
+      {
+        "finding": "Injeção Letal habilita Limite Venenoso e acúmulos amplificam o proc",
+        "consequence": "Priorizar manutenção de Veneno e observar recast que consome acúmulos; não tratar toda repetição da tecla 9 como renovação gratuita."
+      },
+      {
+        "finding": "Massacre escala com Veneno, Nuvens de Trovão e Vida perdida do alvo",
+        "consequence": "Comparar lançamentos após aplicação de efeitos; reset por morte não está disponível continuamente em alvo único que sobrevive."
+      },
+      {
+        "finding": "Arma atual usa Emboscada; Chamado do Trovão é da arma anterior",
+        "consequence": "Não modelar consumo de 5 Nuvens de Trovão pela Fenda para a arma atual sem evidência de outro efeito equivalente."
+      },
+      {
+        "finding": "Recargas de habilidade já foram medidas no tooltip com os status atuais",
+        "consequence": "Não dividir os tempos novamente por 1 + 105,9%; distinguir valor base e efetivo."
+      },
+      {
+        "finding": "Forma Impiedosa: +4% para habilidades de Ataque com Adagas",
+        "consequence": "Classificar cada habilidade por arma e tipo antes de aplicar o bônus."
+      },
+      {
+        "finding": "Explosão de Carne reduz resistência a dano de Ataque Pesado em 4% por 6 s em alvos com Sangramento",
+        "consequence": "Considerar aplicação e manutenção de Sangramento antes de concentrar ataques pesados; não assumir efeito permanente."
+      },
+      {
+        "finding": "Impacto Duplo escala dano crítico com Destreza; com 130, a leitura linear sugere 15,6%",
+        "consequence": "Não adicionar 15,6% aos 84,6% totais já capturados. Usar valor individual apenas ao recalcular uma build alternativa."
+      },
+      {
+        "finding": "Quatro maestrias gerais confirmadas no início do vídeo: Potencial, Lança Perfurante, Velocidade da Luz e Preparativos de Batalha",
+        "consequence": "Modelar condições de ativação e recargas; coleta complementar dessas quatro não é necessária."
+      }
+    ],
+    "pending": [
+      "confirmar buffs ativos durante captura de status",
+      "capturar formas transformadas do Eclipse",
+      "log contínuo de 120 s com a macro atual para baseline",
+      "sincronizar log e execução para medir tentativas sem ativação e ajustar frequência"
+    ],
+    "supportSkillRoles": [
+      {
+        "skill": "Golpe Sombrio",
+        "key": "4",
+        "role": "preparação de dano e posicionamento",
+        "effects": [
+          "Ativa Emboscada: ramo de +35% de dano crítico por 3 s quando crítico >= 3000; status capturado de 3042 sugere esse ramo, a confirmar durante a luta.",
+          "Especialização ativa aplica Nuvens de Trovão por 6 s, até 20 acúmulos; texto indica redução de Tolerância 21,2 por acúmulo.",
+          "Tooltip previamente coletado: mover-se atrás do alvo concede ataques pelas costas por 2 s."
+        ],
+        "priorityRule": "Anteceder ataques de maior valor quando Emboscada/posição forem úteis; avaliar dano coberto na janela, não apenas dano próprio.",
+        "unresolved": [
+          "critério de crítico avaliado pela arma e aplicação conforme arma ativa",
+          "duração efetiva com vantagem",
+          "regra de empilhamento e renovação de Nuvens entre fontes"
+        ],
+        "v11DirectDamage": 262884.0,
+        "v11DirectSharePct": 0.5291452590328721,
+        "status": "texto_dos_efeitos_revisado; contribuicao_indireta_ainda_nao_quantificada"
+      },
+      {
+        "skill": "Arremesso de Relâmpago",
+        "key": "8",
+        "role": "debuff e ativação de bônus de Controle",
+        "effects": [
+          "Ataque classificado Controle; causa dano e aplica redução de Tolerância de 155 por 6 s.",
+          "Pode ativar Mandíbulas do Predador: Dano Base +4% por 3 s ao causar dano com habilidade de Controle.",
+          "Causa dano encadeado sob condição de alvo Encharcado ou com Nuvens de Trovão."
+        ],
+        "priorityRule": "Testar aplicação antes do conjunto principal de dano e renovação do debuff; não relegar ao fim por ter pouco dano direto.",
+        "unresolved": [
+          "confirmar renovação de Mandíbulas e duração efetiva",
+          "empilhamento da redução de Tolerância com Nuvens",
+          "não confundir redução de Tolerância com redução de Defesa; efeito no alvo de teste"
+        ],
+        "v11DirectDamage": 294406.0,
+        "v11DirectSharePct": 0.5925942207621299,
+        "status": "texto_dos_efeitos_revisado; contribuicao_indireta_ainda_nao_quantificada"
+      },
+      {
+        "skill": "Dança da Espada Frenética",
+        "key": "7",
+        "role": "posicionamento, Nuvens e janela de ataques pelas costas",
+        "effects": [
+          "Especialização ativa: 3 ataques e mais um uso em até 3 s.",
+          "Concede janela de ataques pelas costas por 2 s após movimento.",
+          "Especialização ativa aplica Nuvens de Trovão por 6 s, até 20 acúmulos; redução de Tolerância de 20,4 por acúmulo."
+        ],
+        "priorityRule": "Intercalar com ataques principais para aproveitar reposicionamento, acúmulos e janela de costas; segundo uso não precisa ser imediato.",
+        "unresolved": [
+          "validar acúmulos por golpe/uso e regra compartilhada com Fenda/Golpe",
+          "comparar espaçamento do segundo uso com tempo de animação e buffs"
+        ],
+        "v11DirectDamage": 982057.0,
+        "v11DirectSharePct": 1.9767304425147414,
+        "status": "texto_dos_efeitos_revisado; contribuicao_indireta_ainda_nao_quantificada"
+      },
+      {
+        "skill": "Fenda Enluarada",
+        "key": "6",
+        "role": "aplicação recorrente de Nuvens e dano",
+        "effects": [
+          "Uso adicional em até 3 s.",
+          "Especialização ativa aplica Nuvens por 6 s e reduz Tolerância em 20,8 por acúmulo, até 20.",
+          "Nuvens contribuem para o dano condicional de Massacre e a ativação de Presas Destrutivas."
+        ],
+        "priorityRule": "Manter efeitos e encaixar usos adicionais na janela; não pressupor proc de Chamado do Trovão na arma atual.",
+        "unresolved": [
+          "reconciliar coeficientes de Nuvens entre fontes",
+          "medir manutenção real e contribuição em Massacre"
+        ],
+        "v11DirectDamage": 2777520.0,
+        "v11DirectSharePct": 5.590722675662965,
+        "status": "texto_dos_efeitos_revisado; contribuicao_indireta_ainda_nao_quantificada"
+      },
+      {
+        "skill": "Injeção Letal",
+        "key": "9",
+        "role": "habilitador de Veneno, procs e dano condicional",
+        "effects": [
+          "Habilita Limite Venenoso em alvos com Injeção Letal ao ocorrer ataque pesado corpo a corpo; +3% de dano do proc por acúmulo de Veneno.",
+          "Veneno contribui para Massacre e Presas Destrutivas/Mordida Perfurante.",
+          "Alvo envenenado participa da geração de ataques adicionais de Espírito Umbral.",
+          "Reativação descrita na habilidade pode consumir Veneno; não modelar todo pressionamento como renovação gratuita."
+        ],
+        "priorityRule": "Priorizar cobertura e acúmulos ao redor dos ataques principais; não reduzir prioridade por dano direto baixo.",
+        "unresolved": [
+          "separar aplicação e reativação; validar consumo, dano e renovação no vídeo/log",
+          "medir cobertura de Veneno e sincronia com Umbral"
+        ],
+        "v11DirectDamage": 1837450.0,
+        "v11DirectSharePct": 3.698505638266121,
+        "status": "texto_dos_efeitos_revisado; contribuicao_indireta_ainda_nao_quantificada"
+      },
+      {
+        "skill": "Lança Perfurante",
+        "key": null,
+        "role": "proc de maestria geral sem tecla própria",
+        "effects": [
+          "Após acertar 10 Habilidades de Ataque, causa 600% do Dano Base. Máximo de 1 acúmulo por habilidade; recarga de 12 s.",
+          "Espírito Umbral e Espírito do Trovão estão explicitamente entre as exclusões."
+        ],
+        "priorityRule": "Otimizar indiretamente pela sequência de habilidades elegíveis; não criar tecla nem contar cada golpe múltiplo como acúmulo garantido.",
+        "unresolved": [
+          "reconstruir contador de ativações elegíveis e recarga; não inferir por volume de hits"
+        ],
+        "v11DirectDamage": 287784.0,
+        "v11DirectSharePct": 0.5792651482232318,
+        "status": "texto_dos_efeitos_revisado; contribuicao_indireta_ainda_nao_quantificada"
+      }
+    ],
+    "rankingInterpretation": "Dano direto é descritivo; prioridade precisa considerar dano habilitado em outras fontes, cobertura, dependências, animações, CD e estado do alvo."
+  },
+  "referenceCombat": {
+    "analysisFile": "capturas_treinamento/combate_referencia_2026-10-17/analise-120s.json",
+    "status": "analise_descritiva_log; video_e_buffs_ainda_pendentes",
+    "totalDamage120Sec": 52495055.0,
+    "dpsOver120Sec": 437458.7916666667,
+    "damageByMinute": [
+      26019932.0,
+      26475123.0
+    ],
+    "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261017_212819.txt",
+    "video": "C:/Users/admin/Downloads/TL_COMBATE_REFERENCIA_T2_2026-10-17.mp4",
+    "macro": {
+      "name": "TL_MA_BUFF_V11",
+      "source": "C:\\Users\\admin\\Downloads\\TL_MA_BUFF_V11.xml",
+      "sha256": "1b30cd649cba1cc4928949caf67c57accf6fcac8f6cac3bb075c59043c91e5bd",
+      "confirmation": "confirmado pelo usuário nesta conversa"
+    },
+    "videoReview": {
+      "status": "revisao_parcial; uptime de buffs e ativações ainda não quantificados",
+      "firstDamageApproxVideoSec": 14,
+      "alignmentPrecisionSec": 0.5,
+      "evidenceFrame": "capturas_treinamento/combate_referencia_2026-10-17/inicio-combate.jpg",
+      "notes": [
+        "Início do vídeo possui preparação antes do primeiro dano; não contar esse trecho como pausa da rotação.",
+        "Mensagem Ainda não é possível usar aparece durante a execução; indica tentativas indisponíveis, não quantifica falhas de registro.",
+        "Há outro personagem e equipe no vídeo; manter condições e buffs externos equivalentes no próximo teste.",
+        "Barra de combate diverge do preset manopla_farm coletado: tecla 5 gera Garras Consecutivas; não importar a barra antiga para esta tentativa sem reconciliar."
+      ]
+    }
+  },
+  "macroExperiment": {
+    "name": "TL_MA_DPS_V12",
+    "path": "C:\\Users\\admin\\Downloads\\TL_MA_DPS_V12.xml",
+    "sha256": "1011ba82ed26289cc353461bda56c849744c73f3bd622573ccaf70a8d064c3ae",
+    "status": "testada_uma_amostra; nao_superou_V11_reteste; nao_promover",
+    "change": "Blocos 4,5,5,2,2 passam a 4,5,5,5,2; Garras 20→30 e Tempestade 20→10 por ciclo.",
+    "preserved": "20 ms de pressionamento; 3 ms de intervalo; ciclo 2139 ms; 93 tentativas; demais teclas e buffs.",
+    "acceptance": "Mesmo alvo, build, buffs e janela 120 s. Comparar contra 52495055 de dano; repetir se houver variação de condições. Rejeitar se dano cair. Não prometer ganho.",
+    "observedDamage120Sec": 48634178.0,
+    "controlRetestDamage120Sec": 49680876.0,
+    "observedDeltaPct": -2.1068428825610885,
+    "comparisonFile": "capturas_treinamento/comparacao_v11_v12_2026-10-17/comparacao-120s.json",
+    "decision": "Manter V11 como referência. Não há evidência de ganho da candidata nesta tentativa; condições e variabilidade ainda pendentes.",
+    "interpretation": "Experimento V12 isolou redistribuição de inputs entre 5 e 2. Não representa otimização completa nem incorpora contribuição indireta das habilidades de preparação. Não usar ranking de dano direto sozinho para promover/rebaixar teclas."
+  },
+  "debuffExperiment": {
+    "status": "testado_duas_amostras",
+    "source": "C:\\Users\\admin\\Downloads\\TL_MA_BUFF_V11.xml",
+    "output": "C:\\Users\\admin\\Downloads\\TL_MA_DEBUFF_V13.xml",
+    "pressCount": 93,
+    "cycleDurationMs": 2139,
+    "holdMs": 20,
+    "gapMs": 3,
+    "arremessoAttemptsMs": [
+      138,
+      851,
+      1564
+    ],
+    "preserved": "contagem de todas as teclas, ordem relativa das demais teclas, temporização e buffers da V11",
+    "hypothesis": "Distribuir as mesmas 3 tentativas de Arremesso pode reduzir espera até uma tentativa aceita após animação/CD e melhorar aplicação dos efeitos.",
+    "acceptance": "Comparar dano total em 120 s contra V11 reteste de 49680876; avaliar também espaçamento do dano de Arremesso. Mesmos buffs e condições. Não atribuir causalidade com uma única amostra.",
+    "cautions": [
+      "Dano observado não comprova uptime de debuff ou de Mandíbulas.",
+      "Grupos de dano não equivalem a casts.",
+      "Não há estimativa de ganho garantido de DPS."
+    ],
+    "diagnosticFile": "capturas_treinamento/comparacao_v11_v12_2026-10-17/janelas-nominais.json",
+    "result120s": {
+      "macro": "V13",
+      "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261017_220155.txt",
+      "sessionIndex": 1,
+      "video": "C:\\Users\\admin\\Downloads\\TL_COMBATE_V13_2026-10-17.mp4",
+      "windowStartLogTime": "2026-10-17T22:20:33.299000",
+      "windowDurationSec": 120,
+      "totalDamage": 50948237,
+      "dps": 424568.64166666666,
+      "damageEvents": 6289,
+      "fullSessionSpanSec": 129.349,
+      "lastWindowDamageSec": 119.99,
+      "skills": {
+        "Golpe Sombrio": {
+          "damage": 365050,
+          "damageEvents": 29,
+          "critEvents": 20,
+          "heavyEvents": 25
+        },
+        "Garras Consecutivas": {
+          "damage": 14966424,
+          "damageEvents": 812,
+          "critEvents": 320,
+          "heavyEvents": 249
+        },
+        "Garra": {
+          "damage": 2285772,
+          "damageEvents": 309,
+          "critEvents": 120,
+          "heavyEvents": 90
+        },
+        "Injeção Letal": {
+          "damage": 1772174,
+          "damageEvents": 1041,
+          "critEvents": 26,
+          "heavyEvents": 24
+        },
+        "Limite Venenoso": {
+          "damage": 10483008,
+          "damageEvents": 1151,
+          "critEvents": 914,
+          "heavyEvents": 746
+        },
+        "Estigma Fatal": {
+          "damage": 5940234,
+          "damageEvents": 11,
+          "critEvents": 8,
+          "heavyEvents": 8
+        },
+        "Tempestade de Sangue": {
+          "damage": 4673866,
+          "damageEvents": 309,
+          "critEvents": 152,
+          "heavyEvents": 136
+        },
+        "Espírito Umbral": {
+          "damage": 6543608,
+          "damageEvents": 2324,
+          "critEvents": 1788,
+          "heavyEvents": 1475
+        },
+        "Arremesso de Relâmpago": {
+          "damage": 343230,
+          "damageEvents": 86,
+          "critEvents": 70,
+          "heavyEvents": 54
+        },
+        "Fenda Enluarada": {
+          "damage": 2406178,
+          "damageEvents": 132,
+          "critEvents": 101,
+          "heavyEvents": 81
+        },
+        "Lança Perfurante": {
+          "damage": 289557,
+          "damageEvents": 7,
+          "critEvents": 5,
+          "heavyEvents": 4
+        },
+        "Dança da Espada Frenética": {
+          "damage": 879136,
+          "damageEvents": 78,
+          "critEvents": 58,
+          "heavyEvents": 50
+        }
+      },
+      "damageByMinute": [
+        24468899,
+        26479338
+      ],
+      "cumulativeDamageBySec": {
+        "15": 4620402,
+        "30": 9759819,
+        "60": 24468899,
+        "90": 38454483,
+        "120": 50948237
+      },
+      "deltaDamageVsV11": 1267361.0,
+      "deltaPctVsV11": 2.5510037302884925,
+      "skillDeltasVsV11": [
+        {
+          "skill": "Garras Consecutivas",
+          "damage": 14966424,
+          "baselineDamage": 14848139.0,
+          "deltaDamage": 118285.0
+        },
+        {
+          "skill": "Limite Venenoso",
+          "damage": 10483008,
+          "baselineDamage": 10122472.0,
+          "deltaDamage": 360536.0
+        },
+        {
+          "skill": "Espírito Umbral",
+          "damage": 6543608,
+          "baselineDamage": 6645114.0,
+          "deltaDamage": -101506.0
+        },
+        {
+          "skill": "Estigma Fatal",
+          "damage": 5940234,
+          "baselineDamage": 4740319.0,
+          "deltaDamage": 1199915.0
+        },
+        {
+          "skill": "Tempestade de Sangue",
+          "damage": 4673866,
+          "baselineDamage": 4588061.0,
+          "deltaDamage": 85805.0
+        },
+        {
+          "skill": "Fenda Enluarada",
+          "damage": 2406178,
+          "baselineDamage": 2777520.0,
+          "deltaDamage": -371342.0
+        },
+        {
+          "skill": "Garra",
+          "damage": 2285772,
+          "baselineDamage": 2294670.0,
+          "deltaDamage": -8898.0
+        },
+        {
+          "skill": "Injeção Letal",
+          "damage": 1772174,
+          "baselineDamage": 1837450.0,
+          "deltaDamage": -65276.0
+        },
+        {
+          "skill": "Dança da Espada Frenética",
+          "damage": 879136,
+          "baselineDamage": 982057.0,
+          "deltaDamage": -102921.0
+        },
+        {
+          "skill": "Golpe Sombrio",
+          "damage": 365050,
+          "baselineDamage": 262884.0,
+          "deltaDamage": 102166.0
+        },
+        {
+          "skill": "Arremesso de Relâmpago",
+          "damage": 343230,
+          "baselineDamage": 294406.0,
+          "deltaDamage": 48824.0
+        },
+        {
+          "skill": "Lança Perfurante",
+          "damage": 289557,
+          "baselineDamage": 287784.0,
+          "deltaDamage": 1773.0
+        }
+      ],
+      "supportDiagnostics": {
+        "Arremesso de Relâmpago": {
+          "firstDamageSec": 6.646,
+          "damageGroups": 11,
+          "medianGroupIntervalSec": 9.707999999999998,
+          "maxGroupIntervalSec": 12.849000000000004,
+          "groupStartSec": [
+            6.646,
+            16.687,
+            25.954,
+            36.05,
+            48.899,
+            58.214,
+            67.636,
+            76.848,
+            86.26,
+            98.427,
+            108.421
+          ]
+        },
+        "Golpe Sombrio": {
+          "firstDamageSec": 0.0,
+          "damageGroups": 20,
+          "medianGroupIntervalSec": 5.976999999999997,
+          "maxGroupIntervalSec": 7.844999999999999,
+          "groupStartSec": [
+            0.0,
+            5.728,
+            12.157,
+            17.708,
+            23.639,
+            29.643,
+            35.62,
+            41.141,
+            47.617,
+            53.726,
+            59.744,
+            67.154,
+            74.209,
+            79.573,
+            84.808,
+            90.168,
+            98.013,
+            103.238,
+            108.994,
+            115.078
+          ]
+        },
+        "Dança da Espada Frenética": {
+          "firstDamageSec": 15.253,
+          "damageGroups": 9,
+          "medianGroupIntervalSec": 12.689999999999998,
+          "maxGroupIntervalSec": 19.998000000000005,
+          "groupStartSec": [
+            15.253,
+            18.014,
+            29.122,
+            44.204,
+            62.559,
+            82.557,
+            84.095,
+            95.831,
+            109.475
+          ]
+        },
+        "Fenda Enluarada": {
+          "firstDamageSec": 7.222,
+          "damageGroups": 28,
+          "medianGroupIntervalSec": 3.385,
+          "maxGroupIntervalSec": 8.989999999999995,
+          "groupStartSec": [
+            7.222,
+            9.375,
+            10.246,
+            13.631,
+            20.119,
+            22.656,
+            24.744,
+            27.48,
+            31.224,
+            34.478,
+            41.632,
+            43.037,
+            48.406,
+            52.74,
+            55.957,
+            61.342,
+            69.974,
+            76.092,
+            77.466,
+            79.061,
+            87.198,
+            92.533,
+            94.678,
+            97.543,
+            106.533,
+            110.841,
+            116.213,
+            118.332
+          ]
+        }
+      },
+      "limitations": [
+        "Uma tentativa por versão; condições de buff não certificadas.",
+        "Grupos separados por 0,75 s são diagnósticos de dano, não contagem de usos.",
+        "O log não mede diretamente duração dos buffs/debuffs nem falhas de pressionamento.",
+        "A V13 está na segunda sessão do mesmo arquivo da V11; janela final exclusiva."
+      ]
+    },
+    "report": "docs/coletas/2026-10-17-comparacao-v11-v13.md",
+    "repeat120s": {
+      "macro": "V13",
+      "attempt": 2,
+      "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261017_223020.txt",
+      "video": "C:\\Users\\admin\\Downloads\\TL_COMBATE_V13_T2_2026-10-17.mp4",
+      "windowStartLogTime": "2026-10-17T22:30:38.407000",
+      "windowDurationSec": 120,
+      "fullLogSpanSec": 128.118,
+      "lastWindowDamageSec": 119.981,
+      "totalDamage": 50004623,
+      "dps": 416705.19166666665,
+      "damageEvents": 6231,
+      "skills": {
+        "Golpe Sombrio": {
+          "damage": 306808,
+          "damageEvents": 29,
+          "critEvents": 23,
+          "heavyEvents": 15
+        },
+        "Garras Consecutivas": {
+          "damage": 14922052,
+          "damageEvents": 780,
+          "critEvents": 302,
+          "heavyEvents": 259
+        },
+        "Tempestade de Sangue": {
+          "damage": 4722282,
+          "damageEvents": 320,
+          "critEvents": 154,
+          "heavyEvents": 137
+        },
+        "Dança da Espada Frenética": {
+          "damage": 1074485,
+          "damageEvents": 88,
+          "critEvents": 76,
+          "heavyEvents": 57
+        },
+        "Espírito Umbral": {
+          "damage": 6473153,
+          "damageEvents": 2260,
+          "critEvents": 1807,
+          "heavyEvents": 1408
+        },
+        "Injeção Letal": {
+          "damage": 1634748,
+          "damageEvents": 1075,
+          "critEvents": 22,
+          "heavyEvents": 20
+        },
+        "Limite Venenoso": {
+          "damage": 9914936,
+          "damageEvents": 1138,
+          "critEvents": 877,
+          "heavyEvents": 716
+        },
+        "Garra": {
+          "damage": 2323536,
+          "damageEvents": 292,
+          "critEvents": 117,
+          "heavyEvents": 93
+        },
+        "Fenda Enluarada": {
+          "damage": 2723866,
+          "damageEvents": 146,
+          "critEvents": 118,
+          "heavyEvents": 87
+        },
+        "Lança Perfurante": {
+          "damage": 337858,
+          "damageEvents": 7,
+          "critEvents": 7,
+          "heavyEvents": 5
+        },
+        "Arremesso de Relâmpago": {
+          "damage": 325131,
+          "damageEvents": 86,
+          "critEvents": 61,
+          "heavyEvents": 61
+        },
+        "Estigma Fatal": {
+          "damage": 5245768,
+          "damageEvents": 10,
+          "critEvents": 7,
+          "heavyEvents": 5
+        }
+      },
+      "damageByMinute": [
+        23670848,
+        26333775
+      ],
+      "cumulativeDamageBySec": {
+        "15": 4087987,
+        "30": 9541267,
+        "60": 23670848,
+        "90": 37032982,
+        "120": 50004623
+      },
+      "supportDiagnostics": {
+        "Arremesso de Relâmpago": {
+          "damageGroups": 10,
+          "groupStartSec": [
+            8.14,
+            19.617,
+            29.676,
+            40.445,
+            51.255,
+            61.298,
+            71.432,
+            83.586,
+            96.53,
+            118.09
+          ],
+          "medianGroupIntervalSec": 10.810000000000002,
+          "maxGroupIntervalSec": 21.560000000000002
+        },
+        "Golpe Sombrio": {
+          "damageGroups": 20,
+          "groupStartSec": [
+            0.0,
+            6.968,
+            12.969,
+            20.678,
+            26.807,
+            32.422,
+            38.146,
+            43.467,
+            50.445,
+            56.125,
+            62.866,
+            68.337,
+            74.611,
+            80.12,
+            86.289,
+            91.875,
+            97.398,
+            103.091,
+            110.018,
+            116.056
+          ],
+          "medianGroupIntervalSec": 6.0009999999999994,
+          "maxGroupIntervalSec": 7.709000000000001
+        },
+        "Dança da Espada Frenética": {
+          "damageGroups": 9,
+          "groupStartSec": [
+            3.343,
+            21.834,
+            34.756,
+            36.934,
+            47.703,
+            69.293,
+            87.134,
+            101.602,
+            118.865
+          ],
+          "medianGroupIntervalSec": 15.865499999999997,
+          "maxGroupIntervalSec": 21.590000000000003
+        },
+        "Fenda Enluarada": {
+          "damageGroups": 33,
+          "groupStartSec": [
+            6.498,
+            11.955,
+            16.278,
+            20.19,
+            21.142,
+            28.143,
+            31.37,
+            36.234,
+            38.871,
+            40.005,
+            42.131,
+            45.376,
+            47.019,
+            50.732,
+            51.827,
+            55.064,
+            59.427,
+            64.281,
+            71.984,
+            75.037,
+            76.64,
+            78.824,
+            84.158,
+            85.824,
+            91.422,
+            92.32,
+            94.426,
+            102.131,
+            103.546,
+            109.023,
+            112.978,
+            116.568,
+            117.627
+          ],
+          "medianGroupIntervalSec": 3.2409999999999997,
+          "maxGroupIntervalSec": 7.704999999999998
+        }
+      },
+      "deltaPctVsV11": 0.6516531632815736,
+      "deltaPctVsV13T1": -1.8521033416720623,
+      "meanV13Damage": 50476430.0,
+      "meanV13DeltaPctVsV11": 1.6013284467850442,
+      "limitations": [
+        "V13 com duas amostras e V11 controle com uma; condições de buffs não certificadas.",
+        "Grupos de dano por intervalo de 0,75 s não equivalem a usos ou duração real de debuffs.",
+        "Janela de 120 s desde o primeiro dano, limite final exclusivo; danos posteriores excluídos."
+      ]
+    },
+    "repeatReport": "docs/coletas/2026-10-17-v13-repeticao.md"
+  }
+}
