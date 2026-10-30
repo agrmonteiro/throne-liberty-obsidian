@@ -48,4 +48,3 @@ O monitor de janela é somente leitura: identifica TL.exe, obtém GetClientRect/
 - Build e checagens TypeScript do overlay passaram. Medição anterior salva no
   histórico antes de recarregar; leitura retomada com uma única instância.
 - Evidência local: `capturas_treinamento/overlay-vertical-padding-control.png`.
-
