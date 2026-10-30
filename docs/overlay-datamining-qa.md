@@ -44,8 +44,15 @@ os 1.342 ícones. PNGs originais completos permanecem no arquivo local.
 - Checagens TypeScript dos arquivos do overlay e build do Electron passaram.
 - Histórico de 10.432.791 de dano salvo antes da atualização. Mantida uma única
   instância; leitura reiniciada para carregar os IDs de origem no backend.
-- A conferência visual do ataque básico ao vivo depende de novos ataques do
-  usuário; ainda sem eventos na primeira leitura após o reinício.
+- Conferência ao vivo após o usuário confirmar novos ataques: entidade local
+  identificada pelo protocolo, 253 acertos / 4.424.691 de dano e 17 linhas com
+  todos os ícones carregados. Ataques básicos Garra (11 acertos, IDs 940842037,
+  940710828, 940907488, 940973120) e Acertos Consecutivos (13 acertos, IDs
+  940579602, 940580415, 940776212) conservam seus ícones próprios de BasicAttack.
+  O personagem já estava usando outro conjunto de armas, confirmando cobertura
+  além de cajado/varinha. Não houve reinício ou reset nessa conferência.
+  Screenshots locais: `capturas_treinamento/overlay-basic-icons-live.png` e
+  `capturas_treinamento/overlay-basic-icons-live-bottom.png`.
 
 Registros antigos já agrupados por nome sem IDs não permitem reconstruir a
 arma/variante de cada parcela. O novo agrupamento só pode ser exato quando os
