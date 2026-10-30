@@ -8,7 +8,7 @@ import { clamp, defaultOverlayTheme, overlayAnchor, overlayBounds, overlaySceneA
 import { randomUUID } from 'crypto'
 import { OverlayHistory } from './overlayHistory'
 import { clearMeterLogFiles } from './overlayCleanup'
-import names from '../../src/data/overlaySkillNames.json'
+import { overlaySkillNames as names, overlaySkillFiles } from '../../src/engine/overlaySkillReference'
 import { OverlayUnknownLog } from './overlayUnknownLog'
 
 export function registerOverlay(owner: BrowserWindow): void {
@@ -20,7 +20,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   // Não transportar identidade de entidade entre execuções/conexões do jogo.
   config.sourceId = null
   config.reviewEncounterId = null
-  const meter = new OverlayMeter(null, names)
+  const meter = new OverlayMeter(null, names, overlaySkillFiles)
   const identity = new OverlayIdentity()
   const history = new OverlayHistory(path.join(app.getPath('userData'), 'data', 'overlay-encounters.json'))
   let encounterId = randomUUID()

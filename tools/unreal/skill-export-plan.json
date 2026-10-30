@@ -1,0 +1,17 @@
+{
+  "description": "Tabelas de habilidades, efeitos e traduções para cruzar IDs da captura.",
+  "paths": [
+    "TL/Content/Game/Client/Table/TLSkill.uasset",
+    "TL/Content/Game/Client/Table/TLEffectProperty.uasset",
+    "TL/Content/Game/Client/Table/TLFormulaParameterNew.uasset",
+    "TL/Content/Game/Client/Table/TLSkillPcLooks_Weapon_Staff.uasset",
+    "TL/Content/Game/Client/Table/TLSkillPcLooks_Weapon_Wand.uasset",
+    "TL/Content/Game/Client/Table/TLStringSkillPcLooks_Weapon_Staff.uasset",
+    "TL/Content/Game/Client/Table/TLStringSkillDesc_Weapon_Staff.uasset",
+    "TL/Content/Game/Client/Table/TLStringSkillDesc_Weapon_Wand.uasset",
+    "TL/Content/Game/Client/Table/TLAbnormalState_Weapon_Staff.uasset",
+    "TL/Content/Game/Client/Table/TLAbnormalState_Weapon_Wand.uasset",
+    "TL/Content/Localization/Game/en/Game.locres",
+    "TL/Content/Localization/Game/pt/Game.locres"
+  ]
+}

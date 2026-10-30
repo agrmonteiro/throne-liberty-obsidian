@@ -1,6 +1,8 @@
 param(
     [string]$PaksPath = 'C:\Program Files (x86)\Steam\steamapps\common\Throne and Liberty\TL\Content\Paks',
-    [string]$ReportPath = (Join-Path $PSScriptRoot 'exports/tl-archive-index.json')
+    [string]$ReportPath = (Join-Path $PSScriptRoot 'exports/tl-archive-index.json'),
+    [string]$KeysFile,
+    [string]$ExportPlan
 )
 $ErrorActionPreference = 'Stop'
 $sdkRoot = Join-Path $PSScriptRoot '.local/dotnet'
@@ -16,5 +18,9 @@ $projectPath = Join-Path $PSScriptRoot 'ArchiveProbe/ArchiveProbe.csproj'
 if ($LASTEXITCODE -ne 0) { throw 'Falha ao restaurar o CUE4Parse.' }
 & $dotnetExe build $projectPath --no-restore --configuration Release --nologo
 if ($LASTEXITCODE -ne 0) { throw 'Falha ao compilar o leitor de arquivos.' }
-& $dotnetExe (Join-Path $PSScriptRoot 'ArchiveProbe/bin/Release/net10.0/ArchiveProbe.dll') $PaksPath $ReportPath
+$probeArgs = @($PaksPath, $ReportPath)
+if ($KeysFile) { $probeArgs += $KeysFile }
+elseif ($ExportPlan) { $probeArgs += '-' }
+if ($ExportPlan) { $probeArgs += $ExportPlan }
+& $dotnetExe (Join-Path $PSScriptRoot 'ArchiveProbe/bin/Release/net10.0/ArchiveProbe.dll') @probeArgs
 if ($LASTEXITCODE -ne 0) { throw 'Falha ao inspecionar os arquivos.' }

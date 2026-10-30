@@ -48,6 +48,8 @@ Sempre responder em português brasileiro.
 
 Para reinstalar o ambiente ou continuar os overlays/datamining, leia primeiro
 `docs/RECUPERACAO-DESENVOLVIMENTO.md` e `tools/unreal/README.md`.
+Os caminhos e vínculos já validados do datamining ficam em
+`docs/DATAMINING-REFERENCE.md`; consulte antes de redescobrir tabelas/ícones.
 
 Antes de investigar IDs, identidade, sessões ou campos dos pacotes do overlay,
 consulte `docs/overlay-reference-index.json` e `docs/overlay-protocol-reference.md`.

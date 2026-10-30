@@ -47,6 +47,7 @@ function harness(startAt = 1000000) {
     if (name === '@electron-toolkit/utils') return { is: { dev: false } }
     if (name.endsWith('/overlayMeter')) return engine
     if (name.endsWith('/overlayLayout')) return layout
+    if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {} }
     if (name === './overlayHistory') return { OverlayHistory: History }
     if (name === './overlayUnknownLog') return { OverlayUnknownLog: UnknownLog }
     if (name === './overlayCleanup') return { clearMeterLogFiles() {} }

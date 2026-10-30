@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import icons from '../data/overlaySkillIcons.json'
 
-const assets = import.meta.glob<string>('../assets/skills/*.webp', { eager: true, query: '?url', import: 'default' })
+const assets = import.meta.glob<string>('../assets/skills/*.{webp,png}', { eager: true, query: '?url', import: 'default' })
 const normalize = (name: string): string => name.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
   .replace(/[’‘]/g, "'").replace(/\s+/g, ' ').trim()
 const byName = new Map(Object.entries(icons).map(([name, file]) => [normalize(name), file]))
 
-export function MeterSkillIcon({ name }: { name: string }): React.ReactElement {
-  const file = byName.get(normalize(name))
+export function MeterSkillIcon({ name, iconFile }: { name: string; iconFile?: string }): React.ReactElement {
+  const file = iconFile ?? byName.get(normalize(name))
   const src = file ? assets[`../assets/skills/${file}`] : undefined
   const [failed, setFailed] = useState<string | null>(null)
   const available = Boolean(src && failed !== src)

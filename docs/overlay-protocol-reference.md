@@ -40,3 +40,13 @@ python scripts/capture-overlay-reference.py --duration 600
 Antes de usar uma hipótese nova no decoder, compare outra captura e, quando
 possível, um log de combate independente. O gerador já foi conferido contra a
 referência de 661 eventos / 2.986.995 de dano.
+
+## Catálogo local de habilidades
+
+Em 30/10/2026, o datamining da build 26231302 confirmou os nove IDs pendentes
+de cajado/varinha como valores `TLSkill.UID`, ligados por símbolo às linhas de
+apresentação e aos textos PT/EN. Os caminhos e a coleta completa estão em
+`docs/DATAMINING-REFERENCE.md`; o catálogo compacto fica em
+`reference/datamine/26231302/skill-reference.json.gz`.
+Esses são IDs de habilidade, não IDs de entidade ou de sessão de combate.
+A coleta estática não valida todos os campos nem comportamentos do servidor.

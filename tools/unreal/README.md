@@ -4,6 +4,10 @@ Decisão de 30/10/2026: usar FModel para exploração visual e CUE4Parse para
 inspeção repetível por código. Este diretório é uma ferramenta de desenvolvimento,
 separada das dependências e do instalador do Electron.
 
+**Estado atual:** coleta completa executada, com 1.444 tabelas, PT/EN,
+maestrias, Skill Cores e 13.076 recursos visuais. Caminhos, ligações, consultas
+e limites estão em [DATAMINING-REFERENCE.md](../../docs/DATAMINING-REFERENCE.md).
+
 ## Instalação após clonar o Git
 
 Em PowerShell, a partir da raiz do repositório:
@@ -11,6 +15,9 @@ Em PowerShell, a partir da raiz do repositório:
 ```powershell
 ./tools/unreal/setup.ps1
 ./tools/unreal/probe.ps1
+
+# Coleta completa após restaurar as ferramentas (Python 3.11+)
+./tools/unreal/update-data.ps1 -PythonExe python
 ```
 
 O setup baixa arquivos de fontes oficiais, confere SHA-256/SHA-512 e extrai
@@ -56,7 +63,7 @@ seus índices. Gera inventário, caminhos visíveis, candidatos por nome,
 contêineres inacessíveis, GUIDs de chaves requeridas e diagnósticos. A saída
 padrão é `exports/tl-archive-index.json`. Nenhuma chave AES foi fornecida.
 
-## Resultado observado em 30/10/2026
+## Primeira inspeção em 30/10/2026, sem chave fornecida
 
 Instalação Steam build 26231302, em:
 `C:\Program Files (x86)\Steam\steamapps\common\Throne and Liberty\TL\Content\Paks`.
@@ -73,18 +80,18 @@ Isso valida a instalação do CUE4Parse e a inspeção parcial, não a extraçã
 tabelas nem a correspondência entre IDs dos pacotes e habilidades.
 O relatório completo é local e pode ser regenerado com `probe.ps1`.
 
-## Próxima investigação
+## Investigação após a coleta completa
 
-1. Conferir os diagnósticos e a compatibilidade com esta build do TL.
-2. Verificar quais tabelas e recursos ficam acessíveis pelo parser.
-3. Se houver dados legíveis, buscar a relação entre ID numérico do evento,
-   identificador simbólico, nome localizado, especialização e ícone.
-4. Validar essa relação contra logs explícitos ou confirmações registradas.
-   Só depois incorporar mapeamentos ao overlay.
+Os passos iniciais foram concluídos: a chave pública fixada em `prepare-key.ps1`
+montou 118 contêineres adicionais, e `TLJsonDataTable` foi lido como `UDataTable`.
+O vínculo UID → símbolo → nome PT/EN/ícone foi encontrado. Consultar o mapa
+documentado antes de investigar campos novos. Ainda é necessário validar
+semântica de combate do servidor e condições dinâmicas de ícones.
 
-O probe atual não exporta conteúdo nem altera o dicionário de habilidades.
-O código abre os arquivos do jogo para leitura; relatórios ficam fora da
-instalação. Ajustar a versão/preset é uma investigação separada, caso necessária.
+O probe sem plano lista índices. Com `-ExportPlan`, exporta os recursos
+selecionados para a pasta da coleta. O dicionário do overlay só é sincronizado
+pelo comando específico ou pela opção `-SyncOverlayCatalog` do atualizador.
+O código abre a instalação para leitura; os resultados ficam fora do jogo.
 
 ## O que o Git recupera
 
@@ -95,6 +102,8 @@ evidência única, caso não possam ser reproduzidos após uma atualização do 
 
 FModel é GPL-3.0; CUE4Parse é Apache-2.0. Seus binários não são incorporados ao
 instalador do app por este fluxo.
+O exportador de texturas usa `BCnEncoder.Net` 2.3.0 (MIT/Unlicense), com
+dependências fixadas no lockfile; não depende do pacote CUE4Parse-Conversion.
 
 ## Fontes
 

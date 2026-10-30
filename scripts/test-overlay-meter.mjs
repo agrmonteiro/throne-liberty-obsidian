@@ -130,3 +130,34 @@ assert.deepEqual(resolvedJudgment.session.damageByKind, originalJudgment.session
 assert.equal(resolvedJudgment.session.hits, originalJudgment.session.hits)
 assert.equal(originalJudgment.session.skills[0].name, 'Habilidade 968448884')
 console.log('OK: Uso consecutivo reconhecido, separado da base e acumulado preservado no reload.')
+
+const basicNames = { 100: 'Disparo Básico', 101: 'Disparo Básico', 102: 'Disparo Básico' }
+const basicFiles = { 100: 'bow.png', 101: 'crossbow.png', 102: 'bow.png' }
+const basicMeter = new OverlayMeter(7, basicNames, basicFiles)
+basicMeter.add(event(1000, 100, 7, 100)); basicMeter.add(event(2000, 200, 7, 101)); basicMeter.add(event(3000, 300, 7, 102))
+const basicSnapshot = basicMeter.snapshot(4000)
+assert.equal(basicSnapshot.skills.length, 2, 'Mesmo nome com ícones de armas diferentes não deve ser fundido')
+assert.equal(basicSnapshot.skills.find(row => row.iconFile === 'bow.png').damage, 400)
+assert.deepEqual(basicSnapshot.skills.find(row => row.iconFile === 'bow.png').skillIds, [100, 102])
+assert.equal(basicSnapshot.total, 600)
+basicSnapshot.skills[0].skillIds.push(999)
+assert.equal(basicMeter.snapshot(4000).skills.some(row => row.skillIds.includes(999)), false)
+const withBasicIcons = resolveOverlayNames(beforeNames, basicNames, basicFiles)
+assert.equal(withBasicIcons.session.skills.length, 2)
+assert.equal(withBasicIcons.session.total, beforeNames.session.total)
+assert.equal(withBasicIcons.session.skills[0].iconFile, 'crossbow.png')
+console.log('OK: ataques básicos por ID/ícone, agrupamento por arma e cópia isolada dos IDs.')
+
+const mined = JSON.parse(fs.readFileSync(new URL('../src/data/overlayDataminedSkills.json', import.meta.url), 'utf8'))
+const minedNames = { ...Object.fromEntries(Object.entries(mined).map(([id, row]) => [id, row.name])), ...skillNames }
+const minedIcons = Object.fromEntries(Object.entries(mined).filter(([, row]) => row.iconFile).map(([id, row]) => [id, row.iconFile]))
+const nativeBasic = new OverlayMeter(7, minedNames, minedIcons)
+for (const [index, id] of [947551927, 947525562, 951925391, 968862069].entries()) nativeBasic.add(event(1000 + index * 1000, 100, 7, id))
+const nativeRows = nativeBasic.snapshot(5000).skills
+assert.equal(nativeRows.length, 4, 'Ataques básicos de arco/besta/cajado/varinha conservam os ícones próprios')
+assert.equal(new Set(nativeRows.map(row => row.iconFile)).size, 4)
+for (const row of nativeRows) assert.ok(fs.existsSync(new URL(`../src/assets/skills/${row.iconFile}`, import.meta.url)))
+assert.equal(mined['968448884'].english, 'Judgment Lightning')
+assert.equal(mined['967030853'].english, 'Corrupted Obliteration')
+assert.equal(new Set([968441375, 968604762, 968670316].map(id => minedIcons[id])).size, 3, 'Os três usos de Serial Fire Bombs possuem ícones distintos no cliente')
+console.log('OK: catálogo real PT/EN, quatro ataques básicos, assets presentes e fases com ícones distintos.')

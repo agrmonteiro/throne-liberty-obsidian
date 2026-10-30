@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "build": "26231302",
+  "database": "reference-b445a5de2427.sqlite",
+  "databaseSha256": "acb2feb7aa4885bb36fe973267ae177c1571d6a4df05bcd58a7ef9eb3b1cfff7",
+  "extractionManifestSha256": "b445a5de24272078316e95dafb684a676d41f4fe542167fe0c70124104c74fbf",
+  "integrityCheck": "ok",
+  "counts": {
+    "records": 444051,
+    "texts": 326618,
+    "source_strings": 168462,
+    "assets": 595430,
+    "links": 609542,
+    "tables": 1444,
+    "skills": 16558,
+    "localizedSkills": 3093,
+    "masteryRecords": 4767,
+    "skillCoreRelatedRecords": 1285
+  },
+  "textCounts": {
+    "pt": 163933,
+    "en": 162685
+  },
+  "limitations": [
+    "links are exact symbol matches, not validated combat semantics",
+    "client records can include unused/test/future content; presence does not prove availability",
+    "conditional icons require active trait/state information not inferred from a damage ID"
+  ],
+  "snapshots": {
+    "skill-reference.json.gz": {
+      "bytes": 457038,
+      "sha256": "f0462659a15991f208f869ce252fb4b06131158f163058c47dc3309bf42f5b47",
+      "uncompressedSha256": "2875dd643721b852606126820ec724523b9e0ececa4ce94cdc8332089c9a5cad"
+    },
+    "mastery-reference.json.gz": {
+      "bytes": 131249,
+      "sha256": "2a83a9cac6f9ff379d3a764ba5f2eed9476837b2e2266ee2e113ae9ec4dcfe8d",
+      "uncompressedSha256": "eef36d088a48b84368c99b1784121742fc36a2a8a7165645360d50fd4e245415"
+    },
+    "skill-core-reference.json.gz": {
+      "bytes": 96067,
+      "sha256": "d1e3de0a5a56954c00917b1b678cc834a42a3bd20176bc42c5d69f1230698b96",
+      "uncompressedSha256": "de7745418b825eb4bdd5bfa6b7c4f6ee9c294096990c5ffabca7d8762cd0f3b9"
+    },
+    "table-inventory.json.gz": {
+      "bytes": 82974,
+      "sha256": "5094012fc932d87aca4bffb24e9097fb6b2a44f8e72227f5af23484aebdcc8ac",
+      "uncompressedSha256": "ce8b587f8706126f88d32f60c6ac41146ad08053a6651d17c435d900005a7ba8"
+    }
+  },
+  "verification": {
+    "build": "26231302",
+    "status": "passed",
+    "checks": {
+      "files": 15968,
+      "tl-full-extraction.json": 1446,
+      "png": 11662,
+      "tl-icon-extraction.json": 13076
+    },
+    "knownIds": 9,
+    "sqliteIntegrity": "ok",
+    "limitation": "Checks confirm extraction integrity and exact static joins, not all server-side combat behavior."
+  },
+  "localDataRequired": [
+    "full SQLite database",
+    "raw packages",
+    "all decoded tables",
+    "full PT/EN localization",
+    "all extracted images"
+  ]
+}

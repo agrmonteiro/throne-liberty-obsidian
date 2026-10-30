@@ -15,5 +15,16 @@
     "sourceCommit": "1e3293d4b3ecaf6ef3d73641b9ffe47fa4cf1562",
     "source": "https://github.com/FabianFG/CUE4Parse",
     "license": "Apache-2.0"
+  },
+  "textureDecoder": {
+    "package": "BCnEncoder.Net",
+    "version": "2.3.0",
+    "source": "https://github.com/Nominom/BCnEncoder.NET",
+    "license": "MIT OR Unlicense"
+  },
+  "publicArchiveKeySource": {
+    "url": "https://raw.githubusercontent.com/Shegorat/cls-ue4d/8a0a6f5b27f90bfcf52bd8b82fd742d3a068fcd4/README.md",
+    "sha256": "da22cb4caef454a26892c791da5d71395c7cdf5e3121708bd7ec42da3e758d8d",
+    "testedBuild": "26231302"
   }
 }

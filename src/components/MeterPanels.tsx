@@ -79,8 +79,8 @@ export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, prev
       <table className="meter-table">
         <thead><tr><th>Habilidade</th><th>Dano</th><th>%</th><th>Acertos</th><th>Crít.</th><th>Pes.</th></tr></thead>
         <tbody>{session.skills.map(row => <tr key={row.key} style={skillBar(row.damageByKind, row.damage, maximumDamage)}>
-          <td title={`${row.name} · ${breakdownTitle(row.damageByKind)}`}>
-            <span className="meter-skill-label"><MeterSkillIcon name={row.name} /><span className="meter-skill-name">{row.name}</span></span></td>
+          <td title={`${row.name}${row.skillIds?.length ? ` · IDs ${row.skillIds.join(', ')}` : ''} · ${breakdownTitle(row.damageByKind)}`}>
+            <span className="meter-skill-label"><MeterSkillIcon name={row.name} iconFile={row.iconFile} /><span className="meter-skill-name">{row.name}</span></span></td>
           <td>{number(row.damage)}</td><td>{percentage(row.damage, session.total)}</td><td>{number(row.hits)}</td>
           <td>{percentage(row.critical, row.hits)}</td><td>{percentage(row.heavy, row.hits)}</td>
         </tr>)}</tbody>

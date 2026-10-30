@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { MeterPanel, number, duration } from './MeterPanels'
 import { resolveOverlayNames, type OverlayHistoryResult, type OverlayState } from '../engine/overlayMeter'
-import names from '../data/overlaySkillNames.json'
+import { overlaySkillNames as names, overlaySkillFiles } from '../engine/overlaySkillReference'
 
 export function OverlayHistoryView({ state }: { state: OverlayState }): React.ReactElement {
   const [history, setHistory] = useState<OverlayHistoryResult>({ encounters: [], error: null })
@@ -19,7 +19,7 @@ export function OverlayHistoryView({ state }: { state: OverlayState }): React.Re
   }, [refresh])
   const selected = history.encounters.find(row => row.id === selectedId) ?? history.encounters[0]
   const historical = selected ? resolveOverlayNames({ ...state, session: selected.session,
-    mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names) : null
+    mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles) : null
   return <section id="overlay-encounter-history" className="overlay-history" aria-label="Histórico dos encontros">
     <div className="overlay-history-heading"><h2>Últimos 20 encontros <span>{history.encounters.length}/20</span></h2>
       <div className="overlay-heading-actions"><button onClick={() => void refresh()}>Atualizar histórico</button>

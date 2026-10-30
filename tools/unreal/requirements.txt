@@ -1,0 +1,2 @@
+# Apenas para gerar miniaturas do overlay; a coleta/consulta usa a biblioteca padrão.
+Pillow==12.1.1

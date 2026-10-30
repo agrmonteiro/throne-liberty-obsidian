@@ -11,7 +11,7 @@
     "method": "local-state"
   },
   "encounterId": "f72f94f7-c570-4757-8b31-8e88da227ad4",
-  "status": "partially_mapped_by_user_confirmation",
+  "status": "all_observed_ids_matched_to_client_tables",
   "sourcesChecked": [
     "src/data/overlaySkillNames.json",
     "C:/Users/admin/AppData/Local/TL/Saved/CombatLogs",
@@ -23,48 +23,7 @@
     "No exact numeric matches in local combat logs for the current pending IDs.",
     "An isolated cast can also trigger basic attacks, passive skills and equipment effects; require repeatable evidence before assigning a name."
   ],
-  "pending": [
-    {
-      "skillId": 968441375,
-      "events": 3747,
-      "damage": 21157167
-    },
-    {
-      "skillId": 968604762,
-      "events": 2678,
-      "damage": 17591017
-    },
-    {
-      "skillId": 968670316,
-      "events": 2568,
-      "damage": 17438978
-    },
-    {
-      "skillId": 968472498,
-      "events": 951,
-      "damage": 12130387
-    },
-    {
-      "skillId": 967030853,
-      "events": 850,
-      "damage": 11871893
-    },
-    {
-      "skillId": 967227745,
-      "events": 302,
-      "damage": 4126316
-    },
-    {
-      "skillId": 968801679,
-      "events": 166,
-      "damage": 2169579
-    },
-    {
-      "skillId": 966375907,
-      "events": 18,
-      "damage": 252739
-    }
-  ],
+  "pending": [],
   "catalog": [
     {
       "id": "SkillSet_WP_WA_GR_S_LinkLaser",
@@ -350,5 +309,81 @@
       }
     }
   },
-  "updatedAt": "2026-10-30T16:41:38.371Z"
+  "updatedAt": "2026-10-30T16:41:38.371Z",
+  "resolvedFromClient": {
+    "966375907": {
+      "row": "WP_WA_GR_S_Heal_Mastery_Triple",
+      "table": "TLSkillPcLooks_Weapon_Wand",
+      "namePt": "Obliteração Corrompida",
+      "nameEn": "Corrupted Obliteration",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_WA_GR_S_Heal_AA_Mastery.S_WP_WA_GR_S_Heal_AA_Mastery",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "967030853": {
+      "row": "WP_WA_GR_S_Heal_Mastery",
+      "table": "TLSkillPcLooks_Weapon_Wand",
+      "namePt": "Obliteração Corrompida",
+      "nameEn": "Corrupted Obliteration",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_WA_GR_S_Heal_AA_Mastery.S_WP_WA_GR_S_Heal_AA_Mastery",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "967227745": {
+      "row": "WP_WA_GR_S_Heal_Mastery_Double",
+      "table": "TLSkillPcLooks_Weapon_Wand",
+      "namePt": "Obliteração Corrompida",
+      "nameEn": "Corrupted Obliteration",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_WA_GR_S_Heal_AA_Mastery.S_WP_WA_GR_S_Heal_AA_Mastery",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "968441375": {
+      "row": "WP_ST_S_WideAreaAttack_Hero_1_3_Canmove_trait5",
+      "table": "TLSkillPcLooks_Weapon_Staff",
+      "namePt": "Explosão de Bombas de Fogo",
+      "nameEn": "Serial Fire Bombs",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_ST_WideAreaAttack_3.S_WP_ST_WideAreaAttack_3",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "968448884": {
+      "row": "WP_ST_S_PowerAttack_Casting",
+      "table": "TLSkillPcLooks_Weapon_Staff",
+      "namePt": "Raio do Julgamento",
+      "nameEn": "Judgment Lightning",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_ST_PowerAttack_SP.S_WP_ST_PowerAttack_SP",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "968472498": {
+      "row": "WP_ST_S_WideAreaDebuffAttack_Hero_trait1",
+      "table": "TLSkillPcLooks_Weapon_Staff",
+      "namePt": "Onda de Relâmpago Em Frenesi",
+      "nameEn": "Frenzied Lightning Wave",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_ST_WideAreaDebuffAttack_SP.S_WP_ST_WideAreaDebuffAttack_SP",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "968604762": {
+      "row": "WP_ST_S_WideAreaAttack_Hero_1_Canmove_trait5",
+      "table": "TLSkillPcLooks_Weapon_Staff",
+      "namePt": "Explosão de Bombas de Fogo",
+      "nameEn": "Serial Fire Bombs",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_ST_WideAreaAttack_AA.S_WP_ST_WideAreaAttack_AA",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "968670316": {
+      "row": "WP_ST_S_WideAreaAttack_Hero_1_2_Canmove_trait5",
+      "table": "TLSkillPcLooks_Weapon_Staff",
+      "namePt": "Explosão de Bombas de Fogo",
+      "nameEn": "Serial Fire Bombs",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_ST_WideAreaAttack_2_AA.S_WP_ST_WideAreaAttack_2_AA",
+      "status": "exact-uid-symbol-ui-localization"
+    },
+    "968801679": {
+      "row": "WP_ST_S_WideAreaDebuffAttack_Hero_trait1_2",
+      "table": "TLSkillPcLooks_Weapon_Staff",
+      "namePt": "Onda de Relâmpago Em Frenesi",
+      "nameEn": "Frenzied Lightning Wave",
+      "iconPath": "/Game/Image/Skill/Active/S_WP_ST_WideAreaDebuffAttack_SP.S_WP_ST_WideAreaDebuffAttack_SP",
+      "status": "exact-uid-symbol-ui-localization"
+    }
+  },
+  "clientBuild": "26231302",
+  "reference": "reference/datamine/26231302/skill-reference.json.gz"
 }

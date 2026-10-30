@@ -86,6 +86,9 @@ Não há log independente que valide toda a semântica desta coleta.
 - `src/data/overlaySkillNames.json`: ID numérico → nome de exibição.
 - `src/data/overlaySkillVariants.json`: variantes confirmadas, ID simbólico do
   catálogo e origem da evidência.
+- `src/data/overlayDataminedSkills.json`: catálogo offline gerado dos arquivos
+  locais, com IDs, símbolos, nomes PT/EN e ícones por ID. O dicionário curado
+  tem prioridade sobre os nomes automáticos.
 - `src/data/overlaySkillIcons.json` e `src/assets/skills/`: mapa e ícones WebP
   locais, incluídos no código para não depender de rede durante o uso.
 - `scripts/atualizar-nomes-overlay.py`: cruza IDs com nomes explícitos em logs
@@ -99,8 +102,9 @@ Não há log independente que valide toda a semântica desta coleta.
 
 Confirmado pelo usuário: **968448884 → Raio do Julgamento (Uso consecutivo)**.
 O catálogo fornece o ícone `S_WP_ST_PowerAttack_SP` da variante simbólica
-`WP_ST_S_PowerAttack_Casting`. O vínculo com o ID numérico veio do usuário,
-não de datamining. Os demais IDs daquele levantamento continuam pendentes.
+`WP_ST_S_PowerAttack_Casting`. O vínculo foi inicialmente informado pelo usuário
+e depois validado no `TLSkill.UID` da build 26231302. Os nove IDs desse
+levantamento já têm correspondência estática no catálogo completo.
 
 `resolveOverlayNames` permite atualizar nomes e agrupar linhas no renderer
 sem reiniciar a captura nem alterar totais/acertos/categorias. O processo
@@ -151,14 +155,15 @@ ao overlay; distinguir falhas novas dos diagnósticos preexistentes.
 
 ## Estado da investigação de arquivos locais
 
-FModel portátil instalado; CUE4Parse compilado e executado no TL build 26231302.
-Registrados 131 contêineres, 12 montados, 118 criptografados e 3.302 caminhos
-visíveis. O filtro textual não encontrou tabelas candidatas. Ainda não houve
-extração de habilidades nem prova de ID interno → ID da captura.
+Coleta completa da build 26231302 realizada com CUE4Parse e chave pública
+fixada por fonte/hash. Foram exportadas 1.444 tabelas, traduções PT/EN e 13.076
+recursos visuais. O índice tem 16.558 linhas de TLSkill e o catálogo do overlay
+recebe 3.091 IDs positivos com nomes localizados, incluindo ataques básicos.
 
-O próximo passo é investigar a acessibilidade/formato dos arquivos e só então
-extrair tabelas e confirmar vínculos. Consultar os diagnósticos do probe antes
-de tentar interpretar essa listagem como catálogo completo do jogo.
+Consultar [DATAMINING-REFERENCE.md](DATAMINING-REFERENCE.md) para os caminhos
+exatos, maestrias, Skill Cores, SQLite, consultas e atualização completa.
+Snapshots compactos em `reference/datamine/26231302/` preservam catálogos no Git;
+exports completos e SQLite continuam exigindo backup separado.
 
 ## Git, publicação e release
 

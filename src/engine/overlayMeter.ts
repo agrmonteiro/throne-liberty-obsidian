@@ -8,6 +8,7 @@ export interface MeterEvent {
 }
 export interface MeterSkill {
   key: string; name: string; damage: number; hits: number; critical: number; heavy: number
+  skillIds?: number[]; iconFile?: string
   damageByKind: DamageBreakdown
 }
 export interface MeterSession {
@@ -53,7 +54,8 @@ export class OverlayMeter {
   private lastDamageAt: number | null = null
   private ignoreBefore = 0
   private rows = new Map<string, MeterSkill>()
-  constructor(public sourceId: number | null = null, private names: Record<string, string> = {}) {}
+  constructor(public sourceId: number | null = null, private names: Record<string, string> = {},
+    private icons: Record<string, string> = {}) {}
   reset(at = 0): void {
     this.startedAt = this.lastDamageAt = null
     this.ignoreBefore = at
@@ -72,8 +74,11 @@ export class OverlayMeter {
     this.startedAt ??= at
     this.lastDamageAt = at
     const name = this.names[String(event.skillId)] ?? `Habilidade ${event.skillId}`
-    const key = this.names[String(event.skillId)] ? name : String(event.skillId)
-    const row = this.rows.get(key) ?? { key, name, damage: 0, hits: 0, critical: 0, heavy: 0, damageByKind: emptyDamageBreakdown() }
+    const iconFile = this.icons[String(event.skillId)]
+    const key = this.names[String(event.skillId)] ? (iconFile ? `${name}::${iconFile}` : name) : String(event.skillId)
+    const row = this.rows.get(key) ?? { key, name, iconFile, skillIds: [], damage: 0, hits: 0, critical: 0, heavy: 0, damageByKind: emptyDamageBreakdown() }
+    row.skillIds ??= []
+    if (!row.skillIds.includes(event.skillId)) row.skillIds.push(event.skillId)
     row.damage += event.damage; row.hits++
     row.critical += Number(event.criticalCandidate)
     row.heavy += Number(Boolean(event.heavyCandidate))
@@ -85,7 +90,7 @@ export class OverlayMeter {
     return true
   }
   snapshot(now = Date.now()): MeterSession {
-    const skills = [...this.rows.values()].map(row => ({ ...row, damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
+    const skills = [...this.rows.values()].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
     const damageByKind = emptyDamageBreakdown()
     for (const row of skills) for (const kind of Object.keys(damageByKind) as DamageKind[]) damageByKind[kind] += row.damageByKind[kind]
     const total = skills.reduce((sum, row) => sum + row.damage, 0)
@@ -134,13 +139,18 @@ export interface OverlayEncounter {
 }
 export interface OverlayHistoryResult { encounters: OverlayEncounter[]; error: string | null }
 /** Aplica nomes novos também ao acumulado já aberto, sem reiniciar a captura. */
-export function resolveOverlayNames(state: OverlayState, names: Record<string, string>): OverlayState {
+export function resolveOverlayNames(state: OverlayState, names: Record<string, string>, icons: Record<string, string> = {}): OverlayState {
   const rows = new Map<string, MeterSkill>()
   for (const original of state.session.skills) {
-    const name = names[original.key] ?? original.name
-    const key = names[original.key] ? name : original.key
+    const skillIds = original.skillIds?.slice() ?? (/^\d+$/.test(original.key) ? [Number(original.key)] : [])
+    const mapped = [...new Set(skillIds.map(id => names[String(id)]).filter(Boolean))]
+    const files = [...new Set(skillIds.map(id => icons[String(id)]).filter(Boolean))]
+    const name = names[original.key] ?? (mapped.length === 1 ? mapped[0] : original.name)
+    const iconFile = files.length === 1 ? files[0] : files.length > 1 ? undefined : original.iconFile
+    const key = iconFile ? `${name}::${iconFile}` : names[original.key] || mapped.length === 1 ? name : original.key
     const row = rows.get(key)
-    if (!row) { rows.set(key, { ...original, key, name, damageByKind: { ...original.damageByKind } }); continue }
+    if (!row) { rows.set(key, { ...original, key, name, iconFile, skillIds, damageByKind: { ...original.damageByKind } }); continue }
+    row.skillIds = [...new Set([...(row.skillIds ?? []), ...skillIds])]
     row.damage += original.damage; row.hits += original.hits
     row.critical += original.critical; row.heavy += original.heavy
     for (const kind of Object.keys(row.damageByKind) as DamageKind[]) row.damageByKind[kind] += original.damageByKind[kind]
