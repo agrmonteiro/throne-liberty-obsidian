@@ -164,3 +164,27 @@ validação. Os testes de PCAP precisam das respectivas capturas locais.
 - Conferência visual/funcional no Electron: campos do cronômetro, estados de
   preparação/contagem/resultado, botões de pausa, troca de páginas, ícones,
   restauração do total e ausência de duplicação da instância principal.
+
+## Classificação pelas descrições
+
+Relatório e CSV em `docs/healing-classification/26231302/`. O gerador é
+`tools/unreal/classify-healing-descriptions.py --build 26231302`; sua validação é
+`python scripts/test-healing-description-classification.py`.
+
+As categorias distinguem cura direta/periódica, vampirismo, regeneração,
+modificadores de cura, redução de cura, escudos, ressurreição, mana e consumo de
+Vida. Textos de especialização/estado e rank não são tratados como efeitos
+incondicionais da habilidade base. Nomes de parâmetros internos são removidos
+antes de procurar palavras no texto para evitar falsos positivos com `Heal`.
+
+O snapshot gzip guarda os textos localizados, namespace/chaves, fórmulas,
+vínculos de efeito e a cobertura das 16.558 linhas de TLSkill, incluindo as sem
+descrição. Ele pode ser consultado a partir do Git sem o SQLite local; regenerar
+a extração exige a base completa. Os tooltips do gráfico de cura usam o recorte
+`overlayHealingSkillClasses.json` como sugestão, preservando os totais medidos.
+O decoder continua exigindo os eventos e a classificação de efeitos já tratados.
+
+Exemplos conferidos: Toque de Cura é periódica; Cura Célere é direta com redução
+por uso consecutivo; Buscador de Sangue converte dano em cura. Bênção da Natureza
+fala em regeneração na base; Vigoroso descreve a cura por segundo condicionada
+à presença simultânea de Bênção da Natureza e Toque de Cura.

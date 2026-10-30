@@ -182,6 +182,15 @@ versionado e embarcado no main; o cliente instalado não precisa do SQLite.
 Vínculos de pacote, autocura e limites de cobertura estão em
 [OVERLAY-METRICAS-E-CRONOMETRO.md](OVERLAY-METRICAS-E-CRONOMETRO.md).
 
+`classify-healing-descriptions.py --build 26231302` resolve descrições PT/EN via
+`TableId` → namespace real → chave de tradução e classifica os 3.860 registros
+de `TLSkillPcLooks*`. O relatório/CSV ficam em `docs/healing-classification/26231302/`;
+o snapshot completo em `reference/datamine/26231302/healing-descriptions.json.gz`;
+o recorte para tooltips em `src/data/overlayHealingSkillClasses.json`.
+Essa etapa também faz parte de `-SyncOverlayCatalog`. Fórmulas dos tooltips são
+cruzadas por símbolo exato com `TLEffectProperty.formula_parameter`; essa relação
+não comprova efeito ativo no servidor. Especializações/ranks ficam separados.
+
 ## Git e recuperação
 
 `reference/datamine/26231302/` contém snapshots gzip determinísticos do catálogo

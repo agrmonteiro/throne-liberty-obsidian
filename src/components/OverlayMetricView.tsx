@@ -3,6 +3,7 @@ import type { OverlayConfig, OverlayState } from '../engine/overlayMeter'
 import { number } from './MeterPanels'
 import { MeterSkillIcon } from './MeterSkillIcon'
 import { overlayAppearance } from './overlayAppearance'
+import { healingDescriptionTitle } from '../engine/overlayHealingClassification'
 
 export const metricPages = [
   { id: 'damage', label: 'Dano causado' },
@@ -22,7 +23,8 @@ export function OverlayMetricView({ state, page, historical = false }: {
   const rows = page === 'receivedSources' ? received?.sources.map(row => ({
     key: String(row.id), name: row.name ?? `Origem ${row.id}`, damage: row.damage, hits: row.hits,
     detail: `ID ${row.id}`, iconFile: undefined as string | undefined,
-  })) ?? [] : (healing ? heals?.skills : received?.skills)?.map(row => ({ ...row, detail: `IDs ${row.skillIds?.join(', ') ?? row.key}` })) ?? []
+  })) ?? [] : (healing ? heals?.skills : received?.skills)?.map(row => ({ ...row,
+    detail: `IDs ${row.skillIds?.join(', ') ?? row.key}${healing ? `\n${healingDescriptionTitle(row.skillIds)}` : ''}` })) ?? []
   const maximum = Math.max(0, ...rows.map(row => row.damage))
   const total = (healing ? heals?.total : received?.total) ?? 0
   const title = metricPages.find(item => item.id === page)!.label

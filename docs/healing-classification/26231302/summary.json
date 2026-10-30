@@ -1,0 +1,29 @@
+{
+  "build": "26231302",
+  "schemaVersion": 1,
+  "records": 3860,
+  "withDescription": 2857,
+  "relatedRecords": 383,
+  "healingCandidates": 102,
+  "healingCandidatesWithId": 89,
+  "recordsWithEffectReference": 82,
+  "withNumericSkillId": 3308,
+  "skillRecords": 16558,
+  "skillRecordsWithDescription": 2335,
+  "categoryCounts": {
+    "mana_recovery": 114,
+    "shield": 44,
+    "direct_heal": 46,
+    "healing_modifier": 123,
+    "periodic_heal": 13,
+    "lifesteal": 22,
+    "anti_heal": 91,
+    "revive": 16,
+    "health_regen": 25,
+    "health_cost": 8
+  },
+  "missingTranslations": {
+    "pt": 11,
+    "en": 35
+  }
+}

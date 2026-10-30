@@ -1,0 +1,2257 @@
+{
+  "build": "26231302",
+  "labels": {
+    "direct_heal": "Cura direta",
+    "periodic_heal": "Cura periódica",
+    "lifesteal": "Vampirismo",
+    "health_regen": "Regeneração de Vida",
+    "healing_modifier": "Modificador de cura",
+    "anti_heal": "Redução de cura",
+    "shield": "Escudo/barreira",
+    "revive": "Ressurreição",
+    "mana_recovery": "Recuperação de Mana",
+    "health_cost": "Consumo de Vida"
+  },
+  "skills": {
+    "967181600": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Lança um orbe no local designado, criando uma zona protetora quando ele acerta o chão. Dentro da zona, aliados recuperam Vigor e Mana, e o efeito da Pedra do Domínio se multiplica em até 5 vezes.",
+      "conditional": true
+    },
+    "948939669": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria uma barreira de vento ao redor de quem lançou em um raio de 5m quando invocado. Membros da equipe dentro da barreira de vento aumentam a Esquiva à Distância e Mágica em [valor] e a Velocidade de Ataque em [valor]%",
+      "conditional": true
+    },
+    "947543585": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Aumenta a Velocidade de Recarga Global em [valor]%.",
+      "conditional": false
+    },
+    "947545733": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Recupera [valor] de Vida ao abater um alvo e entra em um frenesi sangrento que aumenta o ataque crítico por 6s.",
+      "conditional": true
+    },
+    "953414618": {
+      "categories": [
+        "healing_modifier",
+        "shield"
+      ],
+      "description": "Cria um Escudo equivalente a [valor] da Vida do usuário por [valor]s para o usuário e membros da equipe dentro de um raio de 15m do usuário. Aumenta a Defesa Total em [valor] e a Cura Recebida em [valor]% enquanto o Escudo estiver ativo.",
+      "conditional": true
+    },
+    "963810401": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ao usar Mana, o usuário recupera [valor]% da Mana usada. O membro da equipe mais próximo do usuário também recupera [valor]% de sua Mana",
+      "conditional": true
+    },
+    "953363119": {
+      "categories": [
+        "healing_modifier",
+        "periodic_heal"
+      ],
+      "description": "Aumenta a Cura em [valor]%, remove todos os efeitos de Imobilização, Medo, Silêncio, Sono e Atordoamento em membros da equipe dentro de um alcance de 15m e restaura [valor]% da Vida Máxima por [valor]s.",
+      "conditional": false
+    },
+    "967197426": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ao usar Mana, o usuário recupera [valor]% da Mana usada. O membro da equipe mais próximo do usuário também recupera [valor]% de sua Mana",
+      "conditional": true
+    },
+    "953363407": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria um escudo de 50% da Mana Máxima do usuário. Aumenta a Velocidade de Recarga em [valor]% enquanto o escudo estiver ativo. A invocação termina quando o Escudo é removido",
+      "conditional": true
+    },
+    "963307527": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria um escudo de 50% da Mana Máxima do usuário. Aumenta a Velocidade de Recarga em [valor]% enquanto o escudo estiver ativo. A invocação termina quando o Escudo é removido",
+      "conditional": true
+    },
+    "963245186": {
+      "categories": [
+        "lifesteal",
+        "periodic_heal"
+      ],
+      "description": "Aumenta a Defesa Total em [valor]. Causa dano contínuo igual a [valor]% da Vida Máxima por segundo a alvos inimigos em um raio de 2,5m. Restaura a Vida em 0,12% do dano contínuo causado aos alvos.",
+      "conditional": false
+    },
+    "963371563": {
+      "categories": [
+        "direct_heal",
+        "lifesteal"
+      ],
+      "description": "Com pura cobiça em sua corrente sanguínea, o usuário recupera Vida equivalente a [valor]% do dano sofrido com um Ataque Básico (M12, Restaura Vida proporcional a [valor]% do Dano Base)",
+      "conditional": false
+    },
+    "963776138": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Duração da Fraqueza aumenta em [valor]%. Ao aplicar Fraqueza, aumenta a Velocidade de Recarga em [valor]% da Regeneração de Mana por [valor]",
+      "conditional": false
+    },
+    "963710669": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Velocidade de Recarga em [valor]%. Aumenta o Bônus de Dano em [valor] toda vez que uma habilidade consumir Mana",
+      "conditional": false
+    },
+    "964784794": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Um Amitoi restaura Vida instantaneamente",
+      "conditional": false
+    },
+    "962951062": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Ajudeco restaura [valor] de Vida instantaneamente",
+      "conditional": false
+    },
+    "947925411": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier",
+        "mana_recovery"
+      ],
+      "description": "A chuva cai por [valor]min. Aumenta a Eficiência do Custo de Mana em [valor]% e a Velocidade de Recarga em [valor]% por [valor]s para membros da equipe e da Guilda próximos. Quando usada em Nix, a habilidade vira uma Tempestade de Neve. A Tempestade de Neve reduz a Vida do Escudo Recebido e a Cura Recebida para todos os jogadores em [valor]% por [valor]min.",
+      "conditional": true
+    },
+    "947962314": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier",
+        "mana_recovery"
+      ],
+      "description": "A chuva cai por [valor]min. Aumenta a Eficiência do Custo de Mana em [valor]% e a Velocidade de Recarga em [valor]% por [valor]s para membros da equipe e da Guilda próximos. Quando usada em Nix, a habilidade vira uma Tempestade de Neve. A Tempestade de Neve reduz a cura recebida por todos os jogadores em [valor]% por [valor]min.",
+      "conditional": true
+    },
+    "948224532": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier",
+        "mana_recovery"
+      ],
+      "description": "A chuva cai por [valor]min. Aumenta a Eficiência do Custo de Mana em [valor]% e a Velocidade de Recarga em [valor]% por [valor]s para membros da equipe e da Guilda próximos. Quando usada em Nix, a habilidade vira uma Tempestade de Neve. A Tempestade de Neve reduz a cura recebida por todos os jogadores em [valor]% por [valor]min.",
+      "conditional": true
+    },
+    "947207671": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Recurso Necessário: Mistimadeira | Ouro Puro Ressuscita 12 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "945261394": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 12 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "945064799": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 18 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "945130340": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 24 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "944933737": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 30 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "944999278": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 36 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "944802678": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 42 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "944868220": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 48 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "945720196": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 48 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "945785737": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 60 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "945589133": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita 70 membros caídos da guilda em um raio de 30m do usuário com 100% de Vida e Mana",
+      "conditional": false
+    },
+    "945711393": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Recurso Necessário: Mistimadeira | Ouro Puro Aumenta a Regeneração de Mana em [valor] por [valor]min",
+      "conditional": false
+    },
+    "943969518": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor] por [valor]min",
+      "conditional": false
+    },
+    "943772912": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor] por [valor]min",
+      "conditional": false
+    },
+    "943838449": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor] por [valor]min",
+      "conditional": false
+    },
+    "945513531": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Recurso Necessário: Couro Rúnico | Magifio Cria uma Pedra de Ressurreição da Guilda que permite que membros da Guilda escolham o local de sua ressurreição. Membros da Guilda que tiverem sido abatidos em um raio de 100m da Pedra de Ressurreição poderão usá-la. Pode ser usada até 6 vezes por invocação. A Vida e Mana dos membros da Guilda ressuscitados serão recuperadas em 30%. A Pedra de Ressurreição dura 5min",
+      "conditional": false
+    },
+    "944989680": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Cria uma Pedra de Ressurreição da Guilda que permite que membros da Guilda escolham o seu local de ressurreição. Membros da Guilda que tiverem sido abatidos em um raio de 100m da Pedra de Ressurreição poderão usá-la. Pode ser usada até 6 vezes por invocação. A Vida e a Mana dos membros da Guilda ressuscitados serão recuperadas em 30%. A Pedra de Ressurreição permanece ativa por 5min",
+      "conditional": false
+    },
+    "945710548": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Cria uma Pedra de Ressurreição da Guilda que permite que membros da Guilda escolham o seu local de ressureição. Membros da Guilda que tiverem sido abatidos em um raio de 100m da Pedra de Ressurreição poderão usá-la. Pode ser usada até 12 vezes por invocação. A Vida e a Mana dos membros da Guilda ressuscitados serão recuperadas em 35%. A Pedra de Ressurreição permanece ativa por 5min",
+      "conditional": false
+    },
+    "945776093": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Cria uma Pedra de Ressurreição da Guilda que permite que membros da Guilda escolham o seu local de ressurreição. Membros da Guilda que tiverem sido abatidos em um raio de 100m da Pedra de Ressurreição poderão usá-la. Pode ser usada até 18 vezes por invocação. A Vida e a Mana dos membros da Guilda ressuscitados serão recuperadas em 40%. A Pedra de Ressurreição permanece ativa por 5min",
+      "conditional": false
+    },
+    "949196292": {
+      "categories": [
+        "anti_heal",
+        "mana_recovery"
+      ],
+      "description": "Reduz a Regeneração de Vida em [valor]%, Regeneração de Mana em [valor]%, e a Velocidade de Movimento em 25% para todos os inimigos dentro do alcance, e aumenta a Duração da Tontura em [valor]%.",
+      "conditional": false
+    },
+    "950179460": {
+      "categories": [
+        "anti_heal",
+        "mana_recovery"
+      ],
+      "description": "Reduz a Regeneração de Vida em [valor]%, Regeneração de Mana em [valor]%, e a Velocidade de Movimento em 25% para todos os inimigos dentro do alcance, e aumenta a Duração da Tontura em [valor]%.",
+      "conditional": false
+    },
+    "949786139": {
+      "categories": [
+        "anti_heal",
+        "mana_recovery"
+      ],
+      "description": "Reduz a Regeneração de Vida em [valor]%, Regeneração de Mana em [valor]%, e a Velocidade de Movimento em 25% para todos os inimigos dentro do alcance, e aumenta a Duração da Tontura em [valor]%.",
+      "conditional": false
+    },
+    "963818076": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Regeneração de Mana +[valor]",
+      "conditional": false
+    },
+    "963813273": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Regeneração de Vida +[valor]",
+      "conditional": false
+    },
+    "940941781": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Regeneração de Mana +[valor]",
+      "conditional": false
+    },
+    "941072976": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Regeneração de Vida +[valor]",
+      "conditional": false
+    },
+    "939631447": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Regeneração de Mana +[valor]",
+      "conditional": false
+    },
+    "939762585": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Regeneração de Mana +[valor]",
+      "conditional": false
+    },
+    "942905528": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Regeneração de Vida +[valor]",
+      "conditional": false
+    },
+    "947824062": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Regeneração de Mana +[valor]",
+      "conditional": false
+    },
+    "967518978": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Vida Máxima em [valor] e a Regeneração de Vida em [valor] por [valor]s para membros da equipe em um raio de 15m",
+      "conditional": false
+    },
+    "972982730": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Cria uma Ascensão Dracônica aquecida ao redor do usuário. Aliados se tornam imunes a dano de queda, recuperam vida e têm o efeito Encharcamento reduzido gradualmente. Quando usada contra inimigos, aplica o efeito de Repulsão. Alvos que colidirem com uma parede ficam Atordoados. Estoura poças d'água nas proximidades. Consome 3 Bexigas d'Água.",
+      "conditional": true
+    },
+    "948695243": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Recupera 3.000 de Vida durante 10s",
+      "conditional": false
+    },
+    "968650652": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Ao sofrer um acerto, tem 3% de chance de recuperar 150 de Vida",
+      "conditional": true
+    },
+    "953397676": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Em um Bloqueio de Escudo, cria um Escudo com [valor] de Vida por [valor]s. Recarga 20s",
+      "conditional": false
+    },
+    "951425097": {
+      "categories": [
+        "shield"
+      ],
+      "description": "A recarga do Vórtice de Flechas é reduzida em [valor]%. Causa [valor]% do Dano Base ao primeiro inimigo atingido por Vórtice de Flechas e [valor]% do Dano Base a todos os inimigos em um raio de 3m do alvo inicial. Tem [valor]% de chance de aplicar Colisão: Empurrão e lançar o alvo no ar por 3s e remover um tipo de escudo. Ampliação de Dano +50% contra monstros. Transfere o efeito para outro alvo em um raio de 5m uma vez. Causa dano até 6 vezes.",
+      "conditional": true
+    },
+    "948628972": {
+      "categories": [
+        "shield"
+      ],
+      "description": "A recarga do Vórtice de Flechas é reduzida em [valor]%. Ignora Esquiva e causa [valor]% do Dano Base ao primeiro inimigo atingido por Vórtice de Flechas e [valor]% do Dano Base a todos os inimigos em um raio de 3m do alvo inicial. Tem [valor]% de chance de aplicar Colisão: Empurrão e lançar o alvo no ar por 3s e remover um tipo de escudo. Ampliação de Dano +50% contra monstros. Transfere o efeito para outro alvo em um raio de 5m uma vez. Causa dano até 6 vezes.",
+      "conditional": true
+    },
+    "941282550": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ao acertar uma habilidade, o Dano Máximo aumenta em [valor] por [valor]s e recupera [valor] de mana. Recarga de 30s",
+      "conditional": true
+    },
+    "941413625": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Dano de Habilidade de Relâmpago do Cajado aumenta em [valor]%, Custo de Mana das Habilidades de Relâmpago reduz em [valor]%",
+      "conditional": false
+    },
+    "941544700": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Ao usar Coragem de DaVinci, o efeito de Regeneração de Vida desaparece. O Dano Base aumenta em [valor] e a Duração aumenta em [valor]s",
+      "conditional": true
+    },
+    "963298402": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Ao usar a Salvação de Clay ou a Fúria de Janice, cura um adicional de [valor]% da Vida por segundo durante 6s",
+      "conditional": true
+    },
+    "939644158": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Adiciona um efeito a Parede Invencível que reduz o Dano Sofrido em [valor]% e aumenta a Cura Recebida em [valor]%",
+      "conditional": false
+    },
+    "951402676": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Ao acertar com Toque de Desespero, tem uma chance de [valor]% de reduzir toda a Cura Recebida em [valor]% e aplicar um efeito de Fraqueza que causa [valor]% do Dano Base sempre que o alvo é curado por [valor]s. Recarga: [valor]s.",
+      "conditional": true
+    },
+    "940623949": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Ao usar Bênção da Natureza, cura [valor]% do Dano Base +[valor] de Vida por segundo por [valor]s. A cura é duplicada quando chove.",
+      "conditional": true
+    },
+    "944782950": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Tem uma chance de 70% de aplicar Colisão: Empurrão a um alvo ao usar Impacto de Escudo.",
+      "conditional": true
+    },
+    "945486397": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Ao usar Cura Célere em um alvo com menos de 30% da Vida, aplica um Escudo equivalente a [valor]% do Dano Base +[valor]. Recarga: 30s",
+      "conditional": true
+    },
+    "949485243": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Transforma Ataque Rasante em Flecha da Ventania. Reduz o custo de Mana base, mas aumenta o custo de Mana a cada flecha disparada. É possível usar Ataque Rasante enquanto se move. Uso Consecutivo da especialização Ataque Rasante não aplicado.",
+      "conditional": true
+    },
+    "950861826": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Transforma Disparo Preciso Decisivo e Bombardeio Decisivo em Tiro Perfurante Quando Disparo Preciso Decisivo e Bombardeio Decisivo causam dano, tem 100% de chance de causar [valor]% do Dano Base + [valor] de dano por segundo por [valor]s e aplicar Fraqueza: Tiro Perfurante, que reduz a Cura Recebida em [valor]%",
+      "conditional": true
+    },
+    "944144024": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Aumenta a Cura Contínua de Habilidade em [valor]% por membro da equipe em um raio de 16m. Amplia o Alcance de Ataque por membro da equipe em [valor]% do Alcance de Ataque Base enquanto Santuário de Combate está ativo.",
+      "conditional": true
+    },
+    "945722382": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Transforma Disparo Rápido em Tempestade de Lâminas. Ataca o alvo 5 vezes para causar dano proporcional ao Dano Base e aplica um efeito de Fraqueza que reduz a Defesa à Distância, Corpo a Corpo e Mágica em [valor] por [valor]s. Não aplica o efeito Remoção de Escudo da especialização de Disparo Múltiplo",
+      "conditional": false
+    },
+    "945663070": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Transforma Disparo Rápido em [Expansão de Raios] Inflige ao alvo dano proporcional ao Dano Base e dano em cadeia a outros inimigos num raio de 5m do alvo em intervalos de 0,3s. O dano se propaga até 2 vezes, com 1 propagação extra caso o alvo esteja afligido por Encharcamento ou Geada. Quando o alvo está sob o efeito de Fraqueza: Nuvens de Trovão, amplia o dano em [valor]% por acúmulo. Não aplica Remoção de Escudo da especialização de Disparo Múltiplo Com Tempestade de Lâminas ativa, não aplica Expansão de Raios",
+      "conditional": true
+    },
+    "945532157": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Transforma Disparo Rápido em [Expansão de Geada]. Causa dano proporcional ao Dano Base a inimigos atingidos, com [valor]% de chance de aplicar Geada e Fraqueza, reduzindo a Velocidade de Movimento em [valor]% por [valor]s. Não aplica Remoção de Escudo da especialização de Disparo Múltiplo Quando Tempestade de Lâminas ou Expansão de Raios está ativa, não aplica Expansão de Geada",
+      "conditional": true
+    },
+    "940010849": {
+      "categories": [
+        "health_cost"
+      ],
+      "description": "Reduz o consumo de Vida de Eclipse de Sangue em [valor]%.",
+      "conditional": false
+    },
+    "953255714": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Adiciona um efeito que impede que o bloqueio de Ataques de Fúria e de Ira com Habilidades Defensivas consuma acúmulos de Ressonância. Amplia a Recuperação de Vida da Constelação Restauradora em [valor]%.",
+      "conditional": false
+    },
+    "953648933": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Adiciona um efeito que impede que a redução do Dano Base em [valor]% seja aplicada ao término do efeito de Ressonância da Nebulosa causado pelo consumo de todos os acúmulos de Ressonância. Amplia a Recuperação de Vida da Constelação Restauradora em [valor]%.",
+      "conditional": true
+    },
+    "953235338": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Adiciona um efeito que restaura Vida equivalente a [valor]% do Dano Base + [valor] quando um efeito de CM é removido com Estrela Purificadora. Amplia a Recuperação de Vida da Estrela Curativa em [valor]%.",
+      "conditional": true
+    },
+    "953412086": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Amplia a recuperação de Onda Curativa em [valor]%",
+      "conditional": false
+    },
+    "953281109": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Amplia a recuperação passiva de Estrela Curativa em [valor]%",
+      "conditional": false
+    },
+    "941034513": {
+      "categories": [
+        "shield"
+      ],
+      "description": "A cada acerto de Briga Valorosa, Golpe Cruel ou Onda Cortante, tem [valor]% de chance de redução da Vida do Escudo Recebido do alvo em [valor]% por [valor]s. Causa dano equivalente a [valor]% do Dano Base, ignorando Esquiva e Defesa de alvos com Escudo. Não aplica a especialização Enfraquecer Escudo de Briga Valorosa",
+      "conditional": true
+    },
+    "953411205": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Transforma Barreira de Contra-ataque em Barreira Obsessiva. Anula os efeitos Aumento de Chance de Bloqueio e Contra-ataque. Enquanto está ativa, causa [valor]% do Dano Base a cada 0,5s a todos os inimigos num raio de 3m, e cada acerto de Barreira Obsessiva reduz a recarga de Impacto de Escudo em [valor]s. Não aplica a especialização Barreira Concentrada de Barreira Obsessiva",
+      "conditional": true
+    },
+    "953222149": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria um escudo de valor igual a [valor] de Vida por [valor]s após a aplicação de Fraqueza: Provocação a um monstro",
+      "conditional": true
+    },
+    "944405732": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Ao usar Habilidades de Cura em um aliado, aumenta a Cura em [valor]% por acúmulo. Ao acertar com Espírito de Batalha, aumenta o Dano Base em [valor]% por acúmulo.",
+      "conditional": true
+    },
+    "957531252": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Ao acertar um ataque com Apanhador de Vento, tem [valor]% de chance de remover 1 vantagem do alvo. Efeitos de habilidade aplicáveis Parede Invencível, Bastião Vigoroso, Concha da Fortitude, Êxtase, Barreira de Contra-ataque, Sentinela Implacável, Barreira Abençoada, Constelação Restauradora, Bênção da Natureza, Coragem de DaVinci, Sombra Faminta, Foco Elevado, Difusão Altruísta, Colheita da Dor, Luar Brilhante, Espírito Umbral, Véu de Distorção, Toque de Cura, Paz Interior",
+      "conditional": true
+    },
+    "968561864": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Quando sua Vida atinge menos de 20% durante o uso de Aura Sanguessuga, restaura [valor] de Vida 1 vez. A cada vez que você anula um efeito de recuperação de um inimigo com Sombra Faminta, anula 1 efeito de redução de Vida ou de Vida do Escudo do usuário.",
+      "conditional": true
+    },
+    "952590904": {
+      "categories": [
+        "health_regen",
+        "mana_recovery"
+      ],
+      "description": "Bênção da Natureza se torna Semente da Árvore do Mundo Agora você pode colocar até 3 sementes em localizações desejadas, e cada uma dura [valor]s. Muda o Custo de Mana para [valor]. Aliados que pisarem em uma semente receberão um aumento de [valor] de Regeneração de Vida, que se amplia em [valor]%, e um aumento de [valor] de Regeneração de Mana por [valor]s. Quando aplicado, o efeito remove 1 efeito de Fraqueza, e a semente desaparece logo em seguida. É possível plantar as sementes novamente após 6s. O Redemoinho de Especialização 3 só se aplica à primeira colocação.",
+      "conditional": true
+    },
+    "958120070": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Quando você usa Devoção Sangrenta ou Santuário Devoto, cria um escudo em você e em um alvo equivalente a [valor]% da sua Vida Máxima, que ignora efeitos de anulação de escudo por [valor]s, e anula os efeitos de Vida do Escudo ▼ e Vida do Escudo Recebido ▼.",
+      "conditional": true
+    },
+    "949885792": {
+      "categories": [
+        "revive"
+      ],
+      "description": "Ressuscita um membro da equipe abatido na posição do usuário e aplica Redução de Dano +[valor] por [valor]s",
+      "conditional": false
+    },
+    "948868513": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Ao acertar um ataque com habilidades de Arco Longo, restaura [valor] de Vida por 6s. Aumenta a Recuperação de Vida em 100% durante a chuva. Recarga 30s",
+      "conditional": true
+    },
+    "951604547": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Ao bloquear ou esquivar, recupera [valor] de Vida",
+      "conditional": true
+    },
+    "963780334": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Quando um Efeito de Comida é aplicado, Regeneração de Vida +[valor]",
+      "conditional": true
+    },
+    "950493909": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Quando Bênção da Terra estiver ativa, agora restaura Vida em quantidade igual a [valor]% do Dano Base + [valor] por 5s ao usar Habilidades de Sobrevivência de Arco Longo.",
+      "conditional": true
+    },
+    "950468398": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Quando Escudo Dedicado estiver ativo, agora aumenta a Regeneração de Vida em mais [valor] por [valor]s na ativação do efeito.",
+      "conditional": true
+    },
+    "950533924": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Quando estiver dentro de um Redemoinho, a Velocidade de Recarga de Redemoinho aumenta em mais [valor]%, mas a quantidade total de Cura reduz em [valor]%.",
+      "conditional": true
+    },
+    "971390630": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Quando a Vida atinge 30% ou menos, concede um Escudo com [valor] de Vida que dura por [valor]s e aplica um efeito de Redução de Dano de [valor]. Recarga de 60s.",
+      "conditional": true
+    },
+    "964605501": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Essa habilidade só pode ser aprimorada com um Livro de Evolução de Habilidade Ativa: Onipotência. Redefine o tempo de recarga da habilidade usada anteriormente. Só pode ser usada quando houver uma habilidade cujo tempo de recarga possa ser redefinido e não é afetada pelas estatísticas de Velocidade de Recarga nem por efeitos de Redução da Recarga de da Habilidade. Habilidades Inaplicáveis Orgulho Imortal, Esmagamento Devastador, Cortina de Gelo, Raio do Julgamento, Ataque Rasante, Vórtice de Flechas, Morte Vinda de Cima, Fonte da Vida, Destruidor Estelar, Dilatação do Tempo, Ecos da Distorção Se uma das seguintes habilidades for usada dentro de 5s após a redefinição da recarga, seu efeito é potencializado uma vez. Disparo Preciso Decisivo Ao acertar um ataque, causa dano por segundo igual a [valor]% - [valor]% do Dano Base por 3s, proporcional ao tempo de carregamento. O dano por segundo ignora a Vida do Escudo de alvos em JxJ. Onda Supersônica Aumenta o dano e a recuperação contínua em [valor]%. Toque de Cura Após a aplicação do efeito, restaura adicionalmente Vida igual a [valor]% do Dano Base + [valor] por acúmulo de Toque de Cura. Além disso, o tempo de recarga restante de Quebra de Limite diminui em [valor]s. Toque Purificador Remove todas as desvantagens do alvo. Se a remoção for bem-sucedida, a recarga restante de Quebra de Limite diminui em [valor]s.",
+      "conditional": true
+    },
+    "952325558": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Transforma Ataque Rasante numa habilidade contínua chamada Flecha da Ventania, que dispara Flechas sem interrupção. Reduz o custo de Mana base em [valor], mas aumenta o custo de Mana em [valor] a cada Flecha disparada. É possível atacar 30 vezes consecutivas. Cada ataque causa dano equivalente a [valor]% do Dano Base + [valor]. Ao acertar um ataque, aplica o efeito Na Mosca ao alvo por [valor]s e potencializa outras habilidades do Arco Longo. Na Mosca é acumulável até 10 vezes. Aumenta o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "952388698": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Transforma Ataque Rasante numa habilidade contínua chamada Flecha da Ventania, que dispara Flechas sem interrupção. Reduz o custo de Mana base em [valor], mas aumenta o custo de Mana em [valor] a cada Flecha disparada. É possível atacar 30 vezes consecutivas. Cada ataque causa dano equivalente a [valor]% do Dano Base + [valor]. Ao acertar um ataque, aplica o efeito Na Mosca ao alvo por [valor]s e potencializa outras habilidades do Arco Longo. Na Mosca é acumulável até 10 vezes. Aumenta o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "964341719": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Regeneração de Vida em [valor] e a Recuperação de Vida Contínua de habilidades em [valor]%.",
+      "conditional": false
+    },
+    "947543986": {
+      "categories": [
+        "health_regen",
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Vida dos membros da equipe num raio de 16m em [valor] e, em seguida, amplia-a em [valor]% e aumenta a Regeneração de Mana em [valor] por [valor]s. Remove 1 efeito de Fraqueza quando o efeito é aplicado.",
+      "conditional": true
+    },
+    "963774787": {
+      "categories": [
+        "health_regen",
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Vida dos membros da equipe num raio de 16m em [valor] e, em seguida, amplia-a em [valor]% e aumenta a Regeneração de Mana em [valor] por [valor]s. Remove 1 efeito de Fraqueza quando o efeito é aplicado.",
+      "conditional": true
+    },
+    "954428669": {
+      "categories": [
+        "health_regen",
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Vida dos membros da equipe num raio de 16m em [valor] e, em seguida, amplia-a em [valor]% e aumenta a Regeneração de Mana em [valor] por [valor]s. Remove 1 efeito de Fraqueza quando o efeito é aplicado.",
+      "conditional": true
+    },
+    "954636178": {
+      "categories": [
+        "health_regen",
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Vida dos membros da equipe num raio de 16m em [valor] e, em seguida, amplia-a em [valor]% e aumenta a Regeneração de Mana em [valor] por [valor]s. Remove 1 efeito de Fraqueza quando o efeito é aplicado.",
+      "conditional": true
+    },
+    "954964248": {
+      "categories": [
+        "health_regen",
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Vida dos membros da equipe num raio de 16m em [valor] e, em seguida, amplia-a em [valor]% e aumenta a Regeneração de Mana em [valor] por [valor]s. Remove 1 efeito de Fraqueza quando o efeito é aplicado.",
+      "conditional": true
+    },
+    "963905802": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Concede um efeito de cura a aliados que restaura Vida equivalente a [valor]% do Dano Base + [valor] de Vida por segundo durante 6s. Acumulável até 3 vezes. Compartilha a recarga com Véu de Distorção e Cura Célere.",
+      "conditional": false
+    },
+    "963351634": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumento de Recuperação Constante de Jogador Amigável + Regeneração de Vida",
+      "conditional": false
+    },
+    "953359323": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Durante a Transformação de Guardião, aumenta a Resistência de CM Total em [valor] e recupera [valor] de Vida sempre que você ataca um alvo.",
+      "conditional": false
+    },
+    "942729371": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor] se a Mana atual do usuário for 30% ou menos da Mana Máxima. No entanto, a Mana Máxima reduz em [valor]",
+      "conditional": true
+    },
+    "943331005": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Quando Garra Corrupta estiver ativa, agora restaura [valor] de Vida por [valor]s ao atacar oponentes enquanto a Vida do usuário estiver em 30% da Vida Máxima ou menos. Recarga: 60s.",
+      "conditional": true
+    },
+    "964335694": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964318866": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964069663": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao bloquear um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] de dano ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para bloquear ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] de dano ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, restaura Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use quando sofrer o efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964135192": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964566213": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964631745": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "969783791": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "963007257": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "953174691": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "948671427": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "963676388": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "963938610": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964004134": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "970177015": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "961828957": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "953371309": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "949130265": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem [valor]% de chance de infligir Fraqueza e Marcar o alvo por [valor]s. Cada ataque que atinge um alvo marcado causa [valor]% do Dano Base + [valor] de dano como dano adicional. Ao causar dano a um alvo marcado, o dano se acumula até [valor]% do Dano Base. Quando a Marca termina, ela explode, causando [valor]% do dano acumulado como dano adicional. A Marca é acumulável até 2 vezes e explode ao se acumular para causar dano, e o dano total acumulado é zerado. Reduz a Cura Recebida pelo alvo marcado em 80%. O dano acumulado da Marca só pode ser aplicado a um alvo por vez. Não aplica efeitos adicionais do dano adicional da Marca.",
+      "conditional": true
+    },
+    "947535277": {
+      "categories": [
+        "health_cost",
+        "mana_recovery"
+      ],
+      "description": "Consome [valor] de Vida para restaurar [valor] de Mana",
+      "conditional": false
+    },
+    "964344854": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964213950": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "964279434": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto estiver imóvel, causa [valor]% do Dano Base + [valor] ao atacante. Ao bloquear um Ataque de Fúria dentro de 0,5s, o Ataque Vampírico também será ativado por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m em direção à localização designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, causa [valor]% do Dano Base + [valor] ao alvo atual e o Bloqueio de Ruptura se transforma em Golpe Imobilizante por 3s. Ativa o Ataque da Arma Secundária por 3s Atacar um alvo dentro de 6m com Bloqueio de Ruptura tem uma chance de [valor]% de aplicar Colisão: Empurrão. No estado de Colisão, a direção mais desfavorável ao alvo será aplicada. Alvos que colidem com paredes ficam Atordoados por [valor]s Ataque Vampírico Ao acertar um ataque, regenera a Vida equivalente a [valor]% do dano causado. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "967061638": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Mana. Ao se defender de um Ataque de Fúria dentro de 0,5s, Bloqueio de Lâmina se transforma em Adaga Envenenada por [valor]s. Ataques de Ira não podem ser defendidos. Use comandos de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou Ira, fica sob efeito de Furtividade por [valor]s e aumenta a Regeneração de Mana em [valor]. Bloqueio de Lâmina se transforma em Adaga Envenenada. O primeiro ataque enquanto estiver sob efeito de Furtividade será um Acerto Crítico. A Furtividade é cancelada quando o usuário ataca ou se transforma. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga: 30s",
+      "conditional": true
+    },
+    "966997111": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Mana. Ao se defender de um Ataque de Fúria dentro de 0,5s, Bloqueio de Lâmina se transforma em Adaga Envenenada por [valor]s. Ataques de Ira não podem ser defendidos. Use comandos de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou Ira, fica sob efeito de Furtividade por [valor]s e aumenta a Regeneração de Mana em [valor]. Bloqueio de Lâmina se transforma em Adaga Envenenada. O primeiro ataque enquanto estiver sob efeito de Furtividade será um Acerto Crítico. A Furtividade é cancelada quando o usuário ataca ou se transforma. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga: 30s",
+      "conditional": true
+    },
+    "967652481": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Mana. Ao se defender de um Ataque de Fúria dentro de 0,5s, Bloqueio de Lâmina se transforma em Adaga Envenenada por [valor]s. Ataques de Ira não podem ser defendidos. Use comandos de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou Ira, fica sob efeito de Furtividade por [valor]s e aumenta a Regeneração de Mana em [valor]. Bloqueio de Lâmina se transforma em Adaga Envenenada. O primeiro ataque enquanto estiver sob efeito de Furtividade será um Acerto Crítico. A Furtividade é cancelada quando o usuário ataca ou se transforma. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga: 30s",
+      "conditional": true
+    },
+    "966800498": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Mana. Ao se defender de um Ataque de Fúria dentro de 0,5s, Bloqueio de Lâmina se transforma em Adaga Envenenada por [valor]s. Ataques de Ira não podem ser defendidos. Use comandos de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou Ira, fica sob efeito de Furtividade por [valor]s e aumenta a Regeneração de Mana em [valor]. Bloqueio de Lâmina se transforma em Adaga Envenenada. O primeiro ataque enquanto estiver sob efeito de Furtividade será um Acerto Crítico. A Furtividade é cancelada quando o usuário ataca ou se transforma. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga: 30s",
+      "conditional": true
+    },
+    "955843372": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Mana. Ao se defender de um Ataque de Fúria dentro de 0,5s, Bloqueio de Lâmina se transforma em Adaga Envenenada por [valor]s. Ataques de Ira não podem ser defendidos. Use comandos de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou Ira, fica sob efeito de Furtividade por [valor]s e aumenta a Regeneração de Mana em [valor]. Bloqueio de Lâmina se transforma em Adaga Envenenada. O primeiro ataque enquanto estiver sob efeito de Furtividade será um Acerto Crítico. A Furtividade é cancelada quando o usuário ataca ou se transforma. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga: 30s",
+      "conditional": true
+    },
+    "968397606": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Mana. Ao se defender de um Ataque de Fúria dentro de 0,5s, Bloqueio de Lâmina se transforma em Adaga Envenenada por [valor]s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou Ira, fica sob efeito de Furtividade por [valor]s e aumenta a Regeneração de Mana em [valor].Bloqueio de Lâmina se transforma em Adaga Envenenada. O primeiro ataque enquanto estiver sob efeito de Furtividade será um Acerto Crítico. A Furtividade é cancelada quando o usuário ataca ou se transforma.",
+      "conditional": true
+    },
+    "968594203": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Mana. Ao se defender de um Ataque de Fúria dentro de 0,5s, Bloqueio de Lâmina se transforma em Adaga Envenenada por [valor]s. Ataques de Ira não podem ser defendidos. Use comandos de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou Ira, fica sob efeito de Furtividade por [valor]s e aumenta a Regeneração de Mana em [valor]. Bloqueio de Lâmina se transforma em Adaga Envenenada. O primeiro ataque enquanto estiver sob efeito de Furtividade será um Acerto Crítico. A Furtividade é cancelada quando o usuário ataca ou se transforma. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga: 30s",
+      "conditional": true
+    },
+    "956048424": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Arremessa até 5 adagas em inimigos em um raio de 5m, causando [valor]% de dano, aplicando Fraqueza: Veneno, e reduzindo a Cura Recebida em [valor]%. O ataque será distribuído se houver múltiplos inimigos dentro do alcance.",
+      "conditional": true
+    },
+    "967252137": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Arremessa até 5 adagas em inimigos em um raio de 5m, causando [valor]% de dano, aplicando Fraqueza: Veneno, e reduzindo a Cura Recebida em [valor]%. O ataque será distribuído se houver múltiplos inimigos dentro do alcance.",
+      "conditional": true
+    },
+    "966858928": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Arremessa até 5 adagas em inimigos em um raio de 5m, causando [valor]% de dano, aplicando Fraqueza: Veneno, e reduzindo a Cura Recebida em [valor]%. O ataque será distribuído se houver múltiplos inimigos dentro do alcance.",
+      "conditional": true
+    },
+    "967055526": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Arremessa até 5 adagas em inimigos em um raio de 5m, causando [valor]% de dano, aplicando Fraqueza: Veneno, e reduzindo a Cura Recebida em [valor]%. O ataque será distribuído se houver múltiplos inimigos dentro do alcance.",
+      "conditional": true
+    },
+    "954402180": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Abater um alvo dentro de 10s aumenta a Regeneração de Mana em [valor] e Velocidade de Movimento em [valor]% por [valor]s. A primeira habilidade usada é considerada um ataque pelas costas. O efeito dura [valor]s durante a noite",
+      "conditional": false
+    },
+    "952960396": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Abater um alvo dentro de 10s aumenta a Velocidade de Ataque em [valor]%, a Regeneração de Mana em [valor] e a Velocidade de Movimento em [valor]% por [valor]s. A primeira habilidade usada durante o período não consome Mana. O efeito dura [valor]s durante a noite",
+      "conditional": false
+    },
+    "955843963": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Abater um alvo dentro de 10s aumenta a Regeneração de Mana em [valor] e Velocidade de Movimento em [valor]% por [valor]s. O efeito dura [valor]s durante a noite",
+      "conditional": false
+    },
+    "940620545": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e recupera Vida equivalente a [valor]% do dano causado",
+      "conditional": false
+    },
+    "947572762": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "940632399": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "967030535": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "968574182": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "940795465": {
+      "categories": [
+        "anti_heal"
+      ],
+      "description": "Cobre as adagas com veneno por [valor]s para aplicar Fraqueza: Veneno a todos os ataques seguintes. Veneno inflige [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo por [valor]s. O dano reduz a Regeneração de Vida do alvo em [valor]% por acúmulo e ignora a Vida do Escudo de alvos no JxJ. Acumulável até [valor] vezes. Usar a habilidade outra vez dentro de [valor]s ativa um ataque de apunhalada com as duas mãos, causando [valor]% do Dano Base + [valor] de dano com cada arma. Em seguida, causa [valor]% do Dano Base + [valor] de dano com um giro. Ao acertar um ataque contra inimigos com 20 acúmulos de Veneno, aumenta o Dano de Ataque Pesado em [valor]% por [valor]s. Amplia o dano do ataque giratório em [valor]% por acúmulo de Veneno. Amplia em [valor]% o dano contra monstros.",
+      "conditional": true
+    },
+    "940751617": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e recupera Vida equivalente a [valor]% do dano causado",
+      "conditional": false
+    },
+    "947558144": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "939780553": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "967685933": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "968377599": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Deixa um Estigma no alvo que reduz a Cura Recebida em [valor]% por [valor]s. Quando o efeito termina, causa [valor]% do Dano Base + [valor] de dano. Amplia o dano contra alvos em que o usuário aplicou Veneno, Nuvens de Trovão ou Sangramento em [valor]% por acúmulo. Ignora a Chance de Bloqueio do alvo. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "947564761": {
+      "categories": [
+        "anti_heal"
+      ],
+      "description": "Cobre as adagas com veneno por [valor]s para aplicar Fraqueza: Veneno a todos os ataques seguintes. Veneno inflige [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo por [valor]s. O dano reduz a Regeneração de Vida do alvo em [valor]% por acúmulo e ignora a Vida do Escudo de alvos no JxJ. Acumulável até [valor] vezes. Usar a habilidade outra vez dentro de [valor]s ativa um ataque de apunhalada com as duas mãos, causando [valor]% do Dano Base + [valor] de dano com cada arma. Em seguida, causa [valor]% do Dano Base + [valor] de dano com um giro. Ao acertar um ataque contra inimigos com 20 acúmulos de Veneno, aumenta o Dano de Ataque Pesado em [valor]% por [valor]s. Amplia o dano do ataque giratório em [valor]% por acúmulo de Veneno. Amplia em [valor]% o dano contra monstros.",
+      "conditional": true
+    },
+    "940729956": {
+      "categories": [
+        "anti_heal"
+      ],
+      "description": "Cobre as adagas com veneno por [valor]s para aplicar Fraqueza: Veneno a todos os ataques seguintes. Veneno inflige [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo por [valor]s. O dano reduz a Regeneração de Vida do alvo em [valor]% por acúmulo e ignora a Vida do Escudo de alvos no JxJ. Acumulável até [valor] vezes. Usar a habilidade outra vez dentro de [valor]s ativa um ataque de apunhalada com as duas mãos, causando [valor]% do Dano Base + [valor] de dano com cada arma. Em seguida, causa [valor]% do Dano Base + [valor] de dano com um giro. Ao acertar um ataque contra inimigos com 20 acúmulos de Veneno, aumenta o Dano de Ataque Pesado em [valor]% por [valor]s. Amplia o dano do ataque giratório em [valor]% por acúmulo de Veneno. Amplia em [valor]% o dano contra monstros.",
+      "conditional": true
+    },
+    "955956838": {
+      "categories": [
+        "anti_heal"
+      ],
+      "description": "Cobre as adagas com veneno por [valor]s para aplicar Fraqueza: Veneno a todos os ataques seguintes. Veneno inflige [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo por [valor]s. O dano reduz a Regeneração de Vida do alvo em [valor]% por acúmulo e ignora a Vida do Escudo de alvos no JxJ. Acumulável até [valor] vezes. Usar a habilidade outra vez dentro de [valor]s ativa um ataque de apunhalada com as duas mãos, causando [valor]% do Dano Base + [valor] de dano com cada arma. Em seguida, causa [valor]% do Dano Base + [valor] de dano com um giro. Ao acertar um ataque contra inimigos com 20 acúmulos de Veneno, aumenta o Dano de Ataque Pesado em [valor]% por [valor]s. Amplia o dano do ataque giratório em [valor]% por acúmulo de Veneno. Amplia em [valor]% o dano contra monstros.",
+      "conditional": true
+    },
+    "955891290": {
+      "categories": [
+        "anti_heal"
+      ],
+      "description": "Cobre as adagas com veneno por [valor]s para aplicar Fraqueza: Veneno a todos os ataques seguintes. Veneno inflige [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo por [valor]s. O dano reduz a Regeneração de Vida do alvo em [valor]% por acúmulo e ignora a Vida do Escudo de alvos no JxJ. Acumulável até [valor] vezes. Usar a habilidade outra vez dentro de [valor]s ativa um ataque de apunhalada com as duas mãos, causando [valor]% do Dano Base + [valor] de dano com cada arma. Em seguida, causa [valor]% do Dano Base + [valor] de dano com um giro. Ao acertar um ataque contra inimigos com 20 acúmulos de Veneno, aumenta o Dano de Ataque Pesado em [valor]% por [valor]s. Amplia o dano do ataque giratório em [valor]% por acúmulo de Veneno. Amplia em [valor]% o dano contra monstros.",
+      "conditional": true
+    },
+    "941359391": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria um escudo para esquivar da maioria dos Ataques Mágicos por [valor]s, ao sofrer um acerto de um Ataque Mágico. Tem uma recarga de 30s",
+      "conditional": true
+    },
+    "939721573": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Quando Instintos de Assassino estiverem ativos, agora restauram Vida em [valor]% dos Acertos Críticos Corpo a Corpo, mas reduzem a Chance de Acerto em [valor]%.",
+      "conditional": true
+    },
+    "941293337": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta o dano do Ataque Básico da adaga em [valor]%, mas consome [valor] de mana por ataque. Causa [valor]% de dano adicional a alvos com escudo. Não aplica os efeitos adicionais do dano adicional.",
+      "conditional": false
+    },
+    "939592146": {
+      "categories": [
+        "health_cost"
+      ],
+      "description": "Sob o status Eclipse de Sangue, consome [valor]% + [valor] de Vida por segundo em vez de Vigor e remove o status Eclipse de Sangue quando a Vida cai para menos de 5%.",
+      "conditional": true
+    },
+    "980914971": {
+      "categories": [
+        "direct_heal",
+        "shield"
+      ],
+      "description": "Ao aplicar o efeito Escudo, restaura a Vida do alvo que recebeu o Escudo em [valor]% do Dano Base + [valor]. Usar Escudo em si recupera sua Vida mais uma vez.",
+      "conditional": true
+    },
+    "981177122": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Quando Ciclo Estelar está ativo, agora aumenta a Recuperação de Mana em [valor]% do Mana Máximo.",
+      "conditional": true
+    },
+    "981242658": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Quando Véu Eterno está ativo, agora aumenta a Cura Recebida em [valor]% e a Vida do Escudo Recebido em [valor]%, proporcionalmente ao nível de encantamento, em vez de aumentar a Vida do Escudo. Aumenta a Vida do Escudo Recebido em mais [valor]% a cada 1.000 de Vida Máxima, até 50.000.",
+      "conditional": true
+    },
+    "980652201": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Eficiência do Custo de Mana em [valor]% quando o Mana restante está em 33% ou menos.",
+      "conditional": true
+    },
+    "980594532": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Cria uma onda na direção designada, recuperando a Vida dos membros da equipe em [valor]% do Dano Base + [valor] de Vida em uma área com 12m de comprimento e 6m de largura. Efeito de Orbe O Orbe no alcance da onda ressoa, recuperando a Vida dos membros da equipe em [valor]% do Dano Base + [valor] de Vida em um raio de 3m após um breve intervalo. Reinicia a duração do Orbe ressonante. Orbe: Efeito de Estrela Curativa Recupera instantaneamente a Vida dos membros da equipe em um raio de 4m após ressoar. Dobra a recuperação de Vida da Ressonância.",
+      "conditional": false
+    },
+    "979484954": {
+      "categories": [
+        "health_cost"
+      ],
+      "description": "Habilidade especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência. Cria uma Muralha Defensiva de Guardião com raio de 5m no local-alvo, absorvendo 40% do dano sofrido pelos membros da equipe na área. Essa área dura [valor]s e tem Vida igual a [valor]% do Dano Base + [valor]. Os alvos afetados não podem receber uma nova Muralha Defensiva de Guardião por 45s. Efeito de Orbe Ao evocar a Muralha Defensiva de Guardião, cada Orbe na área é consumido e aumenta a Vida da Muralha Defensiva de Guardião em [valor]%.",
+      "conditional": true
+    },
+    "953371305": {
+      "categories": [
+        "health_cost"
+      ],
+      "description": "Habilidade especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência. Cria uma Muralha Defensiva de Guardião com raio de 5m no local-alvo, absorvendo 40% do dano sofrido pelos membros da equipe na área. Essa área dura [valor]s e tem Vida igual a [valor]% do Dano Base + [valor]. Os alvos afetados não podem receber uma nova Muralha Defensiva de Guardião por 45s. Efeito de Orbe Ao evocar a Muralha Defensiva de Guardião, cada Orbe na área é consumido e aumenta a Vida da Muralha Defensiva de Guardião em [valor]%.",
+      "conditional": true
+    },
+    "953174723": {
+      "categories": [
+        "health_cost"
+      ],
+      "description": "Habilidade especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência. Cria uma Muralha Defensiva de Guardião com raio de 5m no local-alvo, absorvendo 40% do dano sofrido pelos membros da equipe na área. Essa área dura [valor]s e tem Vida igual a [valor]% do Dano Base + [valor]. Os alvos afetados não podem receber uma nova Muralha Defensiva de Guardião por 45s. Efeito de Orbe Ao evocar a Muralha Defensiva de Guardião, cada Orbe na área é consumido e aumenta a Vida da Muralha Defensiva de Guardião em [valor]%.",
+      "conditional": true
+    },
+    "981188443": {
+      "categories": [
+        "health_cost"
+      ],
+      "description": "Habilidade especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência. Cria uma Muralha Defensiva de Guardião com raio de 5m no local-alvo, absorvendo 40% do dano sofrido pelos membros da equipe na área. Essa área dura [valor]s e tem Vida igual a [valor]% do Dano Base + [valor]. Os alvos afetados não podem receber uma nova Muralha Defensiva de Guardião por 45s. Efeito de Orbe Ao evocar a Muralha Defensiva de Guardião, cada Orbe na área é consumido e aumenta a Vida da Muralha Defensiva de Guardião em [valor]%.",
+      "conditional": true
+    },
+    "979812962": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Uma habilidade especial que só pode ser aprimorada com Livro de Evolução Precioso: Onipotência. Concede a um aliado 5 acúmulos de Restauração por [valor]s. Recupera Vida em [valor]% do Dano Base + [valor] de Vida ao sofrer um ataque enquanto o efeito de Restauração estiver ativo. Defender-se de um ataque de Fúria ou Ira com Habilidades Defensivas recupera Vida sem consumir nenhum acúmulo. Quando a vida ficar abaixo de 50%, multiplica a recuperação de Vida em [valor] e, quando a Vida ficar abaixo de 25%, multiplica a recuperação de Vida em [valor]. Só pode haver um efeito de Restauração aplicado a cada alvo, e a recuperação de Vida só pode ser ativada 1 vez por acúmulo.",
+      "conditional": true
+    },
+    "980965339": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede a um aliado um Escudo com Vida igual a [valor]% do Dano Base + [valor] por [valor]s. Devolve [valor]% do Mana gasto quando a Vida do Escudo acaba, encerrando o efeito. Compartilha a recarga com Toque de Cura e Cura Célere.",
+      "conditional": true
+    },
+    "980760130": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede ao conjurador um Escudo com Vida igual a [valor]% do Dano Base + [valor] por [valor]s. Enquanto o Escudo estiver intacto, aumenta o Dano Base em [valor]%. Desativa Véu de Amplificação e reduz o Dano Base em [valor]% por [valor]s quando a Vida do Escudo acabar, encerrando o efeito.",
+      "conditional": true
+    },
+    "980546685": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Recupera [valor] de Mana quando um Orbe se desintegra devido a outra habilidade. Se o Mana ficar abaixo de 50%, aumenta a restauração de Mana em [valor] vezes.",
+      "conditional": true
+    },
+    "953390312": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Sempre que você acionar um Efeito de Orbe com uma habilidade, aumentará a Cura de Habilidade em [valor]% por [valor]s. Acumulável até 5 vezes.",
+      "conditional": false
+    },
+    "980612223": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Vida do Escudo em [valor]%. Aumenta a Vida do Escudo em mais [valor]% para cada 1.000 de Mana Máximo, até 30.000.",
+      "conditional": false
+    },
+    "950785218": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um escudo com [valor] de Vida por 3s ao derrotar um oponente com habilidade de Lança. Tem uma recarga de 25s",
+      "conditional": true
+    },
+    "950260601": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Quando Ira Mortal estiver ativa, restaura Vida em [valor]% do Dano Base + [valor] de dano proporcional ao nível do encantamento, mas reduz o dano em [valor]%.",
+      "conditional": true
+    },
+    "950277937": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Cria uma área do tamanho do Alcance de Ataque Básico que segue o usuário por [valor]s e causa [valor]% do Dano Base + [valor] por segundo. Recupera Vida equivalente a [valor]% do dano causado. Cada acerto bem-sucedido remove 1 acúmulo do efeito de cura mais recente aplicado por uma habilidade de jogador.",
+      "conditional": false
+    },
+    "968618786": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Cria uma área do tamanho do Alcance de Ataque Básico que segue o usuário por [valor]s e causa [valor]% do Dano Base + [valor] por segundo. Recupera Vida equivalente a [valor]% do dano causado. Cada acerto bem-sucedido remove 1 acúmulo do efeito de cura mais recente aplicado por uma habilidade de jogador.",
+      "conditional": false
+    },
+    "950300026": {
+      "categories": [
+        "lifesteal"
+      ],
+      "description": "Cria uma área do tamanho do Alcance de Ataque Básico que segue o usuário por [valor]s e causa [valor]% do Dano Base + [valor] por segundo. Recupera Vida equivalente a [valor]% do dano causado. Cada acerto bem-sucedido remove 1 acúmulo do efeito de cura mais recente aplicado por uma habilidade de jogador.",
+      "conditional": false
+    },
+    "968120508": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta o Dano Máximo em [valor]% por 1.000 da Mana Máxima, até 30.000 da Mana Máxima",
+      "conditional": false
+    },
+    "968186045": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Defesa em [valor]% da Regeneração de Mana (até 3.500) + [valor].",
+      "conditional": false
+    },
+    "968317119": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor]% quando a Mana do usuário for de 30% da Mana Máxima ou menos",
+      "conditional": true
+    },
+    "968447559": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Reduz o Aumento do Mana Máximo da Amplificação de Mana em [valor]%, mas aumenta o Aumento da Vida Máxima da Amplificação de Mana em [valor]%.",
+      "conditional": false
+    },
+    "986521486": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Disparar um Projétil Mágico ou executar um Ataque Básico com Cajados, Varinhas ou Orbes tem uma chance de [valor]% de disparar um projétil adicional que causa [valor]% do Dano Base. Chance de projeto adicional +[valor]% a cada ponto de Regeneração de Mana.",
+      "conditional": true
+    },
+    "964209795": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Disparar um Projétil Mágico ou executar um Ataque Básico com Cajados, Varinhas ou Orbes tem uma chance de [valor]% de disparar um projétil adicional que causa [valor]% do Dano Base. Chance de projeto adicional +[valor]% a cada ponto de Regeneração de Mana. Não aplica efeitos adicionais do segundo projétil.",
+      "conditional": true
+    },
+    "963095673": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Disparar um Projétil Mágico ou executar um Ataque Básico com Cajados, Varinhas ou Orbes tem uma chance de [valor]% de disparar um projétil adicional que causa [valor]% do Dano Base. Chance de projeto adicional +[valor]% a cada ponto de Regeneração de Mana.",
+      "conditional": true
+    },
+    "968425507": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria um escudo que dura [valor]s e quem conjurou perde Mana em vez de Vida. Essa habilidade só pode ser aprimorada com um Livro de Evolução de Habilidade Ativa Precioso: Onipotência",
+      "conditional": false
+    },
+    "949366871": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor]. Permanecer imóvel por [valor]s aumenta a Regeneração de Mana em mais [valor]. O efeito permanece por 2s após se mover. Habilidades de Movimento não cancelam o efeito",
+      "conditional": true
+    },
+    "964406495": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor]. Permanecer imóvel por [valor]s também aumenta a Regeneração de Mana em [valor] e a Chance de Ataque Pesado Mágico, Corpo a Corpo e à Distância em [valor]. O efeito permanece por 2s após se mover. Habilidades de Movimento não cancelam o efeito",
+      "conditional": true
+    },
+    "964340947": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor]. Permanecer imóvel por [valor]s aumenta a Regeneração de Mana em mais [valor]. O efeito permanece por 2s após se mover. Habilidades de Movimento não cancelam o efeito",
+      "conditional": true
+    },
+    "963282215": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Canaliza paz interior para aumenta a Regeneração de Mana em [valor]% (duplica se o usuário estiver sob efeito de Encharcamento) por [valor]s. Se não estiver sob efeito de Encharcamento, aumenta a Eficiência do Custo de Mana em [valor]% por [valor]s após o término da habilidade. A habilidade será encerrada se o usuário se mover",
+      "conditional": true
+    },
+    "963308370": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Canaliza paz interior para aumenta a Regeneração de Mana em [valor]% (duplica se o usuário estiver sob efeito de Encharcamento) por [valor]s. Se não estiver sob efeito de Encharcamento, aumenta a Eficiência do Custo de Mana em [valor]% por [valor]s após o término da habilidade. A habilidade será encerrada se o usuário se mover",
+      "conditional": true
+    },
+    "962636775": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Canaliza paz interior para aumentar a Regeneração de Mana em [valor]% (duplica se o usuário estiver sob efeito de Encharcamento) por [valor]s. Se não estiver sob efeito de Encharcamento, aumenta a Eficiência do Custo de Mana em [valor]% por [valor]s após o término da habilidade. A habilidade será encerrada se o usuário se mover.",
+      "conditional": true
+    },
+    "948953745": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Transforma a Especialização 1 de Paz Interior [Bênção do Trovão] em [Sombra do Trovão], que paira sobre os alvos e não pode ser esquivada ou purificada. Aplica Fraqueza: Nuvens de Trovão a um alvo aleatório dentro da área e causa dano equivalente a [valor]% do Dano Base por ativação durante [valor]s. Aumenta a Regeneração de Mana em [valor]% por [valor]s. Se quem conjurou estiver Encharcado, dobra a Ampliação de Regeneração de Mana. Caso contrário, aumenta a Eficiência do Custo de Mana em [valor]% por [valor]s quando a habilidade for encerrada.",
+      "conditional": true
+    },
+    "952589208": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Cria uma área circular com um raio de 5m e uma zona em forma de cone à frente onde relâmpagos atingem 5 vezes por segundo, causando [valor]% do Dano Base a um inimigo aleatório dentro do alcance a cada vez por [valor]s. A habilidade é desativada se o usuário se mover. Aumenta a Regeneração de Mana em [valor]% por [valor]s. Se o usuário estiver Encharcado, a Ampliação de Regeneração de Mana será dobrada. Caso contrário, a Eficiência do Custo de Mana aumenta em [valor]% por [valor]s após o término da habilidade.",
+      "conditional": true
+    },
+    "962702324": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Canaliza paz interior para aumentar a Regeneração de Mana em [valor]% (duplica se o usuário estiver sob efeito de Encharcamento) por [valor]s. Se não estiver sob efeito de Encharcamento, aumenta a Eficiência do Custo de Mana em [valor]% por [valor]s após o término da habilidade. A habilidade será encerrada se o usuário se mover.",
+      "conditional": true
+    },
+    "948902098": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Transforma a Especialização 1 de Paz Interior [Bênção do Trovão] em [Sombra do Trovão], que paira sobre os alvos e não pode ser esquivada ou purificada. Aplica Fraqueza: Nuvens de Trovão a um alvo aleatório dentro da área e causa dano equivalente a [valor]% do Dano Base por ativação durante [valor]s. Aumenta a Regeneração de Mana em [valor]% por [valor]s. Se quem conjurou estiver Encharcado, dobra a Ampliação de Regeneração de Mana. Caso contrário, aumenta a Eficiência do Custo de Mana em [valor]% por [valor]s quando a habilidade for encerrada.",
+      "conditional": true
+    },
+    "952392617": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Cria uma área circular com um raio de 5m e uma zona em forma de cone à frente onde relâmpagos atingem 5 vezes por segundo, causando [valor]% do Dano Base a um inimigo aleatório dentro do alcance a cada vez por [valor]s. A habilidade é desativada se o usuário se mover. Aumenta a Regeneração de Mana em [valor]% por [valor]s. Se o usuário estiver Encharcado, a Ampliação de Regeneração de Mana será dobrada. Caso contrário, a Eficiência do Custo de Mana aumenta em [valor]% por [valor]s após o término da habilidade.",
+      "conditional": true
+    },
+    "968523013": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Canaliza paz interior para aumentar a Regeneração de Mana em [valor]% (duplica se o usuário estiver sob efeito de Encharcamento) por [valor]s. Se não estiver sob efeito de Encharcamento, aumenta a Eficiência do Custo de Mana em [valor]% por [valor]s após o término da habilidade. A habilidade será encerrada se o usuário se mover.",
+      "conditional": true
+    },
+    "963413351": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Mana Máxima em [valor]",
+      "conditional": false
+    },
+    "964537597": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Mana Máxima em [valor] e a Vida Máxima em [valor]",
+      "conditional": false
+    },
+    "949087065": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de aplicar Fraqueza: Queimadura a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968448673": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de aplicar Fraqueza: Queimadura a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968514216": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de aplicar Fraqueza: Queimadura a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968487638": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "968554218": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "945877508": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "944620738": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "947004929": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "944664579": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "945871168": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "944685935": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "945821214": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "944638781": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de Enfraquecer o alvo por [valor]s, reduzindo a Cura Recebida em [valor]%. Tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura a todos os inimigos em uma área com um raio de 3m do alvo. O tempo de carregamento amplia o dano em até 120% e aplica 5 acúmulos de Queimadura. A Queimadura dura por [valor]s, e causa [valor]% do Dano Base + [valor] de dano por acúmulo. Acumulável até 10 vezes. Amplia o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "963554236": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura (2 acúmulos em caso de Acerto Crítico). Queimadura dura [valor]s e causa [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo. Acumulável até 10 vezes. Pode ser usada até 3 vezes consecutivas. Reduz o tempo de conjuração e aumenta o custo de Mana a cada uso consecutivo da habilidade. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968087134": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968873501": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968441077": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968670316": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968539117": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "967890474": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968506613": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968441375": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968737050": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968572149": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968604762": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968473553": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem [valor]% de chance de aplicar 2 acúmulos de Fraqueza: Queimadura (3 acúmulos em caso de Acerto Crítico) a todos os inimigos em um raio de 3m do alvo. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de todas as Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968575584": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura (2 acúmulos em caso de Acerto Crítico). Queimadura dura [valor]s e causa [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo. Acumulável até 10 vezes. Pode ser usada até 3 vezes consecutivas. Reduz o tempo de conjuração e aumenta o custo de Mana a cada uso consecutivo da habilidade. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968641123": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem uma chance de [valor]% de aplicar 2 acúmulos de Fraqueza: Queimadura (2 acúmulos em caso de Acerto Crítico). Queimadura dura [valor]s e causa [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo. Acumulável até 10 vezes. Pode ser usada até 3 vezes consecutivas. Reduz o tempo de conjuração e aumenta o custo de Mana a cada uso consecutivo da habilidade. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "963488689": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem uma chance de [valor]% de aplicar um acúmulo de Fraqueza: Queimadura (2 acúmulos em caso de Acerto Crítico). Queimadura dura [valor]s e causa [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo. Acumulável até 10 vezes. Pode ser usada até 3 vezes consecutivas. Reduz o tempo de conjuração e aumenta o custo de Mana a cada uso consecutivo da habilidade. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968478584": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de aplicar Fraqueza: Queimadura a todos os inimigos em um raio de 3m do alvo. Acertos Críticos aplicam um acúmulo adicional de Fraqueza: Queimadura. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968544150": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de aplicar Fraqueza: Queimadura a todos os inimigos em um raio de 3m do alvo. Acertos Críticos aplicam um acúmulo adicional de Fraqueza: Queimadura. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968609715": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma Habilidade de Fogo que causa [valor]% do Dano Base + [valor] de dano. Tem uma chance de [valor]% de aplicar Fraqueza: Queimadura a todos os inimigos em um raio de 3m do alvo. Acertos Críticos aplicam um acúmulo adicional de Fraqueza: Queimadura. Pode ser usada até 3 vezes consecutivas. Cada uso adicional reduz o tempo de conjuração, mas aumenta o Custo de Mana. Queimadura causa [valor]% do Dano Base + [valor] de dano a cada segundo por acúmulo durante [valor]s. Acumulável até 10 vezes. O dano de Fraqueza: Queimadura de Habilidades de Fogo é equivalente a Explosão de Bombas de Fogo. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968444424": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem uma chance de [valor]% de aplicar um acúmulo de Fraqueza: Queimadura (2 acúmulos em caso de Acerto Crítico). Queimadura dura [valor]s e causa [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo. Acumulável até 10 vezes. Pode ser usada até 3 vezes consecutivas. Reduz o tempo de conjuração e aumenta o custo de Mana a cada uso consecutivo da habilidade. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968509964": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa [valor]% do Dano Base + [valor] de dano e tem uma chance de [valor]% de aplicar um acúmulo de Fraqueza: Queimadura (2 acúmulos em caso de Acerto Crítico). Queimadura dura [valor]s e causa [valor]% do Dano Base + [valor] de dano por acúmulo a cada segundo. Acumulável até 10 vezes. Pode ser usada até 3 vezes consecutivas. Reduz o tempo de conjuração e aumenta o custo de Mana a cada uso consecutivo da habilidade. Aumenta o dano em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "963192815": {
+      "categories": [
+        "direct_heal",
+        "shield"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Vida, cria um escudo equivalente a [valor]% da Vida Máxima por [valor]s e a Técnica de Sobrevivência com Escudo se transforma em Golpe Retaliatório por 1,5s. Ao se defender de um Ataque de Fúria dentro de 0,5s, aumenta a Redução de Dano em [valor] por 6s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, cria um escudo equivalente a [valor]% da Vida Máxima por [valor]s e a Técnica de Sobrevivência com Escudo se transforma em Golpe Retaliatório por 1,5s Golpe Retaliatório Causa [valor]% do Dano Base + [valor] de dano ao alvo. Defender Ataques de Fúria com a Técnica de Sobrevivência com Escudo após usar o Golpe Retaliatório aumenta o dano do Golpe Retaliatório em 65% até 3 vezes. Golpe Retaliatório da Técnica de Sobrevivência com Escudo causa Dano Máximo com os botões de direção",
+      "conditional": true
+    },
+    "968249338": {
+      "categories": [
+        "direct_heal",
+        "shield"
+      ],
+      "description": "Defende-se de ataques. Ao se defender de um Ataque de Fúria enquanto está imóvel, regenera [valor] de Vida, cria um escudo equivalente a [valor]% da Vida Máxima por [valor]s e a Técnica de Sobrevivência com Escudo se transforma em Golpe Retaliatório por 1,5s. Ataques de Ira não podem ser defendidos. Use os botões de direção para se defender de ataques enquanto se move 4m na direção designada por 0,5s. Ao se defender de um Ataque de Fúria ou de Ira, cria um escudo equivalente a [valor]% da Vida Máxima por [valor]s e a Técnica de Sobrevivência com Escudo se transforma em Golpe Retaliatório por 1,5s. Resposta Habilidosa Use ao ficar sob efeito de Colisão: Prostração devido ao ataque de um monstro para remover imediatamente a Colisão: Prostração e usar Rolagem. Recarga de 30s",
+      "conditional": true
+    },
+    "953599220": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Aumenta a Cura e a Cura Recebida em [valor]% quando a Sabedoria do usuário for de 60 ou mais. No entanto, a Mana Máxima aumenta em [valor] quando a Sabedoria do usuário estiver abaixo de 60",
+      "conditional": true
+    },
+    "953415205": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ao usar Investida Estratégica, Confronto Feroz e Confronto Desesperado, aumenta o Custo de Mana em [valor]%. Em uma Colisão bem-sucedida, tem uma chance de [valor]% de reduzir a Defesa Total em [valor] por [valor]s.",
+      "conditional": true
+    },
+    "958252290": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Esquivar de um ataque restaura a Mana em [valor] e cada Bloqueio de Escudo ou bloqueio de Habilidade Defensiva bem-sucedido restaura a Mana em [valor]% do dano bloqueado",
+      "conditional": false
+    },
+    "964538848": {
+      "categories": [
+        "direct_heal",
+        "mana_recovery"
+      ],
+      "description": "Ao Esquivar ou bloquear um ataque usando Bloqueio de Escudo, Técnica de Sobrevivência com Escudo restaura a Vida em [valor]. Esquivar de um ataque restaura o Mana em [valor], e ao bloquear um ataque usando Bloqueio de Escudo, Técnica de Sobrevivência com Escudo restaura [valor]% ([valor]% contra monstros) do dano bloqueado como Mana. Cada Técnica de Sobrevivência com Escudo pode ativar a restauração de Vida e Mana até 30 vezes.",
+      "conditional": true
+    },
+    "964473303": {
+      "categories": [
+        "direct_heal",
+        "mana_recovery"
+      ],
+      "description": "Esquivar de um ataque restaura [valor] de Mana e [valor] de Vida, e cada Bloqueio de Escudo ou bloqueio de Habilidade Defensiva bem-sucedido restaura a Mana equivalente a [valor]% do dano bloqueado. Também restaura [valor] de Vida",
+      "conditional": false
+    },
+    "968441203": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa dano equivalente a [valor]% do Dano Base + [valor] de dano a até 3 alvos em uma área de 120 graus em forma de leque. Recupera [valor] de Mana por alvo atingido",
+      "conditional": false
+    },
+    "968463941": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Causa dano equivalente a [valor]% do Dano Base + [valor] de dano a até 3 alvos em uma área de 120 graus em forma de leque. Recupera [valor] de Mana por alvo atingido",
+      "conditional": false
+    },
+    "963411208": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Quando a Vida está abaixo de 20%, canaliza o poder da sobrevivência eterna. Regeneração de Vida +[valor]% por [valor]s. O efeito não pode ser reutilizado durante [valor]s após a ativação",
+      "conditional": true
+    },
+    "953273656": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria uma barreira equivalente a [valor]% da Vida Máxima por [valor]s. Essa habilidade só pode ser aprimorada com um Livro de Evolução de Habilidade Ativa Precioso: Onipotência",
+      "conditional": false
+    },
+    "968504479": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Cria uma barreira equivalente a [valor]% da Vida Máxima por [valor]s. Essa habilidade só pode ser aprimorada com um Livro de Evolução de Habilidade Ativa Precioso: Onipotência",
+      "conditional": false
+    },
+    "965128651": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Vida Máxima em [valor] e a Regeneração de Vida em [valor] por [valor]s para membros da equipe em um raio de 15m",
+      "conditional": false
+    },
+    "955992601": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Vida Máxima em [valor] e a Regeneração de Vida em [valor]",
+      "conditional": false
+    },
+    "955861526": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Vida Máxima em [valor] e a Regeneração de Vida em [valor]",
+      "conditional": false
+    },
+    "966987944": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada usando um Livro de Evolução Precioso: Onipotência Causa [valor]% do dano base + [valor] de dano. Causa [valor]% do dano base + [valor] de dano a alvos afetados por Colisão ou Choque. Ao acertar, reduz a cura recebida em [valor]% por [valor]s. Aumenta o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "940609889": {
+      "categories": [
+        "anti_heal",
+        "healing_modifier"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada usando um Livro de Evolução Precioso: Onipotência Causa [valor]% do Dano Base + [valor] de dano. Causa [valor]% de Dano Base + [valor] de dano a alvos afetados por Colisão ou Choque. Ao acertar um ataque, diminui a Cura Recebida em [valor]% por [valor]s. O tempo de carregamento amplia o dano em até 100%. Aumenta o dano contra monstros em [valor]%.",
+      "conditional": true
+    },
+    "948060967": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Vida Máxima em [valor] e a Regeneração de Vida em [valor] por [valor]s para membros da equipe em um raio de 15m",
+      "conditional": false
+    },
+    "949495444": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Vida Máxima em [valor], a Regeneração de Vida em [valor] e a Velocidade de Ataque em [valor]% para membros da equipe em um raio de 15m por [valor]s.",
+      "conditional": false
+    },
+    "940631894": {
+      "categories": [
+        "health_regen"
+      ],
+      "description": "Aumenta a Vida Máxima em [valor], a Regeneração de Vida em [valor] e a Velocidade de Ataque em [valor]% por [valor]s. Aplica Fraqueza: Geada aos alvos dentro de uma área de 5m, reduzindo a Velocidade de Movimento em [valor]% enquanto durar. Com 10 acúmulos, aplica Imobilização: Prisão Gélida por [valor]s. Aplicar Geada a um alvo com Imobilização: Prisão Gélida aumentará a duração da Imobilização em 0,2s.",
+      "conditional": true
+    },
+    "950364698": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ao causar dano com habilidades, restaura [valor] de Mana. Não se aplica a efeitos de dano contínuo",
+      "conditional": true
+    },
+    "956059444": {
+      "categories": [
+        "direct_heal",
+        "mana_recovery"
+      ],
+      "description": "Causar dano com habilidades restaura [valor] de Vida e [valor] de Mana. Não se aplica a efeitos de Dano Contínuo",
+      "conditional": true
+    },
+    "968650758": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Restaura a Vida de um alvo amigável em [valor]% do Dano Base + [valor] e o Vigor em [valor]",
+      "conditional": false
+    },
+    "968632892": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Restaura a Vida de um alvo amigável em [valor]% do Dano Base + [valor] e o Vigor em [valor]",
+      "conditional": false
+    },
+    "966875844": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Reduz a recarga de Habilidade de Cura em [valor]%",
+      "conditional": false
+    },
+    "967662234": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Aumenta a eficácia das habilidades de Cura em [valor]%. Reduz o Dano Contínuo por Maldição em [valor]%.",
+      "conditional": false
+    },
+    "967727795": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Quando Renascimento Nobre está ativo, a Cura final reduz em [valor]%. O Dano Base é ampliado em [valor]% do Renascimento Nobre.",
+      "conditional": true
+    },
+    "968548869": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Contrato Vampírico agora também causa a mesma quantidade de dano ao inimigo, recuperando a Vida de um alvo amigável.",
+      "conditional": false
+    },
+    "967400049": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Alma Altruísta agora é ativada ao acertar um inimigo com Habilidades de Ataque, além de ampliar o Dano Base em [valor]% no lugar de curar.",
+      "conditional": true
+    },
+    "967203570": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Amplia o Dano Contínuo por Maldição em [valor]%. Reduz a eficácia de Cura em [valor]%.",
+      "conditional": false
+    },
+    "967138033": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Aplicar Tempo de Encantamento permite que quem conjurou atravesse o alvo e concede um Escudo com Vida equivalente a [valor]% do Dano Base. Dura por [valor]s.",
+      "conditional": false
+    },
+    "964145794": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "A vida do aliado selecionado é restaurada em [valor]% do dano causado pelo usuário a um alvo afetado pela Maldição do usuário. Se o ataque acertar o alvo lateralmente ou pelas costas, a recuperação aumenta em [valor]%. Restaura a vida do aliado próximo; caso não haja aliados dentro do alcance, restaura a vida do usuário",
+      "conditional": true
+    },
+    "963713366": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "A vida do aliado selecionado é restaurada em [valor]% do dano causado pelo usuário a um alvo afetado pela Maldição do usuário. Se o ataque acertar o alvo lateralmente ou pelas costas, a recuperação aumenta em [valor]%. Restaura a vida do aliado próximo; caso não haja aliados dentro do alcance, restaura a vida do usuário",
+      "conditional": true
+    },
+    "960927488": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Quando um alvo Enfraquecido pelo conjurador morre dentro de 10s, aumenta a Regeneração de Mana em [valor] e o Dano Máximo em [valor] por [valor]s. Acumulável até 3 vezes.",
+      "conditional": true
+    },
+    "963779382": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Quando um alvo Enfraquecido pelo conjurador morre dentro de 10s, aumenta a Regeneração de Mana em [valor] e o Dano Máximo em [valor] por [valor]s. Acumulável até 3 vezes.",
+      "conditional": true
+    },
+    "963910289": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Quando um alvo Enfraquecido pelo conjurador morre dentro de 10s, aumenta a Regeneração de Mana em [valor] e o Dano Máximo em [valor] por [valor]s. Acumulável até 3 vezes.",
+      "conditional": true
+    },
+    "963828357": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Aumenta a Cura em [valor]% e reduz a recarga de Habilidade de Cura em [valor]% durante o dia. Aumenta o Dano Contínuo de Habilidade em [valor]% e reduz a recarga de Habilidade de Maldição em [valor]% durante a noite",
+      "conditional": false
+    },
+    "962927931": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Aumenta a Cura em [valor]% e reduz a recarga de Habilidade de Cura em [valor]% durante o dia. Aumenta o Dano Contínuo de Habilidade em [valor]% e reduz a recarga de Habilidade de Maldição em [valor]% durante a noite",
+      "conditional": false
+    },
+    "962993443": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Aumenta a Cura em [valor]% e reduz a recarga de Habilidade de Cura em [valor]% durante o dia. Aumenta o Dano Contínuo de Habilidade em [valor]% e reduz a recarga de Habilidade de Maldição em [valor]% durante a noite",
+      "conditional": false
+    },
+    "963675807": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Aumenta a Defesa à Distância, Corpo a Corpo e Mágica de um aliado em [valor]% por [valor]s. Além disso, aumenta a Cura Recebida em [valor]% durante o dia e aumenta a Tolerância à Distância, Corpo a Corpo e Mágica em [valor] durante a noite. Nos primeiros [valor]s, o efeito é [valor] vezes superior à quantidade base. O alvo afetado não pode receber o efeito de Barreira Abençoada de outro usuário por [valor]s.",
+      "conditional": false
+    },
+    "968489259": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Cria uma área de [valor]m no local designado e aumenta a Defesa à Distância, Corpo a Corpo e Mágica dos membros da equipe dentro da área em [valor]% por [valor]s. Além disso, aumenta a Cura Recebida em [valor]% durante o dia e aumenta a Tolerância à Distância, Corpo a Corpo e Mágica em [valor] durante a noite. O alvo afetado não pode receber o efeito de Barreira Abençoada de outro usuário por [valor]s.",
+      "conditional": false
+    },
+    "951412222": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Restaura a Vida de um aliado equivalente a [valor]% do Dano Base + [valor]. Pode ser usada até 2 vezes consecutivas. Reduz a quantidade de cura em 30% a cada uso consecutivo. Compartilha a recarga com Véu de Distorção e Toque de Cura.",
+      "conditional": true
+    },
+    "950257439": {
+      "categories": [
+        "direct_heal"
+      ],
+      "description": "Recupera a Vida de todos os membros da equipe dentro do Alcance de Ataque em [valor]% do Dano Base + [valor].",
+      "conditional": false
+    },
+    "963813781": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Sofrer Dano de Habilidade tem uma chance de [valor]% de aumentar a Cura, a Cura do Amitoi e a Cura de Poção em [valor]% por [valor]s. Acumulável até 5 vezes",
+      "conditional": true
+    },
+    "968475235": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência Cria uma área com raio de [valor]m na localização designada por [valor]s. Os membros da equipe dentro da área recuperam Vida igual a [valor]% do Dano Base + [valor] a cada 0,5s.",
+      "conditional": false
+    },
+    "966507505": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma habilidade de evolução especial que só pode ser evoluída com Livro de Evolução de Habilidade Precioso: Onipotência. Cria uma área com um raio de [valor]m na localização designada por [valor]s e causa [valor]% do Dano Base + [valor] de dano aos alvos dentro do alcance a cada 0,5s. Aplica o efeito de Pântano Obliterante aos alvos que sofreram dano por [valor]s e aumenta o alcance em área da Obliteração Corrompida para 3m contra alvos do Pântano Obliterante. Ao acertar um ataque, tem [valor]% de chance de aplicar Fraqueza: Maldição do Apóstolo, que diminuiu a Redução de Dano em [valor] por [valor]s. Acumulável até 5 vezes. Especialização de Habilidade de Recuperação de Mana não se aplica.",
+      "conditional": true
+    },
+    "951150780": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência Cria uma área com raio de [valor]m na localização designada por [valor]s. Os membros da equipe dentro da área recuperam Vida igual a [valor]% do Dano Base + [valor] a cada 0,5s.",
+      "conditional": false
+    },
+    "951680160": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência Cria uma área com raio de [valor]m na localização designada por [valor]s. Os membros da equipe dentro da área recuperam Vida igual a [valor]% do Dano Base + [valor] a cada 0,5s.",
+      "conditional": false
+    },
+    "967976285": {
+      "categories": [
+        "periodic_heal"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada com um Livro de Evolução Precioso: Onipotência Cria uma área com raio de [valor]m na localização designada por [valor]s. Os membros da equipe dentro da área recuperam Vida igual a [valor]% do Dano Base + [valor] a cada 0,5s.",
+      "conditional": false
+    },
+    "966638713": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Uma habilidade de evolução especial que só pode ser evoluída com Livro de Evolução de Habilidade Precioso: Onipotência. Cria uma área com um raio de [valor]m na localização designada por [valor]s e causa [valor]% do Dano Base + [valor] de dano aos alvos dentro do alcance a cada 0,5s. Aplica o efeito de Pântano Obliterante aos alvos que sofreram dano por [valor]s e aumenta o alcance em área da Obliteração Corrompida para 3m contra alvos do Pântano Obliterante. Ao acertar um ataque, tem [valor]% de chance de aplicar Fraqueza: Maldição do Apóstolo, que diminuiu a Redução de Dano em [valor] por [valor]s. Acumulável até 5 vezes. Especialização de Habilidade de Recuperação de Mana não se aplica.",
+      "conditional": true
+    },
+    "963779850": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Restaura a Vida de um aliado equivalente a [valor]% do Dano Base + [valor]. Pode ser usada até 2 vezes consecutivas. Reduz a quantidade de cura em 30% a cada uso consecutivo. Compartilha a recarga com Véu de Distorção e Toque de Cura.",
+      "conditional": true
+    },
+    "964684273": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Restaura a Vida de um aliado equivalente a [valor]% do Dano Base + [valor]. Pode ser usada até 2 vezes consecutivas. Reduz a quantidade de cura em 30% a cada uso consecutivo. Compartilha a recarga com Véu de Distorção e Toque de Cura.",
+      "conditional": true
+    },
+    "963649074": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Restaura a Vida de um aliado equivalente a [valor]% do Dano Base + [valor]. Pode ser usada até 2 vezes consecutivas. Reduz a quantidade de cura em 30% a cada uso consecutivo. Compartilha a recarga com Véu de Distorção e Toque de Cura.",
+      "conditional": true
+    },
+    "967030853": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ignora a Chance de Bloqueio do alvo e causa [valor]% do Dano Base + [valor] de dano. Fraqueza: Cárcere Indolente amplia o dano causado ao alvo em [valor]% por acúmulo e aumenta o alcance em 3m contra alvos do Pântano Obliterante. É possível usar até 2 vezes consecutivas. Usos adicionais aumentam o Custo de Mana, mas regeneram [valor]% de Mana usado ao acertar um ataque lateralmente ou pelas costas. A Regeneração de Mana é aplicada apenas uma vez por uso de habilidade. Ao acertar um ataque, tem [valor]% de chance de aplicar Fraqueza: Maldição do Apóstolo, que diminui a Redução de Dano em [valor] por [valor]s. Acumulável até 5 vezes. Especializações de Habilidade de Recuperação de Mana e Transferência de Cura não se aplicam.",
+      "conditional": true
+    },
+    "967227745": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ignora a Chance de Bloqueio do alvo e causa [valor]% do Dano Base + [valor] de dano. Fraqueza: Cárcere Indolente amplia o dano causado ao alvo em [valor]% por acúmulo e aumenta o alcance em 3m contra alvos do Pântano Obliterante. É possível usar até 2 vezes consecutivas. Usos adicionais aumentam o Custo de Mana, mas regeneram [valor]% de Mana usado ao acertar um ataque lateralmente ou pelas costas. A Regeneração de Mana é aplicada apenas uma vez por uso de habilidade. Ao acertar um ataque, tem [valor]% de chance de aplicar Fraqueza: Maldição do Apóstolo, que diminui a Redução de Dano em [valor] por [valor]s. Acumulável até 5 vezes. Especializações de Habilidade de Recuperação de Mana e Transferência de Cura não se aplicam.",
+      "conditional": true
+    },
+    "966375907": {
+      "categories": [
+        "mana_recovery"
+      ],
+      "description": "Ignora a Chance de Bloqueio do alvo e causa [valor]% do Dano Base + [valor] de dano. Fraqueza: Cárcere Indolente amplia o dano causado ao alvo em [valor]% por acúmulo e aumenta o alcance em 3m contra alvos do Pântano Obliterante. É possível usar até 2 vezes consecutivas. Usos adicionais aumentam o Custo de Mana, mas regeneram [valor]% de Mana usado ao acertar um ataque lateralmente ou pelas costas. A Regeneração de Mana é aplicada apenas uma vez por uso de habilidade. Ao acertar um ataque, tem [valor]% de chance de aplicar Fraqueza: Maldição do Apóstolo, que diminui a Redução de Dano em [valor] por [valor]s. Acumulável até 5 vezes. Especializações de Habilidade de Recuperação de Mana e Transferência de Cura não se aplicam.",
+      "conditional": true
+    },
+    "964225076": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Restaura a Vida de um aliado equivalente a [valor]% do Dano Base + [valor]. Pode ser usada até 2 vezes consecutivas. Reduz a quantidade de cura em 30% a cada uso consecutivo. Compartilha a recarga com Véu de Distorção e Toque de Cura.",
+      "conditional": true
+    },
+    "963714335": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Restaura a Vida de um aliado equivalente a [valor]% do Dano Base + [valor]. Pode ser usada até 2 vezes consecutivas. Reduz a quantidade de cura em 30% a cada uso consecutivo. Compartilha a recarga com Véu de Distorção e Toque de Cura.",
+      "conditional": true
+    },
+    "967477908": {
+      "categories": [
+        "direct_heal",
+        "healing_modifier"
+      ],
+      "description": "Restaura a Vida de um aliado equivalente a [valor]% do Dano Base + [valor]. Pode ser usada até 2 vezes consecutivas. Reduz a quantidade de cura em 30% a cada uso consecutivo. Compartilha a recarga com Véu de Distorção e Toque de Cura.",
+      "conditional": true
+    },
+    "963814795": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada usando um Livro de Evolução Precioso: Onipotência. Vincula o alvo ao usuário por [valor]s e aplica Fraqueza, causando [valor]% do Dano Base + [valor] de dano a todos os alvos no alcance a cada 0,5s. Quando o alvo morre enquanto está sob o efeito, o efeito é aplicado mais 1 vez a outro inimigo em um raio de 10m. Aumenta o dano em [valor]% da Cura. O dano aumenta em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "968461062": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada usando um Livro de Evolução Precioso: Onipotência. Vincula o alvo ao usuário por [valor]s e aplica Fraqueza, causando [valor]% do Dano Base + [valor] de dano a todos os alvos no alcance a cada 0,5s. Quando o alvo morre enquanto está sob o efeito, o efeito é aplicado mais 1 vez a outro inimigo em um raio de 10m. Aumenta o dano em [valor]% da Cura. O dano aumenta em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "952627720": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada usando um Livro de Evolução Precioso: Onipotência. Vincula o alvo ao usuário por [valor]s e aplica Fraqueza, causando [valor]% do Dano Base + [valor] de dano a todos os alvos no alcance a cada 0,5s. Quando o alvo morre enquanto está sob o efeito, o efeito é aplicado mais 1 vez a outro inimigo em um raio de 10m. Aumenta o dano em [valor]% da Cura. O dano aumenta em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "952961019": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada usando um Livro de Evolução Precioso: Onipotência. Vincula o alvo ao usuário por [valor]s e aplica Fraqueza, causando [valor]% do Dano Base + [valor] de dano a todos os alvos no alcance a cada 0,5s. Quando o alvo morre enquanto está sob o efeito, o efeito é aplicado mais 1 vez a outro inimigo em um raio de 10m. Aumenta o dano em [valor]% da Cura. O dano aumenta em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "952830004": {
+      "categories": [
+        "healing_modifier"
+      ],
+      "description": "Habilidade de evolução especial que só pode ser aprimorada usando um Livro de Evolução Precioso: Onipotência. Vincula o alvo ao usuário por [valor]s e aplica Fraqueza, causando [valor]% do Dano Base + [valor] de dano a todos os alvos no alcance a cada 0,5s. Quando o alvo morre enquanto está sob o efeito, o efeito é aplicado mais 1 vez a outro inimigo em um raio de 10m. Aumenta o dano em [valor]% da Cura. O dano aumenta em [valor]% contra monstros.",
+      "conditional": true
+    },
+    "967888931": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a todos os membros da equipe dentro do Alcance de Ataque por [valor]s.",
+      "conditional": false
+    },
+    "968460892": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a um aliado por [valor]s.",
+      "conditional": false
+    },
+    "968501254": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a um aliado por [valor]s.",
+      "conditional": false
+    },
+    "951393801": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a um aliado por [valor]s.",
+      "conditional": false
+    },
+    "948590919": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a um aliado por [valor]s.",
+      "conditional": false
+    },
+    "968435715": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a todos os membros da equipe dentro do Alcance de Ataque por [valor]s.",
+      "conditional": false
+    },
+    "951391054": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a todos os membros da equipe dentro do Alcance de Ataque por [valor]s.",
+      "conditional": false
+    },
+    "948624156": {
+      "categories": [
+        "shield"
+      ],
+      "description": "Concede um Escudo com Vida equivalente a [valor]% do Dano Base + [valor] a todos os membros da equipe dentro do Alcance de Ataque por [valor]s.",
+      "conditional": false
+    },
+    "964594181": {
+      "categories": [
+        "healing_modifier",
+        "mana_recovery"
+      ],
+      "description": "Aumenta a Regeneração de Mana em [valor] e a Cura em [valor]% por acúmulo durante [valor]s quando o usuário ativa uma Vantagem usando Habilidades Ativas em um alvo amigável. Acumulável até 10 vezes.",
+      "conditional": true
+    }
+  }
+}

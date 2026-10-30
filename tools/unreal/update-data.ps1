@@ -38,5 +38,7 @@ if ($SyncOverlayCatalog) {
     if ($LASTEXITCODE -ne 0) { throw 'Falha ao sincronizar o catálogo do overlay.' }
     & $PythonExe (Join-Path $PSScriptRoot 'build-healing-reference.py') --build $buildId
     if ($LASTEXITCODE -ne 0) { throw 'Falha ao gerar a referência de efeitos de cura.' }
+    & $PythonExe (Join-Path $PSScriptRoot 'classify-healing-descriptions.py') --build $buildId
+    if ($LASTEXITCODE -ne 0) { throw 'Falha ao classificar as descrições de cura.' }
 }
 Write-Host "Coleta e índice disponíveis em $buildRoot"
