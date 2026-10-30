@@ -4,21 +4,35 @@ export type DamageBreakdown = Record<DamageKind, number>
 export const emptyDamageBreakdown = (): DamageBreakdown => ({ normal: 0, critical: 0, heavy: 0, criticalHeavy: 0 })
 export interface MeterEvent {
   time: number; damage: number; skillId: number; sourceId: number
-  criticalCandidate: boolean; heavyCandidate: number
+  criticalCandidate: boolean; heavyCandidate: number; targetId?: number
 }
+export interface MeterHealingEvent {
+  time: number; healing: number; skillId: number; sourceId: number; targetId: number; effectId: number
+  coverage: 'self-periodic' | 'self-lifesteal'
+}
+export interface MeterHealing { total: number; hits: number; skills: MeterSkill[] }
+export interface TimedMeasurement { startsAt: number; endsAt: number; durationSec: number; cancelled?: boolean }
 export interface MeterSkill {
   key: string; name: string; damage: number; hits: number; critical: number; heavy: number
   skillIds?: number[]; iconFile?: string
   damageByKind: DamageBreakdown
+}
+export interface MeterReceived {
+  total: number; hits: number; skills: MeterSkill[]
+  sources: Array<{ id: number; damage: number; hits: number; name?: string }>
 }
 export interface MeterSession {
   total: number; hits: number; critical: number; heavy: number
   damageByKind: DamageBreakdown
   startedAt: number | null; lastDamageAt: number | null; elapsedSec: number
   dps: number; idleSec: number; waitingReset: boolean; skills: MeterSkill[]
+  paused?: boolean
+  lastActivityAt?: number | null; received?: MeterReceived
+  healing?: { done: MeterHealing; received: MeterHealing; coverage: 'self-observed' }
+  timed?: TimedMeasurement
 }
 export interface OverlayPlayerIdentity {
-  sourceId: number; connectionId: string; observedAt: number; method: 'local-state'
+  sourceId: number; connectionId: string; observedAt: number; method: 'local-state' | 'profile-name'
 }
 /** Identidade local só muda com evidência do protocolo, nunca por dano/inatividade. */
 export class OverlayIdentity {
@@ -26,7 +40,7 @@ export class OverlayIdentity {
   private retiredConnections = new Set<string>()
   clear(): void { this.player = null; this.retiredConnections.clear() }
   snapshot(): OverlayPlayerIdentity | null { return this.player ? { ...this.player } : null }
-  identify(sourceId: number, connectionId: string, at: number): 'changed' | 'same' | 'ignored' {
+  identify(sourceId: number, connectionId: string, at: number, method: OverlayPlayerIdentity['method'] = 'local-state'): 'changed' | 'same' | 'ignored' {
     if (!Number.isSafeInteger(sourceId) || sourceId <= 0 || typeof connectionId !== 'string'
       || !connectionId.length || connectionId.length > 128 || !Number.isFinite(at)
       || this.retiredConnections.has(connectionId)) return 'ignored'
@@ -36,7 +50,7 @@ export class OverlayIdentity {
       this.retiredConnections.add(previous.connectionId)
     }
     const changed = !previous || previous.sourceId !== sourceId || previous.connectionId !== connectionId
-    this.player = { sourceId, connectionId, observedAt: at, method: 'local-state' }
+    this.player = { sourceId, connectionId, observedAt: at, method }
     return changed ? 'changed' : 'same'
   }
   accepts(connectionId: string): boolean { return this.player?.connectionId === connectionId }
@@ -52,31 +66,94 @@ export class OverlayIdentity {
 export class OverlayMeter {
   private startedAt: number | null = null
   private lastDamageAt: number | null = null
+  private lastActivityAt: number | null = null
   private ignoreBefore = 0
+  private pausedAt: number | null = null
+  private pausedMs = 0
+  private startedPauseMs = 0
+  private lastDamagePauseMs = 0
   private rows = new Map<string, MeterSkill>()
+  private receivedRows = new Map<string, MeterSkill>()
+  private receivedSources = new Map<number, { id: number; damage: number; hits: number }>()
+  private healingRows = new Map<string, MeterSkill>()
+  private timed: TimedMeasurement | null = null
   constructor(public sourceId: number | null = null, private names: Record<string, string> = {},
     private icons: Record<string, string> = {}) {}
   reset(at = 0): void {
-    this.startedAt = this.lastDamageAt = null
+    this.startedAt = this.lastDamageAt = this.lastActivityAt = null
+    this.timed = null
     this.ignoreBefore = at
-    this.rows.clear()
+    this.pausedMs = this.startedPauseMs = this.lastDamagePauseMs = 0
+    if (this.pausedAt !== null && at > 0) this.pausedAt = at
+    this.rows.clear(); this.receivedRows.clear(); this.receivedSources.clear(); this.healingRows.clear()
+  }
+  get measurementWindow(): TimedMeasurement | null { return this.timed ? { ...this.timed } : null }
+  schedule(startsAt: number, durationSec: number): void {
+    this.reset(startsAt)
+    this.pausedAt = null
+    this.timed = { startsAt, endsAt: startsAt + durationSec * 1000, durationSec }
+    this.startedAt = startsAt
+  }
+  cancelSchedule(at: number): void {
+    if (this.timed && at < this.timed.endsAt) this.timed = { ...this.timed, endsAt: Math.max(this.timed.startsAt, at), cancelled: true }
+  }
+  acceptsTime(at: number): boolean {
+    return !this.paused && Number.isFinite(at) && at >= this.ignoreBefore
+      && (this.lastActivityAt === null || at >= this.lastActivityAt)
+      && (!this.timed || (at >= this.timed.startsAt && at < this.timed.endsAt))
+  }
+  private beginActivity(at: number): void {
+    if (!this.timed && this.lastActivityAt !== null && at - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs >= METER_IDLE_MS) this.reset()
+    if (this.startedAt === null) this.startedPauseMs = this.pausedMs
+    this.startedAt ??= at
+    this.lastActivityAt = at
+    this.lastDamagePauseMs = this.pausedMs
+  }
+  get paused(): boolean { return this.pausedAt !== null }
+  setPaused(value: boolean, at = Date.now()): void {
+    if (!Number.isFinite(at) || value === this.paused) return
+    if (value) this.pausedAt = at
+    else {
+      this.pausedMs += Math.max(0, at - this.pausedAt!)
+      this.pausedAt = null
+      this.ignoreBefore = Math.max(this.ignoreBefore, at)
+    }
   }
   selectSource(id: number | null, at = 0): void { this.sourceId = id; this.reset(at) }
   add(event: MeterEvent): boolean {
     const at = event.time * 1000
     if (!Number.isSafeInteger(event.sourceId) || event.sourceId <= 0 || !Number.isFinite(event.damage)
-      || event.damage <= 0 || !Number.isFinite(at) || at < this.ignoreBefore
-      || (this.lastDamageAt !== null && at < this.lastDamageAt)) return false
-    if (this.sourceId === null || event.sourceId !== this.sourceId || !Number.isFinite(event.damage)
-      || event.damage <= 0 || !Number.isFinite(at) || at < this.ignoreBefore) return false
-    if (this.lastDamageAt !== null && at < this.lastDamageAt) return false
-    if (this.lastDamageAt !== null && at - this.lastDamageAt >= METER_IDLE_MS) this.reset()
-    this.startedAt ??= at
+      || event.damage <= 0 || !this.acceptsTime(at)) return false
+    const outgoing = this.sourceId !== null && event.sourceId === this.sourceId
+    const incoming = this.sourceId !== null && event.targetId === this.sourceId
+    if (!outgoing && !incoming) return false
+    this.beginActivity(at)
+    if (incoming) {
+      this.recordSkill(this.receivedRows, event)
+      const source = this.receivedSources.get(event.sourceId) ?? { id: event.sourceId, damage: 0, hits: 0 }
+      source.damage += event.damage; source.hits++
+      this.receivedSources.set(source.id, source)
+    }
+    if (!outgoing) return false
     this.lastDamageAt = at
+    this.recordSkill(this.rows, event)
+    return true
+  }
+  addHealing(event: MeterHealingEvent): boolean {
+    const at = event.time * 1000
+    // A direção entre jogadores ainda não foi validada. Contar apenas autocura observada.
+    if (!['self-periodic', 'self-lifesteal'].includes(event.coverage) || event.sourceId !== this.sourceId || event.targetId !== this.sourceId
+      || !Number.isSafeInteger(event.skillId) || !Number.isSafeInteger(event.effectId)
+      || !Number.isFinite(event.healing) || event.healing <= 0 || !this.acceptsTime(at)) return false
+    this.beginActivity(at)
+    this.recordSkill(this.healingRows, { ...event, damage: event.healing, criticalCandidate: false, heavyCandidate: 0 })
+    return true
+  }
+  private recordSkill(rows: Map<string, MeterSkill>, event: MeterEvent): void {
     const name = this.names[String(event.skillId)] ?? `Habilidade ${event.skillId}`
     const iconFile = this.icons[String(event.skillId)]
     const key = this.names[String(event.skillId)] ? (iconFile ? `${name}::${iconFile}` : name) : String(event.skillId)
-    const row = this.rows.get(key) ?? { key, name, iconFile, skillIds: [], damage: 0, hits: 0, critical: 0, heavy: 0, damageByKind: emptyDamageBreakdown() }
+    const row = rows.get(key) ?? { key, name, iconFile, skillIds: [], damage: 0, hits: 0, critical: 0, heavy: 0, damageByKind: emptyDamageBreakdown() }
     row.skillIds ??= []
     if (!row.skillIds.includes(event.skillId)) row.skillIds.push(event.skillId)
     row.damage += event.damage; row.hits++
@@ -86,23 +163,32 @@ export class OverlayMeter {
       ? (event.heavyCandidate ? 'criticalHeavy' : 'critical')
       : (event.heavyCandidate ? 'heavy' : 'normal')
     row.damageByKind[kind] += event.damage
-    this.rows.set(key, row)
-    return true
+    rows.set(key, row)
   }
   snapshot(now = Date.now()): MeterSession {
     const skills = [...this.rows.values()].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
+    const receivedSkills = [...this.receivedRows.values()].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
+    const receivedSources = [...this.receivedSources.values()].map(row => ({ ...row })).sort((a, b) => b.damage - a.damage)
+    const healingSkills = [...this.healingRows.values()].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
+    const healing = { total: healingSkills.reduce((sum, row) => sum + row.damage, 0), hits: healingSkills.reduce((sum, row) => sum + row.hits, 0), skills: healingSkills }
     const damageByKind = emptyDamageBreakdown()
     for (const row of skills) for (const kind of Object.keys(damageByKind) as DamageKind[]) damageByKind[kind] += row.damageByKind[kind]
     const total = skills.reduce((sum, row) => sum + row.damage, 0)
-    const elapsedSec = this.startedAt === null ? 0 : Math.max(0, (now - this.startedAt) / 1000)
-    const idleSec = this.lastDamageAt === null ? 0 : Math.max(0, (now - this.lastDamageAt) / 1000)
+    const clock = this.timed ? Math.max(this.timed.startsAt, Math.min(now, this.timed.endsAt)) : this.pausedAt ?? now
+    const elapsedSec = this.startedAt === null ? 0 : Math.max(0, (clock - this.startedAt - this.pausedMs + this.startedPauseMs) / 1000)
+    const idleSec = this.lastActivityAt === null ? 0 : Math.max(0, (clock - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs) / 1000)
     return {
-      total, elapsedSec, idleSec, skills, damageByKind, dps: elapsedSec >= 1 ? total / elapsedSec : 0,
+      total, elapsedSec, idleSec, skills, damageByKind, paused: this.paused || Boolean(this.timed && (now < this.timed.startsAt || now >= this.timed.endsAt)), dps: elapsedSec >= 1 ? total / elapsedSec : 0,
       startedAt: this.startedAt, lastDamageAt: this.lastDamageAt,
+      lastActivityAt: this.lastActivityAt,
+      healing: { done: healing, received: { ...healing, skills: healingSkills.map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })) }, coverage: 'self-observed' },
+      ...(this.timed ? { timed: { ...this.timed } } : {}),
+      received: { total: receivedSources.reduce((sum, row) => sum + row.damage, 0),
+        hits: receivedSources.reduce((sum, row) => sum + row.hits, 0), skills: receivedSkills, sources: receivedSources },
       hits: skills.reduce((sum, row) => sum + row.hits, 0),
       critical: skills.reduce((sum, row) => sum + row.critical, 0),
       heavy: skills.reduce((sum, row) => sum + row.heavy, 0),
-      waitingReset: this.lastDamageAt !== null && idleSec >= METER_IDLE_MS / 1000,
+      waitingReset: !this.timed && this.lastActivityAt !== null && idleSec >= METER_IDLE_MS / 1000,
     }
   }
 }
@@ -115,7 +201,10 @@ export interface OverlayTheme {
 }
 export interface OverlayConfig {
   reviewEncounterId?: string | null
+  metricPage?: 'damage' | 'receivedSources' | 'receivedSkills' | 'healingDone' | 'healingReceived'
+  countdownSec?: number; durationSec?: number
   autoSource?: boolean
+  playerName?: string
   locked: boolean; totalVisible: boolean; skillsVisible: boolean; opacity: number; scale: number
   sourceId: number | null; totalBounds?: PanelBounds; skillsBounds?: PanelBounds
   controlsVisible?: boolean; controlsExpanded?: boolean; controlsBounds?: PanelBounds
@@ -123,6 +212,7 @@ export interface OverlayConfig {
   fontFamily?: 'Inter' | 'Arial' | 'Consolas'; fontSize?: number; chartPadding?: number; chartPaddingVertical?: number; theme?: OverlayTheme
 }
 export interface OverlayState {
+  timer?: TimedMeasurement & { phase: 'countdown' | 'running' | 'finished' | 'cancelled'; remainingSec: number; elapsedSec: number }
   capture?: { id: string; connectionId: string | null; encounterId: string; player: OverlayPlayerIdentity | null }
   game?: { attached: boolean; active: boolean; bounds: PanelBounds | null }
   unknownSkillLog?: { directory: string; events: number; ids: number; error: string | null }
@@ -139,9 +229,9 @@ export interface OverlayEncounter {
 }
 export interface OverlayHistoryResult { encounters: OverlayEncounter[]; error: string | null }
 /** Aplica nomes novos também ao acumulado já aberto, sem reiniciar a captura. */
-export function resolveOverlayNames(state: OverlayState, names: Record<string, string>, icons: Record<string, string> = {}): OverlayState {
+function resolveSkillRows(skills: MeterSkill[], names: Record<string, string>, icons: Record<string, string>): MeterSkill[] {
   const rows = new Map<string, MeterSkill>()
-  for (const original of state.session.skills) {
+  for (const original of skills) {
     const skillIds = original.skillIds?.slice() ?? (/^\d+$/.test(original.key) ? [Number(original.key)] : [])
     const mapped = [...new Set(skillIds.map(id => names[String(id)]).filter(Boolean))]
     const files = [...new Set(skillIds.map(id => icons[String(id)]).filter(Boolean))]
@@ -155,7 +245,15 @@ export function resolveOverlayNames(state: OverlayState, names: Record<string, s
     row.critical += original.critical; row.heavy += original.heavy
     for (const kind of Object.keys(row.damageByKind) as DamageKind[]) row.damageByKind[kind] += original.damageByKind[kind]
   }
-  return { ...state, session: { ...state.session, skills: [...rows.values()].sort((a, b) => b.damage - a.damage) } }
+  return [...rows.values()].sort((a, b) => b.damage - a.damage)
+}
+export function resolveOverlayNames(state: OverlayState, names: Record<string, string>, icons: Record<string, string> = {}): OverlayState {
+  const { received, healing } = state.session
+  return { ...state, session: { ...state.session, skills: resolveSkillRows(state.session.skills, names, icons),
+    ...(received ? { received: { ...received, skills: resolveSkillRows(received.skills, names, icons) } } : {}),
+    ...(healing ? { healing: { ...healing,
+      done: { ...healing.done, skills: resolveSkillRows(healing.done.skills, names, icons) },
+      received: { ...healing.received, skills: resolveSkillRows(healing.received.skills, names, icons) } } } : {}) } }
 }
 export interface OverlayAPI {
   clearRecords: () => Promise<OverlayHistoryResult>
@@ -164,6 +262,9 @@ export interface OverlayAPI {
   configure: (patch: Partial<OverlayConfig>) => Promise<OverlayState>
   start: () => Promise<OverlayState>
   stop: () => Promise<OverlayState>
+  pause: (paused: boolean) => Promise<OverlayState>
+  timer: (action: 'start' | 'cancel' | 'clear') => Promise<OverlayState>
+  interactive: (enabled: boolean) => Promise<void>
   reset: () => Promise<OverlayState>
   replay: (speed?: number) => Promise<OverlayState>
   bounds: (panel: OverlayPanel, value: PanelBounds) => Promise<void>
@@ -173,7 +274,8 @@ export interface OverlayAPI {
 export function overlaySourceWarning(state: OverlayState): string | null {
   if (state.status !== 'live' && state.status !== 'replay') return null
   if (state.config.sourceId === null && state.config.autoSource !== false) return state.mode === 'live'
-    ? 'Aguardando identificar seu personagem. Faça um ataque para detectar a entidade local.'
+    ? state.config.playerName ? `Aguardando o perfil de ${state.config.playerName}. Abra a ficha no jogo ou selecione a origem confirmada em Ajustes.`
+      : 'Aguardando identificar seu personagem. Preencha o nome em Ajustes e abra a ficha no jogo, ou selecione uma origem confirmada.'
     : 'Aguardando identificar a origem da reprodução.'
   if (state.config.sourceId === null) return state.sources.length
     ? 'Dano recebido. Selecione sua origem no app para medir.'

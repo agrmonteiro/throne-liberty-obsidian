@@ -3,6 +3,8 @@ import { useOverlay } from '../hooks/useOverlay'
 import { defaultOverlayTheme, overlayTheme } from '../engine/overlayLayout'
 import type { OverlayConfig, OverlayPanel, OverlayTheme } from '../engine/overlayMeter'
 import { overlaySourceWarning } from '../engine/overlayMeter'
+import { metricPages, type MetricPage } from '../components/OverlayMetricView'
+import { OverlayTimer } from '../components/OverlayTimer'
 import '../styles/overlay.css'
 
 const palette: Array<{ key: keyof OverlayTheme; label: string }> = [
@@ -32,6 +34,10 @@ export function OverlayControls(): React.ReactElement {
     <header className="overlay-controls-header meter-drag">
       <span className={`meter-dot ${state.status === 'live' && !warning ? 'on' : ''}`} />
       <strong>Overlays</strong>
+      <button aria-label={state.session.paused ? 'Retomar medição' : 'Pausar medição'}
+        aria-pressed={Boolean(state.session.paused)} disabled={!['live', 'replay'].includes(state.status) || Boolean(state.timer)}
+        title="Pausa todos os painéis e o tempo da medição"
+        onClick={() => act(() => window.overlayAPI.pause(!state.session.paused))}>{state.session.paused ? '▶' : 'Ⅱ'}</button>
       <button className="overlay-capture-toggle" aria-label={busy ? 'Parar leitura' : 'Iniciar leitura'}
         title={busy ? 'Parar leitura' : 'Iniciar leitura'} onClick={() => act(() => busy ? window.overlayAPI.stop() : window.overlayAPI.start())}>
         {busy ? '■' : '▶'}</button>
@@ -42,9 +48,11 @@ export function OverlayControls(): React.ReactElement {
     </header>
     {expanded && <div className="overlay-controls-body">
       <div className="overlay-controls-status" role="status" data-status={state.status} title={state.message}>
-        {state.status === 'error' ? state.message : config.reviewEncounterId ? 'Exibindo histórico · captura continua' : warning ?? (state.status === 'live' ? 'Leitura ao vivo' : state.status === 'starting' ? 'Conectando…' : 'Leitura parada')}
+        {state.status === 'error' ? state.message : state.session.paused && busy ? 'Medição pausada · tempo e valores congelados' : config.reviewEncounterId ? 'Exibindo histórico · captura continua' : warning ?? (state.status === 'live' ? 'Leitura ao vivo' : state.status === 'starting' ? 'Conectando…' : 'Leitura parada')}
       </div>
       <section className="overlay-control-session" aria-label="Sessão e personagem">
+        <label>Nome do personagem<input key={config.playerName ?? ''} aria-label="Nome do personagem" defaultValue={config.playerName ?? ''} maxLength={64}
+          placeholder="Nome exato no jogo" onBlur={event => configure({ playerName: event.target.value })} /></label>
         <label>Origem do medidor<select aria-label="Origem do medidor" value={config.autoSource !== false ? 'auto' : config.sourceId ?? ''}
           onChange={event => configure({ sourceId: event.target.value === 'auto' ? null : Number(event.target.value) })}>
           <option value="auto">Meu personagem{player ? ` · ${player.sourceId}` : ' · aguardando identificação'}</option>
@@ -62,6 +70,12 @@ export function OverlayControls(): React.ReactElement {
         <button aria-pressed={!config.locked} onClick={() => configure({ locked: !config.locked })}
           title="Permitir arrastar os painéis; desative para passar cliques ao jogo">{config.locked ? 'Trava ativa' : 'Mover livre'}</button>
       </div>
+      <button className="overlay-restore-total" onClick={() => configure({ totalVisible: true, anchors: { total: { x: .5, y: 0 } } })}>Restaurar total no topo</button>
+      <label className="overlay-control-page">Página do gráfico<select aria-label="Página do gráfico" value={config.metricPage ?? 'damage'}
+        onChange={event => configure({ metricPage: event.target.value as MetricPage })}>
+        {metricPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}
+      </select></label>
+      <OverlayTimer state={state} act={act} compact />
       <section className="overlay-control-section" aria-label="Aparência">
         <label className="overlay-control-range">Transparência do fundo <output>{Math.round((1 - config.opacity) * 100)}%</output>
           <input aria-label="Transparência do fundo" type="range" min="0" max="75" value={Math.round((1 - config.opacity) * 100)}

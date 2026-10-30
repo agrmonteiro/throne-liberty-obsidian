@@ -36,6 +36,13 @@ def main():
     events = (out/'events.jsonl').open('w', encoding='utf-8')
     counts = Counter()
     load_api = worker.capture.load_api
+    original_endpoints = worker.capture.endpoints
+    def recorded_endpoints():
+        snapshot = original_endpoints()
+        with (out/'endpoint-snapshots.jsonl').open('a', encoding='utf-8') as file:
+            file.write(json.dumps(dict(timeUtc=utc(), endpoints=snapshot), ensure_ascii=False)+'\n')
+        return snapshot
+    worker.capture.endpoints = recorded_endpoints
     last_heartbeat = start
     def save():
         manifest.update(elapsedSec=time.monotonic()-start, messageTypes=dict(counts))

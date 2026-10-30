@@ -2,15 +2,34 @@ import React, { useEffect, useRef, useState } from 'react'
 import { MeterPanel } from '../components/MeterPanels'
 import { useOverlay } from '../hooks/useOverlay'
 import { resolveOverlayNames, type OverlayHistoryResult } from '../engine/overlayMeter'
-import names from '../data/overlaySkillNames.json'
+import { overlaySkillNames as names, overlaySkillFiles } from '../engine/overlaySkillReference'
 import { OverlaySourcesView } from '../components/OverlaySourcesView'
 import { overlayAppearance } from '../components/overlayAppearance'
+import { OverlayMetricView, metricPages, type MetricPage } from '../components/OverlayMetricView'
+import { OverlayTimerStatus } from '../components/OverlayTimer'
 import '../styles/overlay.css'
 
 export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.ReactElement {
   const { state, act } = useOverlay()
   const [history, setHistory] = useState<OverlayHistoryResult>({ encounters: [], error: null })
   const [groupSources, setGroupSources] = useState(false)
+  useEffect(() => {
+    if (!state.config.locked) return
+    let interactive = false
+    const update = (enabled: boolean): void => {
+      if (interactive === enabled) return
+      interactive = enabled
+      void window.overlayAPI.interactive(enabled)
+    }
+    const move = (event: MouseEvent): void => update(event.target instanceof Element && Boolean(event.target.closest('[data-overlay-interactive]')))
+    const leave = (): void => update(false)
+    document.addEventListener('mousemove', move)
+    document.addEventListener('mouseleave', leave)
+    return () => {
+      document.removeEventListener('mousemove', move); document.removeEventListener('mouseleave', leave)
+      void window.overlayAPI.interactive(false)
+    }
+  }, [state.config.locked])
   useEffect(() => {
     let active = true
     const refresh = async (): Promise<void> => {
@@ -23,10 +42,14 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
   }, [])
   const selected = history.encounters.find(row => row.id === state.config.reviewEncounterId)
   const display = selected ? resolveOverlayNames({ ...state, session: selected.session,
-    mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names) : state
+    mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles) : state
   const drag = useRef<{ x: number; y: number; width: number; height: number } | null>(null)
   return <div className="overlay-window" style={{ ...overlayAppearance(state.config), fontSize: `${(state.config.fontSize ?? 13) * state.config.scale}px` }}>
     <div className="overlay-record-toolbar">
+      <button data-overlay-interactive aria-label={state.session.paused ? 'Retomar medição' : 'Pausar medição'}
+        aria-pressed={Boolean(state.session.paused)} disabled={!['live', 'replay'].includes(state.status) || Boolean(state.timer)}
+        title="Pausar ou retomar todos os painéis; o tempo pausado fica fora do DPS"
+        onClick={() => act(() => window.overlayAPI.pause(!state.session.paused))}>{state.session.paused ? '▶' : 'Ⅱ'}</button>
       <select aria-label="Registro do overlay" disabled={state.config.locked}
         title={history.error ?? (state.config.locked ? 'Ctrl+Shift+F9 para escolher registros' : 'Escolher registro salvo')}
         value={selected?.id ?? ''} onChange={event => act(() => window.overlayAPI.configure({ reviewEncounterId: event.target.value || null }))}>
@@ -41,8 +64,14 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
         title="Alternar entre habilidades e origens da leitura atual" onClick={() => setGroupSources(value => !value)}>
         {groupSources ? 'Habilidades' : 'Origens'}</button>}
     </div>
+    <OverlayTimerStatus state={state} />
+    {panel === 'skills' && <select className="overlay-metric-switch" aria-label="Página do gráfico" disabled={state.config.locked}
+      value={state.config.metricPage ?? 'damage'} onChange={event => {
+        setGroupSources(false); act(() => window.overlayAPI.configure({ metricPage: event.target.value as MetricPage }))
+      }}>{metricPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}</select>}
     {selected && selected.attributionVersion !== 2 && <div role="alert">Registro anterior à correção de atacante/alvo; atribuição pode estar incorreta.</div>}
-    <div className="overlay-panel-content">{panel === 'skills' && groupSources && !selected ? <OverlaySourcesView state={state} compact /> : <MeterPanel panel={panel} state={display} historical={Boolean(selected)} onReset={() => act(() => window.overlayAPI.reset())}
+    <div className="overlay-panel-content">{panel === 'skills' && groupSources && !selected ? <OverlaySourcesView state={state} compact /> : panel === 'skills' && state.config.metricPage && state.config.metricPage !== 'damage'
+      ? <OverlayMetricView state={display} page={state.config.metricPage} historical={Boolean(selected)} /> : <MeterPanel panel={panel} state={display} historical={Boolean(selected)} onReset={() => act(() => window.overlayAPI.reset())}
       onSelectSource={sourceId => act(() => window.overlayAPI.configure({ sourceId }))}
       onHide={() => act(() => window.overlayAPI.configure(panel === 'total' ? { totalVisible: false } : { skillsVisible: false }))} />}</div>
     {!state.config.locked && <div className="overlay-resize" title="Arrastar para redimensionar" role="slider" aria-label="Redimensionar painel" aria-valuemin={0} aria-valuenow={window.innerWidth}

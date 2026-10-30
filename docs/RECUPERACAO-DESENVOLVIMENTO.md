@@ -167,6 +167,11 @@ exports completos e SQLite continuam exigindo backup separado.
 
 ## Git, publicação e release
 
+O estado de métricas recebidas, autocura bruta experimental, pausa e teste com
+cronômetro está em [OVERLAY-METRICAS-E-CRONOMETRO.md](OVERLAY-METRICAS-E-CRONOMETRO.md).
+Esse documento também corrige a hipótese de exclusividade do sinal `0x1234444a`
+e registra os caminhos/evidências para retomar os testes de cura e vampirismo.
+
 Guardar código, scripts, dados curados, ícones necessários, documentação e
 lockfiles em commits. Binários de ferramentas e evidências pesadas ficam fora.
 Um `git diff --stat` não lista conteúdo ainda não versionado: conferir também

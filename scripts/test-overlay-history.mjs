@@ -24,6 +24,9 @@ copy.encounters[0].session.total = 0
 assert.equal(restored.list().encounters[0].session.total, 25, 'Consulta não pode alterar registro')
 restored.upsert({ ...encounter(30), session: { ...encounter(30).session, hits: 0 } })
 assert.equal(restored.list().encounters[0].id, '25', 'Sessão vazia não ocupa histórico')
+restored.upsert({ ...encounter(31), session: { ...encounter(31).session, total: 0, hits: 0,
+  received: { total: 100, hits: 2, sources: [{ id: 8, damage: 100, hits: 2 }], skills: [] } } })
+assert.equal(new OverlayHistory(file).list().encounters[0].session.received.total, 100, 'Encontro só de dano recebido precisa persistir')
 const corrupt = path.join(root, 'corrupt.json')
 fs.writeFileSync(corrupt, 'incompleto')
 const broken = new OverlayHistory(corrupt)

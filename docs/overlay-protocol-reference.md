@@ -20,7 +20,7 @@ passiva de 10 minutos solicitada em 30/10/2026 e seus arquivos de referência.
 1. IDs de entidade são temporários. Nunca fixe um ID desta amostra como identidade permanente do personagem.
 2. Separe geração de captura, conexão TCP e ID de encontro criado pelo app.
 3. Não selecione automaticamente o primeiro atacante nem o atacante com maior dano.
-4. O opcode `0x1234444a`, campo 1, coincide com o jogador local nas duas capturas antigas comparadas com logs. É um sinal experimental; a flag do campo 2 alterna durante ataques e não define uma sessão de combate.
+4. O opcode `0x1234444a`, campo 1, coincidia com o jogador nas duas capturas antigas, mas a amostra `20261030-184651-reference` mostrou também sinais de terceiros na mesma conexão. Não comprova exclusividade local. Com nome configurado, vincular pelo perfil correspondente; ver `OVERLAY-METRICAS-E-CRONOMETRO.md`. A flag do campo 2 não define uma sessão de combate.
 5. Ainda não foi identificado um ID nativo de combate confiável. Valores grandes ou estáveis em campos desconhecidos não são prova de ID de sessão.
 6. Preserve inteiros grandes como strings na referência; JSON consumido por JavaScript perde precisão acima de `2^53`.
 7. A amostra atual não tem log de combate independente. Nomes de habilidades vêm do dicionário anterior; extração sem erro não prova cobertura total do jogo.

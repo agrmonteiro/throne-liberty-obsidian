@@ -32,6 +32,40 @@ def player_identity(body):
     return decoder.player_identity(body)
 
 
+def periodic_healing(body):
+    """Toque de Cura bruto experimental; efeito e UID conferidos no cliente 26231302."""
+    fields = decoder.protobuf(body)
+    if any(key not in fields or len(fields[key]) != 1 or not isinstance(fields[key][0], int) for key in (1, 2, 3, 4, 5)):
+        return None
+    effect = decoder.zigzag(fields[1][0])
+    skill = decoder.zigzag(fields[5][0])
+    amount = decoder.zigzag(fields[3][0])
+    # TLEffectProperty.WP_BO_S_RegenHeal_ContinuousHeal -> EEffectGroup::Continuous_Heal.
+    if effect != 963250776 or skill not in (963905802, 963351634) or amount <= 0:
+        return None
+    source, target = fields[4][0], fields[2][0]
+    if not 0 < source < 2**53 or target != source:
+        return None
+    return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target, coverage='self-periodic')
+
+
+def vampiric_healing(body):
+    """Buscador de Sangue: valor do evento, sem estimar 5% do dano."""
+    fields = decoder.protobuf(body)
+    if any(key not in fields or len(fields[key]) != 1 or not isinstance(fields[key][0], int) for key in (1, 2, 3, 5, 10)):
+        return None
+    effect = decoder.zigzag(fields[1][0])
+    skill = decoder.zigzag(fields[10][0])
+    amount = decoder.zigzag(fields[5][0])
+    # TLEffectProperty.WP_DA_Mastery_Normal_Assist_InstantHeal -> Instant_Heal.
+    if effect != 939538607 or skill != 939721573 or amount <= 0:
+        return None
+    source, target = fields[3][0], fields[2][0]
+    if not 0 < source < 2**53 or target != source:
+        return None
+    return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target, coverage='self-lifesteal')
+
+
 class Stream:
     def __init__(self, connection_id=None, server_to_client=False):
         self.connection_id = connection_id
@@ -96,7 +130,17 @@ class Stream:
                 if opcode == 0x1234787f:
                     identity = player_identity(body)
                     if identity:
-                        emit(dict(type='identity', connectionId=self.connection_id, **identity))
+                        emit(dict(type='identity', time=stamp, connectionId=self.connection_id, **identity))
+                    continue
+                if opcode == 0x12344a63 and self.server_to_client:
+                    healing = periodic_healing(body)
+                    if healing:
+                        emit(dict(type='healing', event=dict(time=stamp, **healing), connectionId=self.connection_id))
+                    continue
+                if opcode == 0x12344a70 and self.server_to_client:
+                    healing = vampiric_healing(body)
+                    if healing:
+                        emit(dict(type='healing', event=dict(time=stamp, **healing), connectionId=self.connection_id))
                     continue
                 if opcode not in (0x12344a7f,0x12344a62):
                     continue

@@ -4,6 +4,8 @@ import { useOverlay } from '../hooks/useOverlay'
 import { overlaySourceWarning } from '../engine/overlayMeter'
 import { OverlayHistoryView } from '../components/OverlayHistoryView'
 import { OverlaySourcesView } from '../components/OverlaySourcesView'
+import { OverlayMetricView, metricPages, type MetricPage } from '../components/OverlayMetricView'
+import { OverlayTimer } from '../components/OverlayTimer'
 import '../styles/overlay.css'
 
 const tabs = [{ id: 'live', label: 'Ao vivo' }, { id: 'sources', label: 'Origens' },
@@ -44,12 +46,21 @@ export function Overlays(): React.ReactElement {
     </nav>
     <section className="overlay-tab-panel" id="meter-view-live" role="tabpanel" aria-labelledby="meter-tab-live" hidden={tab !== 'live'}>
       <div className="overlay-section-heading"><h2>Sessão atual</h2><div className="overlay-heading-actions">
+        <button disabled={!['live', 'replay'].includes(state.status) || Boolean(state.timer)} aria-pressed={Boolean(state.session.paused)}
+          onClick={() => act(() => window.overlayAPI.pause(!state.session.paused))}>{state.session.paused ? 'Retomar medição' : 'Pausar medição'}</button>
         <button onClick={() => showTab('settings')}>Alterar origem</button>
         <button onClick={() => act(() => window.overlayAPI.reset())}>Resetar medição</button>
       </div></div>
+      <OverlayTimer state={state} act={act} />
       <div className="overlay-live-summary"><MeterPanel panel="total" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} /></div>
-      <div className="overlay-live-skills"><MeterPanel panel="skills" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} /></div>
-      <p className="overlay-note">DPS inclui as pausas. Após 5 min sem dano, o próximo acerto inicia outra sessão. O ID selecionado não confirma o nome do personagem.</p>
+      <label className="overlay-metric-select">Página do medidor<select aria-label="Página do medidor" value={config.metricPage ?? 'damage'}
+        onChange={event => configure({ metricPage: event.target.value as MetricPage })}>
+        {metricPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}
+      </select></label>
+      <div className="overlay-live-skills">{!config.metricPage || config.metricPage === 'damage'
+        ? <MeterPanel panel="skills" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} />
+        : <OverlayMetricView state={state} page={config.metricPage} />}</div>
+      <p className="overlay-note">DPS inclui intervalos sem atacar. A pausa manual congela valores e tempo; ataques durante a pausa são descartados. Após 5 min ativos sem dano, o próximo acerto inicia outra sessão.</p>
     </section>
     <section className="overlay-tab-panel" id="meter-view-sources" role="tabpanel" aria-labelledby="meter-tab-sources" hidden={tab !== 'sources'}>
       <OverlaySourcesView state={state} />
@@ -60,6 +71,8 @@ export function Overlays(): React.ReactElement {
     <section className="overlay-tab-panel" id="meter-view-settings" role="tabpanel" aria-labelledby="meter-tab-settings" hidden={tab !== 'settings'}>
       <div className="overlay-settings-grid overlay-inspector">
         <section><h2>Origem do dano</h2>
+          <label>Nome do personagem<input key={config.playerName ?? ''} aria-label="Nome do personagem" defaultValue={config.playerName ?? ''} maxLength={64}
+            placeholder="Nome exato no jogo" onBlur={event => configure({ playerName: event.target.value })} /></label>
           <label>Origem do dano<select aria-label="Origem do dano" value={config.autoSource !== false ? 'auto' : config.sourceId ?? ''}
             onChange={event => configure({ sourceId: event.target.value === 'auto' ? null : Number(event.target.value) })}>
             <option value="auto">Meu personagem · automático</option>
@@ -77,6 +90,7 @@ export function Overlays(): React.ReactElement {
         <section><h2>Overlays sobre o jogo</h2>
           <label className="overlay-switch"><input type="checkbox" checked={config.controlsVisible !== false} onChange={event => configure({ controlsVisible: event.target.checked })} />Controle de ajustes no jogo</label>
           <label className="overlay-switch"><input type="checkbox" checked={config.totalVisible} onChange={event => configure({ totalVisible: event.target.checked })} />Total geral</label>
+          <button onClick={() => configure({ totalVisible: true, anchors: { total: { x: .5, y: 0 } } })}>Restaurar total no topo</button>
           <label className="overlay-switch"><input type="checkbox" checked={config.skillsVisible} onChange={event => configure({ skillsVisible: event.target.checked })} />Por habilidade</label>
           <label className="overlay-switch"><input type="checkbox" checked={config.locked} onChange={event => configure({ locked: event.target.checked })} />Travar e passar cliques ao jogo</label>
           <label>Opacidade <span>{Math.round(config.opacity * 100)}%</span><input aria-label="Opacidade" type="range" min="25" max="100" value={config.opacity * 100} onChange={event => configure({ opacity: Number(event.target.value) / 100 })} /></label>

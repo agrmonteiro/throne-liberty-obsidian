@@ -88,7 +88,7 @@ export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, prev
       {!session.skills.length && <div className="meter-empty">{captureNotice ?? 'Aguardando dano do seu personagem…'}</div>}
     </div><DamageLegend /></>}
     <footer className="meter-session-status">
-      <span>{historical ? 'Registro salvo' : captureNotice ?? (session.waitingReset ? 'Nova sessão no próximo dano' : session.lastDamageAt ? `Sem dano há ${duration(session.idleSec)}` : 'Aguardando primeiro dano')}</span>
+      <span>{historical ? 'Registro salvo' : state.status === 'error' ? state.message : session.paused && ['live', 'replay'].includes(state.status) ? 'Medição pausada · tempo congelado' : captureNotice ?? (session.waitingReset ? 'Nova sessão no próximo dano' : session.lastDamageAt ? `Sem dano há ${duration(session.idleSec)}` : 'Aguardando primeiro dano')}</span>
       <span>{historical ? 'SOMENTE LEITURA' : editable ? 'Reset após 5 min' : 'TRAVADO'}</span>
     </footer>
   </section>

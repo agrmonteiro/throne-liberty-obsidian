@@ -23,6 +23,12 @@
     "tcp-001:8075232"
   ],
   "nativeCombatSessionId": "not identified",
+  "identityCorrection": {
+    "evidence": "capturas_treinamento/npcap_tl/20261030-184651-reference",
+    "finding": "0x1234444a also appears for other entities in the same connection; it is not exclusive proof of the local player.",
+    "policy": "Automatic selection requires the configured character name to match a profile; otherwise wait or use a manually confirmed source.",
+    "details": "docs/OVERLAY-METRICAS-E-CRONOMETRO.md"
+  },
   "rules": [
     "Read docs/overlay-protocol-reference.md before changing the decoder.",
     "Do not persist temporary entity IDs as permanent character IDs.",

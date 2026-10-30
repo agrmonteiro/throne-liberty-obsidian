@@ -3,7 +3,7 @@ import { spawn, type ChildProcess } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { is } from '@electron-toolkit/utils'
-import { METER_IDLE_MS, OverlayIdentity, OverlayMeter, type MeterEvent, type OverlayConfig, type OverlayPanel, type OverlayState, type PanelBounds } from '../../src/engine/overlayMeter'
+import { OverlayIdentity, OverlayMeter, type MeterEvent, type MeterHealingEvent, type OverlayConfig, type OverlayPanel, type OverlayState, type PanelBounds } from '../../src/engine/overlayMeter'
 import { clamp, defaultOverlayTheme, overlayAnchor, overlayBounds, overlaySceneActive } from '../../src/engine/overlayLayout'
 import { randomUUID } from 'crypto'
 import { OverlayHistory } from './overlayHistory'
@@ -31,10 +31,12 @@ export function registerOverlay(owner: BrowserWindow): void {
   let captureId = ''
   const windows: Partial<Record<OverlayPanel, BrowserWindow>> = {}
   const appliedBounds = new Map<OverlayPanel, PanelBounds>()
+  const interactivePanels = new Set<OverlayPanel>()
   const sources = new Map<number, number>()
   const sourceLastSeen = new Map<number, number>()
-  let recentDamage: Array<{ event: MeterEvent; connectionId: string }> = []
+  let recentDamage: Array<{ event: MeterEvent | MeterHealingEvent; connectionId: string }> = []
   let captureStartedAt = 0
+  let resumedAt = 0
   const sourceNames = new Map<number, string>()
   const conflictingNames = new Set<number>()
   let status: OverlayState['status'] = 'stopped'
@@ -53,7 +55,8 @@ export function registerOverlay(owner: BrowserWindow): void {
   function checkpoint(reason = 'current', at = mode === 'replay' ? (replayClock ?? Date.now()) : Date.now()): void {
     if (encounterClosed || !mode) return
     const session = meter.snapshot(at)
-    if (clearedThrough !== null && (session.lastDamageAt === null || session.lastDamageAt <= clearedThrough)) return
+    if (reason === 'current' && session.timed && Date.now() >= session.timed.endsAt) reason = session.timed.cancelled ? 'timed-cancelled' : 'timed-end'
+    if (clearedThrough !== null && (session.lastActivityAt === null || session.lastActivityAt! <= clearedThrough)) return
     history.upsert({ id: encounterId, captureId, connectionId: encounterConnectionId,
       sourceId: meter.sourceId, sourceName: sourceNames.get(meter.sourceId!), attributionVersion: 2, mode, reason,
       savedAt: Date.now(), session })
@@ -65,13 +68,15 @@ export function registerOverlay(owner: BrowserWindow): void {
     encounterId = randomUUID(); encounterConnectionId = connectionId; encounterClosed = false; clearedThrough = null
   }
   function bindSource(sourceId: number | null, at: number, reason: string): void {
-    finishEncounter(reason, meter.snapshot(at).lastDamageAt ?? at)
+    finishEncounter(reason, meter.snapshot(at).lastActivityAt ?? at)
     newEncounter()
     config.sourceId = sourceId; config.reviewEncounterId = null
     meter.selectSource(sourceId, Math.max(captureStartedAt, at - 5000))
     let restoredDamage = 0, restoredAt = 0
     if (sourceId !== null) for (const row of recentDamage) {
-      if (row.event.sourceId === sourceId && (mode === 'replay' || identity.accepts(row.connectionId)) && meter.add(row.event)) {
+      const accepted = (mode === 'replay' || identity.accepts(row.connectionId))
+        && ('healing' in row.event ? meter.addHealing(row.event) : meter.add(row.event))
+      if (row.event.sourceId === sourceId && accepted && 'damage' in row.event) {
         restoredDamage += row.event.damage; restoredAt = Math.max(restoredAt, row.event.time * 1000)
       }
     }
@@ -90,9 +95,14 @@ export function registerOverlay(owner: BrowserWindow): void {
   }
   function state(): OverlayState {
     const player = identity.snapshot()
+    const session = meter.snapshot(mode === 'replay' ? (replayClock ?? Date.now()) : Date.now())
+    const timed = meter.measurementWindow, now = Date.now()
+    if (session.received) session.received.sources = session.received.sources.map(row => ({ ...row, name: sourceNames.get(row.id) }))
     return { config: { ...config }, capture: { id: captureId, connectionId: player?.connectionId ?? null, encounterId, player },
       game: { attached: gameBounds !== null, active: gameForeground, bounds: gameBounds },
-      session: meter.snapshot(mode === 'replay' ? (replayClock ?? Date.now()) : Date.now()), status, mode, message, unknownSkillLog: unknownLog.status(),
+      session, ...(timed ? { timer: { ...timed, phase: timed.cancelled ? 'cancelled' : now < timed.startsAt ? 'countdown' : now < timed.endsAt ? 'running' : 'finished',
+        remainingSec: Math.max(0, ((now < timed.startsAt ? timed.startsAt : timed.endsAt) - now) / 1000), elapsedSec: session.elapsedSec } } : {}),
+      status, mode, message, unknownSkillLog: unknownLog.status(),
       sources: [...sources].map(([id, damage]) => ({ id, damage, name: sourceNames.get(id), lastDamageAt: sourceLastSeen.get(id),
         localPlayer: id === player?.sourceId })).sort((a, b) => b.damage - a.damage) }
   }
@@ -147,7 +157,7 @@ export function registerOverlay(owner: BrowserWindow): void {
           if (applied && Object.keys(bounds).every(key => bounds[key as keyof PanelBounds] === applied[key as keyof PanelBounds])) return
           storeBounds(panel, bounds); applyBounds(panel, window!); broadcast()
         })
-        window.on('closed', () => { delete windows[panel] })
+        window.on('closed', () => { interactivePanels.delete(panel); delete windows[panel] })
         window.webContents.on('did-finish-load', broadcast)
         window.once('ready-to-show', () => {
           if (gameForeground && requested(panel)) window?.showInactive()
@@ -160,7 +170,7 @@ export function registerOverlay(owner: BrowserWindow): void {
       }
       if (!window) continue
       applyBounds(panel, window)
-      if (panel !== 'controls') window.setIgnoreMouseEvents(config.locked, { forward: true })
+      if (panel !== 'controls') window.setIgnoreMouseEvents(config.locked && !interactivePanels.has(panel), { forward: true })
       // Foco é definido na criação. Reaplicar estilos nativos durante o clique interfere na ativação no Windows.
       if (visible && !window.isVisible()) { window.showInactive(); window.setSkipTaskbar(true) }
       else if (!visible && window.isVisible()) window.hide()
@@ -168,6 +178,8 @@ export function registerOverlay(owner: BrowserWindow): void {
     save(); broadcast()
   }
   function stop(): void {
+    meter.cancelSchedule(Date.now())
+    meter.setPaused(true, mode === 'replay' ? (replayClock ?? Date.now()) : Date.now())
     finishEncounter('stop')
     unknownLog.flush()
     clearTimeout(reconnectTimer); reconnectTimer = undefined
@@ -188,6 +200,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     newEncounter(null)
     captureId = `${Date.now()}-${token}`
     captureStartedAt = replay ? 0 : Date.now()
+    resumedAt = captureStartedAt
     identity.clear(); sourceLastSeen.clear(); recentDamage = []
     config.reviewEncounterId = null
     const scripts = app.isPackaged ? path.join(process.resourcesPath, 'npcap-overlay') : path.join(app.getAppPath(), 'scripts')
@@ -195,6 +208,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (!fs.existsSync(worker)) { status = 'error'; message = 'Componente de captura não encontrado.'; return }
     sources.clear()
     sourceNames.clear(); conflictingNames.clear()
+    meter.setPaused(false, replay ? 0 : Date.now())
     meter.selectSource(null, replay ? 0 : Date.now()); config.sourceId = null; config.autoSource = true
     status = 'starting'; message = replay ? 'Abrindo reprodução…' : 'Conectando ao Npcap…'
     mode = replay ? 'replay' : 'live'
@@ -231,7 +245,10 @@ export function registerOverlay(owner: BrowserWindow): void {
             identity.retire(data.connectionId); broadcast()
           } else if (data.type === 'local-player' && mode === 'live') {
             const previous = identity.snapshot()
-            const change = identity.identify(data.sourceId, data.connectionId, data.time * 1000)
+            // 30/10: este sinal também apareceu para terceiros na mesma conexão.
+            // Com nome configurado, somente o perfil correspondente autoriza vincular/trocar entidade.
+            if (!config.playerName || previous?.sourceId !== data.sourceId || previous?.connectionId !== data.connectionId) continue
+            const change = identity.identify(data.sourceId, data.connectionId, data.time * 1000, previous?.method ?? 'local-state')
             if (change === 'changed') {
               if (previous && previous.connectionId !== data.connectionId) {
                 // Finaliza com a identidade anterior antes de descartar as origens da conexão.
@@ -244,18 +261,41 @@ export function registerOverlay(owner: BrowserWindow): void {
             }
           } else if (data.type === 'identity') {
             if (mode === 'live' && identity.isRetired(data.connectionId)) continue
-            if (mode === 'live' && identity.snapshot() && !identity.accepts(data.connectionId)) continue
+            if (mode === 'live' && identity.snapshot() && !identity.accepts(data.connectionId)
+              && !(config.playerName && data.name === config.playerName)) continue
             if (!Number.isSafeInteger(data.sourceId) || data.sourceId <= 0 || typeof data.name !== 'string'
               || !data.name.length || data.name.length > 64 || /[\p{C}]/u.test(data.name) || data.name.trim() !== data.name) continue
             if (conflictingNames.has(data.sourceId)) continue
             const previous = sourceNames.get(data.sourceId)
             if (previous && previous !== data.name) {
               sourceNames.delete(data.sourceId); conflictingNames.add(data.sourceId)
-            } else sourceNames.set(data.sourceId, data.name)
-          } else if (data.type === 'damage') {
+            } else {
+              sourceNames.set(data.sourceId, data.name)
+              if (mode === 'live' && config.playerName && data.name === config.playerName) {
+                const previousPlayer = identity.snapshot()
+                const change = identity.identify(data.sourceId, data.connectionId, Number.isFinite(data.time) ? data.time * 1000 : Date.now(), 'profile-name')
+                if (change === 'changed' && previousPlayer && previousPlayer.connectionId !== data.connectionId) {
+                  finishEncounter('connection-change')
+                  sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear()
+                  sourceNames.set(data.sourceId, data.name)
+                }
+                if (change === 'changed' && config.autoSource !== false) bindSource(data.sourceId, Date.now(), 'profile-name')
+                if (change !== 'ignored') broadcast()
+              }
+            }
+          } else if (data.type === 'damage' || data.type === 'healing') {
             const event = data.event
+            const healing = data.type === 'healing'
+            const amount = healing ? event?.healing : event?.damage
             if (!event || !Number.isSafeInteger(event.sourceId) || !Number.isSafeInteger(event.skillId)
-              || !Number.isFinite(event.time) || !Number.isFinite(event.damage) || event.damage <= 0) continue
+              || !Number.isFinite(event.time) || !Number.isFinite(amount) || amount <= 0) continue
+            if (healing && (event.sourceId !== event.targetId || !(
+              (event.coverage === 'self-periodic' && event.effectId === 963250776 && [963905802, 963351634].includes(event.skillId))
+              || (event.coverage === 'self-lifesteal' && event.effectId === 939538607 && event.skillId === 939721573)))) continue
+            if (mode === 'replay') replayClock = event.time * 1000
+            if (meter.paused || event.time * 1000 < resumedAt) continue
+            const timed = meter.measurementWindow
+            if (timed && (event.time * 1000 < timed.startsAt || event.time * 1000 >= timed.endsAt)) continue
             if (mode === 'live') {
               if (typeof data.connectionId !== 'string' || !data.connectionId.length || data.connectionId.length > 128
                 || identity.isRetired(data.connectionId)) continue
@@ -263,20 +303,21 @@ export function registerOverlay(owner: BrowserWindow): void {
               recentDamage = recentDamage.filter(row => row.event.time >= event.time - 5).slice(-2000)
               if (identity.snapshot() && !identity.accepts(data.connectionId)) continue
             }
-            sources.set(event.sourceId, (sources.get(event.sourceId) ?? 0) + event.damage)
-            sourceLastSeen.set(event.sourceId, event.time * 1000)
-            if (mode === 'replay') replayClock = event.time * 1000
+            if (!healing) {
+              sources.set(event.sourceId, (sources.get(event.sourceId) ?? 0) + event.damage)
+              sourceLastSeen.set(event.sourceId, event.time * 1000)
+            }
             const before = meter.snapshot(event.time * 1000)
-            if (event.sourceId === meter.sourceId && before.lastDamageAt !== null
-              && event.time * 1000 - before.lastDamageAt >= METER_IDLE_MS) {
-              finishEncounter('idle', before.lastDamageAt); newEncounter()
+            if ((event.sourceId === meter.sourceId || event.targetId === meter.sourceId) && before.lastActivityAt !== null
+              && before.waitingReset) {
+              finishEncounter('idle', before.lastActivityAt); newEncounter()
             }
             // A primeira origem com dano pode ser um NPC; só a identidade local autoriza seleção automática.
-            const accepted = meter.add(event)
+            const accepted = healing ? meter.addHealing(event) : meter.add(event)
             if (accepted && config.sourceId !== meter.sourceId) {
               config.sourceId = meter.sourceId; save()
             }
-            unknownLog.record(event, { mode: mode === 'replay' ? 'replay' : 'live', accepted,
+            if (!healing) unknownLog.record(event, { mode: mode === 'replay' ? 'replay' : 'live', accepted,
               selectedSourceId: config.sourceId, captureId })
           }
         } catch { status = 'error'; message = 'Resposta inválida do componente de captura.' }
@@ -358,13 +399,15 @@ export function registerOverlay(owner: BrowserWindow): void {
     try {
       clearMeterLogFiles(app.getPath('userData'))
       unknownLog.resetAfterClear()
-      clearedThrough = meter.snapshot().lastDamageAt ?? (mode === 'replay' ? (replayClock ?? 0) : Date.now())
+      clearedThrough = meter.snapshot().lastActivityAt ?? (mode === 'replay' ? (replayClock ?? 0) : Date.now())
       config.reviewEncounterId = null
       history.clear(); save(); broadcast()
       return history.list()
     } catch (error) { return { ...history.list(), error: `Limpeza incompleta: ${String(error)}` } }
   })
   ipcMain.handle('overlay:configure', (_event, patch: Partial<OverlayConfig>) => {
+    if (typeof patch.playerName === 'string' && patch.playerName.trim().length <= 64 && !/[\p{C}]/u.test(patch.playerName)) config.playerName = patch.playerName.trim()
+    if (patch.metricPage && ['damage', 'receivedSources', 'receivedSkills', 'healingDone', 'healingReceived'].includes(patch.metricPage)) config.metricPage = patch.metricPage
     if ('reviewEncounterId' in patch) {
       config.reviewEncounterId = typeof patch.reviewEncounterId === 'string'
         && history.list().encounters.some(row => row.id === patch.reviewEncounterId) ? patch.reviewEncounterId : null
@@ -376,6 +419,8 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (Number.isFinite(patch.fontSize)) config.fontSize = clamp(patch.fontSize!, 10, 20)
     if (Number.isFinite(patch.chartPadding)) config.chartPadding = Math.round(clamp(patch.chartPadding!, 0, 32))
     if (Number.isFinite(patch.chartPaddingVertical)) config.chartPaddingVertical = Math.round(clamp(patch.chartPaddingVertical!, 0, 32))
+    if (Number.isFinite(patch.countdownSec)) config.countdownSec = Math.round(clamp(patch.countdownSec!, 0, 60))
+    if (Number.isFinite(patch.durationSec)) config.durationSec = Math.round(clamp(patch.durationSec!, 1, 3600))
     if (patch.fontFamily && ['Inter', 'Arial', 'Consolas'].includes(patch.fontFamily)) config.fontFamily = patch.fontFamily
     if (patch.theme && typeof patch.theme === 'object') {
       const theme = { ...defaultOverlayTheme, ...config.theme }
@@ -414,6 +459,37 @@ export function registerOverlay(owner: BrowserWindow): void {
   })
   ipcMain.handle('overlay:start', () => { start(); broadcast(); return state() })
   ipcMain.handle('overlay:stop', () => { stop(); broadcast(); return state() })
+  ipcMain.handle('overlay:pause', (_event, paused: boolean) => {
+    if (typeof paused === 'boolean' && !meter.measurementWindow && (status === 'live' || status === 'replay')) {
+      const at = mode === 'replay' ? (replayClock ?? Date.now()) : Date.now()
+      if (!paused && meter.paused) resumedAt = at
+      meter.setPaused(paused, at)
+      recentDamage = []; checkpoint(); broadcast()
+    }
+    return state()
+  })
+  ipcMain.handle('overlay:timer', (_event, action: string) => {
+    const at = Date.now()
+    if (action === 'start') {
+      if (mode !== 'live' || status !== 'live' || config.sourceId === null) throw Error('Inicie a leitura e identifique/selecione seu personagem antes do teste.')
+      finishEncounter('timed-start'); newEncounter(); recentDamage = []; config.reviewEncounterId = null
+      const startsAt = at + (config.countdownSec ?? 5) * 1000
+      meter.schedule(startsAt, config.durationSec ?? 60); resumedAt = startsAt
+    } else if (action === 'cancel') {
+      meter.cancelSchedule(at); checkpoint('timed-cancelled')
+    } else if (action === 'clear') {
+      finishEncounter('timed-clear'); newEncounter(); meter.reset(at); meter.setPaused(false, at)
+      resumedAt = at; recentDamage = []; config.reviewEncounterId = null
+    }
+    save(); broadcast(); return state()
+  })
+  ipcMain.handle('overlay:interactive', (event, enabled: boolean) => {
+    const panel = panels.find(key => windows[key]?.webContents === event.sender)
+    if (!panel || panel === 'controls' || typeof enabled !== 'boolean') return
+    if (enabled) interactivePanels.add(panel)
+    else interactivePanels.delete(panel)
+    windows[panel]?.setIgnoreMouseEvents(config.locked && !enabled, { forward: true })
+  })
   ipcMain.handle('overlay:reset', () => { finishEncounter('reset'); newEncounter(); recentDamage = []; config.reviewEncounterId = null;
     meter.reset(mode === 'replay' ? (replayClock ?? 0) : Date.now()); save(); broadcast(); return state() })
   ipcMain.handle('overlay:bounds', (_event, panel: OverlayPanel, bounds: PanelBounds) => {
@@ -429,6 +505,14 @@ export function registerOverlay(owner: BrowserWindow): void {
     return state()
   })
   const timer = setInterval(() => {
+    for (const panel of interactivePanels) {
+      const window = windows[panel]
+      if (!window) { interactivePanels.delete(panel); continue }
+      const bounds = window.getBounds(), cursor = screen.getCursorScreenPoint()
+      if (cursor.x < bounds.x || cursor.y < bounds.y || cursor.x >= bounds.x + bounds.width || cursor.y >= bounds.y + bounds.height) {
+        interactivePanels.delete(panel); window.setIgnoreMouseEvents(config.locked, { forward: true })
+      }
+    }
     if (gameForeground && Date.now() - foregroundSeenAt > 5000) { gameForeground = false; showPanels() }
     broadcast()
   }, 250)
@@ -453,6 +537,6 @@ export function registerOverlay(owner: BrowserWindow): void {
     globalShortcut.unregister('CommandOrControl+Shift+F9'); globalShortcut.unregister('CommandOrControl+Shift+F10')
     globalShortcut.unregister('CommandOrControl+Shift+F8')
     globalShortcut.unregister('CommandOrControl+Shift+F11')
-    for (const name of ['get', 'history', 'clear-records', 'configure', 'start', 'stop', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
+    for (const name of ['get', 'history', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
   })
 }

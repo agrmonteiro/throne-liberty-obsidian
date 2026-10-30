@@ -28,10 +28,15 @@ export class OverlayHistory {
     } catch (error) { this.error = `Não foi possível limpar o histórico: ${String(error)}`; return false }
   }
   upsert(encounter: OverlayEncounter): void {
-    if (this.error || encounter.session.hits === 0 || encounter.session.startedAt === null) return
+    if (this.error || (encounter.session.hits === 0 && !encounter.session.received?.hits && !encounter.session.healing?.done.hits && !encounter.session.timed) || encounter.session.startedAt === null) return
     const previous = this.encounters.find(row => row.id === encounter.id)
     if (previous && previous.session.lastDamageAt === encounter.session.lastDamageAt
       && previous.session.total === encounter.session.total && previous.reason === encounter.reason
+      && previous.session.received?.total === encounter.session.received?.total
+      && previous.session.healing?.done.total === encounter.session.healing?.done.total
+      && previous.session.timed?.endsAt === encounter.session.timed?.endsAt
+      && previous.session.timed?.cancelled === encounter.session.timed?.cancelled
+      && previous.session.paused === encounter.session.paused
       && previous.sourceName === encounter.sourceName && previous.attributionVersion === encounter.attributionVersion) return
     const next = [structuredClone(encounter), ...this.encounters.filter(row => row.id !== encounter.id)].slice(0, 20)
     try {
