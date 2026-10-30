@@ -67,7 +67,7 @@ reaproveitar a instância existente; não iniciar outra captura de QA nesse perf
 | Sessão | O app cria UUID de encontro; ainda não foi validado um ID nativo de combate. A flag do sinal local não delimita combate. |
 | Ancoragem | Total, habilidades e controle acompanham a janela do TL; posições relativas ficam dentro da área do jogo. `overlayLayout.ts`. |
 | Foco | Menus e janelas dos próprios overlays mantêm a cena visível. Considerar proprietários/ancestrais nativos dos popups. `docs/overlay-focus-qa.md`. |
-| Aparência | Fonte, tamanho, cores, transparência e posicionamento persistidos. `chartPadding` ajusta as margens horizontais do gráfico de 0 a 32 px, padrão 12. |
+| Aparência | Fonte, tamanho, cores, transparência e posicionamento persistidos. `chartPadding` ajusta a margem horizontal de 0 a 32 px (padrão 12); `chartPaddingVertical` ajusta acima/abaixo de cada linha de 0 a 32 px (padrão 10). |
 | Nomes | Mapear por evidência explícita; não inferir nome por dano, proximidade numérica ou frequência. |
 | Especializações | Variantes com ícone próprio recebem nome distinto para não se fundirem com a habilidade base. |
 

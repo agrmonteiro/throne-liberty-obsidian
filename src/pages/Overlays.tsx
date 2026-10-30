@@ -81,8 +81,9 @@ export function Overlays(): React.ReactElement {
           <label className="overlay-switch"><input type="checkbox" checked={config.locked} onChange={event => configure({ locked: event.target.checked })} />Travar e passar cliques ao jogo</label>
           <label>Opacidade <span>{Math.round(config.opacity * 100)}%</span><input aria-label="Opacidade" type="range" min="25" max="100" value={config.opacity * 100} onChange={event => configure({ opacity: Number(event.target.value) / 100 })} /></label>
           <label>Escala <span>{Math.round(config.scale * 100)}%</span><input aria-label="Escala" type="range" min="75" max="150" value={config.scale * 100} onChange={event => configure({ scale: Number(event.target.value) / 100 })} /></label>
-          <label>Margem interna do gráfico <span>{config.chartPadding ?? 12} px</span><input aria-label="Margem interna do gráfico" type="range" min="0" max="32" step="1" value={config.chartPadding ?? 12} onChange={event => configure({ chartPadding: Number(event.target.value) })} /></label>
-          <p>Distância entre as bordas do gráfico e o conteúdo das habilidades.</p>
+          <label>Margem horizontal do gráfico <span>{config.chartPadding ?? 12} px</span><input aria-label="Margem horizontal do gráfico" type="range" min="0" max="32" step="1" value={config.chartPadding ?? 12} onChange={event => configure({ chartPadding: Number(event.target.value) })} /></label>
+          <label>Margem vertical do gráfico <span>{config.chartPaddingVertical ?? 10} px</span><input aria-label="Margem vertical do gráfico" type="range" min="0" max="32" step="1" value={config.chartPaddingVertical ?? 10} onChange={event => configure({ chartPaddingVertical: Number(event.target.value) })} /></label>
+          <p>Ajuste as distâncias laterais e acima/abaixo do conteúdo em cada linha do gráfico.</p>
           <p>Os painéis acompanham a janela do TL e ficam dentro da área do jogo. Ajuste fonte, cores e posições pelo controle no jogo. A captura continua ao alternar de aplicativo.</p>
         </section>
       </div>

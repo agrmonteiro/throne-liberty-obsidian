@@ -71,8 +71,8 @@
 .meter-session-status { display:flex; justify-content:space-between; gap:8px; margin-top:auto; min-height:24px; padding:6px 12px; background:#00000024; color:#a29c8f; font-size:.65em; }
 .meter-skills-scroll { flex:1; overflow:auto; min-height:100px; }
 .meter-table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; font-size:.85em; table-layout:fixed; }
-.meter-table th { font-size:.8em; color:#a29c8f; font-weight:500; text-align:right; padding:9px 7px; border-bottom:1px solid #ffffff0c; }
-.meter-table td { position:relative; text-align:right; padding:10px 7px; border-bottom:1px solid #ffffff08; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.meter-table th { font-size:.8em; color:#a29c8f; font-weight:500; text-align:right; padding:var(--meter-chart-padding-vertical,10px) 7px; border-bottom:1px solid #ffffff0c; }
+.meter-table td { position:relative; text-align:right; padding:var(--meter-chart-padding-vertical,10px) 7px; border-bottom:1px solid #ffffff08; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .meter-table th:first-child,.meter-table td:first-child { width:36%; text-align:left; padding-left:var(--meter-chart-padding,12px); }
 .meter-table th:last-child,.meter-table td:last-child { padding-right:var(--meter-chart-padding,12px); }
 .meter-table th:nth-child(2) { width:19%; }.meter-table th:nth-child(3) { width:11%; }
@@ -217,8 +217,8 @@ html:has(body[data-overlay]),body[data-overlay] #root { background:transparent!i
 .overlay-dashboard .meter-panel-header strong { font-size:13px; color:var(--text-soft); font-weight:500; }
 .overlay-dashboard .meter-panel-actions { display:none; }
 .overlay-dashboard .meter-table { font-size:13px; }
-.overlay-dashboard .meter-table th { font-size:10px; padding:9px 10px; background:#11141b; position:sticky; top:0; z-index:1; }
-.overlay-dashboard .meter-table td { padding:10px; }
+.overlay-dashboard .meter-table th { font-size:10px; padding:var(--meter-chart-padding-vertical,10px) 10px; background:#11141b; position:sticky; top:0; z-index:1; }
+.overlay-dashboard .meter-table td { padding:var(--meter-chart-padding-vertical,10px) 10px; }
 .overlay-dashboard .meter-table th:first-child,.overlay-dashboard .meter-table td:first-child { width:38%; padding-left:var(--meter-chart-padding,12px); }
 .overlay-dashboard .meter-table th:last-child,.overlay-dashboard .meter-table td:last-child { padding-right:var(--meter-chart-padding,12px); }
 .overlay-dashboard .meter-session-status { padding:8px 0; font-size:10px; background:none; }

@@ -74,9 +74,12 @@ export function OverlayControls(): React.ReactElement {
             {Array.from({ length: 11 }, (_, index) => index + 10).map(size => <option key={size} value={size}>{size} px</option>)}
           </select></label>
         </div>
-        <label className="overlay-control-range">Margem interna do gráfico <output>{config.chartPadding ?? 12} px</output>
-          <input aria-label="Margem interna do gráfico" type="range" min="0" max="32" step="1" value={config.chartPadding ?? 12}
+        <label className="overlay-control-range">Margem horizontal do gráfico <output>{config.chartPadding ?? 12} px</output>
+          <input aria-label="Margem horizontal do gráfico" type="range" min="0" max="32" step="1" value={config.chartPadding ?? 12}
             onChange={event => configure({ chartPadding: Number(event.target.value) })} /></label>
+        <label className="overlay-control-range">Margem vertical do gráfico <output>{config.chartPaddingVertical ?? 10} px</output>
+          <input aria-label="Margem vertical do gráfico" type="range" min="0" max="32" step="1" value={config.chartPaddingVertical ?? 10}
+            onChange={event => configure({ chartPaddingVertical: Number(event.target.value) })} /></label>
         <details className="overlay-control-colors"><summary>Cores <span aria-hidden="true">{palette.slice(0, 3).map(item => <i key={item.key} style={{ backgroundColor: theme[item.key] }} />)}</span></summary>
           <div>{palette.map(item => <label key={item.key}><input aria-label={`Cor: ${item.label}`} type="color" value={theme[item.key]}
             onChange={event => configure({ theme: { ...theme, [item.key]: event.target.value } })} />{item.label}</label>)}</div>

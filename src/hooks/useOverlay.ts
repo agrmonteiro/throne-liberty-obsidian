@@ -4,7 +4,7 @@ import { overlaySkillNames as names, overlaySkillFiles } from '../engine/overlay
 
 const initial: OverlayState = {
   config: { locked: false, totalVisible: false, skillsVisible: false, controlsVisible: true, controlsExpanded: false,
-    fontFamily: 'Inter', fontSize: 13, chartPadding: 12, opacity: .94, scale: 1, sourceId: null },
+    fontFamily: 'Inter', fontSize: 13, chartPadding: 12, chartPaddingVertical: 10, opacity: .94, scale: 1, sourceId: null },
   session: new OverlayMeter().snapshot(), status: 'stopped', mode: null, message: 'Conectando ao app…', sources: [],
 }
 export function useOverlay(): { state: OverlayState; act: (operation: () => Promise<unknown>) => void } {

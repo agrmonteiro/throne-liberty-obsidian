@@ -120,7 +120,7 @@ export interface OverlayConfig {
   sourceId: number | null; totalBounds?: PanelBounds; skillsBounds?: PanelBounds
   controlsVisible?: boolean; controlsExpanded?: boolean; controlsBounds?: PanelBounds
   anchors?: Partial<Record<OverlayPanel, PanelAnchor>>
-  fontFamily?: 'Inter' | 'Arial' | 'Consolas'; fontSize?: number; chartPadding?: number; theme?: OverlayTheme
+  fontFamily?: 'Inter' | 'Arial' | 'Consolas'; fontSize?: number; chartPadding?: number; chartPaddingVertical?: number; theme?: OverlayTheme
 }
 export interface OverlayState {
   capture?: { id: string; connectionId: string | null; encounterId: string; player: OverlayPlayerIdentity | null }

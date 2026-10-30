@@ -14,7 +14,7 @@ import { OverlayUnknownLog } from './overlayUnknownLog'
 export function registerOverlay(owner: BrowserWindow): void {
   const file = path.join(app.getPath('userData'), 'data', 'overlay.json')
   let config: OverlayConfig = { autoSource: true, locked: false, totalVisible: false, skillsVisible: false,
-    controlsVisible: true, controlsExpanded: false, fontFamily: 'Inter', fontSize: 13, chartPadding: 12, theme: { ...defaultOverlayTheme },
+    controlsVisible: true, controlsExpanded: false, fontFamily: 'Inter', fontSize: 13, chartPadding: 12, chartPaddingVertical: 10, theme: { ...defaultOverlayTheme },
     opacity: .94, scale: 1, sourceId: null }
   try { config = { ...config, ...JSON.parse(fs.readFileSync(file, 'utf8')) } } catch { /* primeiro uso */ }
   // Não transportar identidade de entidade entre execuções/conexões do jogo.
@@ -375,6 +375,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (Number.isFinite(patch.opacity)) config.opacity = Math.max(.25, Math.min(1, patch.opacity!))
     if (Number.isFinite(patch.fontSize)) config.fontSize = clamp(patch.fontSize!, 10, 20)
     if (Number.isFinite(patch.chartPadding)) config.chartPadding = Math.round(clamp(patch.chartPadding!, 0, 32))
+    if (Number.isFinite(patch.chartPaddingVertical)) config.chartPaddingVertical = Math.round(clamp(patch.chartPaddingVertical!, 0, 32))
     if (patch.fontFamily && ['Inter', 'Arial', 'Consolas'].includes(patch.fontFamily)) config.fontFamily = patch.fontFamily
     if (patch.theme && typeof patch.theme === 'object') {
       const theme = { ...defaultOverlayTheme, ...config.theme }

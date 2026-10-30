@@ -37,3 +37,15 @@ O monitor de janela é somente leitura: identifica TL.exe, obtém GetClientRect/
 - Captura passiva de 20 s reconheceu a chave atual em 556 segmentos sem erro de formato. O app também registrou dano ao vivo com o decoder corrigido.
 - Teste de segunda abertura deixou somente um processo principal. A proteção de instância única ativa a janela existente. Instância de QA fechada; apenas o app normal ficou aberto intencionalmente para uso.
 - Evidências: `capturas_treinamento/overlay-control-config.png`, `overlay-control-skills.png` e `overlay-control-total.png`.
+# Margem vertical — 30/10/2026
+
+- Controles horizontal e vertical independentes na aba Ajustes e no controle
+  flutuante. Vertical: 0–32 px por lado, padrão 10, salva em `chartPaddingVertical`.
+- Conferência pela interface: 32 px acima/abaixo resultaram em linha de 89,17 px;
+  com 0 px, 25,17 px. Margem horizontal manteve os 2 px configurados pelo usuário.
+- Ajuste no controle flutuante sincronizou imediatamente com o app e gráfico.
+  O layout mantém rolagem vertical para as opções adicionais.
+- Build e checagens TypeScript do overlay passaram. Medição anterior salva no
+  histórico antes de recarregar; leitura retomada com uma única instância.
+- Evidência local: `capturas_treinamento/overlay-vertical-padding-control.png`.
+
