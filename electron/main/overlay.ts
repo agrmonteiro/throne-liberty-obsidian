@@ -130,7 +130,8 @@ export function registerOverlay(owner: BrowserWindow): void {
     const timed = meter.measurementWindow
     return overlayCombatVisible(config, lastCombatDamageAt, Date.now(), { replay: mode === 'replay',
       timed: Boolean(timed && !timed.cancelled && Date.now() < timed.endsAt),
-      editing: Boolean(config.controlsVisible && (controlsEditing || windows.controls?.isFocused())) })
+      editing: Boolean((config.controlsVisible && controlsEditing)
+        || panels.some(panel => requested(panel) && windows[panel]?.isFocused())) })
   }
   function panelVisible(panel: OverlayPanel): boolean {
     return requested(panel) && gameForeground && gameBounds !== null && (panel === 'controls' || combatVisible())
@@ -167,7 +168,8 @@ export function registerOverlay(owner: BrowserWindow): void {
         window = new BrowserWindow({ ...initial, title: `Overlay · ${panel === 'controls' ? 'Ajustes' : panel === 'total' ? 'Total geral' : 'Habilidades'}`,
           transparent: true, frame: false,
           show: false, resizable: false, maximizable: false, minimizable: false, skipTaskbar: true,
-          focusable: panel === 'controls',
+          // Busca e consulta de detalhes também precisam receber teclado no gráfico.
+          focusable: true,
           alwaysOnTop: true, backgroundColor: '#00000000',
           webPreferences: { preload: path.join(__dirname, '../preload/index.cjs'),
             sandbox: false, contextIsolation: true, nodeIntegration: false } })

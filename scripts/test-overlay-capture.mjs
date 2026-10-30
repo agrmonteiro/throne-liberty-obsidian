@@ -39,7 +39,7 @@ function harness(startAt = 1000000) {
   class UnknownLog { status() { return {} } record() {} flush() {} resetAfterClear() {} }
   class NativeWindow extends EventEmitter {
     visible = false; focused = false; destroyed = false; url = ''; webContents = new EventEmitter()
-    constructor(bounds) { super(); this.rect = bounds; this.webContents.send = () => {}; this.webContents.getURL = () => this.url; nativeWindows.push(this) }
+    constructor(bounds) { super(); this.focusable = bounds.focusable; this.rect = bounds; this.webContents.send = () => {}; this.webContents.getURL = () => this.url; nativeWindows.push(this) }
     getBounds() { return this.rect }
     setBounds(rect) { this.rect = rect }
     isVisible() { return this.visible }
@@ -95,6 +95,15 @@ function harness(startAt = 1000000) {
     foreground: (active, extra = {}) => children.find(row => row.args.some(value => value.endsWith('overlay-foreground.py'))).stdout.emit('data',
       Buffer.from(JSON.stringify({ active, bounds: { x: 0, y: 0, width: 1280, height: 720 }, ...extra }) + '\n')),
     visiblePanels: () => Object.fromEntries(nativeWindows.filter(row => !row.destroyed).map(row => [row.url.split('overlay=')[1], row.visible])),
+    focusPanel: panel => {
+      for (const window of nativeWindows) {
+        window.focused = window.url.endsWith(`overlay=${panel}`)
+        if (window.focused) {
+          assert.equal(window.focusable, true, 'A consulta do overlay precisa aceitar teclado nativo')
+          window.emit('focus')
+        }
+      }
+    },
     pause: value => handlers.get('overlay:pause')({}, value), advance: ms => { now += ms },
     timer: action => handlers.get('overlay:timer')({}, action),
     reset: () => handlers.get('overlay:reset')(), history: () => handlers.get('overlay:history')(), close: () => owner.emit('closed') }
@@ -115,6 +124,10 @@ if (process.platform === 'win32') {
     assert.deepEqual(visibility.visiblePanels(), { total: true, skills: true, controls: true })
     visibility.advance(10000); visibility.foreground(true); visibility.tick()
     assert.deepEqual(visibility.visiblePanels(), { total: false, skills: false, controls: true }, 'Expirar sem novos pacotes deve ocultar as janelas nativas')
+    visibility.focusPanel('skills')
+    visibility.foreground(false, { foreground: '2' }); visibility.tick()
+    assert.deepEqual(visibility.visiblePanels(), { total: true, skills: true, controls: true }, 'Busca/detalhes focados devem permanecer visíveis fora de combate')
+    visibility.focusPanel(null)
     visibility.foreground(false, { foregroundOwner: '3' }); visibility.tick()
     assert.deepEqual(visibility.visiblePanels(), { total: true, skills: true, controls: true }, 'Popup dos ajustes deve manter os painéis visíveis durante a edição')
     visibility.foreground(true); visibility.tick()

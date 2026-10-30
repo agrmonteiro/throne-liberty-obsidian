@@ -7,6 +7,7 @@ import { OverlaySourcesView } from '../components/OverlaySourcesView'
 import { OverlayMetricView, metricPages, type MetricPage } from '../components/OverlayMetricView'
 import { OverlayTimer } from '../components/OverlayTimer'
 import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
+import { MeterExportButton } from '../components/MeterExportButton'
 import '../styles/overlay.css'
 
 const tabs = [{ id: 'live', label: 'Ao vivo' }, { id: 'sources', label: 'Origens' },
@@ -54,10 +55,10 @@ export function Overlays(): React.ReactElement {
       </div></div>
       <OverlayTimer state={state} act={act} />
       <div className="overlay-live-summary"><MeterPanel panel="total" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} /></div>
-      <label className="overlay-metric-select">Página do medidor<select aria-label="Página do medidor" value={config.metricPage ?? 'damage'}
+      <div className="overlay-live-analysis-controls"><label className="overlay-metric-select">Página do medidor<select aria-label="Página do medidor" value={config.metricPage ?? 'damage'}
         onChange={event => configure({ metricPage: event.target.value as MetricPage })}>
         {metricPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}
-      </select></label>
+      </select></label><MeterExportButton session={state.session} page={config.metricPage ?? 'damage'} /></div>
       <div className="overlay-live-skills">{!config.metricPage || config.metricPage === 'damage'
         ? <MeterPanel panel="skills" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} />
         : <OverlayMetricView state={state} page={config.metricPage} />}</div>

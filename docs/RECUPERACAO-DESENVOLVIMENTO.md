@@ -60,6 +60,10 @@ reaproveitar a instância existente; não iniciar outra captura de QA nesse perf
 
 ## Decisões dos overlays
 
+A análise do addon Details e o mapa de funções adaptadas/pendentes estão em
+[DETAILS-OVERLAY-ADAPTACAO.md](DETAILS-OVERLAY-ADAPTACAO.md), com commit de referência,
+caminhos úteis, cálculos e recuperação da cópia de consulta.
+
 | Tema | Decisão e referência |
 | --- | --- |
 | Origem do dano | Seguir a entidade local identificada pelo protocolo, nunca o primeiro atacante ou o maior dano. `src/engine/overlayMeter.ts`, `electron/main/overlay.ts`. |

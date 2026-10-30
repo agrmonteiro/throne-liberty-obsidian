@@ -2,6 +2,12 @@
 
 ## Comportamento implementado
 
+A consulta inspirada no Details agora permite busca por nome/ID, ordenação,
+contribuição por segundo e clique para abrir detalhes de cada linha. No histórico,
+as cinco páginas podem ser consultadas, exportadas para CSV e comparadas com
+outra medição compatível. Ver [mapa de adaptação](DETAILS-OVERLAY-ADAPTACAO.md)
+para cálculos, limites e referências do addon.
+
 - O total continua sendo dano causado. O botão **Restaurar total no topo** mostra
   o painel e ancora sua posição no topo central da janela do TL.
 - A barra superior dourada, com indicador de arraste, move cada janela. No total
@@ -11,8 +17,9 @@
 - Pausar nos overlays ou no app congela valores e tempo de todos os medidores.
   Os eventos da pausa são descartados, inclusive os que chegam atrasados.
   A captura e a identificação continuam conectadas. Pausa não usa parar/iniciar.
-- O botão de pausa recebe cliques mesmo com o painel travado; o restante continua
-  passando cliques ao jogo. O controle de ajustes permanece interativo.
+- O botão de pausa e os controles de consulta (busca, cabeçalhos e detalhes)
+  recebem cliques mesmo com o painel travado; as demais áreas continuam passando
+  cliques ao jogo. O controle de ajustes permanece interativo.
 - **Página do medidor / Página do gráfico** seleciona dano causado, dano recebido
   por fonte, dano recebido por habilidade, cura feita ou cura recebida. A seleção
   é compartilhada pelo app e pelo overlay do gráfico.
@@ -37,7 +44,7 @@ A captura continua ativa e as opções de visibilidade/posições são preservad
 É uma inferência por dano observado, não uma flag nativa de combate. Dano de
 terceiros e autocura periódica não prolongam a visibilidade. O controle de
 ajustes não é ocultado por essa regra; durante edição (inclusive listas/popups),
-histórico, reprodução ou cronômetro ativo, os painéis permanecem visíveis.
+consulta focada nas janelas, histórico, reprodução ou cronômetro ativo, os painéis permanecem visíveis.
 A regra geral de acompanhar o foco/janela do TL continua valendo.
 
 O backend verifica a expiração a cada 250 ms; não depende de chegar outro pacote.
