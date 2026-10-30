@@ -6,8 +6,9 @@ export interface Translations {
     eyebrow: string
     title: string
     tagline: string
-    groups: { overview: string; manage: string; analysis: string; preferences: string }
-    nav: { dashboard: string; builds: string; calculator: string; comparator: string; sensitivity: string; rotation: string; combatlab: string; macro: string; logreader: string; settings: string; skillsdb: string; masterytrees: string }
+    groups: { overview: string; manage: string; analysis: string; preferences: string; builds: string; combat: string; training: string; library: string }
+    nav: { dashboard: string; builds: string; calculator: string; comparator: string; sensitivity: string; rotation: string; combatlab: string; macro: string; logreader: string; settings: string; skillsdb: string; masterytrees: string; overlays: string }
+    navigation: string; expandGroup: string; collapseGroup: string
     footer: string
     checking: string
     upToDate: string
@@ -245,8 +246,9 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       eyebrow: 'AgrMonteiro · Tier2',
       title: 'Command Lab',
       tagline: 'Análise de elite, na palma da sua mão',
-      groups: { overview: 'Visão Geral', manage: 'Gerenciar', analysis: 'Análise', preferences: 'Preferências' },
-      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'Calculadora PvE', comparator: 'Comparador', sensitivity: 'Sensibilidade', rotation: 'Rotação', combatlab: 'Laboratório de combate', macro: 'Macro Razer', logreader: 'Leitor de Logs', settings: 'Configurações', skillsdb: 'Banco de Skills', masterytrees: 'Maestrias' },
+      groups: { overview: 'Visão Geral', manage: 'Gerenciar', analysis: 'Análise', preferences: 'Preferências', builds: 'Builds e atributos', combat: 'Combate e logs', training: 'Treino e rotação', library: 'Biblioteca' },
+      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'Calculadora PvE', comparator: 'Comparador', sensitivity: 'Sensibilidade', rotation: 'Rotação', combatlab: 'Laboratório de combate', macro: 'Macro Razer', logreader: 'Leitor de Logs', settings: 'Configurações', skillsdb: 'Banco de Skills', masterytrees: 'Maestrias', overlays: 'Overlays de dano' },
+      navigation: 'Menu principal', expandGroup: 'Expandir categoria', collapseGroup: 'Recolher categoria',
       footer: 'Electron + React',
       checking: 'Verificando versão…',
       upToDate: 'Versão atual já é a última',
@@ -573,8 +575,9 @@ export const TRANSLATIONS: Record<Lang, Translations> = {
       eyebrow: 'AgrMonteiro · Tier2',
       title: 'Command Lab',
       tagline: 'Elite analysis, at your fingertips',
-      groups: { overview: 'Overview', manage: 'Manage', analysis: 'Analysis', preferences: 'Preferences' },
-      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'PvE Calculator', comparator: 'Comparator', sensitivity: 'Sensitivity', rotation: 'Rotation', combatlab: 'Combat Lab', macro: 'Razer Macro', logreader: 'Log Reader', settings: 'Settings', skillsdb: 'Skills DB', masterytrees: 'Masteries' },
+      groups: { overview: 'Overview', manage: 'Manage', analysis: 'Analysis', preferences: 'Preferences', builds: 'Builds & attributes', combat: 'Combat & logs', training: 'Training & rotation', library: 'Library' },
+      nav: { dashboard: 'War Room', builds: 'Builds', calculator: 'PvE Calculator', comparator: 'Comparator', sensitivity: 'Sensitivity', rotation: 'Rotation', combatlab: 'Combat Lab', macro: 'Razer Macro', logreader: 'Log Reader', settings: 'Settings', skillsdb: 'Skills DB', masterytrees: 'Masteries', overlays: 'Damage overlays' },
+      navigation: 'Main menu', expandGroup: 'Expand category', collapseGroup: 'Collapse category',
       footer: 'Electron + React',
       checking: 'Checking version…',
       upToDate: 'Already on latest version',

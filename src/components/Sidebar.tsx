@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import { useT } from '../i18n/useT'
 import { version } from '../../package.json'
+import '../styles/sidebar.css'
 
 type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'macro' | 'combatlab' | 'overlays' | 'settings' | 'pullranking' | 'skillsdb' | 'masterytrees'
 
+type NavGroup = 'overview' | 'builds' | 'combat' | 'training' | 'library' | 'preferences'
 interface NavItem {
   id:    Page
   icon:  string
-  group: 'overview' | 'manage' | 'analysis' | 'preferences'
+  group: NavGroup
 }
 
 const WIP_PAGES: Set<Page> = new Set(['skillsdb', 'masterytrees', 'rotation', 'macro'])
 
 const NAV: NavItem[] = [
   { id: 'dashboard',    icon: '⚡', group: 'overview'     },
-  { id: 'builds',       icon: '📁', group: 'manage'       },
-  { id: 'calculator',   icon: '⚔',  group: 'analysis'     },
-  { id: 'comparator',   icon: '🕷',  group: 'analysis'     },
-  { id: 'sensitivity',  icon: '📡', group: 'analysis'     },
-  { id: 'rotation',     icon: '🔄', group: 'analysis'     },
-  { id: 'combatlab',    icon: '🎯', group: 'analysis'     },
-  { id: 'macro',        icon: '⌨',  group: 'analysis'     },
-  { id: 'overlays',     icon: '◫', group: 'analysis' },
-  { id: 'logreader',    icon: '📄', group: 'analysis'     },
-  { id: 'pullranking',  icon: '🏆', group: 'analysis'     },
-  { id: 'skillsdb',     icon: '📚', group: 'analysis'     },
-  { id: 'masterytrees', icon: '🌿', group: 'analysis'     },
+  { id: 'builds',       icon: '📁', group: 'builds'       },
+  { id: 'calculator',   icon: '⚔',  group: 'builds'       },
+  { id: 'comparator',   icon: '🕷',  group: 'builds'       },
+  { id: 'sensitivity',  icon: '📡', group: 'builds'       },
+  { id: 'overlays',     icon: '◫',  group: 'combat'       },
+  { id: 'logreader',    icon: '📄', group: 'combat'       },
+  { id: 'pullranking',  icon: '🏆', group: 'combat'       },
+  { id: 'rotation',     icon: '🔄', group: 'training'     },
+  { id: 'combatlab',    icon: '🎯', group: 'training'     },
+  { id: 'macro',        icon: '⌨',  group: 'training'     },
+  { id: 'skillsdb',     icon: '📚', group: 'library'      },
+  { id: 'masterytrees', icon: '🌿', group: 'library'      },
   { id: 'settings',     icon: '⚙',  group: 'preferences'  },
 ]
 
@@ -37,7 +39,7 @@ const NAV_KEYS: Record<Page, string> = {
   sensitivity:  'sidebar.nav.sensitivity',
   rotation:     'sidebar.nav.rotation',
   combatlab:    'sidebar.nav.combatlab',
-  overlays:     'Overlays de dano',
+  overlays:     'sidebar.nav.overlays',
   macro:        'sidebar.nav.macro',
   logreader:    'sidebar.nav.logreader',
   settings:     'sidebar.nav.settings',
@@ -46,14 +48,13 @@ const NAV_KEYS: Record<Page, string> = {
   masterytrees: 'sidebar.nav.masterytrees',
 }
 
-const GROUP_KEYS: Array<{ key: 'overview' | 'manage' | 'analysis' | 'preferences'; tKey: string }> = [
-  { key: 'overview',    tKey: 'sidebar.groups.overview'    },
-  { key: 'manage',      tKey: 'sidebar.groups.manage'      },
-  { key: 'analysis',    tKey: 'sidebar.groups.analysis'    },
-  { key: 'preferences', tKey: 'sidebar.groups.preferences' },
+const GROUP_KEYS: Array<{ key: NavGroup; tKey: string }> = [
+  { key: 'builds', tKey: 'sidebar.groups.builds' },
+  { key: 'combat', tKey: 'sidebar.groups.combat' },
+  { key: 'training', tKey: 'sidebar.groups.training' },
+  { key: 'library', tKey: 'sidebar.groups.library' },
 ]
-
-const GROUPS = [...new Set(NAV.map((n) => n.group))]
+const COLLAPSED_KEY = 'commandlab.sidebar.collapsed-groups.v1'
 
 interface Props {
   active:   Page
@@ -65,6 +66,19 @@ type CheckState = 'idle' | 'checking' | 'upToDate' | 'available'
 export function Sidebar({ active, onChange }: Props): React.ReactElement {
   const t = useT()
   const [checkState, setCheckState] = useState<CheckState>('idle')
+  const [collapsed, setCollapsed] = useState<NavGroup[]>(() => {
+    try {
+      const saved: unknown = JSON.parse(localStorage.getItem(COLLAPSED_KEY) ?? '[]')
+      return Array.isArray(saved) ? GROUP_KEYS.filter(group => saved.includes(group.key)).map(group => group.key) : []
+    } catch { return [] }
+  })
+  useEffect(() => {
+    const group = NAV.find(item => item.id === active)?.group
+    if (group) setCollapsed(current => current.includes(group) ? current.filter(key => key !== group) : current)
+  }, [active])
+  useEffect(() => {
+    try { localStorage.setItem(COLLAPSED_KEY, JSON.stringify(collapsed)) } catch { /* navegação funciona sem persistência local */ }
+  }, [collapsed])
 
   useEffect(() => {
     if (!window.updateAPI) return
@@ -88,6 +102,15 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
     window.updateAPI?.onAvailable(cleanup)
     window.updateAPI?.onError(cleanup)
     window.updateAPI?.checkNow()
+  }
+
+  function navItem(item: NavItem): React.ReactElement {
+    return <button key={item.id} className="app-nav-item" aria-current={active === item.id ? 'page' : undefined}
+      onClick={() => onChange(item.id)}>
+      <span className="app-nav-icon" aria-hidden="true">{item.icon}</span>
+      <span className="app-nav-label">{t(NAV_KEYS[item.id])}</span>
+      {WIP_PAGES.has(item.id) && <span className="app-nav-dev">dev</span>}
+    </button>
   }
 
   return (
@@ -140,67 +163,28 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
       </div>
 
       {/* Nav */}
-      <nav style={{ flex: 1, overflowY: 'auto', padding: '0 0 1rem' }}>
-        {GROUPS.map((groupKey) => {
-          const groupTKey = GROUP_KEYS.find((g) => g.key === groupKey)?.tKey ?? groupKey
-          return (
-            <div key={groupKey}>
-              <div style={{
-                fontSize: 'var(--fs-xs)', textTransform: 'uppercase', letterSpacing: '0.14em',
-                color: 'var(--text-muted)', fontWeight: 700, padding: '0.7rem 1rem 0.3rem',
-              }}>
-                {t(groupTKey)}
-              </div>
-              {NAV.filter((n) => n.group === groupKey).map((item) => {
-                const isActive = active === item.id
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => onChange(item.id)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '0.6rem',
-                      width: '100%', padding: '0.55rem 1rem',
-                      background: isActive ? 'var(--act-bg, rgba(124,92,252,0.12))' : 'transparent',
-                      border: 'none', borderLeftWidth: 2, borderLeftStyle: 'solid',
-                      borderLeftColor: isActive ? 'var(--act-border, var(--gold))' : 'transparent',
-                      color: isActive ? 'var(--gold-l)' : 'var(--text-soft)',
-                      fontSize: 'var(--fs-sm)', fontWeight: isActive ? 600 : 400,
-                      cursor: 'pointer', transition: 'all 0.15s', textAlign: 'left',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.background = 'rgba(124,92,252,0.08)'
-                        e.currentTarget.style.color = 'var(--text)'
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) {
-                        e.currentTarget.style.background = 'transparent'
-                        e.currentTarget.style.color = 'var(--text-soft)'
-                      }
-                    }}
-                  >
-                    <span style={{ fontSize: 'var(--fs-md)', opacity: 0.9, lineHeight: 1 }}>{item.icon}</span>
-                    <span style={{ flex: 1 }}>{t(NAV_KEYS[item.id])}</span>
-                    {WIP_PAGES.has(item.id) && (
-                      <span style={{
-                        fontSize: 9, fontWeight: 700, letterSpacing: '0.06em',
-                        textTransform: 'uppercase', color: '#f97316',
-                        border: '1px solid rgba(249,115,22,0.4)',
-                        borderRadius: 3, padding: '1px 4px', lineHeight: 1.4, flexShrink: 0,
-                      }}>dev</span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-          )
+      <nav className="app-sidebar-nav" aria-label={t('sidebar.navigation')}>
+        <div className="app-nav-home">{navItem(NAV[0])}</div>
+        {GROUP_KEYS.map(group => {
+          const items = NAV.filter(item => item.group === group.key)
+          const closed = collapsed.includes(group.key)
+          return <section className="app-nav-group" key={group.key} aria-label={t(group.tKey)}>
+            <button className="app-nav-group-heading" data-active={items.some(item => item.id === active)}
+              aria-expanded={!closed} aria-controls={`nav-group-${group.key}`}
+              title={t(closed ? 'sidebar.expandGroup' : 'sidebar.collapseGroup')}
+              onClick={() => setCollapsed(current => closed ? current.filter(key => key !== group.key) : [...current, group.key])}>
+              <span>{t(group.tKey)}</span>
+              <svg viewBox="0 0 10 10" aria-hidden="true"><path d="m3 1 4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.4" /></svg>
+            </button>
+            <div id={`nav-group-${group.key}`} hidden={closed}>{items.map(navItem)}</div>
+          </section>
         })}
       </nav>
 
       {/* Footer */}
-      <div style={{ borderTop: '1px solid var(--border)', padding: '0.6rem 1rem' }}>
-        <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', textAlign: 'center' }}>
+      <div className="app-sidebar-footer">
+        {navItem(NAV.find(item => item.id === 'settings')!)}
+        <div style={{ fontSize: 'var(--fs-xs)', color: 'var(--text-muted)', textAlign: 'center', padding: '0.55rem 0.5rem' }}>
           v{version} · {t('sidebar.footer')}
         </div>
       </div>
