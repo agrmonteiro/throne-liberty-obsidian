@@ -4,6 +4,10 @@
 
 - O total continua sendo dano causado. O botão **Restaurar total no topo** mostra
   o painel e ancora sua posição no topo central da janela do TL.
+- A barra superior dourada, com indicador de arraste, move cada janela. No total
+  e no gráfico ela mostra um cadeado quando travada (`Ctrl+Shift+F9` para liberar).
+  O gráfico mantém essa barra em todas as páginas; botões e listas ficam fora
+  da região de arraste. O controle de ajustes continua podendo ser movido.
 - Pausar nos overlays ou no app congela valores e tempo de todos os medidores.
   Os eventos da pausa são descartados, inclusive os que chegam atrasados.
   A captura e a identificação continuam conectadas. Pausa não usa parar/iniciar.

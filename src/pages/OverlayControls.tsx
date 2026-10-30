@@ -5,6 +5,7 @@ import type { OverlayConfig, OverlayPanel, OverlayTheme } from '../engine/overla
 import { overlaySourceWarning } from '../engine/overlayMeter'
 import { metricPages, type MetricPage } from '../components/OverlayMetricView'
 import { OverlayTimer } from '../components/OverlayTimer'
+import { OverlayDragLabel } from '../components/OverlayDragLabel'
 import '../styles/overlay.css'
 
 const palette: Array<{ key: keyof OverlayTheme; label: string }> = [
@@ -31,9 +32,8 @@ export function OverlayControls(): React.ReactElement {
   const configure = (patch: Partial<OverlayConfig>): void => act(() => window.overlayAPI.configure(patch))
   const move = (x: number, y: number): void => configure({ anchors: { [panel]: { x, y } } })
   return <aside className={`overlay-controls ${expanded ? 'expanded' : ''}`} aria-label="Configuração dos overlays">
-    <header className="overlay-controls-header meter-drag">
-      <span className={`meter-dot ${state.status === 'live' && !warning ? 'on' : ''}`} />
-      <strong>Overlays</strong>
+    <header className="overlay-controls-header overlay-titlebar meter-drag" aria-label="Barra de título para mover a configuração">
+      <OverlayDragLabel label="Overlays" />
       <button aria-label={state.session.paused ? 'Retomar medição' : 'Pausar medição'}
         aria-pressed={Boolean(state.session.paused)} disabled={!['live', 'replay'].includes(state.status) || Boolean(state.timer)}
         title="Pausa todos os painéis e o tempo da medição"

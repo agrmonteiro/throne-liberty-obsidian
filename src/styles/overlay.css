@@ -187,6 +187,18 @@
 .overlay-editor button:disabled { opacity:.45; cursor:default; }
 .overlay-window .overlay-timer-status { font-family:inherit; font-size:.85em; }
 .overlay-control-session input[type=text],.overlay-control-session input:not([type]),.overlay-inspector input:not([type]) { display:block; box-sizing:border-box; width:100%; margin:6px 0 10px; padding:6px 8px; background:#171b23; border:1px solid #ffffff26; border-radius:4px; color:#eee9dd; font:inherit; }
+.overlay-titlebar { user-select:none; flex-shrink:0; cursor:grab; border-top:2px solid var(--meter-accent,#dfc17a); border-bottom:1px solid color-mix(in srgb,var(--meter-accent,#dfc17a) 40%,transparent); background:color-mix(in srgb,var(--meter-accent,#dfc17a) 18%,#14171d)!important; }
+.overlay-titlebar:not(.is-locked) { -webkit-app-region:drag; }
+.overlay-titlebar:not(.is-locked):hover { background:color-mix(in srgb,var(--meter-accent,#dfc17a) 25%,#14171d)!important; }
+.overlay-titlebar.is-locked { cursor:default; border-top-color:color-mix(in srgb,var(--meter-accent,#dfc17a) 45%,#555); background:color-mix(in srgb,var(--meter-accent,#dfc17a) 9%,#14171d)!important; -webkit-app-region:no-drag; }
+.overlay-drag-label { display:inline-flex; align-items:center; gap:6px; flex-shrink:0; color:var(--meter-accent,#ead08d); white-space:nowrap; }
+.overlay-drag-label strong { font-size:.85em; font-weight:600; letter-spacing:.025em; }
+.overlay-drag-grip { width:10px; height:16px; flex-shrink:0; opacity:.85; }
+.overlay-titlebar.is-locked .overlay-drag-label { opacity:.7; }
+.overlay-titlebar button,.overlay-titlebar select,.overlay-titlebar input { -webkit-app-region:no-drag; }
+.overlay-controls-header.overlay-titlebar { border-radius:6px 6px 0 0; }
+.overlay-controls-header .overlay-drag-label strong { font-size:13px; }
+.overlay-window .overlay-sources.compact>header { -webkit-app-region:no-drag; }
 .overlay-control-section { border-top:1px solid #ffffff12; padding:13px 0; }
 .overlay-control-section label { display:block; font-size:11px; color:#c6c2b8; }
 .overlay-control-range output { float:right; color:#e4c681; font-variant-numeric:tabular-nums; }

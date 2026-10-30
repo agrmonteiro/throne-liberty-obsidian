@@ -7,6 +7,7 @@ import { OverlaySourcesView } from '../components/OverlaySourcesView'
 import { overlayAppearance } from '../components/overlayAppearance'
 import { OverlayMetricView, metricPages, type MetricPage } from '../components/OverlayMetricView'
 import { OverlayTimerStatus } from '../components/OverlayTimer'
+import { OverlayDragLabel } from '../components/OverlayDragLabel'
 import '../styles/overlay.css'
 
 export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.ReactElement {
@@ -45,7 +46,9 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
     mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles) : state
   const drag = useRef<{ x: number; y: number; width: number; height: number } | null>(null)
   return <div className="overlay-window" style={{ ...overlayAppearance(state.config), fontSize: `${(state.config.fontSize ?? 13) * state.config.scale}px` }}>
-    <div className="overlay-record-toolbar">
+    <header className={`overlay-record-toolbar overlay-titlebar ${state.config.locked ? 'is-locked' : 'meter-drag'}`}
+      aria-label={state.config.locked ? 'Barra de título travada' : 'Barra de título para mover a janela'}>
+      <OverlayDragLabel label={panel === 'total' ? 'Total' : 'Gráfico'} locked={state.config.locked} />
       <button data-overlay-interactive aria-label={state.session.paused ? 'Retomar medição' : 'Pausar medição'}
         aria-pressed={Boolean(state.session.paused)} disabled={!['live', 'replay'].includes(state.status) || Boolean(state.timer)}
         title="Pausar ou retomar todos os painéis; o tempo pausado fica fora do DPS"
@@ -63,7 +66,7 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
       {panel === 'skills' && <button disabled={state.config.locked || Boolean(selected)}
         title="Alternar entre habilidades e origens da leitura atual" onClick={() => setGroupSources(value => !value)}>
         {groupSources ? 'Habilidades' : 'Origens'}</button>}
-    </div>
+    </header>
     <OverlayTimerStatus state={state} />
     {panel === 'skills' && <select className="overlay-metric-switch" aria-label="Página do gráfico" disabled={state.config.locked}
       value={state.config.metricPage ?? 'damage'} onChange={event => {

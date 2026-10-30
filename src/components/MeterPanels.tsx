@@ -54,7 +54,7 @@ export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, prev
   const sourceWarning = overlaySourceWarning(state)
   const captureNotice = state.status === 'error' ? state.message : sourceWarning
   return <section className={`meter-panel meter-${panel}`} style={{ ...overlayAppearance(config), backgroundColor: 'var(--meter-background)' }}>
-    <header className={`meter-panel-header ${preview || historical ? '' : 'meter-drag'}`}>
+    <header className="meter-panel-header">
       <span className={`meter-dot ${state.status === 'live' && !sourceWarning ? 'on' : ''}`} />
       <strong>{panel === 'total' ? 'Total geral' : 'Por habilidade'}</strong>
       <span className="meter-mode" title={`Origem ${config.sourceId ?? 'não identificada'} · Medição ${state.capture?.encounterId ?? '—'}`}>{state.mode === 'replay' ? 'REPRODUÇÃO' : historical ? 'HISTÓRICO' : state.capture?.player?.sourceId === config.sourceId ? 'VOCÊ' : 'TL'}</span>
