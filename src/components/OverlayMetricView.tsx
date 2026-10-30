@@ -46,9 +46,9 @@ export function OverlayMetricView({ state, page, historical = false }: {
         </tr>)}</tbody>
       </table>
       {!rows.length && <div className="meter-empty">{historical && !received ? 'Este registro é anterior à coleta de dano recebido.'
-        : state.config.sourceId === null ? 'Aguardando identificação do personagem.' : healing ? 'Aguardando autocura do Toque de Cura ou Buscador de Sangue.' : 'Aguardando dano contra o personagem selecionado.'}</div>}
+        : state.config.sourceId === null ? 'Aguardando identificação do personagem.' : healing ? 'Aguardando uma autocura identificada na captura.' : 'Aguardando dano contra o personagem selecionado.'}</div>}
       </div>
-      <footer className="meter-session-status">{healing ? 'Cobertura parcial: autocura do Toque de Cura e vampirismo do Buscador de Sangue. Valor bruto experimental; cura efetiva e outras curas não medidas.'
+      <footer className="meter-session-status">{healing ? 'Autocura bruta experimental: efeitos de cura identificados no catálogo local. Cobertura parcial; cura efetiva, escudos e cura entre jogadores não medidos.'
         : 'Somente eventos cujo alvo é o personagem selecionado. Nomes de fontes dependem dos perfis recebidos.'}</footer>
     </>}
   </section>

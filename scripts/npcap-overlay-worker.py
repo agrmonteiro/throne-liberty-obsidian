@@ -22,6 +22,24 @@ def module(name, file):
 
 decoder = module('tl_decoder', 'analisar-npcap-tl.py')
 capture = module('tl_capture', 'teste-npcap-tl.py')
+HEALING_EFFECTS = {'963250776': {'group': 'Continuous_Heal'}, '939538607': {'group': 'Instant_Heal'}}
+HEALING_SKILLS = {963905802, 963351634, 939721573}
+
+
+def load_healing_reference(file):
+    global HEALING_EFFECTS, HEALING_SKILLS
+    data = json.loads(Path(file).read_text(encoding='utf-8'))
+    if data.get('schemaVersion') != 1 or not isinstance(data.get('effects'), dict) or not isinstance(data.get('skillIds'), list):
+        raise ValueError('Referência de cura inválida.')
+    if not all(isinstance(row, dict) and row.get('group') in ('Continuous_Heal', 'Intervallic_Heal', 'Instant_Heal') for row in data['effects'].values()):
+        raise ValueError('Classificação de efeitos de cura inválida.')
+    HEALING_EFFECTS = data['effects']
+    HEALING_SKILLS = {uid for uid in data['skillIds'] if isinstance(uid, int) and 0 < abs(uid) < 2**53}
+
+
+_local_healing_reference = HERE.parent/'src/data/overlayHealingEffects.json'
+if _local_healing_reference.is_file():
+    load_healing_reference(_local_healing_reference)
 
 
 def emit(value):
@@ -33,15 +51,14 @@ def player_identity(body):
 
 
 def periodic_healing(body):
-    """Toque de Cura bruto experimental; efeito e UID conferidos no cliente 26231302."""
+    """Autocura periódica bruta; efeito e habilidade precisam existir no cliente."""
     fields = decoder.protobuf(body)
     if any(key not in fields or len(fields[key]) != 1 or not isinstance(fields[key][0], int) for key in (1, 2, 3, 4, 5)):
         return None
     effect = decoder.zigzag(fields[1][0])
     skill = decoder.zigzag(fields[5][0])
     amount = decoder.zigzag(fields[3][0])
-    # TLEffectProperty.WP_BO_S_RegenHeal_ContinuousHeal -> EEffectGroup::Continuous_Heal.
-    if effect != 963250776 or skill not in (963905802, 963351634) or amount <= 0:
+    if HEALING_EFFECTS.get(str(effect), {}).get('group') not in ('Continuous_Heal', 'Intervallic_Heal') or skill not in HEALING_SKILLS or amount <= 0:
         return None
     source, target = fields[4][0], fields[2][0]
     if not 0 < source < 2**53 or target != source:
@@ -50,20 +67,20 @@ def periodic_healing(body):
 
 
 def vampiric_healing(body):
-    """Buscador de Sangue: valor do evento, sem estimar 5% do dano."""
+    """Autocura instantânea, incluindo vampirismo: valor observado, sem estimar dano."""
     fields = decoder.protobuf(body)
     if any(key not in fields or len(fields[key]) != 1 or not isinstance(fields[key][0], int) for key in (1, 2, 3, 5, 10)):
         return None
     effect = decoder.zigzag(fields[1][0])
     skill = decoder.zigzag(fields[10][0])
     amount = decoder.zigzag(fields[5][0])
-    # TLEffectProperty.WP_DA_Mastery_Normal_Assist_InstantHeal -> Instant_Heal.
-    if effect != 939538607 or skill != 939721573 or amount <= 0:
+    if HEALING_EFFECTS.get(str(effect), {}).get('group') != 'Instant_Heal' or skill not in HEALING_SKILLS or amount <= 0:
         return None
     source, target = fields[3][0], fields[2][0]
     if not 0 < source < 2**53 or target != source:
         return None
-    return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target, coverage='self-lifesteal')
+    return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target,
+                coverage='self-lifesteal' if effect == 939538607 else 'self-instant')
 
 
 class Stream:
@@ -297,8 +314,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--replay')
     parser.add_argument('--speed',type=float,default=1)
+    parser.add_argument('--healing-reference', type=Path)
     args = parser.parse_args()
     try:
+        if args.healing_reference:
+            load_healing_reference(args.healing_reference)
         if args.replay:
             if not .1 <= args.speed <= 1000:
                 raise ValueError('Velocidade de reprodução inválida.')

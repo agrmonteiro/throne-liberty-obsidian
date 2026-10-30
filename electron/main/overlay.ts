@@ -4,12 +4,16 @@ import fs from 'fs'
 import path from 'path'
 import { is } from '@electron-toolkit/utils'
 import { OverlayIdentity, OverlayMeter, type MeterEvent, type MeterHealingEvent, type OverlayConfig, type OverlayPanel, type OverlayState, type PanelBounds } from '../../src/engine/overlayMeter'
-import { clamp, defaultOverlayTheme, overlayAnchor, overlayBounds, overlaySceneActive } from '../../src/engine/overlayLayout'
+import { clamp, defaultOverlayTheme, overlayAnchor, overlayBounds, overlaySceneActive, overlayHasFocus, overlayCombatVisible } from '../../src/engine/overlayLayout'
 import { randomUUID } from 'crypto'
 import { OverlayHistory } from './overlayHistory'
 import { clearMeterLogFiles } from './overlayCleanup'
 import { overlaySkillNames as names, overlaySkillFiles } from '../../src/engine/overlaySkillReference'
 import { OverlayUnknownLog } from './overlayUnknownLog'
+import healingReference from '../../src/data/overlayHealingEffects.json'
+
+const healingEffects: Record<string, { row: string; group: string }> = healingReference.effects
+const healingSkillIds = new Set(healingReference.skillIds)
 
 export function registerOverlay(owner: BrowserWindow): void {
   const file = path.join(app.getPath('userData'), 'data', 'overlay.json')
@@ -37,6 +41,8 @@ export function registerOverlay(owner: BrowserWindow): void {
   let recentDamage: Array<{ event: MeterEvent | MeterHealingEvent; connectionId: string }> = []
   let captureStartedAt = 0
   let resumedAt = 0
+  let lastCombatDamageAt: number | null = null
+  let combatPanelsVisible = true
   const sourceNames = new Map<number, string>()
   const conflictingNames = new Set<number>()
   let status: OverlayState['status'] = 'stopped'
@@ -46,6 +52,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   let child: ChildProcess | null = null
   let foregroundChild: ChildProcess | null = null
   let gameForeground = false
+  let controlsEditing = false
   let gameBounds: PanelBounds | null = null
   let foregroundSeenAt = 0
   let revision = 0
@@ -71,11 +78,14 @@ export function registerOverlay(owner: BrowserWindow): void {
     finishEncounter(reason, meter.snapshot(at).lastActivityAt ?? at)
     newEncounter()
     config.sourceId = sourceId; config.reviewEncounterId = null
+    lastCombatDamageAt = null
     meter.selectSource(sourceId, Math.max(captureStartedAt, at - 5000))
     let restoredDamage = 0, restoredAt = 0
     if (sourceId !== null) for (const row of recentDamage) {
       const accepted = (mode === 'replay' || identity.accepts(row.connectionId))
         && ('healing' in row.event ? meter.addHealing(row.event) : meter.add(row.event))
+      if ('damage' in row.event && row.event.sourceId > 0 && (row.event.sourceId === sourceId || row.event.targetId === sourceId)
+        && (mode === 'replay' || identity.accepts(row.connectionId))) lastCombatDamageAt = Math.max(lastCombatDamageAt ?? 0, Math.min(Date.now(), row.event.time * 1000))
       if (row.event.sourceId === sourceId && accepted && 'damage' in row.event) {
         restoredDamage += row.event.damage; restoredAt = Math.max(restoredAt, row.event.time * 1000)
       }
@@ -99,6 +109,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     const timed = meter.measurementWindow, now = Date.now()
     if (session.received) session.received.sources = session.received.sources.map(row => ({ ...row, name: sourceNames.get(row.id) }))
     return { config: { ...config }, capture: { id: captureId, connectionId: player?.connectionId ?? null, encounterId, player },
+      combat: { lastDamageAt: lastCombatDamageAt, hidden: !combatVisible() },
       game: { attached: gameBounds !== null, active: gameForeground, bounds: gameBounds },
       session, ...(timed ? { timer: { ...timed, phase: timed.cancelled ? 'cancelled' : now < timed.startsAt ? 'countdown' : now < timed.endsAt ? 'running' : 'finished',
         remainingSec: Math.max(0, ((now < timed.startsAt ? timed.startsAt : timed.endsAt) - now) / 1000), elapsedSec: session.elapsedSec } } : {}),
@@ -114,6 +125,21 @@ export function registerOverlay(owner: BrowserWindow): void {
   }
   const panels: OverlayPanel[] = ['total', 'skills', 'controls']
   function requested(panel: OverlayPanel): boolean { return Boolean(config[`${panel}Visible`]) }
+  function combatVisible(): boolean {
+    if (!config.hideOutOfCombat) return true
+    const timed = meter.measurementWindow
+    return overlayCombatVisible(config, lastCombatDamageAt, Date.now(), { replay: mode === 'replay',
+      timed: Boolean(timed && !timed.cancelled && Date.now() < timed.endsAt),
+      editing: Boolean(config.controlsVisible && (controlsEditing || windows.controls?.isFocused())) })
+  }
+  function panelVisible(panel: OverlayPanel): boolean {
+    return requested(panel) && gameForeground && gameBounds !== null && (panel === 'controls' || combatVisible())
+  }
+  function observeCombatDamage(event: MeterEvent): void {
+    if (mode !== 'live' || event.sourceId <= 0 || meter.sourceId === null || (event.sourceId !== meter.sourceId && event.targetId !== meter.sourceId)) return
+    lastCombatDamageAt = Math.max(lastCombatDamageAt ?? 0, Math.min(Date.now(), event.time * 1000))
+    if (!combatPanelsVisible && combatVisible()) showPanels()
+  }
   function applyBounds(panel: OverlayPanel, window: BrowserWindow): void {
     if (!gameBounds) return
     const bounds = overlayBounds(panel, config, gameBounds)
@@ -131,8 +157,9 @@ export function registerOverlay(owner: BrowserWindow): void {
     save()
   }
   function showPanels(): void {
+    combatPanelsVisible = combatVisible()
     for (const panel of panels) {
-      const visible = requested(panel) && gameForeground && gameBounds !== null
+      const visible = panelVisible(panel)
       let window = windows[panel]
       if (!window && requested(panel) && gameBounds) {
         const initial = overlayBounds(panel, config, gameBounds)
@@ -160,7 +187,7 @@ export function registerOverlay(owner: BrowserWindow): void {
         window.on('closed', () => { interactivePanels.delete(panel); delete windows[panel] })
         window.webContents.on('did-finish-load', broadcast)
         window.once('ready-to-show', () => {
-          if (gameForeground && requested(panel)) window?.showInactive()
+          if (panelVisible(panel)) window?.showInactive()
           window?.setSkipTaskbar(true)
         })
         if (is.dev && process.env.ELECTRON_RENDERER_URL) {
@@ -200,12 +227,18 @@ export function registerOverlay(owner: BrowserWindow): void {
     newEncounter(null)
     captureId = `${Date.now()}-${token}`
     captureStartedAt = replay ? 0 : Date.now()
+    lastCombatDamageAt = null
     resumedAt = captureStartedAt
     identity.clear(); sourceLastSeen.clear(); recentDamage = []
     config.reviewEncounterId = null
     const scripts = app.isPackaged ? path.join(process.resourcesPath, 'npcap-overlay') : path.join(app.getAppPath(), 'scripts')
     const worker = path.join(scripts, 'npcap-overlay-worker.py')
     if (!fs.existsSync(worker)) { status = 'error'; message = 'Componente de captura não encontrado.'; return }
+    const healingFile = path.join(app.getPath('userData'), 'data', 'overlay-healing-effects-reference.json')
+    try {
+      fs.mkdirSync(path.dirname(healingFile), { recursive: true })
+      fs.writeFileSync(healingFile, JSON.stringify(healingReference))
+    } catch { status = 'error'; message = 'Não foi possível preparar a referência de cura.'; return }
     sources.clear()
     sourceNames.clear(); conflictingNames.clear()
     meter.setPaused(false, replay ? 0 : Date.now())
@@ -214,7 +247,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     mode = replay ? 'replay' : 'live'
     replayClock = null
     let pending = '', errors = ''
-    const proc = spawn(python(), ['-u', worker, ...(replay ? ['--replay', replay, '--speed', String(speed)] : [])],
+    const proc = spawn(python(), ['-u', worker, '--healing-reference', healingFile, ...(replay ? ['--replay', replay, '--speed', String(speed)] : [])],
       { windowsHide: true, env: { ...process.env, PYTHONIOENCODING: 'utf-8' } })
     child = proc
     proc.stdout?.on('data', buffer => {
@@ -240,7 +273,7 @@ export function registerOverlay(owner: BrowserWindow): void {
               finishEncounter('connection-end')
               sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear(); recentDamage = []
               config.sourceId = null; config.reviewEncounterId = null
-              meter.selectSource(null, Date.now()); newEncounter(null); save()
+              meter.selectSource(null, Date.now()); lastCombatDamageAt = null; newEncounter(null); save()
             }
             identity.retire(data.connectionId); broadcast()
           } else if (data.type === 'local-player' && mode === 'live') {
@@ -289,10 +322,14 @@ export function registerOverlay(owner: BrowserWindow): void {
             const amount = healing ? event?.healing : event?.damage
             if (!event || !Number.isSafeInteger(event.sourceId) || !Number.isSafeInteger(event.skillId)
               || !Number.isFinite(event.time) || !Number.isFinite(amount) || amount <= 0) continue
-            if (healing && (event.sourceId !== event.targetId || !(
-              (event.coverage === 'self-periodic' && event.effectId === 963250776 && [963905802, 963351634].includes(event.skillId))
-              || (event.coverage === 'self-lifesteal' && event.effectId === 939538607 && event.skillId === 939721573)))) continue
+            const healGroup = healing ? healingEffects[String(event.effectId)]?.group : null
+            if (healing && (event.sourceId !== event.targetId || !healingSkillIds.has(event.skillId) || !(
+              (event.coverage === 'self-periodic' && (healGroup === 'Continuous_Heal' || healGroup === 'Intervallic_Heal'))
+              || ((event.coverage === 'self-lifesteal' || event.coverage === 'self-instant') && healGroup === 'Instant_Heal')))) continue
             if (mode === 'replay') replayClock = event.time * 1000
+            // Visibilidade acompanha o combate mesmo com a medição pausada ou fora da janela do teste.
+            if (mode === 'live' && typeof data.connectionId === 'string' && data.connectionId.length > 0 && data.connectionId.length <= 128
+              && !identity.isRetired(data.connectionId) && (!identity.snapshot() || identity.accepts(data.connectionId)) && !healing) observeCombatDamage(event)
             if (meter.paused || event.time * 1000 < resumedAt) continue
             const timed = meter.measurementWindow
             if (timed && (event.time * 1000 < timed.startsAt || event.time * 1000 >= timed.endsAt)) continue
@@ -367,8 +404,9 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (!window || window.isDestroyed()) return []
             const handle = window.getNativeWindowHandle()
             const id = String(handle.length >= 8 ? handle.readBigUInt64LE() : handle.readUInt32LE())
-            return [{ handle: id, focused: window.isFocused(), requested: requested(panel) }]
+            return [{ panel, handle: id, focused: window.isFocused(), requested: requested(panel) }]
           })
+          controlsEditing = Boolean(nextBounds && !owner.isFocused() && overlayHasFocus(data, candidates.filter(row => row.panel === 'controls')))
           const active = Boolean(nextBounds && overlaySceneActive(data, owner.isFocused(), candidates))
           const moved = JSON.stringify(gameBounds) !== JSON.stringify(nextBounds)
           gameBounds = nextBounds
@@ -388,7 +426,7 @@ export function registerOverlay(owner: BrowserWindow): void {
         } catch { /* resposta inválida não deve mostrar os painéis */ }
       }
     })
-    const hide = (): void => { clearTimeout(focusHideTimer); focusHideTimer = undefined; gameForeground = false; gameBounds = null; showPanels() }
+    const hide = (): void => { clearTimeout(focusHideTimer); focusHideTimer = undefined; gameForeground = false; controlsEditing = false; gameBounds = null; showPanels() }
     foregroundChild.on('error', hide)
     foregroundChild.on('exit', hide)
   }
@@ -412,7 +450,7 @@ export function registerOverlay(owner: BrowserWindow): void {
       config.reviewEncounterId = typeof patch.reviewEncounterId === 'string'
         && history.list().encounters.some(row => row.id === patch.reviewEncounterId) ? patch.reviewEncounterId : null
     }
-    for (const key of ['locked', 'totalVisible', 'skillsVisible', 'controlsVisible', 'controlsExpanded'] as const) {
+    for (const key of ['locked', 'totalVisible', 'skillsVisible', 'controlsVisible', 'controlsExpanded', 'hideOutOfCombat'] as const) {
       if (typeof patch[key] === 'boolean') config[key] = patch[key]!
     }
     if (Number.isFinite(patch.opacity)) config.opacity = Math.max(.25, Math.min(1, patch.opacity!))
@@ -421,6 +459,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (Number.isFinite(patch.chartPaddingVertical)) config.chartPaddingVertical = Math.round(clamp(patch.chartPaddingVertical!, 0, 32))
     if (Number.isFinite(patch.countdownSec)) config.countdownSec = Math.round(clamp(patch.countdownSec!, 0, 60))
     if (Number.isFinite(patch.durationSec)) config.durationSec = Math.round(clamp(patch.durationSec!, 1, 3600))
+    if (Number.isFinite(patch.combatHideDelaySec)) config.combatHideDelaySec = Math.round(clamp(patch.combatHideDelaySec!, 3, 60))
     if (patch.fontFamily && ['Inter', 'Arial', 'Consolas'].includes(patch.fontFamily)) config.fontFamily = patch.fontFamily
     if (patch.theme && typeof patch.theme === 'object') {
       const theme = { ...defaultOverlayTheme, ...config.theme }
@@ -505,6 +544,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     return state()
   })
   const timer = setInterval(() => {
+    if (combatPanelsVisible !== combatVisible()) showPanels()
     for (const panel of interactivePanels) {
       const window = windows[panel]
       if (!window) { interactivePanels.delete(panel); continue }
@@ -513,7 +553,7 @@ export function registerOverlay(owner: BrowserWindow): void {
         interactivePanels.delete(panel); window.setIgnoreMouseEvents(config.locked, { forward: true })
       }
     }
-    if (gameForeground && Date.now() - foregroundSeenAt > 5000) { gameForeground = false; showPanels() }
+    if (gameForeground && Date.now() - foregroundSeenAt > 5000) { gameForeground = false; controlsEditing = false; showPanels() }
     broadcast()
   }, 250)
   const logTimer = setInterval(() => { unknownLog.flush(); checkpoint() }, 1000)

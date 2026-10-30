@@ -6,6 +6,7 @@ import { overlaySourceWarning } from '../engine/overlayMeter'
 import { metricPages, type MetricPage } from '../components/OverlayMetricView'
 import { OverlayTimer } from '../components/OverlayTimer'
 import { OverlayDragLabel } from '../components/OverlayDragLabel'
+import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
 import '../styles/overlay.css'
 
 const palette: Array<{ key: keyof OverlayTheme; label: string }> = [
@@ -71,6 +72,7 @@ export function OverlayControls(): React.ReactElement {
           title="Permitir arrastar os painéis; desative para passar cliques ao jogo">{config.locked ? 'Trava ativa' : 'Mover livre'}</button>
       </div>
       <button className="overlay-restore-total" onClick={() => configure({ totalVisible: true, anchors: { total: { x: .5, y: 0 } } })}>Restaurar total no topo</button>
+      <OverlayCombatSettings config={config} configure={configure} />
       <label className="overlay-control-page">Página do gráfico<select aria-label="Página do gráfico" value={config.metricPage ?? 'damage'}
         onChange={event => configure({ metricPage: event.target.value as MetricPage })}>
         {metricPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}

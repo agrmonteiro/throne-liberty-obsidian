@@ -5,6 +5,13 @@ export const defaultOverlayTheme: OverlayTheme = {
   normal: '#8c9cac', critical: '#e2bd65', heavy: '#67bdc3', criticalHeavy: '#c38bd8',
 }
 export const clamp = (value: number, min: number, max: number): number => Math.max(min, Math.min(max, value))
+/** Visibilidade por dano local observado; não é uma flag nativa de combate do jogo. */
+export function overlayCombatVisible(config: Pick<OverlayConfig, 'hideOutOfCombat' | 'combatHideDelaySec' | 'reviewEncounterId'>,
+  lastDamageAt: number | null, now: number, context: { replay?: boolean; timed?: boolean; editing?: boolean } = {}): boolean {
+  if (!config.hideOutOfCombat || config.reviewEncounterId || context.replay || context.timed || context.editing) return true
+  const delay = Number.isFinite(config.combatHideDelaySec) ? clamp(config.combatHideDelaySec!, 3, 60) : 10
+  return lastDamageAt !== null && Number.isFinite(lastDamageAt) && now - lastDamageAt < delay * 1000
+}
 export function overlayHasFocus(foreground: { foreground?: string; foregroundOwner?: string; foregroundAncestors?: string[] },
   windows: Array<{ handle: string; focused: boolean; requested: boolean }>): boolean {
   const handles = new Set([foreground.foreground, foreground.foregroundOwner,

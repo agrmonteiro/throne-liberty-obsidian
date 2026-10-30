@@ -8,7 +8,7 @@ export interface MeterEvent {
 }
 export interface MeterHealingEvent {
   time: number; healing: number; skillId: number; sourceId: number; targetId: number; effectId: number
-  coverage: 'self-periodic' | 'self-lifesteal'
+  coverage: 'self-periodic' | 'self-lifesteal' | 'self-instant'
 }
 export interface MeterHealing { total: number; hits: number; skills: MeterSkill[] }
 export interface TimedMeasurement { startsAt: number; endsAt: number; durationSec: number; cancelled?: boolean }
@@ -142,7 +142,7 @@ export class OverlayMeter {
   addHealing(event: MeterHealingEvent): boolean {
     const at = event.time * 1000
     // A direção entre jogadores ainda não foi validada. Contar apenas autocura observada.
-    if (!['self-periodic', 'self-lifesteal'].includes(event.coverage) || event.sourceId !== this.sourceId || event.targetId !== this.sourceId
+    if (!['self-periodic', 'self-lifesteal', 'self-instant'].includes(event.coverage) || event.sourceId !== this.sourceId || event.targetId !== this.sourceId
       || !Number.isSafeInteger(event.skillId) || !Number.isSafeInteger(event.effectId)
       || !Number.isFinite(event.healing) || event.healing <= 0 || !this.acceptsTime(at)) return false
     this.beginActivity(at)
@@ -203,6 +203,7 @@ export interface OverlayConfig {
   reviewEncounterId?: string | null
   metricPage?: 'damage' | 'receivedSources' | 'receivedSkills' | 'healingDone' | 'healingReceived'
   countdownSec?: number; durationSec?: number
+  hideOutOfCombat?: boolean; combatHideDelaySec?: number
   autoSource?: boolean
   playerName?: string
   locked: boolean; totalVisible: boolean; skillsVisible: boolean; opacity: number; scale: number
@@ -212,6 +213,7 @@ export interface OverlayConfig {
   fontFamily?: 'Inter' | 'Arial' | 'Consolas'; fontSize?: number; chartPadding?: number; chartPaddingVertical?: number; theme?: OverlayTheme
 }
 export interface OverlayState {
+  combat?: { lastDamageAt: number | null; hidden: boolean }
   timer?: TimedMeasurement & { phase: 'countdown' | 'running' | 'finished' | 'cancelled'; remainingSec: number; elapsedSec: number }
   capture?: { id: string; connectionId: string | null; encounterId: string; player: OverlayPlayerIdentity | null }
   game?: { attached: boolean; active: boolean; bounds: PanelBounds | null }

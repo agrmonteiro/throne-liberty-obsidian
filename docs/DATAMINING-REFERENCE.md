@@ -174,6 +174,14 @@ a coleta não publica nem reinicia automaticamente o app.
 As miniaturas do app têm até 128×128 px, qualidade 90, geradas com Pillow fixado
 em `requirements.txt`; os PNGs originais completos permanecem no arquivo local.
 
+`build-healing-reference.py --build 26231302` extrai de `TLEffectProperty` os
+442 efeitos dos grupos `Continuous_Heal`, `Intervallic_Heal` e `Instant_Heal`,
+junto dos UIDs não nulos de `TLSkill`, para `src/data/overlayHealingEffects.json`.
+Essa etapa também roda em `update-data.ps1 -SyncOverlayCatalog`. O arquivo fica
+versionado e embarcado no main; o cliente instalado não precisa do SQLite.
+Vínculos de pacote, autocura e limites de cobertura estão em
+[OVERLAY-METRICAS-E-CRONOMETRO.md](OVERLAY-METRICAS-E-CRONOMETRO.md).
+
 ## Git e recuperação
 
 `reference/datamine/26231302/` contém snapshots gzip determinísticos do catálogo

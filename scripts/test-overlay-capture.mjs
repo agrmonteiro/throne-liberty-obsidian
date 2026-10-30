@@ -19,7 +19,7 @@ const engine = compile('src/engine/overlayMeter.ts', require)
 const layout = compile('src/engine/overlayLayout.ts', require)
 function harness(startAt = 1000000) {
   let now = startAt
-  const handlers = new Map(), children = [], records = new Map()
+  const handlers = new Map(), children = [], records = new Map(), ticks = [], nativeWindows = []
   class Clock extends Date { static now() { return now } }
   class Child extends EventEmitter {
     stdout = new EventEmitter()
@@ -28,6 +28,7 @@ function harness(startAt = 1000000) {
   }
   const owner = new EventEmitter()
   owner.isDestroyed = () => false
+  owner.isFocused = () => false
   owner.webContents = { send() {} }
   const fakeFs = { existsSync: () => true, readFileSync: () => { throw Error('Empty test profile') }, mkdirSync() {}, writeFileSync() {} }
   class History {
@@ -36,8 +37,25 @@ function harness(startAt = 1000000) {
     clear() { records.clear() }
   }
   class UnknownLog { status() { return {} } record() {} flush() {} resetAfterClear() {} }
+  class NativeWindow extends EventEmitter {
+    visible = false; focused = false; destroyed = false; url = ''; webContents = new EventEmitter()
+    constructor(bounds) { super(); this.rect = bounds; this.webContents.send = () => {}; this.webContents.getURL = () => this.url; nativeWindows.push(this) }
+    getBounds() { return this.rect }
+    setBounds(rect) { this.rect = rect }
+    isVisible() { return this.visible }
+    isFocused() { return this.focused }
+    isDestroyed() { return this.destroyed }
+    showInactive() { this.visible = true }
+    hide() { this.visible = false }
+    setSkipTaskbar() {}
+    setAlwaysOnTop() {}
+    setIgnoreMouseEvents() {}
+    getNativeWindowHandle() { const handle = Buffer.alloc(8); handle.writeBigUInt64LE(BigInt(nativeWindows.indexOf(this) + 1)); return handle }
+    loadFile(_file, { query }) { this.url = `file:///overlay?overlay=${query.overlay}`; this.webContents.emit('did-finish-load'); this.emit('ready-to-show') }
+    destroy() { this.destroyed = true; this.emit('closed') }
+  }
   const electron = { app: { getPath: () => root, getAppPath: () => root, isPackaged: false },
-    BrowserWindow: class {}, dialog: {}, screen: {},
+    BrowserWindow: NativeWindow, dialog: {}, screen: { screenToDipRect: (_window, rect) => rect, getCursorScreenPoint: () => ({ x: -9999, y: -9999 }) },
     globalShortcut: { register: () => true, unregister() {} },
     ipcMain: { handle: (key, fn) => handlers.set(key, fn), removeHandler: key => handlers.delete(key) } }
   const resolve = name => {
@@ -48,6 +66,7 @@ function harness(startAt = 1000000) {
     if (name.endsWith('/overlayMeter')) return engine
     if (name.endsWith('/overlayLayout')) return layout
     if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {} }
+    if (name.endsWith('/overlayHealingEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayHealingEffects.json'), 'utf8'))
     if (name === './overlayHistory') return { OverlayHistory: History }
     if (name === './overlayUnknownLog') return { OverlayUnknownLog: UnknownLog }
     if (name === './overlayCleanup') return { clearMeterLogFiles() {} }
@@ -59,7 +78,7 @@ function harness(startAt = 1000000) {
   }).outputText
   const module = { exports: {} }
   new Function('require', 'module', 'exports', '__dirname', 'Date', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', output)(
-    resolve, module, module.exports, root, Clock, () => 0, () => {}, () => 0, () => {})
+    resolve, module, module.exports, root, Clock, () => 0, () => {}, callback => { ticks.push(callback); return ticks.length }, () => {})
   module.exports.registerOverlay(owner)
   handlers.get('overlay:configure')({}, { playerName: 'AgrMonteiro' })
   const state = () => handlers.get('overlay:get')()
@@ -72,6 +91,10 @@ function harness(startAt = 1000000) {
     child.stdout.emit('data', Buffer.from(JSON.stringify(message) + '\n'))
   }
   return { state, start, configure, send, records,
+    tick: () => ticks.forEach(callback => callback()),
+    foreground: (active, extra = {}) => children.find(row => row.args.some(value => value.endsWith('overlay-foreground.py'))).stdout.emit('data',
+      Buffer.from(JSON.stringify({ active, bounds: { x: 0, y: 0, width: 1280, height: 720 }, ...extra }) + '\n')),
+    visiblePanels: () => Object.fromEntries(nativeWindows.filter(row => !row.destroyed).map(row => [row.url.split('overlay=')[1], row.visible])),
     pause: value => handlers.get('overlay:pause')({}, value), advance: ms => { now += ms },
     timer: action => handlers.get('overlay:timer')({}, action),
     reset: () => handlers.get('overlay:reset')(), history: () => handlers.get('overlay:history')(), close: () => owner.emit('closed') }
@@ -79,6 +102,43 @@ function harness(startAt = 1000000) {
 const damage = (id, time, amount, connectionId = 'A') => ({ type: 'damage', connectionId,
   event: { sourceId: id, time, damage: amount, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
 const player = (id, time, connectionId = 'A') => ({ type: 'identity', name: 'AgrMonteiro', sourceId: id, time, connectionId })
+if (process.platform === 'win32') {
+  const visibility = harness()
+  try {
+    visibility.start(); visibility.send({ type: 'status', state: 'live', message: 'test' }); visibility.send(player(7, 1001))
+    visibility.configure({ totalVisible: true, skillsVisible: true, controlsVisible: true, hideOutOfCombat: true, combatHideDelaySec: 10 })
+    visibility.foreground(true)
+    assert.deepEqual(visibility.visiblePanels(), { total: false, skills: false, controls: true })
+    visibility.send(damage(8, 1002, 9000))
+    assert.equal(visibility.state().combat.lastDamageAt, null, 'Terceiros não podem revelar o overlay')
+    visibility.send(damage(7, 1003, 100))
+    assert.deepEqual(visibility.visiblePanels(), { total: true, skills: true, controls: true })
+    visibility.advance(10000); visibility.foreground(true); visibility.tick()
+    assert.deepEqual(visibility.visiblePanels(), { total: false, skills: false, controls: true }, 'Expirar sem novos pacotes deve ocultar as janelas nativas')
+    visibility.foreground(false, { foregroundOwner: '3' }); visibility.tick()
+    assert.deepEqual(visibility.visiblePanels(), { total: true, skills: true, controls: true }, 'Popup dos ajustes deve manter os painéis visíveis durante a edição')
+    visibility.foreground(true); visibility.tick()
+    visibility.send({ type: 'healing', connectionId: 'A', event: { time: 1014, sourceId: 7, targetId: 7,
+      skillId: 963905802, effectId: 963250776, healing: 521, coverage: 'self-periodic' } })
+    assert.equal(visibility.state().combat.hidden, true, 'Cura contínua não indica combate')
+    visibility.pause(true)
+    visibility.send({ ...damage(8, 1015, 10), event: { ...damage(8, 1015, 10).event, targetId: 7 } })
+    assert.equal(visibility.state().combat.hidden, false, 'Dano recebido revela mesmo com medição pausada')
+    assert.deepEqual(visibility.visiblePanels(), { total: true, skills: true, controls: true })
+    assert.equal(visibility.state().session.total, 100)
+    visibility.advance(20000); visibility.foreground(true); visibility.tick()
+    visibility.configure({ countdownSec: 2, durationSec: 4 }); visibility.timer('start')
+    assert.equal(visibility.state().combat.hidden, false, 'Preparação do cronômetro precisa aparecer')
+    visibility.advance(6000); visibility.foreground(true); visibility.tick()
+    assert.equal(visibility.state().combat.hidden, true)
+    const saved = visibility.history().encounters[0].id
+    visibility.configure({ reviewEncounterId: saved })
+    assert.equal(visibility.state().combat.hidden, false, 'Consulta ao histórico permanece visível')
+    visibility.configure({ reviewEncounterId: null, hideOutOfCombat: false })
+    assert.deepEqual(visibility.visiblePanels(), { total: true, skills: true, controls: true })
+  } finally { visibility.close() }
+  console.log('OK: janelas nativas ocultam sem novos pacotes, revelam por dano local/recebido, ignoram terceiros/cura e preservam ajustes, pausa, cronômetro e histórico.')
+}
 const h = harness()
 try {
   h.start()
@@ -148,6 +208,9 @@ try {
   assert.equal(pausedLive.state().session.healing.done.total, 521)
   assert.equal(pausedLive.state().session.healing.received.total, 521)
   assert.equal(pausedLive.state().session.total, 150, 'Cura não pode alterar dano no backend')
+  pausedLive.send({ type: 'healing', connectionId: 'A', event: { time: 2005, sourceId: 7, targetId: 7,
+    skillId: 963774787, effectId: 963467735, healing: 100, coverage: 'self-periodic' } })
+  assert.equal(pausedLive.state().session.healing.done.total, 621, 'Bênção da Natureza deve usar a classificação do catálogo completo')
 } finally { pausedLive.close() }
 console.log('OK: pausa no IPC real, sem recuperação de backlog ou troca de sessão, e dano recebido separado.')
 

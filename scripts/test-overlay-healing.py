@@ -58,9 +58,32 @@ for part in manifest['parts']:
             continue
         key = packet['source'], packet['dest']
         streams.setdefault(key, worker.Stream(str(key), packet['dest'] in clients)).feed(packet['sequence'], packet['payload'], packet['time'])
-heals = [row['event'] for row in messages if row['type'] == 'healing']
+all_heals = [row['event'] for row in messages if row['type'] == 'healing']
+heals = [row for row in all_heals if row['effectId'] == 963250776]
 damage = [row['event'] for row in messages if row['type'] == 'damage']
 assert len(damage) == 6392
 assert heals and all(e['sourceId'] == e['targetId'] and e['effectId'] == 963250776 for e in heals)
+assert len(heals) == 655 and sum(e['healing'] for e in heals) == 1243462
+assert all(str(e['effectId']) in worker.HEALING_EFFECTS and e['skillId'] in worker.HEALING_SKILLS and e['sourceId'] == e['targetId'] for e in all_heals)
+blessing = [e for e in all_heals if e['effectId'] == 963467735]
+assert len(blessing) == 171 and all(e['skillId'] == 963774787 for e in blessing)
 assert all(e['skillId'] in (963905802, 963351634) and e['healing'] > 0 for e in heals)
 print(f'OK: PCAP real: {len(heals)} aplicações / {sum(e["healing"] for e in heals)} de autocura bruta candidata; os 6.392 eventos de dano permanecem separados.')
+print(f'OK: Bênção da Natureza heroica: {len(blessing)} aplicações / {sum(e["healing"] for e in blessing)} de cura bruta candidata, reconhecida pelo efeito extraído do cliente.')
+
+folder = here.parent/'capturas_treinamento/npcap_tl/20261030-191646-reference'
+clients.clear()
+for line in (folder/'endpoint-snapshots.jsonl').read_text(encoding='utf-8').splitlines():
+    for row in json.loads(line)['endpoints']['tcp']:
+        clients.add((row['LocalAddress'], int(row['LocalPort'])))
+manifest = json.loads((folder/'manifest.json').read_text(encoding='utf-8'))
+messages.clear(); streams.clear()
+for part in manifest['parts']:
+    for packet in reference.records(folder/part['file']):
+        if not packet.get('payload'):
+            continue
+        key = packet['source'], packet['dest']
+        streams.setdefault(key, worker.Stream(str(key), packet['dest'] in clients)).feed(packet['sequence'], packet['payload'], packet['time'])
+blessing = [row['event'] for row in messages if row['type'] == 'healing' and row['event']['effectId'] == 963467735]
+assert len(blessing) == 82 and all(e['skillId'] == 963774787 and e['sourceId'] == e['targetId'] for e in blessing)
+print(f'OK: nova captura de Bênção da Natureza: {len(blessing)} aplicações / {sum(e["healing"] for e in blessing)} de cura bruta candidata.')

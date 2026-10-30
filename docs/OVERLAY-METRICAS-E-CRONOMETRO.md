@@ -19,10 +19,32 @@
 - Dano recebido usa `targetId == personagem selecionado`, com agregados separados
   por atacante e habilidade. Não soma o dano que outros atacantes causam a outros
   alvos. As duas distribuições precisam somar o mesmo total.
-- Cura é **bruta, experimental e parcial**: autocura do Toque de Cura e vampirismo
-  do Buscador de Sangue. Não mede HP efetivamente recuperado, escudos, outras
-  habilidades ou cura entre jogadores. Autocura aparece em feita e recebida;
+- Cura é **bruta, experimental e parcial**: autocuras periódicas/instantâneas cujo
+  efeito está classificado como cura e cuja habilidade existe no catálogo local,
+  nos formatos confirmados `0x12344a63` e `0x12344a70`. Inclui Toque de Cura,
+  Bênção da Natureza e Buscador de Sangue. Não mede HP efetivamente recuperado,
+  escudos, formatos ainda não reconhecidos ou cura entre jogadores. Autocura aparece em feita e recebida;
   esses dois totais não devem ser somados como se fossem eventos diferentes.
+
+## Ocultar fora de combate
+
+Opção disponível nos Ajustes do app e no controle flutuante, desativada por padrão.
+Quando ligada, total e gráfico somem após 10 s sem dano causado/recebido pela
+origem selecionada; o intervalo é ajustável entre 3 e 60 s. O próximo dano local
+os revela, inclusive com medição pausada, sem alterar os valores congelados.
+A captura continua ativa e as opções de visibilidade/posições são preservadas.
+
+É uma inferência por dano observado, não uma flag nativa de combate. Dano de
+terceiros e autocura periódica não prolongam a visibilidade. O controle de
+ajustes não é ocultado por essa regra; durante edição (inclusive listas/popups),
+histórico, reprodução ou cronômetro ativo, os painéis permanecem visíveis.
+A regra geral de acompanhar o foco/janela do TL continua valendo.
+
+O backend verifica a expiração a cada 250 ms; não depende de chegar outro pacote.
+`lastCombatDamageAt` é separado do tempo/pausa/reset da medição e não é persistido
+entre capturas/conexões. `overlayCombatVisible` concentra a política testável;
+os testes do backend verificam também chamadas reais de mostrar/ocultar sobre
+janelas Electron simuladas, sem introduzir eventos artificiais na leitura do usuário.
 
 ## Teste com cronômetro
 
@@ -63,8 +85,20 @@ Nunca selecionar automaticamente o primeiro atacante ou o atacante com maior dan
 | --- | --- |
 | `0x12344a63` | Campo 1 zigzag = efeito `963250776`, `TLEffectProperty.WP_BO_S_RegenHeal_ContinuousHeal`, grupo `Continuous_Heal`. Campo 5 zigzag = habilidade `963905802` (Toque de Cura); variante de apresentação `963351634` admitida pelo catálogo. Campo 3 zigzag = valor candidato. Campos 2/4 são iguais na autocura. |
 | `0x12344a70` | Campo 1 zigzag = efeito `939538607`, `WP_DA_Mastery_Normal_Assist_InstantHeal`, grupo `Instant_Heal`. Campo 10 zigzag = habilidade `939721573`, Buscador de Sangue. Campo 5 zigzag = valor candidato. Campos 2/3 são iguais na autocura. |
+| `0x12344a63` / Bênção da Natureza | Efeito `963467735`, `WP_BO_RegenAura_Trait1_ContinuousHeal`, grupo `Continuous_Heal`. Variante heroica `963774787`; nome e ícone obtidos do catálogo completo. |
 
-O decoder exige pares conhecidos de efeito/habilidade e origem igual ao alvo.
+O decoder exige efeito classificado como cura, habilidade existente no catálogo
+e origem igual ao alvo. O catálogo versionado `src/data/overlayHealingEffects.json`
+contém 442 efeitos (55 contínuos, 40 intervalados e 347 instantâneos) e 16.556 UIDs
+únicos/não nulos de habilidades. Isso classifica os efeitos; não prova que todos
+os 442 já foram observados nos dois formatos de pacote reconhecidos.
+
+Gerar com `python tools/unreal/build-healing-reference.py --build 26231302`.
+`tools/unreal/update-data.ps1 -SyncOverlayCatalog` também regenera essa referência.
+O main embarca o JSON e grava `data/overlay-healing-effects-reference.json` no perfil
+antes de iniciar o worker com `--healing-reference`. Não depende do SQLite no
+computador do usuário nem de alterar a lista de recursos do instalador.
+
 Não classifica números negativos genéricos como cura e não estima vampirismo
 simplesmente multiplicando o dano por 5%. A fórmula estática
 `TLFormulaParameterNew.DA_Mastery_Normal_Assist_Buff` tem `tooltip1 = 5`, mas isso
@@ -82,6 +116,10 @@ não valida todos os modificadores de cura aplicados pelo servidor.
   Os outros 21 são excluídos do seu medidor. O log `TLCombatLog-261030_184501.txt`
   fornece 500 correspondências de dano para confirmar o atacante; não é validação
   independente dos valores de cura.
+- Amostra de 5 min `20261030-191646-reference`: usuário indicou Bênção da Natureza;
+  82 aplicações / 135.462 de autocura bruta candidata usam o efeito `963467735` e a variante heroica
+  `963774787`, no formato periódico já observado. A referência antiga das 09:44
+  também tem 171 aplicações desse efeito, somando 280.443 de cura bruta candidata.
 
 O atributo Bônus de Dano continua embutido no valor de dano observado: ainda não
 há campo validado que permita decompor sua contribuição em cada acerto. Efeitos

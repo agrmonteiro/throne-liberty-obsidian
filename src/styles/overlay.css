@@ -199,6 +199,13 @@
 .overlay-controls-header.overlay-titlebar { border-radius:6px 6px 0 0; }
 .overlay-controls-header .overlay-drag-label strong { font-size:13px; }
 .overlay-window .overlay-sources.compact>header { -webkit-app-region:no-drag; }
+.overlay-combat-settings { padding:10px 0; border-top:1px solid #ffffff18; border-bottom:1px solid #ffffff18; margin-bottom:12px; }
+.overlay-combat-settings .overlay-combat-toggle { display:flex; align-items:center; gap:7px; margin:0; font-size:11px; cursor:pointer; }
+.overlay-combat-toggle input { margin:0; accent-color:#dfc17a; }
+.overlay-combat-settings .overlay-combat-delay { display:block; margin:12px 0 0; font-size:11px; }
+.overlay-combat-delay output { float:right; color:#e4c681; }
+.overlay-combat-settings p { margin:8px 0 0; color:#aaa79f; font-size:10px; line-height:1.5; }
+.overlay-inspector .overlay-combat-settings { border:0; padding:0; }
 .overlay-control-section { border-top:1px solid #ffffff12; padding:13px 0; }
 .overlay-control-section label { display:block; font-size:11px; color:#c6c2b8; }
 .overlay-control-range output { float:right; color:#e4c681; font-variant-numeric:tabular-nums; }

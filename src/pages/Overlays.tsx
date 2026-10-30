@@ -6,6 +6,7 @@ import { OverlayHistoryView } from '../components/OverlayHistoryView'
 import { OverlaySourcesView } from '../components/OverlaySourcesView'
 import { OverlayMetricView, metricPages, type MetricPage } from '../components/OverlayMetricView'
 import { OverlayTimer } from '../components/OverlayTimer'
+import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
 import '../styles/overlay.css'
 
 const tabs = [{ id: 'live', label: 'Ao vivo' }, { id: 'sources', label: 'Origens' },
@@ -88,6 +89,7 @@ export function Overlays(): React.ReactElement {
           <dl><dt>Voltar ao atual</dt><dd>Ctrl + Shift + F8</dd><dt>Travar / editar</dt><dd>Ctrl + Shift + F9</dd><dt>Mostrar / ocultar</dt><dd>Ctrl + Shift + F10</dd><dt>Painel de ajustes</dt><dd>Ctrl + Shift + F11</dd></dl>
         </section>
         <section><h2>Overlays sobre o jogo</h2>
+          <OverlayCombatSettings config={config} configure={configure} />
           <label className="overlay-switch"><input type="checkbox" checked={config.controlsVisible !== false} onChange={event => configure({ controlsVisible: event.target.checked })} />Controle de ajustes no jogo</label>
           <label className="overlay-switch"><input type="checkbox" checked={config.totalVisible} onChange={event => configure({ totalVisible: event.target.checked })} />Total geral</label>
           <button onClick={() => configure({ totalVisible: true, anchors: { total: { x: .5, y: 0 } } })}>Restaurar total no topo</button>

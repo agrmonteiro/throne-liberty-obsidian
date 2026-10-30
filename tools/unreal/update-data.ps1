@@ -36,5 +36,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Falha ao gerar snapshots compactos para o Git.
 if ($SyncOverlayCatalog) {
     & $PythonExe (Join-Path $PSScriptRoot 'sync-overlay-catalog.py') --build $buildId
     if ($LASTEXITCODE -ne 0) { throw 'Falha ao sincronizar o catálogo do overlay.' }
+    & $PythonExe (Join-Path $PSScriptRoot 'build-healing-reference.py') --build $buildId
+    if ($LASTEXITCODE -ne 0) { throw 'Falha ao gerar a referência de efeitos de cura.' }
 }
 Write-Host "Coleta e índice disponíveis em $buildRoot"

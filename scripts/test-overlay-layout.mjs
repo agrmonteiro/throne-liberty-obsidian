@@ -4,7 +4,7 @@ import ts from 'typescript'
 
 const input = fs.readFileSync(new URL('../src/engine/overlayLayout.ts', import.meta.url), 'utf8')
 const code = ts.transpileModule(input, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-const { overlayBounds, overlayAnchor, overlayHasFocus, overlaySceneActive } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`)
+const { overlayBounds, overlayAnchor, overlayHasFocus, overlaySceneActive, overlayCombatVisible } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`)
 const config = { scale: 1, fontSize: 13, anchors: { total: { x: .25, y: .75 } }, controlsExpanded: true }
 const game = { x: -1600, y: 100, width: 1280, height: 720 }
 const first = overlayBounds('total', config, game)
@@ -47,3 +47,12 @@ assert.equal(overlaySceneActive({ active: false }, false, [{ ...controls[0], foc
 assert.equal(overlaySceneActive({ active: true }, false, controls), true)
 assert.equal(overlaySceneActive({ active: false }, false, controls), false)
 console.log('OK: foco do painel, foco do Electron, popups vinculados, painel desativado e outro aplicativo.')
+
+const combatConfig = { hideOutOfCombat: true, combatHideDelaySec: 10 }
+assert.equal(overlayCombatVisible({}, null, 100000), true)
+assert.equal(overlayCombatVisible(combatConfig, null, 100000), false)
+assert.equal(overlayCombatVisible(combatConfig, 90001, 100000), true)
+assert.equal(overlayCombatVisible(combatConfig, 90000, 100000), false)
+for (const context of [{ editing: true }, { timed: true }, { replay: true }]) assert.equal(overlayCombatVisible(combatConfig, null, 100000, context), true)
+assert.equal(overlayCombatVisible({ ...combatConfig, reviewEncounterId: 'saved' }, null, 100000), true)
+console.log('OK: ocultação fora de combate, limite exato do atraso e exceções de ajustes, cronômetro, histórico e reprodução.')
