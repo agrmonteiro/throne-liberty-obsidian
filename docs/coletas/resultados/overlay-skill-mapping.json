@@ -1,0 +1,2049 @@
+{
+  "generatedAt": "2026-10-22T00:02:35.852547+00:00",
+  "filesScanned": 30,
+  "previous": 180,
+  "total": 180,
+  "additions": {},
+  "evidence": {
+    "950282680": {
+      "name": "Ascensão Dracônica",
+      "events": 474,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "951925391": {
+      "name": "Esfera de Mana",
+      "events": 648,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "945471180": {
+      "name": "Fome de Tevent em Fúria",
+      "events": 32598,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260713_205132.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "966941381": {
+      "name": "Explosão Abissal",
+      "events": 9470,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260713_205132.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "950614913": {
+      "name": "Esfera de Mana",
+      "events": 457,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "964158879": {
+      "name": "Toque de Desespero",
+      "events": 18223,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "963973967": {
+      "name": "Flecha Imobilizadora",
+      "events": 714,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "967072496": {
+      "name": "Acerto Corrompido",
+      "events": 11935,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260713_205132.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "945674044": {
+      "name": "Ataque Rasante",
+      "events": 5249,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "944953936": {
+      "name": "Ataque Rasante",
+      "events": 4724,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "944299709": {
+      "name": "Ataque Rasante",
+      "events": 4514,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "962272451": {
+      "name": "Puxão do Zéfiro",
+      "events": 2105,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "962849462": {
+      "name": "Maldição Explosiva",
+      "events": 4485,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "968461062": {
+      "name": "Raio do Desastre",
+      "events": 583,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt"
+      ]
+    },
+    "968446634": {
+      "name": "Flor que Cai",
+      "events": 1015,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt"
+      ]
+    },
+    "968445182": {
+      "name": "Toque em Degradação",
+      "events": 4659,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt"
+      ]
+    },
+    "950745989": {
+      "name": "Esfera de Mana",
+      "events": 303,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "968567342": {
+      "name": "Feitiço de Contra-ataque",
+      "events": 6,
+      "files": [
+        "TLCombatLog-260404_210437.txt",
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "947551927": {
+      "name": "Disparo Básico",
+      "events": 3938,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260713_205132.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "947523317": {
+      "name": "Disparo Básico",
+      "events": 3394,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260713_205132.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "981417584": {
+      "name": "Copiar Satélite",
+      "events": 1388,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "947532344": {
+      "name": "Ponta de Flecha de Roxie",
+      "events": 1097,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260713_205132.txt"
+      ]
+    },
+    "953377542": {
+      "name": "Lança Destruidora",
+      "events": 666,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt"
+      ]
+    },
+    "964581976": {
+      "name": "Disparo Preciso Decisivo",
+      "events": 175,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt"
+      ]
+    },
+    "947457802": {
+      "name": "Disparo Básico",
+      "events": 2025,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260713_205132.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "963831285": {
+      "name": "Círculo Mágico Corrompido",
+      "events": 3416,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "945743775": {
+      "name": "Vórtice de Flechas",
+      "events": 8063,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt",
+        "TLCombatLog-260628_172903.txt"
+      ]
+    },
+    "945725019": {
+      "name": "Flecha Brutal",
+      "events": 2918,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "963734066": {
+      "name": "Onda Supersônica",
+      "events": 95,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260417_230758.txt"
+      ]
+    },
+    "963715884": {
+      "name": "Bombardeio Decisivo",
+      "events": 15,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260413_175627.txt"
+      ]
+    },
+    "963783565": {
+      "name": "Escudo Caótico",
+      "events": 672,
+      "files": [
+        "TLCombatLog-260411_000310.txt",
+        "TLCombatLog-260411_235533.txt",
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "940584840": {
+      "name": "Víbora Mortal",
+      "events": 473,
+      "files": [
+        "TLCombatLog-260413_175627.txt"
+      ]
+    },
+    "968554218": {
+      "name": "Bombas de Fogo Concentradas",
+      "events": 2835,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "964209795": {
+      "name": "Erupção de Esfera de Mana",
+      "events": 5576,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "951412250": {
+      "name": "Chuva de Fogo do Inferno",
+      "events": 2597,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "962767879": {
+      "name": "Onda Infernal",
+      "events": 1880,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "963291736": {
+      "name": "Raio em Cadeia",
+      "events": 2665,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "950004896": {
+      "name": "Raio do Julgamento",
+      "events": 228,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt"
+      ]
+    },
+    "968448408": {
+      "name": "Barragem de Bola de Fogo",
+      "events": 1856,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt"
+      ]
+    },
+    "968485880": {
+      "name": "Raio do Julgamento",
+      "events": 159,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt"
+      ]
+    },
+    "968862069": {
+      "name": "Esfera de Mana",
+      "events": 3333,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "967879042": {
+      "name": "Esfera de Mana",
+      "events": 3006,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "967944588": {
+      "name": "Esfera de Mana",
+      "events": 1673,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260415_000520.txt",
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "979681846": {
+      "name": "Invocar Satélite",
+      "events": 31,
+      "files": [
+        "TLCombatLog-260413_175627.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "963453749": {
+      "name": "Bombardeio Decisivo",
+      "events": 4,
+      "files": [
+        "TLCombatLog-260413_175627.txt"
+      ]
+    },
+    "953181971": {
+      "name": "Flecha Imobilizadora",
+      "events": 4,
+      "files": [
+        "TLCombatLog-260413_175627.txt"
+      ]
+    },
+    "962594748": {
+      "name": "Disparo Preciso Decisivo",
+      "events": 2,
+      "files": [
+        "TLCombatLog-260413_175627.txt"
+      ]
+    },
+    "968512192": {
+      "name": "Bomba Relógio",
+      "events": 17,
+      "files": [
+        "TLCombatLog-260417_230758.txt",
+        "TLCombatLog-260418_154252.txt"
+      ]
+    },
+    "964631505": {
+      "name": "Disparo Preciso Decisivo",
+      "events": 52,
+      "files": [
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260501_235018.txt"
+      ]
+    },
+    "964500434": {
+      "name": "Disparo Preciso Decisivo",
+      "events": 125,
+      "files": [
+        "TLCombatLog-260424_181152.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "951034867": {
+      "name": "Barragem Fênix",
+      "events": 975,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950313055": {
+      "name": "Ira Mortal",
+      "events": 371,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950325142": {
+      "name": "Corte Abissal",
+      "events": 60,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "963774712": {
+      "name": "Atacar",
+      "events": 153,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "963643674": {
+      "name": "Atacar",
+      "events": 81,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950828882": {
+      "name": "Arco de Extermínio",
+      "events": 230,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950272669": {
+      "name": "Corte Espiral",
+      "events": 1122,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "951299308": {
+      "name": "Fúria Brutal",
+      "events": 80,
+      "files": [
+        "TLCombatLog-260424_224348.txt"
+      ]
+    },
+    "948285468": {
+      "name": "Fúria Brutal",
+      "events": 70,
+      "files": [
+        "TLCombatLog-260424_224348.txt"
+      ]
+    },
+    "947958044": {
+      "name": "Fúria Brutal",
+      "events": 33,
+      "files": [
+        "TLCombatLog-260424_224348.txt"
+      ]
+    },
+    "964298274": {
+      "name": "Atacar",
+      "events": 182,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950111829": {
+      "name": "Investida de Ventania",
+      "events": 9,
+      "files": [
+        "TLCombatLog-260424_224348.txt"
+      ]
+    },
+    "950294052": {
+      "name": "Corte Ascendente",
+      "events": 75,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950232540": {
+      "name": "Corte Ascendente",
+      "events": 61,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "964036892": {
+      "name": "Atacar",
+      "events": 53,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950328682": {
+      "name": "Investida de Ventania",
+      "events": 3,
+      "files": [
+        "TLCombatLog-260424_224348.txt"
+      ]
+    },
+    "940593086": {
+      "name": "Velocidade da Luz",
+      "events": 3839,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "948156706": {
+      "name": "Fúria Explosiva",
+      "events": 124,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950577492": {
+      "name": "Fúria Explosiva",
+      "events": 127,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950708663": {
+      "name": "Fúria Explosiva",
+      "events": 103,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "951429586": {
+      "name": "Fúria Explosiva",
+      "events": 115,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "951364066": {
+      "name": "Fúria Explosiva",
+      "events": 131,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "950308934": {
+      "name": "Azagaia Infernal",
+      "events": 1117,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "968446226": {
+      "name": "Barragem de Bola de Fogo",
+      "events": 1534,
+      "files": [
+        "TLCombatLog-260424_224348.txt",
+        "TLCombatLog-260430_080404.txt",
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "940574531": {
+      "name": "Espada do Julgamento",
+      "events": 19,
+      "files": [
+        "TLCombatLog-260430_080404.txt"
+      ]
+    },
+    "952387771": {
+      "name": "Ressonância de Maldição",
+      "events": 414,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "966507505": {
+      "name": "Pântano Obliterante",
+      "events": 2917,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "953356838": {
+      "name": "Lança Perfurante",
+      "events": 619,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940580415": {
+      "name": "Acertos Consecutivos",
+      "events": 223,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940579602": {
+      "name": "Acertos Consecutivos",
+      "events": 127,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940776212": {
+      "name": "Acertos Consecutivos",
+      "events": 67,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940807331": {
+      "name": "Garras Consecutivas",
+      "events": 12639,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260713_211326.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_161715.txt"
+      ]
+    },
+    "940710828": {
+      "name": "Garra",
+      "events": 6374,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_161715.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940610394": {
+      "name": "Espiral Sangrenta",
+      "events": 260,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940741517": {
+      "name": "Espiral Sangrenta",
+      "events": 253,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940807045": {
+      "name": "Espiral Sangrenta",
+      "events": 249,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940938133": {
+      "name": "Espiral Sangrenta",
+      "events": 248,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940872650": {
+      "name": "Espiral Sangrenta",
+      "events": 741,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940587996": {
+      "name": "Tempestade de Sangue",
+      "events": 21621,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_161715.txt"
+      ]
+    },
+    "940907488": {
+      "name": "Garra",
+      "events": 3002,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_161715.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "941169852": {
+      "name": "Garra",
+      "events": 1690,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940973120": {
+      "name": "Garra",
+      "events": 5369,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_161715.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940616501": {
+      "name": "Explosão Sangrenta",
+      "events": 361,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940711492": {
+      "name": "Golpe em Cadeia",
+      "events": 131,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "941366862": {
+      "name": "Soquinho",
+      "events": 40,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940842037": {
+      "name": "Garra",
+      "events": 4046,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_161715.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940831490": {
+      "name": "Golpe em Cadeia",
+      "events": 5,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "941301324": {
+      "name": "Terremoto",
+      "events": 93,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "941050089": {
+      "name": "Soquinho",
+      "events": 29,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "940610718": {
+      "name": "Garras Consecutivas",
+      "events": 8787,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940602337": {
+      "name": "Garras Consecutivas",
+      "events": 35122,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940634877": {
+      "name": "Golpe em Cadeia",
+      "events": 42,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "940909070": {
+      "name": "Explosão Sangrenta",
+      "events": 408,
+      "files": [
+        "TLCombatLog-260628_172903.txt",
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "948720452": {
+      "name": "Expansão de Círculo Mágico",
+      "events": 4878,
+      "files": [
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "940598648": {
+      "name": "Garra Sangrenta",
+      "events": 2396,
+      "files": [
+        "TLCombatLog-260802_200948.txt",
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "964093725": {
+      "name": "Névoa Cármica",
+      "events": 163,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964679254": {
+      "name": "Disparo de Colisão",
+      "events": 15,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "963754730": {
+      "name": "Protesto da Mãe Natureza",
+      "events": 1044,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "945274557": {
+      "name": "Veneno Corruptivo da Rainha Bellandir em Fúria",
+      "events": 450,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964762401": {
+      "name": "Tiro Ligeiro",
+      "events": 298,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "952531070": {
+      "name": "Corrente Tempestuosa",
+      "events": 524,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "947581240": {
+      "name": "Disparo Básico",
+      "events": 119,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "965090156": {
+      "name": "Tiro Ligeiro",
+      "events": 26,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "947525562": {
+      "name": "Disparo Básico",
+      "events": 80,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "968554562": {
+      "name": "Disparo no Ponto Fraco",
+      "events": 18,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964995791": {
+      "name": "Tiro Ligeiro",
+      "events": 44,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "947450333": {
+      "name": "Disparo Básico",
+      "events": 86,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964342880": {
+      "name": "Tiro de Recuo",
+      "events": 59,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "947909095": {
+      "name": "Disparo Básico",
+      "events": 43,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "953371309": {
+      "name": "Marca de Detonação",
+      "events": 22,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "947515856": {
+      "name": "Disparo Básico",
+      "events": 59,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964277364": {
+      "name": "Tiro de Recuo",
+      "events": 43,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "947843568": {
+      "name": "Disparo Básico",
+      "events": 50,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964696731": {
+      "name": "Tiro Ligeiro",
+      "events": 23,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "965155724": {
+      "name": "Tiro Ligeiro",
+      "events": 23,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964220484": {
+      "name": "Disparo de Colisão",
+      "events": 9,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "953174691": {
+      "name": "Marca de Detonação",
+      "events": 22,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964503191": {
+      "name": "Enxurrada Impiedosa",
+      "events": 18,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964893236": {
+      "name": "Tiro Ligeiro",
+      "events": 45,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "968488988": {
+      "name": "Disparo no Ponto Fraco",
+      "events": 5,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "965287183": {
+      "name": "Tiro Ligeiro",
+      "events": 20,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964301501": {
+      "name": "Enxurrada Impiedosa",
+      "events": 4,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964539717": {
+      "name": "Disparo Múltiplo",
+      "events": 14,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "963732547": {
+      "name": "Apanhador de Vento",
+      "events": 6,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "963143367": {
+      "name": "Apanhador de Vento",
+      "events": 8,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "964605236": {
+      "name": "Disparo Múltiplo",
+      "events": 12,
+      "files": [
+        "TLCombatLog-260802_200948.txt"
+      ]
+    },
+    "940581282": {
+      "name": "Miragem",
+      "events": 1127,
+      "files": [
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261021_161715.txt"
+      ]
+    },
+    "962981882": {
+      "name": "Pesadelo Maldito",
+      "events": 1119,
+      "files": [
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "968426493": {
+      "name": "Maldição Explosiva",
+      "events": 2105,
+      "files": [
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "966638713": {
+      "name": "Pântano Obliterante",
+      "events": 3196,
+      "files": [
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-260811_183123.txt"
+      ]
+    },
+    "940959068": {
+      "name": "Golpe de Mobilidade",
+      "events": 40,
+      "files": [
+        "TLCombatLog-260803_210846.txt",
+        "TLCombatLog-260804_144914.txt",
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "965792569": {
+      "name": "Agitar Tocha",
+      "events": 3,
+      "files": [
+        "TLCombatLog-260803_210846.txt"
+      ]
+    },
+    "948923743": {
+      "name": "Círculo Mágico Sagrado",
+      "events": 7,
+      "files": [
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "968558386": {
+      "name": "Bombardeio Detonador",
+      "events": 90,
+      "files": [
+        "TLCombatLog-260804_144914.txt"
+      ]
+    },
+    "940811078": {
+      "name": "Arremesso de Relâmpago",
+      "events": 702,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_161715.txt"
+      ]
+    },
+    "955956838": {
+      "name": "Injeção Letal",
+      "events": 26392,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "941358871": {
+      "name": "Limite Venenoso",
+      "events": 41840,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "967068704": {
+      "name": "Espírito Umbral",
+      "events": 47168,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "955895166": {
+      "name": "Golpe Sombrio",
+      "events": 242,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940612462": {
+      "name": "Fenda Enluarada",
+      "events": 1566,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940632399": {
+      "name": "Estigma Fatal",
+      "events": 219,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940795465": {
+      "name": "Injeção Letal",
+      "events": 368,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940614907": {
+      "name": "Fenda Enluarada",
+      "events": 1326,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940790340": {
+      "name": "Fenda Enluarada",
+      "events": 1200,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "956087996": {
+      "name": "Golpe Sombrio",
+      "events": 344,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940593713": {
+      "name": "Fenda Enluarada",
+      "events": 936,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "939780553": {
+      "name": "Estigma Fatal",
+      "events": 122,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_161715.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940624689": {
+      "name": "Dança da Espada Frenética",
+      "events": 534,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940821350": {
+      "name": "Dança da Espada Frenética",
+      "events": 532,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940755821": {
+      "name": "Dança da Espada Frenética",
+      "events": 521,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940729956": {
+      "name": "Injeção Letal",
+      "events": 374,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940953339": {
+      "name": "Dança da Espada Frenética",
+      "events": 280,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "941412647": {
+      "name": "Dança da Espada Frenética",
+      "events": 283,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "941609259": {
+      "name": "Dança da Espada Frenética",
+      "events": 274,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt",
+        "TLCombatLog-261021_155800.txt",
+        "TLCombatLog-261021_170341.txt"
+      ]
+    },
+    "940614453": {
+      "name": "Arremesso de Relâmpago",
+      "events": 1426,
+      "files": [
+        "TLCombatLog-261011_194316.txt",
+        "TLCombatLog-261017_212819.txt",
+        "TLCombatLog-261017_215633.txt",
+        "TLCombatLog-261017_220155.txt",
+        "TLCombatLog-261017_223020.txt",
+        "TLCombatLog-261018_191950.txt",
+        "TLCombatLog-261018_193117.txt",
+        "TLCombatLog-261018_194524.txt"
+      ]
+    },
+    "940580872": {
+      "name": "Espírito do Trovão",
+      "events": 5140,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "967057743": {
+      "name": "Dança da Espada Frenética",
+      "events": 101,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "967189154": {
+      "name": "Dança da Espada Frenética",
+      "events": 110,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "966795945": {
+      "name": "Dança da Espada Frenética",
+      "events": 74,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "966927024": {
+      "name": "Dança da Espada Frenética",
+      "events": 80,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "967647924": {
+      "name": "Dança da Espada Frenética",
+      "events": 66,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "967582390": {
+      "name": "Dança da Espada Frenética",
+      "events": 70,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "967779003": {
+      "name": "Dança da Espada Frenética",
+      "events": 61,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "947115633": {
+      "name": "Mutilação",
+      "events": 71,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "947508651": {
+      "name": "Mutilação",
+      "events": 80,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "947247165": {
+      "name": "Mutilação",
+      "events": 71,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "946919227": {
+      "name": "Mutilação",
+      "events": 80,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "947814135": {
+      "name": "Mutilação",
+      "events": 105,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    },
+    "947836334": {
+      "name": "Mutilação",
+      "events": 66,
+      "files": [
+        "TLCombatLog-261011_194316.txt"
+      ]
+    }
+  },
+  "conflicts": {
+    "940591022": {
+      "Acerto Crítico": 55,
+      "Espetada Rápida": 4
+    },
+    "941039175": {
+      "Acerto Crítico": 22,
+      "Espetada Rápida": 3
+    }
+  },
+  "observed": [
+    {
+      "skillId": 964684477,
+      "events": 4,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 964356779,
+      "events": 4,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 948220364,
+      "events": 3,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 964291252,
+      "events": 3,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 953371309,
+      "events": 2,
+      "name": "Marca de Detonação",
+      "status": "mapped"
+    },
+    {
+      "skillId": 964225722,
+      "events": 2,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 986899323,
+      "events": 2,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 988210195,
+      "events": 1,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 987161441,
+      "events": 1,
+      "name": null,
+      "status": "pending"
+    },
+    {
+      "skillId": 968554562,
+      "events": 1,
+      "name": "Disparo no Ponto Fraco",
+      "status": "mapped"
+    },
+    {
+      "skillId": 944646552,
+      "events": 0,
+      "name": null,
+      "status": "pending"
+    }
+  ]
+}

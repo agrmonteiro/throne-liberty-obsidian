@@ -129,6 +129,10 @@ Abra uma [issue no GitHub](https://github.com/agrmonteiro/throne-liberty-obsidia
 
 ## Desenvolvimento
 
+O [guia de recuperação do projeto](docs/RECUPERACAO-DESENVOLVIMENTO.md) reúne
+os caminhos, decisões dos overlays, dependências e limites do backup pelo Git.
+As ferramentas locais de datamining ficam em [tools/unreal](tools/unreal/README.md).
+
 ```bash
 # Instalar dependências
 npm install

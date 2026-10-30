@@ -11,5 +11,5 @@
     "esModuleInterop":  true,
     "resolveJsonModule": true
   },
-  "include": ["electron.vite.config.*", "electron/**/*"]
+  "include": ["electron.vite.config.*", "electron/**/*", "src/engine/overlayMeter.ts", "src/engine/overlayLayout.ts"]
 }

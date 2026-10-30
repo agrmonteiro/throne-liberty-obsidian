@@ -9,6 +9,7 @@ import { pathToFileURL } from 'url'
 import { spawn, execSync } from 'child_process'
 import { createWorker } from 'tesseract.js'
 import { listGameWindows, focusGameWindow, captureGameWindow, recognizeGameCapture } from './gameWindow'
+import { registerOverlay } from './overlay'
 
 // ─── Data directory (AppData/Roaming/Tier2 Command Lab/data) ──────────────────
 const DATA_DIR = path.join(app.getPath('userData'), 'data')
@@ -1289,7 +1290,17 @@ function createWindow(): BrowserWindow {
 app.commandLine.appendSwitch('disable-gpu-sandbox')
 app.commandLine.appendSwitch('disable-software-rasterizer')
 
-app.whenReady().then(() => {
+const singleInstance = app.requestSingleInstanceLock()
+if (!singleInstance) app.quit()
+else app.on('second-instance', () => {
+  const mainWindow = BrowserWindow.getAllWindows().find(window => !window.webContents.getURL().includes('overlay='))
+  if (!mainWindow) return
+  if (mainWindow.isMinimized()) mainWindow.restore()
+  mainWindow.show()
+  mainWindow.focus()
+})
+
+if (singleInstance) app.whenReady().then(() => {
   // Manter estável — alterar o appId quebra a cadeia de atualizações no Windows
   electronApp.setAppUserModelId('com.thronebuilds.obsidian')
   app.on('browser-window-created', (_, window) => {
@@ -1298,6 +1309,7 @@ app.whenReady().then(() => {
   const migrationResult = migrateOldDataDir()
   ensureDataDir()
   const mainWindow = createWindow()
+  registerOverlay(mainWindow)
   if (migrationResult) {
     mainWindow.webContents.once('did-finish-load', () => {
       mainWindow.webContents.send('migration:done', migrationResult)

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "captureDate": "2026-10-30",
+  "status": "indexed_no_independent_combat_log",
+  "primaryReference": "capturas_treinamento/npcap_tl/20261030-094453-reference/reference.json",
+  "summary": "capturas_treinamento/npcap_tl/20261030-094453-reference/summary.md",
+  "semantics": "capturas_treinamento/npcap_tl/20261030-094453-reference/protocol-semantics.json",
+  "checksums": "capturas_treinamento/npcap_tl/20261030-094453-reference/checksums.json",
+  "requestedDurationSec": 600,
+  "elapsedSec": 600.0047855000012,
+  "stats": {
+    "packets": 47846,
+    "decodedMessages": 88586,
+    "opcodes": 78,
+    "fields": 1289,
+    "entities": 188,
+    "skills": 33,
+    "relations": 1582,
+    "damageEvents": 6392,
+    "localPlayerSignals": 413
+  },
+  "localPlayerEntities": [
+    "tcp-001:8075232"
+  ],
+  "nativeCombatSessionId": "not identified",
+  "rules": [
+    "Read docs/overlay-protocol-reference.md before changing the decoder.",
+    "Do not persist temporary entity IDs as permanent character IDs.",
+    "Current sample totals are extracted candidates, not independently validated damage."
+  ]
+}

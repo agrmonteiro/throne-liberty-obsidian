@@ -1,0 +1,42 @@
+# Referência de protocolo do overlay
+
+Consulte primeiro `docs/overlay-reference-index.json`. Ele aponta para a amostra
+passiva de 10 minutos solicitada em 30/10/2026 e seus arquivos de referência.
+
+## Consulta rápida
+
+- `reference.json`: resumo, integridade observada, limites de validade e índice.
+- `protocol-semantics.json`: campos já interpretados e a evidência de cada interpretação.
+- `protocol-fields.json`: frequência de opcodes, caminhos de campos, tipos e valores numéricos frequentes. Coincidências com entidades são candidatas, não ligações comprovadas.
+- `entities.json`: entidades separadas por conexão, papéis observados, nomes de perfis válidos e dano recebido/causado.
+- `skills.json`: IDs de habilidade, nomes do dicionário existente e agregados.
+- `relations.json`: relações de dano entre atacante, alvo e habilidade.
+- `connections.json`: transportes, endpoints, direção, intervalo e chaves de enquadramento.
+- `timeline.json`: sinais de entidade local e dano em intervalos de 30 segundos.
+- `events.jsonl` e `loopback-*.pcap`: evidência original para conferir ou reprocessar.
+
+## Regras para implementar correções
+
+1. IDs de entidade são temporários. Nunca fixe um ID desta amostra como identidade permanente do personagem.
+2. Separe geração de captura, conexão TCP e ID de encontro criado pelo app.
+3. Não selecione automaticamente o primeiro atacante nem o atacante com maior dano.
+4. O opcode `0x1234444a`, campo 1, coincide com o jogador local nas duas capturas antigas comparadas com logs. É um sinal experimental; a flag do campo 2 alterna durante ataques e não define uma sessão de combate.
+5. Ainda não foi identificado um ID nativo de combate confiável. Valores grandes ou estáveis em campos desconhecidos não são prova de ID de sessão.
+6. Preserve inteiros grandes como strings na referência; JSON consumido por JavaScript perde precisão acima de `2^53`.
+7. A amostra atual não tem log de combate independente. Nomes de habilidades vêm do dicionário anterior; extração sem erro não prova cobertura total do jogo.
+
+## Reproduzir a indexação
+
+```powershell
+python scripts/build-overlay-reference.py --folder capturas_treinamento/npcap_tl/20261030-094453-reference --player-name AgrMonteiro
+```
+
+Nova amostragem passiva, filtrada por endpoints locais do TL e sem entradas no jogo:
+
+```powershell
+python scripts/capture-overlay-reference.py --duration 600
+```
+
+Antes de usar uma hipótese nova no decoder, compare outra captura e, quando
+possível, um log de combate independente. O gerador já foi conferido contra a
+referência de 661 eventos / 2.986.995 de dano.

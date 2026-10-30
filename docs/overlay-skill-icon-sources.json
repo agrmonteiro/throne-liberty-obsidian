@@ -1,0 +1,392 @@
+{
+  "source": "Questlog public skill catalog",
+  "createdAt": "2026-10-30T16:41:18.727Z",
+  "mappedNames": [
+    "Estigma Fatal",
+    "Espírito do Trovão",
+    "Fenda Enluarada",
+    "Arremesso de Relâmpago",
+    "Dança da Espada Frenética",
+    "Golpe em Cadeia",
+    "Injeção Letal",
+    "Espetada Rápida",
+    "Soquinho",
+    "Terremoto",
+    "Ataque Rasante",
+    "Flecha Brutal",
+    "Vórtice de Flechas",
+    "Ponta de Flecha de Roxie",
+    "Fúria Brutal",
+    "Fúria Explosiva",
+    "Raio do Julgamento",
+    "Investida de Ventania",
+    "Corte Ascendente",
+    "Azagaia Infernal",
+    "Ira Mortal",
+    "Corte Abissal",
+    "Arco de Extermínio",
+    "Barragem Fênix",
+    "Chuva de Fogo do Inferno",
+    "Ressonância de Maldição",
+    "Corrente Tempestuosa",
+    "Marca de Detonação",
+    "Flecha Imobilizadora",
+    "Golpe Sombrio",
+    "Puxão do Zéfiro",
+    "Disparo Preciso Decisivo",
+    "Onda Infernal",
+    "Maldição Explosiva",
+    "Pesadelo Maldito",
+    "Apanhador de Vento",
+    "Raio em Cadeia",
+    "Bombardeio Decisivo",
+    "Onda Supersônica",
+    "Protesto da Mãe Natureza",
+    "Escudo Caótico",
+    "Círculo Mágico Corrompido",
+    "Névoa Cármica",
+    "Toque de Desespero",
+    "Erupção de Esfera de Mana",
+    "Disparo de Colisão",
+    "Tiro de Recuo",
+    "Enxurrada Impiedosa",
+    "Disparo Múltiplo",
+    "Tiro Ligeiro",
+    "Espírito Umbral",
+    "Toque em Degradação",
+    "Barragem de Bola de Fogo",
+    "Raio do Julgamento (Uso consecutivo)",
+    "Raio do Desastre",
+    "Disparo no Ponto Fraco",
+    "Bombas de Fogo Concentradas",
+    "Invocar Satélite"
+  ],
+  "missing": [
+    "Espada do Julgamento",
+    "Acertos Consecutivos",
+    "Miragem",
+    "Víbora Mortal",
+    "Tempestade de Sangue",
+    "Velocidade da Luz",
+    "Garra Sangrenta",
+    "Garras Consecutivas",
+    "Espiral Sangrenta",
+    "Explosão Sangrenta",
+    "Garra",
+    "Golpe de Mobilidade",
+    "Limite Venenoso",
+    "Veneno Corruptivo da Rainha Bellandir em Fúria",
+    "Fome de Tevent em Fúria",
+    "Mutilação",
+    "Disparo Básico",
+    "Expansão de Círculo Mágico",
+    "Círculo Mágico Sagrado",
+    "Corte Espiral",
+    "Ascensão Dracônica",
+    "Esfera de Mana",
+    "Lança Perfurante",
+    "Lança Destruidora",
+    "Atacar",
+    "Agitar Tocha",
+    "Pântano Obliterante",
+    "Explosão Abissal",
+    "Acerto Corrompido",
+    "Flor que Cai",
+    "Bomba Relógio",
+    "Bombardeio Detonador",
+    "Feitiço de Contra-ataque",
+    "Copiar Satélite"
+  ],
+  "assets": {
+    "Active__S_WP_DA_DelayDamage.webp": {
+      "skillSet": "SkillSet_WP_DA_DA_S_DelayDamage",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_DA_DelayDamage.webp",
+      "bytes": 10410
+    },
+    "Active__S_WP_DA_ShadowChaser_SP.webp": {
+      "skillSet": "WP_DA_DA_S_ShadowChaser_SP",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_DA_ShadowChaser_SP.webp",
+      "bytes": 14034
+    },
+    "Active__S_WP_DA_SpinAttack.webp": {
+      "skillSet": "SkillSet_WP_DA_DA_S_CriticalStrike",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_DA_SpinAttack.webp",
+      "bytes": 11476
+    },
+    "Active__S_WP_DA_PoisonDagger_SP.webp": {
+      "skillSet": "WP_DA_DA_S_PoisonDagger_SP",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_DA_PoisonDagger_SP.webp",
+      "bytes": 12306
+    },
+    "Active__WP_DA_DA_S_SonicAttack.webp": {
+      "skillSet": "SkillSet_WP_DA_DA_S_SonicAttacka",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/WP_DA_DA_S_SonicAttack.webp",
+      "bytes": 9938
+    },
+    "Active__S_WP_GT_ChainAttack.webp": {
+      "skillSet": "SkillSet_WP_GT_Active_ChainAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_GT_ChainAttack.webp",
+      "bytes": 5146
+    },
+    "Active__S_AS_SR_Burning__AA.webp": {
+      "skillSet": "SkillSet_WP_DA_DA_S_PoisonEnchant",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_AS_SR_Burning__AA.webp",
+      "bytes": 12346
+    },
+    "Active__S_WP_GT_ChargeAttack.webp": {
+      "skillSet": "SkillSet_WP_GT_Active_ChargeAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_GT_ChargeAttack.webp",
+      "bytes": 7394
+    },
+    "Active__S_WP_GT_OneInchPunch.webp": {
+      "skillSet": "SkillSet_WP_GT_Active_OneInchPunch",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_GT_OneInchPunch.webp",
+      "bytes": 8974
+    },
+    "Active__S_WP_GT_Earthquake.webp": {
+      "skillSet": "SkillSet_WP_GT_Active_Earthquake",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_GT_Earthquake.webp",
+      "bytes": 8816
+    },
+    "Active__S_WP_BO_MultiShot_AA.webp": {
+      "skillSet": "SkillSet_WP_BO_S_MultiShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_MultiShot_AA.webp",
+      "bytes": 9842
+    },
+    "Active__S_WP_BO_DropShot.webp": {
+      "skillSet": "SkillSet_WP_BO_S_DropShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_DropShot.webp",
+      "bytes": 9100
+    },
+    "Active__S_WP_BO_TornadoShot.webp": {
+      "skillSet": "SkillSet_WP_BO_S_TornadoShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_TornadoShot.webp",
+      "bytes": 8998
+    },
+    "Active__S_WP_BO_WindBonusProjectile.webp": {
+      "skillSet": "SkillSet_WP_BO_S_WindBonusProjectile",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_WindBonusProjectile.webp",
+      "bytes": 7810
+    },
+    "Active__S_WP_SP_RapidThrust_SP_1.webp": {
+      "skillSet": "WP_SP_S_RapidThrust_5Hit",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_RapidThrust_SP_1.webp",
+      "bytes": 6384
+    },
+    "Active__S_WP_SP_RapidThrust_SP_2.webp": {
+      "skillSet": "WP_SP_S_RapidThrust_SP",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_RapidThrust_SP_2.webp",
+      "bytes": 6622
+    },
+    "Active__S_WP_ST_PowerAttack.webp": {
+      "skillSet": "SkillSet_WP_ST_S_PowerAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_PowerAttack.webp",
+      "bytes": 9502
+    },
+    "Active__S_WP_SP_DashAttack.webp": {
+      "skillSet": "SkillSet_WP_SP_S_DashAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_DashAttack.webp",
+      "bytes": 5884
+    },
+    "Active__S_WP_SP_CrossAttack.webp": {
+      "skillSet": "SkillSet_WP_SP_S_CrossAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_CrossAttack.webp",
+      "bytes": 8640
+    },
+    "Active__S_WP_SP_SpearThrower_SP.webp": {
+      "skillSet": "WP_SP_S_SpearThrower_SP",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_SpearThrower_SP.webp",
+      "bytes": 7784
+    },
+    "Active__S_WP_SP_LowHpAttack.webp": {
+      "skillSet": "SkillSet_WP_SP_S_Passive_LowHPAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_LowHpAttack.webp",
+      "bytes": 7284
+    },
+    "Active__S_WP_SP_StunAttack.webp": {
+      "skillSet": "SkillSet_WP_SP_S_StunAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_StunAttack.webp",
+      "bytes": 6642
+    },
+    "Active__S_WP_SP_ThrustPull.webp": {
+      "skillSet": "SkillSet_WP_SP_S_ThrustPull",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_ThrustPull.webp",
+      "bytes": 4936
+    },
+    "Active__S_WP_SP_RapidAttack_SP.webp": {
+      "skillSet": "WP_SP_S_RapidAttack_SP",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_SP_RapidAttack_SP.webp",
+      "bytes": 5060
+    },
+    "Active__S_WP_ST_S_Meteor_SP.webp": {
+      "skillSet": "WP_ST_S_Meteor_Attack_Seperate",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_S_Meteor_SP.webp",
+      "bytes": 9162
+    },
+    "Active__S_WP_WA_AdditionalBurst.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_PartyCurseBurst",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_AdditionalBurst.webp",
+      "bytes": 10908
+    },
+    "Active__S_WP_CR_Gale_Buff.webp": {
+      "skillSet": "SkillSet_WP_CR_S_GaleBuff",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_Gale_Buff.webp",
+      "bytes": 9058
+    },
+    "Active__S_WP_CR_ArmorBreakShot_SP.webp": {
+      "skillSet": "WP_CR_CR_S_ArmorBreakShot_Hero_Trait2",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_ArmorBreakShot_SP.webp",
+      "bytes": 12284
+    },
+    "Active__S_WP_BO_BindShot_AA.webp": {
+      "skillSet": "SkillSet_WP_BO_S_BindShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_BindShot_AA.webp",
+      "bytes": 10756
+    },
+    "Active__S_WP_DA_BlinkStrike_AA.webp": {
+      "skillSet": "SkillSet_WP_DA_DA_S_BlinkStrike",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_DA_BlinkStrike_AA.webp",
+      "bytes": 10954
+    },
+    "Active__S_WP_BO_StrongShot_AA.webp": {
+      "skillSet": "SkillSet_WP_BO_S_StrongShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_StrongShot_AA.webp",
+      "bytes": 9602
+    },
+    "Active__S_WP_BO_PowerShot_AA.webp": {
+      "skillSet": "SkillSet_WP_BO_S_PowerShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_PowerShot_AA.webp",
+      "bytes": 9996
+    },
+    "Active__S_WP_ST_WideAreaDebuffAttack_AA.webp": {
+      "skillSet": "SkillSet_WP_ST_S_WideAreaDebuffAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_WideAreaDebuffAttack_AA.webp",
+      "bytes": 9620
+    },
+    "Active__S_WP_WA_GR_CurseBurst_AA.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_CurseBurst",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_GR_CurseBurst_AA.webp",
+      "bytes": 11280
+    },
+    "Active__S_WP_WA_Sleep_AA.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_Sleep",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_Sleep_AA.webp",
+      "bytes": 9244
+    },
+    "Active__S_WP_CR_RobShot.webp": {
+      "skillSet": "SkillSet_WP_CR_D_RobShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_RobShot.webp",
+      "bytes": 9990
+    },
+    "Active__S_WP_ST_MainAttack_AA.webp": {
+      "skillSet": "SkillSet_WP_ST_S_MainAttack",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_MainAttack_AA.webp",
+      "bytes": 8460
+    },
+    "Active__WP_BO_S_PowerShot_Charge_SP.webp": {
+      "skillSet": "WP_BO_S_PowerShot_Charge_CanMove_NoneTarget",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/WP_BO_S_PowerShot_Charge_SP.webp",
+      "bytes": 9888
+    },
+    "Active__S_WP_BO_Detection_SP.webp": {
+      "skillSet": "WP_BO_S_PheonixArrow_Charge",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_BO_Detection_SP.webp",
+      "bytes": 9144
+    },
+    "Active__S_WP_CR_AddProjectile.webp": {
+      "skillSet": "SkillSet_WP_CR_CR_S_AddProjectile",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_AddProjectile.webp",
+      "bytes": 9202
+    },
+    "Active__S_WP_WA_DefenceAction.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_CounterMove",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_DefenceAction.webp",
+      "bytes": 10520
+    },
+    "Active__S_WP_WA_CurseArea_AA.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_CurseArea",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_CurseArea_AA.webp",
+      "bytes": 14108
+    },
+    "Active__S_WP_WA_GR_CurseSpread.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_CurseSpread",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_GR_CurseSpread.webp",
+      "bytes": 8830
+    },
+    "Active__S_WP_WA_Corruption_AA.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_Corruption",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_Corruption_AA.webp",
+      "bytes": 9216
+    },
+    "Active__S_WP_ST_AddProjectile_AA.webp": {
+      "skillSet": "SkillSet_WP_ST_S_AddProjectile",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_AddProjectile_AA.webp",
+      "bytes": 6776
+    },
+    "Active__S_WP_CR_BuckShot_SP_2.webp": {
+      "skillSet": "WP_CR_CR_S_BuckShot_Trait2",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_BuckShot_SP_2.webp",
+      "bytes": 11492
+    },
+    "Active__WP_CR_AddShot.webp": {
+      "skillSet": "SkillSet_WP_CR_D_AddShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/WP_CR_AddShot.webp",
+      "bytes": 8688
+    },
+    "Active__S_WP_CR_FuriousFire.webp": {
+      "skillSet": "SkillSet_WP_CR_FuriousFire",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_FuriousFire.webp",
+      "bytes": 10138
+    },
+    "Active__S_WP_CR_BuckShot_AA.webp": {
+      "skillSet": "SkillSet_WP_CR_CR_S_BuckShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_BuckShot_AA.webp",
+      "bytes": 10516
+    },
+    "Active__S_WP_CR_RapidShot_AA.webp": {
+      "skillSet": "SkillSet_WP_CR_CR_S_RapidShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_RapidShot_AA.webp",
+      "bytes": 8606
+    },
+    "Active__S_WP_DA_ShadowChaser.webp": {
+      "skillSet": "SkillSet_WP_DA_DA_S_ShadowChaser",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_DA_ShadowChaser.webp",
+      "bytes": 8958
+    },
+    "Active__S_WP_WA_CurseArea_SP.webp": {
+      "skillSet": "WP_WA_GR_S_CurseArea_Onetarget",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_CurseArea_SP.webp",
+      "bytes": 10226
+    },
+    "Active__S_WP_ST_FireCombo.webp": {
+      "skillSet": "SkillSet_WP_ST_S_FireCombo",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_FireCombo.webp",
+      "bytes": 9042
+    },
+    "Active__S_WP_ST_PowerAttack_SP.webp": {
+      "skillSet": "WP_ST_S_PowerAttack_Casting",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_PowerAttack_SP.webp",
+      "bytes": 9582
+    },
+    "Active__S_WP_WA_LinkLaser_SP.webp": {
+      "skillSet": "SkillSet_WP_WA_GR_S_LinkLaser",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_WA_LinkLaser_SP.webp",
+      "bytes": 10808
+    },
+    "Active__S_WP_CR_WeakPointShot.webp": {
+      "skillSet": "SkillSet_WP_CR_D_WeakPointShot",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_CR_WeakPointShot.webp",
+      "bytes": 9598
+    },
+    "Active__S_WP_ST_WideAreaAttack_SP.webp": {
+      "skillSet": "WP_ST_S_WideAreaAttack_Charge",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ST_WideAreaAttack_SP.webp",
+      "bytes": 8278
+    },
+    "Active__S_WP_ORB_Active_Satellite.webp": {
+      "skillSet": "SkillSet_WP_ORB_Active_Satellite",
+      "source": "https://cdn.questlog.gg/throne-and-liberty/assets/Game/Image/Skill/Active/S_WP_ORB_Active_Satellite.webp",
+      "bytes": 6930
+    }
+  }
+}

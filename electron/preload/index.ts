@@ -1,5 +1,24 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import type { OverlayAPI } from '../../src/engine/overlayMeter'
+
+const overlayAPI: OverlayAPI = {
+  clearRecords: () => ipcRenderer.invoke('overlay:clear-records'),
+  history: () => ipcRenderer.invoke('overlay:history'),
+  get: () => ipcRenderer.invoke('overlay:get'),
+  configure: patch => ipcRenderer.invoke('overlay:configure', patch),
+  start: () => ipcRenderer.invoke('overlay:start'),
+  stop: () => ipcRenderer.invoke('overlay:stop'),
+  reset: () => ipcRenderer.invoke('overlay:reset'),
+  replay: speed => ipcRenderer.invoke('overlay:replay', speed),
+  bounds: (panel, value) => ipcRenderer.invoke('overlay:bounds', panel, value),
+  subscribe: callback => {
+    const listener = (_event: Electron.IpcRendererEvent, value: Parameters<typeof callback>[0]) => callback(value)
+    ipcRenderer.on('overlay:state', listener)
+    return () => ipcRenderer.removeListener('overlay:state', listener)
+  },
+}
+contextBridge.exposeInMainWorld('overlayAPI', overlayAPI)
 
 // ─── Stored listener refs — use removeListener instead of removeAllListeners ──
 // removeAllListeners would destroy listeners registered by other components.

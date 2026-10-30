@@ -57,6 +57,12 @@ capturas_treinamento/
 electron.vite.config.*.mjs
 graphify-out/
 
+# Ferramentas de datamining somente para desenvolvimento local
+tools/unreal/.local/
+tools/unreal/exports/
+tools/unreal/ArchiveProbe/bin/
+tools/unreal/ArchiveProbe/obj/
+
 # Duplicatas obsoletas na raiz (fonte real em src/)
 /App.tsx
 /Dashboard.tsx

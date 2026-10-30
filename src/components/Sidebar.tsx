@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useT } from '../i18n/useT'
 import { version } from '../../package.json'
 
-type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'macro' | 'combatlab' | 'settings' | 'pullranking' | 'skillsdb' | 'masterytrees'
+type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds' | 'logreader' | 'rotation' | 'macro' | 'combatlab' | 'overlays' | 'settings' | 'pullranking' | 'skillsdb' | 'masterytrees'
 
 interface NavItem {
   id:    Page
@@ -21,6 +21,7 @@ const NAV: NavItem[] = [
   { id: 'rotation',     icon: '🔄', group: 'analysis'     },
   { id: 'combatlab',    icon: '🎯', group: 'analysis'     },
   { id: 'macro',        icon: '⌨',  group: 'analysis'     },
+  { id: 'overlays',     icon: '◫', group: 'analysis' },
   { id: 'logreader',    icon: '📄', group: 'analysis'     },
   { id: 'pullranking',  icon: '🏆', group: 'analysis'     },
   { id: 'skillsdb',     icon: '📚', group: 'analysis'     },
@@ -36,6 +37,7 @@ const NAV_KEYS: Record<Page, string> = {
   sensitivity:  'sidebar.nav.sensitivity',
   rotation:     'sidebar.nav.rotation',
   combatlab:    'sidebar.nav.combatlab',
+  overlays:     'Overlays de dano',
   macro:        'sidebar.nav.macro',
   logreader:    'sidebar.nav.logreader',
   settings:     'sidebar.nav.settings',

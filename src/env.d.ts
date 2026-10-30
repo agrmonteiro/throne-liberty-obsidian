@@ -95,6 +95,7 @@ interface UpdateAPI {
 }
 
 interface Window {
+  overlayAPI: import('./engine/overlayMeter').OverlayAPI
   updateAPI?: UpdateAPI
   dataAPI: DataAPI
 }

@@ -43,3 +43,14 @@ O auto-updater dos clientes detecta automaticamente o novo release e notifica de
 ## Idioma
 
 Sempre responder em português brasileiro.
+
+## Referência do protocolo dos overlays
+
+Para reinstalar o ambiente ou continuar os overlays/datamining, leia primeiro
+`docs/RECUPERACAO-DESENVOLVIMENTO.md` e `tools/unreal/README.md`.
+
+Antes de investigar IDs, identidade, sessões ou campos dos pacotes do overlay,
+consulte `docs/overlay-reference-index.json` e `docs/overlay-protocol-reference.md`.
+A amostra de 10 minutos contém o mapa e os PCAPs de evidência. IDs de entidades
+são temporários e devem ser separados por conexão; não os fixe no código como
+identidade permanente. Diferencie campos validados de hipóteses numéricas.

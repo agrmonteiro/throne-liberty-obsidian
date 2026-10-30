@@ -52,6 +52,11 @@
     ],
     "extraResources": [
       {
+        "from": "scripts",
+        "to": "npcap-overlay",
+        "filter": ["npcap-overlay-worker.py", "analisar-npcap-tl.py", "teste-npcap-tl.py", "overlay-foreground.py"]
+      },
+      {
         "from": "resources/questlog_scraper.exe",
         "to": "questlog_scraper.exe"
       }

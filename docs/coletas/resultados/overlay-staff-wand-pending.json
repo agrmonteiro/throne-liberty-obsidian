@@ -1,0 +1,354 @@
+{
+  "generatedAt": "2026-10-30T16:38:37.387Z",
+  "weaponsProvidedByUser": [
+    "staff",
+    "wand"
+  ],
+  "player": {
+    "sourceId": 8075232,
+    "connectionId": "6354a5aad0254cb4a8b92b15350f9239",
+    "observedAt": 1793374401155.607,
+    "method": "local-state"
+  },
+  "encounterId": "f72f94f7-c570-4757-8b31-8e88da227ad4",
+  "status": "partially_mapped_by_user_confirmation",
+  "sourcesChecked": [
+    "src/data/overlaySkillNames.json",
+    "C:/Users/admin/AppData/Local/TL/Saved/CombatLogs",
+    "C:/Users/admin/AppData/Local/TL/Saved/Logs",
+    "scratch/questlog-skill-icons-pt.json"
+  ],
+  "limitations": [
+    "Questlog catalog uses symbolic skill-set IDs, not numeric damage-event IDs.",
+    "No exact numeric matches in local combat logs for the current pending IDs.",
+    "An isolated cast can also trigger basic attacks, passive skills and equipment effects; require repeatable evidence before assigning a name."
+  ],
+  "pending": [
+    {
+      "skillId": 968441375,
+      "events": 3747,
+      "damage": 21157167
+    },
+    {
+      "skillId": 968604762,
+      "events": 2678,
+      "damage": 17591017
+    },
+    {
+      "skillId": 968670316,
+      "events": 2568,
+      "damage": 17438978
+    },
+    {
+      "skillId": 968472498,
+      "events": 951,
+      "damage": 12130387
+    },
+    {
+      "skillId": 967030853,
+      "events": 850,
+      "damage": 11871893
+    },
+    {
+      "skillId": 967227745,
+      "events": 302,
+      "damage": 4126316
+    },
+    {
+      "skillId": 968801679,
+      "events": 166,
+      "damage": 2169579
+    },
+    {
+      "skillId": 966375907,
+      "events": 18,
+      "damage": 252739
+    }
+  ],
+  "catalog": [
+    {
+      "id": "SkillSet_WP_WA_GR_S_LinkLaser",
+      "name": "Raio do Desastre",
+      "variants": []
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_CurseBurst",
+      "name": "Maldição Explosiva",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_CurseBurst_Hero",
+          "name": "Maldição Explosiva"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_CurseArea",
+      "name": "Círculo Mágico Corrompido",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_CurseArea_Onetarget",
+          "name": "Toque em Degradação"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_Corruption",
+      "name": "Toque de Desespero",
+      "variants": []
+    },
+    {
+      "id": "SkillSet_WP_ST_S_FireCombo",
+      "name": "Barragem de Bola de Fogo",
+      "variants": [
+        {
+          "id": "WP_ST_S_Firecombo_Canmove",
+          "name": "Barragem de Bola de Fogo"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_MainAttack",
+      "name": "Raio em Cadeia",
+      "variants": []
+    },
+    {
+      "id": "SkillSet_WP_ST_S_PowerAttack",
+      "name": "Raio do Julgamento",
+      "variants": [
+        {
+          "id": "WP_ST_S_PowerAttack_Casting",
+          "name": "Raio do Julgamento"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_WideAreaDebuffAttack",
+      "name": "Onda Infernal",
+      "variants": [
+        {
+          "id": "WP_ST_S_WideAreaDebuffAttack_Hero_trait1",
+          "name": "Onda de Relâmpago Em Frenesi"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_ManaRengeUp",
+      "name": "Paz Interior",
+      "variants": [
+        {
+          "id": "WP_ST_S_ManaRengeUp_Hero_trait1",
+          "name": "Paz Interior"
+        },
+        {
+          "id": "WP_ST_S_ManaRengeUp_Legend",
+          "name": "Paz Interior"
+        },
+        {
+          "id": "WP_ST_S_ManaRengeUp_Legend_trait1",
+          "name": "Paz Interior"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_GlobalCoolDownBuff",
+      "name": "Foco Elevado",
+      "variants": [
+        {
+          "id": "WP_ST_S_GlobalCoolDownUp_trait1",
+          "name": "Foco Elevado"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_WideAreaAttack",
+      "name": "Explosão de Bombas de Fogo",
+      "variants": [
+        {
+          "id": "WP_ST_S_WideAreaAttack_Charge",
+          "name": "Bombas de Fogo Concentradas"
+        },
+        {
+          "id": "WP_ST_S_WideAreaAttack_Charge_Canmove",
+          "name": "Bombas de Fogo Concentradas"
+        },
+        {
+          "id": "WP_ST_S_WideAreaAttack_Hero_1_Canmove",
+          "name": "Explosão de Bombas de Fogo"
+        },
+        {
+          "id": "WP_ST_S_WideAreaAttack_Hero_1_Canmove_trait5",
+          "name": "Explosão de Bombas de Fogo"
+        },
+        {
+          "id": "WP_ST_S_WideAreaAttack_Hero_1_trait5",
+          "name": "Explosão de Bombas de Fogo"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_Decay",
+      "name": "Hora da Punição",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_Decay_trait1",
+          "name": "Tempo de Encantamento"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_CurseSpread",
+      "name": "Névoa Cármica",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_CurseSpread",
+          "name": "Névoa Cármica"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_Sleep",
+      "name": "Pesadelo Maldito",
+      "variants": []
+    },
+    {
+      "id": "SkillSet_WP_ST_S_WideAreaPowerAttack",
+      "name": "Meteoro Infernal",
+      "variants": [
+        {
+          "id": "WP_ST_S_Meteor_Attack_Seperate",
+          "name": "Chuva de Fogo do Inferno"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_IceFreeze",
+      "name": "Tumba Gélida",
+      "variants": [
+        {
+          "id": "WP_ST_S_IceFreeze_Self",
+          "name": "Armadura Gélida"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_IceSpear",
+      "name": "Lança de Gelo",
+      "variants": [
+        {
+          "id": "WP_ST_S_IceSpear_Onetarget",
+          "name": "Bombardeio de Lança de Gelo"
+        },
+        {
+          "id": "WP_ST_S_IceSpear_Onetarget_trait_2",
+          "name": "Bombardeio de Lança de Gelo"
+        },
+        {
+          "id": "WP_ST_S_IceSpear_trait_2",
+          "name": "Lança de Gelo"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_AoeTeleport",
+      "name": "Cortina de Gelo",
+      "variants": [
+        {
+          "id": "WP_ST_S_AoeTeleport_FieldArea",
+          "name": "Cortina de Gelo"
+        },
+        {
+          "id": "WP_ST_S_AoeTeleport_FieldArea_trait1",
+          "name": "Cortina de Fogo"
+        },
+        {
+          "id": "WP_ST_S_AoeTeleport_Hero_trait1",
+          "name": "Cortina de Fogo"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_BringSkill",
+      "name": "Corrente da Salvação",
+      "variants": [
+        {
+          "id": "WP_ST_S_BringSkill_Move",
+          "name": "Corrente Saltitante"
+        },
+        {
+          "id": "WP_ST_S_BringSkill_Shield",
+          "name": "Barreira Redentora"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_DefenseUp",
+      "name": "Barreira Abençoada",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_DefenseUp_trait2",
+          "name": "Barreira Abençoada"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_Heal",
+      "name": "Cura Célere",
+      "variants": []
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_HealAll",
+      "name": "Salvação de Clay",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_HealAll_trait1",
+          "name": "Fúria de Janice"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_HealField",
+      "name": "Fonte da Vida",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_HealField_trait2",
+          "name": "Fonte da Vida"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_MagicShield",
+      "name": "Parede Invencível",
+      "variants": [
+        {
+          "id": "WP_WA_GR_S_MagicShield",
+          "name": "Parede Invencível"
+        }
+      ]
+    },
+    {
+      "id": "SkillSet_WP_ST_S_CounterMove",
+      "name": "Escudo Místico",
+      "variants": []
+    },
+    {
+      "id": "SkillSet_WP_WA_GR_S_CounterMove",
+      "name": "Escudo Caótico",
+      "variants": []
+    }
+  ],
+  "confirmed": {
+    "968448884": {
+      "name": "Raio do Julgamento (Uso consecutivo)",
+      "baseName": "Raio do Julgamento",
+      "specialization": "Uso consecutivo",
+      "catalogId": "WP_ST_S_PowerAttack_Casting",
+      "evidence": "Identificação explícita do usuário em 2026-10-30: ID final 8884, Raio do Julgamento com especialização Uso consecutivo. O catálogo fornece o ícone da variante, não o vínculo com o ID numérico.",
+      "observed": {
+        "skillId": 968448884,
+        "events": 568,
+        "damage": 33943407
+      }
+    }
+  },
+  "updatedAt": "2026-10-30T16:41:38.371Z"
+}
