@@ -133,6 +133,7 @@ export function registerOverlay(owner: BrowserWindow): void {
       || (identity.snapshot() && !identity.accepts(connectionId))
       || (encounterConnectionId && encounterConnectionId !== connectionId)
       || (event.sourceId !== meter.sourceId && event.targetId !== meter.sourceId)) return
+    encounterConnectionId ??= connectionId
     bindDeathLog(connectionId)
     const source = event.sourceId ? entityName(event.sourceId) : {}
     const target = event.targetId ? entityName(event.targetId) : {}
@@ -566,7 +567,9 @@ export function registerOverlay(owner: BrowserWindow): void {
       }
     }
     if ('sourceId' in patch && (patch.sourceId === null || (Number.isSafeInteger(patch.sourceId) && patch.sourceId! > 0))) {
-      config.autoSource = patch.sourceId === null
+      // Uma origem confirmada explicitamente pode ser retomada enquanto aguardamos
+      // o próximo perfil. Seguir o perfil continua exigindo o nome configurado.
+      config.autoSource = patch.sourceId === null || patch.autoSource === true
       const sourceId = patch.sourceId === null
         ? mode === 'live' ? identity.snapshot()?.sourceId ?? null : mode === 'replay' && sources.size === 1 ? [...sources.keys()][0] : null
         : patch.sourceId!

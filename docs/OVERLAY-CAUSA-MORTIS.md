@@ -93,3 +93,19 @@ O histórico anterior foi salvo antes do reinício. A nova captura recebe pacote
 mas aguarda o perfil nominal após o restart: DPS/buffer ficam zerados até esse
 vínculo chegar. Solicitado ao usuário trocar de mapa/reconectar para reenviá-lo;
 não inferir identidade pelo primeiro/maior atacante nem reutilizar ID antigo.
+
+Se houver uma origem explicitamente confirmada e a continuidade da geração TCP
+do jogo tiver sido conferida, a API permite `{sourceId, autoSource:true}`: retoma
+a origem informada enquanto acompanha o próximo perfil nominal. Isso não preenche
+`capture.player` nem afirma receber um novo perfil. Iniciar uma captura continua
+limpando IDs; mudança de conexão limpa o vínculo; perfis novos continuam exigindo
+o nome exato. Não usar essa opção para escolher primeiro/maior atacante ou
+recuperar entidades de outra geração. A seleção manual comum permanece fixa.
+
+Na retomada desta sessão, a origem foi confirmada por perfil antes do reinício;
+o processo do TL e a geração TCP foram conferidos, incluindo criação da conexão
+anterior ao perfil e igualdade antes/depois da atualização. Após os ataques
+confirmados pelo usuário, a leitura real acumulou **71 acertos / 241.246 de dano**,
+1.172 recebido e buffer **50/50**, incluindo autocuras dos dois opcodes. O modo
+de acompanhamento do próximo perfil permaneceu ativo, sem fabricar um novo
+perfil de rede. Nenhum registro de morte foi inventado para o teste.

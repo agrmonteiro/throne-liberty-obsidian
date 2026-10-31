@@ -351,6 +351,29 @@ try {
 } finally { named.close() }
 console.log('OK: nome confirmado pelo perfil impede primeiro atacante indevido e trocas pelo sinal ambíguo de terceiros.')
 
+const confirmedResume = harness()
+try {
+  confirmedResume.start(); confirmedResume.send({ type: 'status', state: 'live', message: 'test' })
+  confirmedResume.configure({ sourceId: 7, autoSource: true })
+  confirmedResume.send({ type: 'entity-state', targetId: 7, connectionId: 'A', time: 1000.5 })
+  confirmedResume.send({ type: 'entity-state', targetId: 7, connectionId: 'C', time: 1000.6, stateCode: 2, deathCandidate: true })
+  assert.equal(confirmedResume.deaths().records.length, 0, 'Estado inicial fixa a conexão mesmo antes do primeiro dano')
+  confirmedResume.send(damage(7, 1001, 100))
+  assert.equal(confirmedResume.state().session.total, 100)
+  assert.equal(confirmedResume.state().config.autoSource, true)
+  assert.equal(confirmedResume.state().capture.player, null, 'Retomada explícita não inventa confirmação de perfil')
+  confirmedResume.send({ type: 'local-player', sourceId: 88, connectionId: 'A', time: 1002 })
+  assert.equal(confirmedResume.state().config.sourceId, 7)
+  confirmedResume.send(player(9, 1003, 'B'))
+  assert.equal(confirmedResume.state().config.sourceId, 9, 'Próximo perfil nominal deve voltar a acompanhar a nova entidade')
+  assert.equal(confirmedResume.state().session.total, 0)
+  confirmedResume.send(damage(7, 1004, 999, 'A'))
+  assert.equal(confirmedResume.state().session.total, 0)
+  confirmedResume.send(damage(9, 1005, 20, 'B'))
+  assert.equal(confirmedResume.state().session.total, 20)
+} finally { confirmedResume.close() }
+console.log('OK: retomada explícita com acompanhamento futuro do perfil, sem inferir identidade por ataque ou sinal ambíguo.')
+
 const folder = path.join(root, 'capturas_treinamento/npcap_tl/20261030-094453-reference')
 const manifest = JSON.parse(fs.readFileSync(path.join(folder, 'manifest.json'), 'utf8'))
 const reference = JSON.parse(fs.readFileSync(path.join(folder, 'reference.json'), 'utf8'))
