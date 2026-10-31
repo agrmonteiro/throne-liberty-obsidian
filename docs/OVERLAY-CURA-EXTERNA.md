@@ -90,3 +90,9 @@ reescrita. Os dois registros se sobrepõem e seus totais não devem ser somados.
 O usuário informou que não pode testar agora. A validação com uma nova cura ao
 vivo fica pendente; não afirmar que foi executada. A captura da sessão atual
 aguarda o perfil nominal, e IDs da evidência anterior não foram reutilizados.
+
+Validação posterior: o usuário realizou Leviatã Ascendido em grupo de seis.
+O encontro registrou 62.592 de cura externa em dez aplicações, e o recap da
+mesma conexão preservou pacotes Dillzin → AgrMonteiro. Essa pendência foi
+conferida com dados novos reais; ver [OVERLAY-LEVIATA-GRUPO.md](OVERLAY-LEVIATA-GRUPO.md)
+para as parcelas, limites de atribuição e o que não foi capturado de buffs.

@@ -15,6 +15,11 @@ permite conferir o protocolo antes de usar seus campos como estado do overlay.
 
 ## Evidência
 
+A luta posterior em grupo contra Leviatã foi localizada no histórico, mas
+ocorreu depois do fim da captura bruta abaixo. Os limites dessa amostra e a
+validação de cura externa estão em [OVERLAY-LEVIATA-GRUPO.md](OVERLAY-LEVIATA-GRUPO.md).
+Não tratar o PCAP de 15:59:30 como captura dessa luta.
+
 | Amostra | Duração | Aplicações | Atualizações | Remoções |
 | --- | ---: | ---: | ---: | ---: |
 | 20261030-094453-reference | 600 s | 4.377 | 7.844 | 4.373 |

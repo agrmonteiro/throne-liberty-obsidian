@@ -104,3 +104,15 @@ for sample in fixture['events']:
         stream.feed(0,frame*2,sample['time']+1)
         assert len(messages)==(2 if server else 0),'Retransmissão não duplica cura externa'
 print('OK: 4 pacotes reais AliveS1 -> AgrMonteiro: cura externa instantânea/periódica, valores preservados, sentido e retransmissão.')
+
+boss=json.loads((here/'fixtures/overlay-leviathan-group.json').read_text(encoding='utf-8'))
+for sample in boss['packets']:
+    payload=bytes.fromhex(sample['bodyHex'])
+    parse=worker.periodic_healing if sample['opcode']=='0x12344a63' else worker.vampiric_healing
+    event=parse(payload)
+    assert event and all(event[key]==sample[key] for key in ('sourceId','targetId','skillId','effectId','healing','coverage'))
+external=[row for row in boss['packets'] if row['sourceId']!=row['targetId']]
+assert len(external)==3 and all(row['sourceName']=='Dillzin' and row['targetId']==boss['playerId'] for row in external)
+assert sum(row['healing'] for row in boss['externalSkills'])==boss['totals']['externalHealing']==62592
+assert sum(row['applications'] for row in boss['externalSkills'])==10
+print('OK: Leviata em grupo: 6 pacotes de cura reais; Dillzin -> personagem e 62.592 de cura externa no agregado preservado.')

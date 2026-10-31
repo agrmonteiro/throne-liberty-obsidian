@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "evidence": "Encontro salvo de Leviatã Ascendido e pacotes de cura do recap manual; grupo de seis informado pelo usuário",
+  "encounterId": "70135cf0-a971-4398-9332-39801f325a37",
+  "connectionId": "62cef9e4d66940a9951891ff71333f17",
+  "playerId": 12428066,
+  "playerName": "AgrMonteiro",
+  "startedAtUtc": "2026-10-31T19:03:27.365Z",
+  "lastActivityAtUtc": "2026-10-31T19:04:59.153Z",
+  "boss": {
+    "name": "Leviatã Ascendido",
+    "npcId": 1040089
+  },
+  "group": {
+    "playersReportedByUser": 6,
+    "rosterDecoded": false
+  },
+  "totals": {
+    "damageDone": 3462958,
+    "damageReceived": 37784,
+    "healingDone": 125811,
+    "healingReceived": 188403,
+    "externalHealing": 62592,
+    "externalApplications": 10
+  },
+  "externalSkills": [
+    {
+      "name": "Sopro do Infinito",
+      "skillIds": [
+        980914971
+      ],
+      "healing": 39984,
+      "applications": 9
+    },
+    {
+      "name": "Onda Curativa",
+      "skillIds": [
+        980594532
+      ],
+      "healing": 22608,
+      "applications": 1
+    }
+  ],
+  "packets": [
+    {
+      "time": 1793473473.388971,
+      "sourceId": 12428066,
+      "targetId": 12428066,
+      "sourceName": "AgrMonteiro",
+      "healing": 97,
+      "skillId": 939721573,
+      "effectId": 939538607,
+      "coverage": "self-lifesteal",
+      "opcode": "0x12344a70",
+      "bodyHex": "08dee281800710a2c6f60518a2c6f60520b04528c20130013a00420408daf90450ca8d98800758c8017a020828"
+    },
+    {
+      "time": 1793473473.449834,
+      "sourceId": 12428066,
+      "targetId": 12428066,
+      "sourceName": "AgrMonteiro",
+      "healing": 1122,
+      "skillId": 939721573,
+      "effectId": 939538607,
+      "coverage": "self-lifesteal",
+      "opcode": "0x12344a70",
+      "bodyHex": "08dee281800710a2c6f60518a2c6f60520ce4528c41130013a00420408daf90450ca8d98800758c8017a020828"
+    },
+    {
+      "time": 1793473473.449834,
+      "sourceId": 12428066,
+      "targetId": 12428066,
+      "sourceName": "AgrMonteiro",
+      "healing": 249,
+      "skillId": 939721573,
+      "effectId": 939538607,
+      "coverage": "self-lifesteal",
+      "opcode": "0x12344a70",
+      "bodyHex": "08dee281800710a2c6f60518a2c6f60520ec4528f20330013a00420408daf90450ca8d98800758c8017a020828"
+    },
+    {
+      "time": 1793473486.674998,
+      "sourceId": 12428126,
+      "targetId": 12428066,
+      "sourceName": "Dillzin",
+      "healing": 3096,
+      "skillId": 980914971,
+      "effectId": 981428966,
+      "coverage": "external-instant",
+      "opcode": "0x12344a70",
+      "bodyHex": "08ccabfba70710a2c6f60518dec6f60520d21928b03030013a00420408daf90450b6ccbca70758c8017a020826"
+    },
+    {
+      "time": 1793473486.791134,
+      "sourceId": 12428126,
+      "targetId": 12428066,
+      "sourceName": "Dillzin",
+      "healing": 7484,
+      "skillId": 980914971,
+      "effectId": 981428966,
+      "coverage": "external-instant",
+      "opcode": "0x12344a70",
+      "bodyHex": "08ccabfba70710a2c6f60518dec6f60520cc1a28f87430023a00420408daf90450b6ccbca70758b40160017a020826"
+    },
+    {
+      "time": 1793473499.153514,
+      "sourceId": 12428126,
+      "targetId": 12428066,
+      "sourceName": "Dillzin",
+      "healing": 7936,
+      "skillId": 980914971,
+      "effectId": 981428966,
+      "coverage": "external-instant",
+      "opcode": "0x12344a70",
+      "bodyHex": "08ccabfba70710a2c6f60518dec6f60520a81e28807c30013a00420408daf90450b6ccbca70758c80160017a020826"
+    }
+  ],
+  "limitations": [
+    "Saved totals cover the encounter, not all party members.",
+    "The recap contains only the last 50 events and cannot identify every healer application.",
+    "The raw buff PCAP ended before this encounter; group-buff uptime cannot be reconstructed.",
+    "Healing is gross, not effective healing."
+  ]
+}
