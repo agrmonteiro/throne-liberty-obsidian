@@ -43,6 +43,14 @@ referência de 661 eventos / 2.986.995 de dano.
 
 ## Catálogo local de habilidades
 
+### Nomes de NPCs e dano recebido
+
+O spawn `0x12346f68` liga a entidade do campo 3 ao UID de NPC duplicado em
+4/32 (zigzag), somente servidor → cliente. Os dois templates precisam coincidir;
+o vínculo é separado por conexão e não identifica o jogador. Consultar
+[OVERLAY-NOMES-DANO-RECEBIDO.md](OVERLAY-NOMES-DANO-RECEBIDO.md) para a evidência em
+três capturas, regras de conflito, catálogo de NPCs e nomes descritivos de ataques.
+
 Em 30/10/2026, o datamining da build 26231302 confirmou os nove IDs pendentes
 de cajado/varinha como valores `TLSkill.UID`, ligados por símbolo às linhas de
 apresentação e aos textos PT/EN. Os caminhos e a coleta completa estão em

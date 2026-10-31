@@ -6,6 +6,11 @@ não depende de memória do jogo ou de executar entradas no personagem.
 
 ## Resultado e localização
 
+Para fontes/ataques recebidos, o catálogo específico e as relações de spawn estão
+em [OVERLAY-NOMES-DANO-RECEBIDO.md](OVERLAY-NOMES-DANO-RECEBIDO.md).
+Gerador: `tools/unreal/build-overlay-npc-reference.py`; saída:
+`src/data/overlayNpcReference.json`. Inclui os monstros fora de `TLSkillPcLooks*`.
+
 | Conteúdo | Quantidade |
 | --- | ---: |
 | Tabelas do cliente exportadas | 1.444 |

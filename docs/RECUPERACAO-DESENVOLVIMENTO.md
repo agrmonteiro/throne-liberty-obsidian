@@ -60,6 +60,10 @@ reaproveitar a instância existente; não iniciar outra captura de QA nesse perf
 
 ## Decisões dos overlays
 
+Nomes de fontes NPC e habilidades recebidas: consultar
+[OVERLAY-NOMES-DANO-RECEBIDO.md](OVERLAY-NOMES-DANO-RECEBIDO.md) antes de alterar
+os vínculos de template/conexão ou regenerar os rótulos de monstros.
+
 A análise do addon Details e o mapa de funções adaptadas/pendentes estão em
 [DETAILS-OVERLAY-ADAPTACAO.md](DETAILS-OVERLAY-ADAPTACAO.md), com commit de referência,
 caminhos úteis, cálculos e recuperação da cópia de consulta.

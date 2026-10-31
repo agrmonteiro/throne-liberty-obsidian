@@ -19,7 +19,7 @@ export interface MeterSkill {
 }
 export interface MeterReceived {
   total: number; hits: number; skills: MeterSkill[]
-  sources: Array<{ id: number; damage: number; hits: number; name?: string }>
+  sources: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number }>
 }
 export interface MeterSession {
   total: number; hits: number; critical: number; heavy: number
@@ -249,10 +249,12 @@ function resolveSkillRows(skills: MeterSkill[], names: Record<string, string>, i
   }
   return [...rows.values()].sort((a, b) => b.damage - a.damage)
 }
-export function resolveOverlayNames(state: OverlayState, names: Record<string, string>, icons: Record<string, string> = {}): OverlayState {
+export function resolveOverlayNames(state: OverlayState, names: Record<string, string>, icons: Record<string, string> = {},
+  npcNames: Record<string, string> = {}): OverlayState {
   const { received, healing } = state.session
   return { ...state, session: { ...state.session, skills: resolveSkillRows(state.session.skills, names, icons),
-    ...(received ? { received: { ...received, skills: resolveSkillRows(received.skills, names, icons) } } : {}),
+    ...(received ? { received: { ...received, skills: resolveSkillRows(received.skills, names, icons),
+      sources: received.sources.map(row => ({ ...row, name: row.npcId && npcNames[String(row.npcId)] ? npcNames[String(row.npcId)] : row.name })) } } : {}),
     ...(healing ? { healing: { ...healing,
       done: { ...healing.done, skills: resolveSkillRows(healing.done.skills, names, icons) },
       received: { ...healing.received, skills: resolveSkillRows(healing.received.skills, names, icons) } } } : {}) } }

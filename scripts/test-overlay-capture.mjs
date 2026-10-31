@@ -65,7 +65,8 @@ function harness(startAt = 1000000) {
     if (name === '@electron-toolkit/utils') return { is: { dev: false } }
     if (name.endsWith('/overlayMeter')) return engine
     if (name.endsWith('/overlayLayout')) return layout
-    if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {} }
+    if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {},
+      overlayNpcNames: Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayNpcReference.json'), 'utf8')).npcs).map(([id, row]) => [id, row.name])) }
     if (name.endsWith('/overlayHealingEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayHealingEffects.json'), 'utf8'))
     if (name === './overlayHistory') return { OverlayHistory: History }
     if (name === './overlayUnknownLog') return { OverlayUnknownLog: UnknownLog }
@@ -111,6 +112,48 @@ function harness(startAt = 1000000) {
 const damage = (id, time, amount, connectionId = 'A') => ({ type: 'damage', connectionId,
   event: { sourceId: id, time, damage: amount, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
 const player = (id, time, connectionId = 'A') => ({ type: 'identity', name: 'AgrMonteiro', sourceId: id, time, connectionId })
+const npcNames = harness()
+try {
+  npcNames.start()
+  const npc = (connectionId, npcId = 10212035) => ({ type: 'npc', connectionId, sourceId: 8, npcId, time: 1001 })
+  npcNames.send(npc('A'))
+  assert.equal(npcNames.state().config.sourceId, null, 'Um spawn de NPC nunca seleciona o personagem')
+  npcNames.send(player(7, 1002))
+  npcNames.send({ ...damage(8, 1003, 100), event: { ...damage(8, 1003, 100).event, targetId: 7 } })
+  assert.equal(npcNames.state().session.received.sources[0].name, 'Guarda do Apóstolo')
+  const id = npcNames.state().capture.encounterId
+  npcNames.history()
+  assert.equal(npcNames.records.get(id).session.received.sources[0].npcId, 10212035)
+  npcNames.send(npc('B', 10130537))
+  assert.equal(npcNames.state().session.received.sources[0].name, 'Guarda do Apóstolo', 'Não cruzar o mesmo ID numérico entre conexões')
+  npcNames.send(npc('A', 999999999))
+  assert.equal(npcNames.state().session.received.sources[0].name, 'Guarda do Apóstolo', 'Template desconhecido não substitui um nome confirmado')
+  npcNames.send(npc('A', 10130537))
+  assert.equal(npcNames.state().session.received.sources[0].name, undefined, 'Templates conflitantes não podem receber um nome arbitrário')
+  npcNames.send({ type: 'connection-closed', connectionId: 'A' })
+  npcNames.send(player(7, 1004, 'C'))
+  npcNames.send({ ...damage(8, 1005, 50, 'C'), event: { ...damage(8, 1005, 50, 'C').event, targetId: 7 } })
+  assert.equal(npcNames.state().session.received.sources[0].name, undefined)
+  npcNames.send(npc('A'))
+  assert.equal(npcNames.state().session.received.sources[0].name, undefined, 'Spawn tardio de conexão aposentada deve ser ignorado')
+  npcNames.send({ ...npc('C', 10130537), time: 1006 })
+  assert.equal(npcNames.state().session.received.sources[0].name, 'Apóstolo da Tristeza')
+  npcNames.history()
+  assert.equal(npcNames.records.get(npcNames.state().capture.encounterId).session.received.sources[0].name, 'Apóstolo da Tristeza', 'Nome tardio persiste sem precisar de novo dano')
+  assert.equal(npcNames.state().session.received.total, 50)
+} finally { npcNames.close() }
+const manualNpcNames = harness()
+try {
+  manualNpcNames.start(); manualNpcNames.configure({ sourceId: 7 })
+  manualNpcNames.send({ type: 'npc', connectionId: 'B', sourceId: 8, npcId: 10130537, time: 1001 })
+  manualNpcNames.send({ ...damage(8, 1002, 30), event: { ...damage(8, 1002, 30).event, targetId: 7 } })
+  assert.equal(manualNpcNames.state().capture.connectionId, 'A')
+  assert.equal(manualNpcNames.state().session.received.sources[0].name, undefined)
+  manualNpcNames.send({ type: 'npc', connectionId: 'A', sourceId: 8, npcId: 10212035, time: 1003 })
+  assert.equal(manualNpcNames.state().session.received.sources[0].name, 'Guarda do Apóstolo')
+  assert.equal(manualNpcNames.state().capture.player, null, 'Origem manual não equivale a confirmação de perfil')
+} finally { manualNpcNames.close() }
+console.log('OK: nomes de NPCs por conexão, histórico nomeado, chegada tardia, conflitos, seleção manual e sem inferir jogador por monstro.')
 if (process.platform === 'win32') {
   const visibility = harness()
   try {

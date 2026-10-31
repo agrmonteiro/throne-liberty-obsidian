@@ -19,9 +19,9 @@ export function OverlaySourcesView({ state, compact = false }: { state: OverlayS
         <td>{number(row.damage)}</td><td>{total ? (row.damage / total * 100).toFixed(1).replace('.', ',') : '0'}%</td>
       </tr>)}</tbody>
     </table>
-      {!visible.length && <p className="meter-empty">{sources.length ? 'Nenhuma origem com esse ID.' : 'Aguardando eventos de dano…'}</p>}
+      {!visible.length && <p className="meter-empty">{sources.length ? 'Nenhuma origem com esse nome ou ID.' : 'Aguardando eventos de dano…'}</p>}
     </div>
-    <footer>Nomes aparecem quando o perfil correspondente é recebido nesta captura. IDs sem nome podem incluir criaturas e outras entidades.
+    <footer>Nomes vêm dos perfis de jogador e dos templates de NPC recebidos nesta conexão. Fontes sem esses dados continuam identificadas pelo ID.
       {!compact && ' Acumulado desde o início da leitura; consultar ou buscar não altera a origem selecionada nem o seu medidor.'}</footer>
   </section>
 }

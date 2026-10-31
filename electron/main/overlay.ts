@@ -8,7 +8,7 @@ import { clamp, defaultOverlayTheme, overlayAnchor, overlayBounds, overlaySceneA
 import { randomUUID } from 'crypto'
 import { OverlayHistory } from './overlayHistory'
 import { clearMeterLogFiles } from './overlayCleanup'
-import { overlaySkillNames as names, overlaySkillFiles } from '../../src/engine/overlaySkillReference'
+import { overlaySkillNames as names, overlaySkillFiles, overlayNpcNames } from '../../src/engine/overlaySkillReference'
 import { OverlayUnknownLog } from './overlayUnknownLog'
 import healingReference from '../../src/data/overlayHealingEffects.json'
 
@@ -45,6 +45,8 @@ export function registerOverlay(owner: BrowserWindow): void {
   let combatPanelsVisible = true
   const sourceNames = new Map<number, string>()
   const conflictingNames = new Set<number>()
+  // Templates não identificam o jogador. Entidades/UIDs só se relacionam na mesma conexão.
+  const npcTemplates = new Map<string, Map<number, number | null>>()
   let status: OverlayState['status'] = 'stopped'
   let mode: OverlayState['mode'] = null
   let replayClock: number | null = null
@@ -61,7 +63,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   let focusHideTimer: ReturnType<typeof setTimeout> | undefined
   function checkpoint(reason = 'current', at = mode === 'replay' ? (replayClock ?? Date.now()) : Date.now()): void {
     if (encounterClosed || !mode) return
-    const session = meter.snapshot(at)
+    const session = namedSession(at)
     if (reason === 'current' && session.timed && Date.now() >= session.timed.endsAt) reason = session.timed.cancelled ? 'timed-cancelled' : 'timed-end'
     if (clearedThrough !== null && (session.lastActivityAt === null || session.lastActivityAt! <= clearedThrough)) return
     history.upsert({ id: encounterId, captureId, connectionId: encounterConnectionId,
@@ -105,17 +107,28 @@ export function registerOverlay(owner: BrowserWindow): void {
   }
   function state(): OverlayState {
     const player = identity.snapshot()
-    const session = meter.snapshot(mode === 'replay' ? (replayClock ?? Date.now()) : Date.now())
+    const session = namedSession(mode === 'replay' ? (replayClock ?? Date.now()) : Date.now())
     const timed = meter.measurementWindow, now = Date.now()
-    if (session.received) session.received.sources = session.received.sources.map(row => ({ ...row, name: sourceNames.get(row.id) }))
-    return { config: { ...config }, capture: { id: captureId, connectionId: player?.connectionId ?? null, encounterId, player },
+    return { config: { ...config }, capture: { id: captureId, connectionId: player?.connectionId ?? encounterConnectionId, encounterId, player },
       combat: { lastDamageAt: lastCombatDamageAt, hidden: !combatVisible() },
       game: { attached: gameBounds !== null, active: gameForeground, bounds: gameBounds },
       session, ...(timed ? { timer: { ...timed, phase: timed.cancelled ? 'cancelled' : now < timed.startsAt ? 'countdown' : now < timed.endsAt ? 'running' : 'finished',
         remainingSec: Math.max(0, ((now < timed.startsAt ? timed.startsAt : timed.endsAt) - now) / 1000), elapsedSec: session.elapsedSec } } : {}),
       status, mode, message, unknownSkillLog: unknownLog.status(),
-      sources: [...sources].map(([id, damage]) => ({ id, damage, name: sourceNames.get(id), lastDamageAt: sourceLastSeen.get(id),
+      sources: [...sources].map(([id, damage]) => ({ id, damage, name: entityName(id).name, lastDamageAt: sourceLastSeen.get(id),
         localPlayer: id === player?.sourceId })).sort((a, b) => b.damage - a.damage) }
+  }
+  function entityName(id: number): { name?: string; npcId?: number } {
+    const profile = sourceNames.get(id)
+    if (profile) return { name: profile }
+    const connection = encounterConnectionId ?? identity.snapshot()?.connectionId
+    const npcId = connection ? npcTemplates.get(connection)?.get(id) : null
+    return npcId && overlayNpcNames[String(npcId)] ? { name: overlayNpcNames[String(npcId)], npcId } : {}
+  }
+  function namedSession(at: number): ReturnType<OverlayMeter['snapshot']> {
+    const session = meter.snapshot(at)
+    if (session.received) session.received.sources = session.received.sources.map(row => ({ ...row, ...entityName(row.id) }))
+    return session
   }
   function broadcast(): void {
     const current = state()
@@ -242,7 +255,7 @@ export function registerOverlay(owner: BrowserWindow): void {
       fs.writeFileSync(healingFile, JSON.stringify(healingReference))
     } catch { status = 'error'; message = 'Não foi possível preparar a referência de cura.'; return }
     sources.clear()
-    sourceNames.clear(); conflictingNames.clear()
+    sourceNames.clear(); conflictingNames.clear(); npcTemplates.clear()
     meter.setPaused(false, replay ? 0 : Date.now())
     meter.selectSource(null, replay ? 0 : Date.now()); config.sourceId = null; config.autoSource = true
     status = 'starting'; message = replay ? 'Abrindo reprodução…' : 'Conectando ao Npcap…'
@@ -271,13 +284,28 @@ export function registerOverlay(owner: BrowserWindow): void {
               bindSource(data.ids[0], replayClock ?? 0, 'replay-source')
             }
           } else if (data.type === 'connection-closed' && mode === 'live') {
-            if (identity.accepts(data.connectionId)) {
+            if (identity.accepts(data.connectionId) || encounterConnectionId === data.connectionId) {
               finishEncounter('connection-end')
               sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear(); recentDamage = []
               config.sourceId = null; config.reviewEncounterId = null
               meter.selectSource(null, Date.now()); lastCombatDamageAt = null; newEncounter(null); save()
             }
+            npcTemplates.delete(data.connectionId)
             identity.retire(data.connectionId); broadcast()
+          } else if (data.type === 'npc' && mode === 'live') {
+            if (typeof data.connectionId !== 'string' || !data.connectionId.length || data.connectionId.length > 128
+              || identity.isRetired(data.connectionId) || !Number.isSafeInteger(data.sourceId) || data.sourceId <= 0
+              || !Number.isSafeInteger(data.npcId) || !overlayNpcNames[String(data.npcId)]
+              || !Number.isFinite(data.time) || data.time * 1000 < captureStartedAt) continue
+            let templates = npcTemplates.get(data.connectionId)
+            if (!templates) {
+              if (npcTemplates.size >= 16) continue
+              templates = new Map(); npcTemplates.set(data.connectionId, templates)
+            }
+            if (templates.size >= 50000 && !templates.has(data.sourceId)) continue
+            const previous = templates.get(data.sourceId)
+            templates.set(data.sourceId, previous === undefined || previous === data.npcId ? data.npcId : null)
+            broadcast()
           } else if (data.type === 'local-player' && mode === 'live') {
             const previous = identity.snapshot()
             // 30/10: este sinal também apareceu para terceiros na mesma conexão.
@@ -341,6 +369,10 @@ export function registerOverlay(owner: BrowserWindow): void {
               recentDamage.push({ event, connectionId: data.connectionId })
               recentDamage = recentDamage.filter(row => row.event.time >= event.time - 5).slice(-2000)
               if (identity.snapshot() && !identity.accepts(data.connectionId)) continue
+              if (encounterConnectionId && encounterConnectionId !== data.connectionId) continue
+              if (meter.sourceId !== null && (event.sourceId === meter.sourceId || event.targetId === meter.sourceId)) {
+                encounterConnectionId ??= data.connectionId
+              }
             }
             if (!healing) {
               sources.set(event.sourceId, (sources.get(event.sourceId) ?? 0) + event.damage)

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { OverlayMeter, resolveOverlayNames, type OverlayState } from '../engine/overlayMeter'
-import { overlaySkillNames as names, overlaySkillFiles } from '../engine/overlaySkillReference'
+import { overlaySkillNames as names, overlaySkillFiles, overlayNpcNames } from '../engine/overlaySkillReference'
 
 const initial: OverlayState = {
   config: { locked: false, totalVisible: false, skillsVisible: false, controlsVisible: true, controlsExpanded: false,
@@ -12,8 +12,8 @@ export function useOverlay(): { state: OverlayState; act: (operation: () => Prom
   useEffect(() => {
     if (!window.overlayAPI) { setState(value => ({ ...value, message: 'Abra esta tela pelo aplicativo desktop.' })); return }
     let active = true
-    const unsubscribe = window.overlayAPI.subscribe(value => { if (active) setState(resolveOverlayNames(value, names, overlaySkillFiles)) })
-    void window.overlayAPI.get().then(value => { if (active) setState(resolveOverlayNames(value, names, overlaySkillFiles)) }).catch(() => {})
+    const unsubscribe = window.overlayAPI.subscribe(value => { if (active) setState(resolveOverlayNames(value, names, overlaySkillFiles, overlayNpcNames)) })
+    void window.overlayAPI.get().then(value => { if (active) setState(resolveOverlayNames(value, names, overlaySkillFiles, overlayNpcNames)) }).catch(() => {})
     return () => { active = false; unsubscribe() }
   }, [])
   function act(operation: () => Promise<unknown>): void {

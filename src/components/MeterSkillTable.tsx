@@ -4,6 +4,7 @@ import type { OverlayState } from '../engine/overlayMeter'
 import { healingDescriptionTitle } from '../engine/overlayHealingClassification'
 import { MeterSkillIcon } from './MeterSkillIcon'
 import { damageKinds, duration, number, percentage } from './meterFormatting'
+import { overlayDescriptiveSkillIds } from '../engine/overlaySkillReference'
 
 function rowBar(row: AnalysisRow, maximum: number, healing: boolean): React.CSSProperties {
   let offset = 0
@@ -47,6 +48,8 @@ function SkillDetails({ row, state, page, onClose }: {
     </div>}
     {healing && <p className="meter-detail-description">{healingDescriptionTitle(row.skillIds)}
       <br />Autocura bruta experimental. Cura efetiva e excesso de cura ainda não medidos.</p>}
+    {row.skillIds?.some(id => overlayDescriptiveSkillIds.has(id)) && <p className="meter-detail-description">
+      Nome descritivo do ataque: esta habilidade de NPC não possui um nome de exibição traduzido no catálogo do jogo.</p>}
     <p className="meter-detail-ids">{page === 'receivedSources' ? 'Fonte' : 'IDs'}: {row.skillIds?.join(', ') ?? row.key}</p>
   </section>
 }

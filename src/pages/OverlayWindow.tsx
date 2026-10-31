@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { MeterPanel } from '../components/MeterPanels'
 import { useOverlay } from '../hooks/useOverlay'
 import { resolveOverlayNames, type OverlayHistoryResult } from '../engine/overlayMeter'
-import { overlaySkillNames as names, overlaySkillFiles } from '../engine/overlaySkillReference'
+import { overlaySkillNames as names, overlaySkillFiles, overlayNpcNames } from '../engine/overlaySkillReference'
 import { OverlaySourcesView } from '../components/OverlaySourcesView'
 import { overlayAppearance } from '../components/overlayAppearance'
 import { OverlayMetricView, metricPages, type MetricPage } from '../components/OverlayMetricView'
@@ -43,7 +43,7 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
   }, [])
   const selected = history.encounters.find(row => row.id === state.config.reviewEncounterId)
   const display = selected ? resolveOverlayNames({ ...state, session: selected.session,
-    mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles) : state
+    mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles, overlayNpcNames) : state
   const drag = useRef<{ x: number; y: number; width: number; height: number } | null>(null)
   return <div className="overlay-window" style={{ ...overlayAppearance(state.config), fontSize: `${(state.config.fontSize ?? 13) * state.config.scale}px` }}>
     <header className={`overlay-record-toolbar overlay-titlebar ${state.config.locked ? 'is-locked' : 'meter-drag'}`}

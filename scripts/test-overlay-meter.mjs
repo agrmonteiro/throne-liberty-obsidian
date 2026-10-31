@@ -227,3 +227,15 @@ assert.equal(mined['968448884'].english, 'Judgment Lightning')
 assert.equal(mined['967030853'].english, 'Corrupted Obliteration')
 assert.equal(new Set([968441375, 968604762, 968670316].map(id => minedIcons[id])).size, 3, 'Os três usos de Serial Fire Bombs possuem ícones distintos no cliente')
 console.log('OK: catálogo real PT/EN, quatro ataques básicos, assets presentes e fases com ícones distintos.')
+const npcCatalog = JSON.parse(fs.readFileSync(new URL('../src/data/overlayNpcReference.json', import.meta.url), 'utf8'))
+const npcReceived = new OverlayMeter(7)
+npcReceived.add({ ...event(1000, 123, 8, 948585679), targetId: 7 })
+const originalNpc = { session: npcReceived.snapshot(2000) }
+originalNpc.session.received.sources[0].npcId = 10212035
+const namedNpc = resolveOverlayNames(originalNpc, Object.fromEntries(Object.entries(npcCatalog.skills).map(([id, row]) => [id, row.name])), {},
+  Object.fromEntries(Object.entries(npcCatalog.npcs).map(([id, row]) => [id, row.name])))
+assert.match(namedNpc.session.received.skills[0].name, /Arremesso de Pedra/)
+assert.equal(namedNpc.session.received.sources[0].name, 'Guarda do Apóstolo')
+assert.equal(namedNpc.session.received.total, 123)
+assert.equal(originalNpc.session.received.sources[0].name, undefined, 'Resolver nomes históricos não altera o arquivo original nem usa fontes ao vivo')
+console.log('OK: nomes de habilidades/NPCs em snapshots antigos com UID de template, sem alterar totais ou cruzar a sessão atual.')

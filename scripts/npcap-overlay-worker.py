@@ -50,6 +50,20 @@ def player_identity(body):
     return decoder.player_identity(body)
 
 
+def npc_identity(body):
+    """Spawn 0x12346f68: entidade em 3; UID de template duplicado em 4/32 (zigzag)."""
+    try:
+        fields = decoder.protobuf(body)
+        if any(key not in fields or len(fields[key]) != 1 or not isinstance(fields[key][0], int) for key in (3, 4, 32)):
+            return None
+        source, uid = fields[3][0], decoder.zigzag(fields[4][0])
+        if not 0 < source < 2**53 or not 0 < uid < 2**53 or decoder.zigzag(fields[32][0]) != uid:
+            return None
+        return dict(sourceId=source, npcId=uid)
+    except (ValueError, TypeError, IndexError, KeyError):
+        return None
+
+
 def periodic_healing(body):
     """Autocura periódica bruta; efeito e habilidade precisam existir no cliente."""
     fields = decoder.protobuf(body)
@@ -139,6 +153,11 @@ class Stream:
                 break
             frame = bytes(self.buffer[:length]); del self.buffer[:length]
             for stamp,opcode,body in decoder.frames(frame,Counter(),lambda _:now, length_key=self.length_key):
+                if opcode == 0x12346f68 and self.server_to_client:
+                    npc = npc_identity(body)
+                    if npc:
+                        emit(dict(type='npc', time=stamp, connectionId=self.connection_id, **npc))
+                    continue
                 if opcode == 0x1234444a and self.server_to_client:
                     source = decoder.local_player_entity(body)
                     if source is not None:
