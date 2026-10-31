@@ -26,6 +26,12 @@ Consulta de filtro funcionou também com painel travado. Captura, origem e
 acumulado foram preservados, sem reiniciar backend/worker; TypeScript e build
 passaram. A página Causa mortis ficou selecionada para o usuário.
 
+A pedido do usuário, a lista foi compactada: padding vertical de 3 px no
+overlay, ícones de 16 px e entrelinha menor. Na janela real, linhas simples
+passaram de 37,6 para 22 px e linhas com flags de 49 para 30,3 px. Os 50 eventos,
+o clique para abrir campos e a captura foram preservados; build e inspeção visual
+passaram, sem overflow horizontal e sem reiniciar o worker.
+
 A aba **Causa mortis** guarda uma janela móvel de **até 50 eventos**, ordenados
 por timestamp. O sinal de dano inclui o próprio acerto fatal entre esses 50;
 o sinal de estado fica separado dos eventos anteriores. Até 20 registros são mantidos em

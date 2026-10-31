@@ -259,7 +259,7 @@ html:has(body[data-overlay]),body[data-overlay] #root { background:transparent!i
 .death-list-heading>span:last-child { text-align:right; }
 .death-events { list-style:none; padding:0; margin:0 0 18px; }
 .death-event { border-bottom:1px solid var(--border); font-size:12px; }
-.death-event summary { padding:12px 10px; cursor:pointer; }
+.death-event summary { padding:6px 8px; line-height:1.2; row-gap:2px; cursor:pointer; }
 .death-event summary:hover { background:#ffffff05; }
 .death-event summary:focus-visible { outline:2px solid var(--gold); outline-offset:-2px; }
 .death-event time { color:var(--text-muted); font-variant-numeric:tabular-nums; }
@@ -267,10 +267,11 @@ html:has(body[data-overlay]),body[data-overlay] #root { background:transparent!i
 .death-event-healing .death-event-kind { color:#8bbf9c; }
 .death-event-state .death-event-kind,.death-event-effect .death-event-kind { color:var(--text-muted); }
 .death-event-actors { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.death-event-skill { display:flex; align-items:center; gap:8px; min-width:0; overflow:hidden; }
-.death-event-skill .meter-skill-icon { flex-shrink:0; }
+.death-event-skill { display:flex; align-items:center; gap:6px; min-width:0; overflow:hidden; }
+.death-event-skill .meter-skill-icon { width:16px; height:16px; flex-shrink:0; }
 .death-event strong { text-align:right; font-weight:500; font-variant-numeric:tabular-nums; }
-.death-event small { display:block; font-size:10px; color:var(--text-muted); }
+.death-event small { display:block; font-size:9px; line-height:1.1; color:var(--text-muted); }
+.death-event small:empty { display:none; }
 .death-event-raw { padding:0 14px 12px; }
 .death-event-raw p { color:var(--text-muted); font-size:11px; }
 .overlay-deaths pre { max-height:320px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; padding:12px; background:#0d1016; border:1px solid var(--border); border-radius:4px; font-size:11px; line-height:1.6; }
@@ -289,7 +290,7 @@ html:has(body[data-overlay]),body[data-overlay] #root { background:transparent!i
 .overlay-deaths.is-compact .death-controls select { padding:5px 6px; }
 .overlay-deaths.is-compact .death-summary { padding:8px 0; }
 .overlay-deaths.is-compact .death-empty { margin:14px 0; padding:20px 0; }
-.overlay-deaths.is-compact .death-event summary { padding:8px 4px; }
+.overlay-deaths.is-compact .death-event summary { padding:3px 4px; row-gap:2px; }
 .overlay-deaths.is-compact .death-event-skill { overflow-wrap:anywhere; }
 .overlay-deaths.is-compact .overlay-note { color:var(--meter-muted); font-size:.7em; line-height:1.5; }
 @media(max-width:900px) { .death-list-heading,.death-event summary { grid-template-columns:78px 125px minmax(95px,1fr) minmax(95px,1fr) 70px; gap:8px; } }
