@@ -3,7 +3,8 @@ import { useOverlay } from '../hooks/useOverlay'
 import { defaultOverlayTheme, overlayTheme } from '../engine/overlayLayout'
 import type { OverlayConfig, OverlayPanel, OverlayTheme } from '../engine/overlayMeter'
 import { overlaySourceWarning } from '../engine/overlayMeter'
-import { metricPages, type MetricPage } from '../components/OverlayMetricView'
+import { overlayGraphPages } from '../components/OverlayMetricView'
+import { useOverlayGraphPage, type OverlayGraphPage } from '../hooks/useOverlayGraphPage'
 import { OverlayTimer } from '../components/OverlayTimer'
 import { OverlayDragLabel } from '../components/OverlayDragLabel'
 import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
@@ -31,6 +32,7 @@ export function OverlayControls(): React.ReactElement {
   const warning = overlaySourceWarning(state)
   const player = state.capture?.player
   const configure = (patch: Partial<OverlayConfig>): void => act(() => window.overlayAPI.configure(patch))
+  const { page, selectPage } = useOverlayGraphPage(config.metricPage, configure)
   const move = (x: number, y: number): void => configure({ anchors: { [panel]: { x, y } } })
   return <aside className={`overlay-controls ${expanded ? 'expanded' : ''}`} aria-label="Configuração dos overlays">
     <header className="overlay-controls-header overlay-titlebar meter-drag" aria-label="Barra de título para mover a configuração">
@@ -73,9 +75,9 @@ export function OverlayControls(): React.ReactElement {
       </div>
       <button className="overlay-restore-total" onClick={() => configure({ totalVisible: true, anchors: { total: { x: .5, y: 0 } } })}>Restaurar total no topo</button>
       <OverlayCombatSettings config={config} configure={configure} />
-      <label className="overlay-control-page">Página do gráfico<select aria-label="Página do gráfico" value={config.metricPage ?? 'damage'}
-        onChange={event => configure({ metricPage: event.target.value as MetricPage })}>
-        {metricPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}
+      <label className="overlay-control-page">Página do gráfico<select aria-label="Página do gráfico" value={page}
+        onChange={event => selectPage(event.target.value as OverlayGraphPage)}>
+        {overlayGraphPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}
       </select></label>
       <OverlayTimer state={state} act={act} compact />
       <section className="overlay-control-section" aria-label="Aparência">

@@ -38,7 +38,7 @@ function exportReport(report: DeathReport): void {
   link.download = `throne-causa-mortis-${new Date(report.time * 1000).toISOString().replace(/[:.]/g, '-')}.json`
   link.hidden = true; document.body.appendChild(link); link.click(); link.remove()
 }
-export function OverlayDeathView({ state, active }: { state: OverlayState; active: boolean }): React.ReactElement {
+export function OverlayDeathView({ state, active, compact = false }: { state: OverlayState; active: boolean; compact?: boolean }): React.ReactElement {
   const [data, setData] = useState<DeathLogResult>({ records: [], recent: [], error: null })
   const [selected, setSelected] = useState<string | null>(null)
   const [filter, setFilter] = useState('all')
@@ -58,7 +58,7 @@ export function OverlayDeathView({ state, active }: { state: OverlayState; activ
   const events = report?.events.filter(event => filter === 'all' || event.type === filter) ?? []
   const buffered = state.deathLog?.buffered ?? data.recent.length
   const lastDamage = report?.events.slice().reverse().find(event => event.type === 'damage' && event.targetId === report.playerId && (event.damage ?? 0) > 0)
-  return <div className="overlay-deaths">
+  return <div className={`overlay-deaths${compact ? ' is-compact' : ''}`} data-overlay-interactive={compact ? true : undefined}>
     <div className="overlay-section-heading"><h2>Causa mortis</h2><div className="overlay-heading-actions">
       <button disabled={saving || state.status !== 'live' || state.config.sourceId === null || buffered === 0}
         title="Salvar os eventos atuais como uma morte informada por você" onClick={() => {
@@ -69,7 +69,7 @@ export function OverlayDeathView({ state, active }: { state: OverlayState; activ
       <button disabled={!report} onClick={() => report && exportReport(report)}>Exportar JSON</button>
     </div></div>
     <p className="death-buffer" role="status"><strong>{buffered}/50</strong> eventos no buffer atual · {data.records.length}/20 registros salvos</p>
-    <p className="overlay-note">O registro congela até 50 eventos, incluindo o acerto que sinaliza a morte. A detecção automática ainda é experimental. Use “Registrar morte agora” para informar uma morte manualmente.</p>
+    <p className="overlay-note">{compact ? 'Até 50 eventos por morte. Detecção automática experimental.' : 'O registro congela até 50 eventos, incluindo o acerto que sinaliza a morte. A detecção automática ainda é experimental. Use “Registrar morte agora” para informar uma morte manualmente.'}</p>
     {(data.error ?? state.deathLog?.error) && <p role="alert">{data.error ?? state.deathLog?.error}</p>}
     {!report ? <div className="death-empty"><h3>Nenhuma morte registrada</h3><p>{state.config.sourceId === null
       ? 'Aguardando a identificação do personagem para iniciar o buffer.' : buffered ? 'Os eventos estão sendo guardados enquanto você joga.' : 'Aguardando eventos do personagem na leitura ao vivo.'}</p></div>
@@ -87,6 +87,6 @@ export function OverlayDeathView({ state, active }: { state: OverlayState; activ
         {!events.length && <p className="overlay-note">Nenhum evento neste filtro.</p>}
         {report.signal && <details className="death-signal"><summary>Pacote que gerou o sinal experimental</summary><pre>{JSON.stringify(report.signal, null, 2)}</pre></details>}
       </>}
-    <p className="overlay-note">Cobertura: dano, autocura identificada, efeitos e estados decodificados do personagem nesta conexão. Cada linha abre os campos e o corpo bruto do pacote. Buffs, escudos e HP ainda não têm interpretação completa. Pausa e cronômetro do DPS não interrompem este buffer; parar a leitura interrompe a coleta.</p>
+    <p className="overlay-note">{compact ? 'Coleta independente da pausa e cronômetro do DPS. Abra uma linha para ver os campos do pacote.' : 'Cobertura: dano, autocura identificada, efeitos e estados decodificados do personagem nesta conexão. Cada linha abre os campos e o corpo bruto do pacote. Buffs, escudos e HP ainda não têm interpretação completa. Pausa e cronômetro do DPS não interrompem este buffer; parar a leitura interrompe a coleta.'}</p>
   </div>
 }

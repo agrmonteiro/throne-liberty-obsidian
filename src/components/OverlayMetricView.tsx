@@ -14,6 +14,8 @@ export const metricPages = [
   { id: 'healingReceived', label: 'Cura recebida' },
 ] as const
 
+export const overlayGraphPages = [...metricPages, { id: 'deaths', label: 'Causa mortis' }] as const
+
 export function OverlayMetricView({ state, page, historical = false }: {
   state: OverlayState; page: Exclude<MetricPage, 'damage'>; historical?: boolean
 }): React.ReactElement {

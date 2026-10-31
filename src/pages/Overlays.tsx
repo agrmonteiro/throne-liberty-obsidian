@@ -4,11 +4,12 @@ import { useOverlay } from '../hooks/useOverlay'
 import { overlaySourceWarning } from '../engine/overlayMeter'
 import { OverlayHistoryView } from '../components/OverlayHistoryView'
 import { OverlaySourcesView } from '../components/OverlaySourcesView'
-import { OverlayMetricView, metricPages, type MetricPage } from '../components/OverlayMetricView'
+import { OverlayMetricView, metricPages } from '../components/OverlayMetricView'
 import { OverlayTimer } from '../components/OverlayTimer'
 import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
 import { MeterExportButton } from '../components/MeterExportButton'
 import { OverlayDeathView } from '../components/OverlayDeathView'
+import { useOverlayGraphPage, type OverlayGraphPage } from '../hooks/useOverlayGraphPage'
 import '../styles/overlay.css'
 
 const tabs = [{ id: 'live', label: 'Ao vivo' }, { id: 'sources', label: 'Origens' },
@@ -26,6 +27,7 @@ export function Overlays(): React.ReactElement {
   const busy = ['live', 'starting', 'replay'].includes(state.status)
   const sourceWarning = overlaySourceWarning(state)
   const configure = (patch: Parameters<Window['overlayAPI']['configure']>[0]): void => act(() => window.overlayAPI.configure(patch))
+  const { selectPage } = useOverlayGraphPage(config.metricPage, configure)
   return <div className="overlay-editor overlay-dashboard">
     <header className="overlay-editor-heading">
       <div><span className="overlay-eyebrow">THRONE AND LIBERTY · EXPERIMENTAL</span><h1>Medidor de dano</h1></div>
@@ -57,7 +59,7 @@ export function Overlays(): React.ReactElement {
       <OverlayTimer state={state} act={act} />
       <div className="overlay-live-summary"><MeterPanel panel="total" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} /></div>
       <div className="overlay-live-analysis-controls"><label className="overlay-metric-select">Página do medidor<select aria-label="Página do medidor" value={config.metricPage ?? 'damage'}
-        onChange={event => configure({ metricPage: event.target.value as MetricPage })}>
+        onChange={event => selectPage(event.target.value as OverlayGraphPage)}>
         {metricPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}
       </select></label><MeterExportButton session={state.session} page={config.metricPage ?? 'damage'} /></div>
       <div className="overlay-live-skills">{!config.metricPage || config.metricPage === 'damage'

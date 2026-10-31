@@ -2,6 +2,30 @@
 
 ## Comportamento
 
+**Acesso no jogo:** a lista **Página do gráfico** da janela nativa e do controle
+de ajustes agora inclui **Causa mortis**. A aba no app continua disponível.
+Ambos usam os mesmos registros e permitem filtro, inspeção de campos e exportar
+JSON. A página de mortes é independente do encontro do DPS selecionado; seus
+registros são escolhidos dentro da própria página. A escolha entre gráfico e
+mortes é compartilhada entre as janelas por armazenamento local versionado
+(`throne.overlay.graph-view.v1`), sem trocar a origem ou reiniciar a captura.
+As cinco métricas de dano/cura mantêm seus cálculos e histórico existentes.
+
+QA desta integração: conferir a opção nos dois seletores, sincronização entre
+janelas, persistência após recarregar renderer, voltar ao gráfico normal,
+registro real de 50 eventos, filtros, expandir pacote, rolagem e fundo/opacidade
+na janela nativa. Conferir consulta com overlay travado e ausência de alteração
+nos acumulados/identidade. Não usar o botão de registro manual para criar mortes
+de teste no perfil real.
+
+Verificado na janela nativa: a lista contém as seis páginas, Causa mortis abre
+o registro real de 50 eventos, filtro de cura mostra 8 e de dano mostra 42.
+Inspeção dos campos abre normalmente. O controle de ajustes refletiu a escolha;
+voltar à métrica anterior e recarregar o renderer preservaram a navegação.
+Consulta de filtro funcionou também com painel travado. Captura, origem e
+acumulado foram preservados, sem reiniciar backend/worker; TypeScript e build
+passaram. A página Causa mortis ficou selecionada para o usuário.
+
 A aba **Causa mortis** guarda uma janela móvel de **até 50 eventos**, ordenados
 por timestamp. O sinal de dano inclui o próprio acerto fatal entre esses 50;
 o sinal de estado fica separado dos eventos anteriores. Até 20 registros são mantidos em
