@@ -65,11 +65,11 @@ export function OverlayDeathView({ state, active, compact = false }: { state: Ov
           setSaving(true)
           void window.overlayAPI.recordDeath().then(result => { setData(result); setSelected(result.records[0]?.id ?? null) })
             .catch(() => setData(previous => ({ ...previous, error: 'Não foi possível registrar a morte.' }))).finally(() => setSaving(false))
-        }}>{saving ? 'Registrando…' : 'Registrar morte agora'}</button>
+        }}>{saving ? 'Registrando…' : 'Recap agora'}</button>
       <button disabled={!report} onClick={() => report && exportReport(report)}>Exportar JSON</button>
     </div></div>
     <p className="death-buffer" role="status"><strong>{buffered}/50</strong> eventos no buffer atual · {data.records.length}/20 registros salvos</p>
-    <p className="overlay-note">{compact ? 'Até 50 eventos por morte. Detecção automática experimental.' : 'O registro congela até 50 eventos, incluindo o acerto que sinaliza a morte. A detecção automática ainda é experimental. Use “Registrar morte agora” para informar uma morte manualmente.'}</p>
+    <p className="overlay-note">{compact ? 'Até 50 eventos por morte. Detecção automática experimental.' : 'O registro congela até 50 eventos, incluindo o acerto que sinaliza a morte. A detecção automática ainda é experimental. Use “Recap agora” para informar uma morte manualmente.'}</p>
     {(data.error ?? state.deathLog?.error) && <p role="alert">{data.error ?? state.deathLog?.error}</p>}
     {!report ? <div className="death-empty"><h3>Nenhuma morte registrada</h3><p>{state.config.sourceId === null
       ? 'Aguardando a identificação do personagem para iniciar o buffer.' : buffered ? 'Os eventos estão sendo guardados enquanto você joga.' : 'Aguardando eventos do personagem na leitura ao vivo.'}</p></div>

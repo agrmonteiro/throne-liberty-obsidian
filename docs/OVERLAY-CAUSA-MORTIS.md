@@ -45,7 +45,7 @@ uma troca desses vínculos limpa o buffer, preservando os registros anteriores.
 Parar a leitura interrompe a coleta. Reset, pausa e cronômetro do DPS não a
 interrompem. Ela não altera dano, cura, DPS ou o histórico de encontros.
 
-O botão **Registrar morte agora** salva a morte informada pelo usuário. Não é
+O botão **Recap agora** salva a morte informada pelo usuário. Não é
 um simulador e não deve ser usado em QA de produção para inventar mortes.
 Exportar JSON inclui todos os eventos e campos, independentemente do filtro da
 tela. Abrir uma linha exibe IDs, nomes conhecidos, flags, timestamp, opcode,
