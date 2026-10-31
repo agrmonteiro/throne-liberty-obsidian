@@ -46,7 +46,7 @@
 .overlay-history-panels>div:first-child { height:260px; }
 .overlay-history-panels>div:last-child { height:380px; min-width:0; }
 @media(max-width:1100px) { .overlay-history-panels { grid-template-columns:1fr; }.overlay-history-panels>div:first-child { max-width:360px; } }
-.meter-panel { height:100%; display:flex; flex-direction:column; border:1px solid rgba(225,214,180,.21); border-radius:7px; overflow:hidden; color:#eee9dd; font-family:Inter,Arial,sans-serif; font-size:1em; }
+.meter-panel { height:100%; display:flex; flex-direction:column; border:1px solid rgba(225,214,180,.21); border-radius:7px; overflow:hidden; background-color:var(--meter-background,rgba(13,15,19,.94)); color:#eee9dd; font-family:Inter,Arial,sans-serif; font-size:1em; }
 .meter-panel-header { min-height:34px; display:flex; align-items:center; gap:8px; padding:0 12px; border-bottom:1px solid #ffffff12; user-select:none; }
 .meter-panel-header strong { font-size:.92em; font-weight:600; }
 .meter-drag { -webkit-app-region:drag; }

@@ -32,7 +32,7 @@ export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, prev
   const editable = !historical && (!config.locked || preview)
   const sourceWarning = overlaySourceWarning(state)
   const captureNotice = state.status === 'error' ? state.message : sourceWarning
-  return <section className={`meter-panel meter-${panel}`} style={{ ...overlayAppearance(config), backgroundColor: 'var(--meter-background)' }}>
+  return <section className={`meter-panel meter-${panel}`} style={overlayAppearance(config)}>
     <header className="meter-panel-header">
       <span className={`meter-dot ${state.status === 'live' && !sourceWarning ? 'on' : ''}`} />
       <strong>{panel === 'total' ? 'Total geral' : 'Por habilidade'}</strong>
