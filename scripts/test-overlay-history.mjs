@@ -30,8 +30,11 @@ assert.equal(new OverlayHistory(file).list().encounters[0].session.received.tota
 const lateNpcName = restored.list().encounters[0]
 lateNpcName.session.received.sources[0].name = 'Guarda do Apóstolo'
 lateNpcName.session.received.sources[0].npcId = 10212035
+lateNpcName.session.received.sources[0].skills = [{ key: '10', name: 'Golpe', damage: 100, hits: 2, skillIds: [10], critical: 0, heavy: 0,
+  damageByKind: { normal: 100, critical: 0, heavy: 0, criticalHeavy: 0 } }]
 restored.upsert(lateNpcName)
 assert.equal(new OverlayHistory(file).list().encounters[0].session.received.sources[0].name, 'Guarda do Apóstolo', 'Nome que chega sem alterar dano precisa atualizar o arquivo')
+assert.equal(new OverlayHistory(file).list().encounters[0].session.received.sources[0].skills[0].damage, 100, 'Detalhes da fonte sobrevivem à reabertura do arquivo')
 const corrupt = path.join(root, 'corrupt.json')
 fs.writeFileSync(corrupt, 'incompleto')
 const broken = new OverlayHistory(corrupt)

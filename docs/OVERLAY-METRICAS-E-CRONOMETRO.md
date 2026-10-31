@@ -26,6 +26,10 @@ para cálculos, limites e referências do addon.
 - Dano recebido usa `targetId == personagem selecionado`, com agregados separados
   por atacante e habilidade. Não soma o dano que outros atacantes causam a outros
   alvos. As duas distribuições precisam somar o mesmo total.
+- Em **Dano recebido por fonte**, a seta do atacante expande suas habilidades,
+  com dano, acertos e participação dentro daquela fonte. Novos registros salvam
+  essa relação; detalhes e limites de recuperação do histórico estão em
+  [overlay-source-skills-qa.md](overlay-source-skills-qa.md).
 - Cura é **bruta, experimental e parcial**: autocuras periódicas/instantâneas cujo
   efeito está classificado como cura e cuja habilidade existe no catálogo local,
   nos formatos confirmados `0x12344a63` e `0x12344a70`. Inclui Toque de Cura,

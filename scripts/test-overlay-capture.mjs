@@ -124,6 +124,7 @@ try {
   const id = npcNames.state().capture.encounterId
   npcNames.history()
   assert.equal(npcNames.records.get(id).session.received.sources[0].npcId, 10212035)
+  assert.equal(npcNames.records.get(id).session.received.sources[0].skills[0].damage, 100, 'Histórico inclui habilidades dentro da fonte nomeada')
   npcNames.send(npc('B', 10130537))
   assert.equal(npcNames.state().session.received.sources[0].name, 'Guarda do Apóstolo', 'Não cruzar o mesmo ID numérico entre conexões')
   npcNames.send(npc('A', 999999999))
@@ -334,6 +335,10 @@ try {
   assert.equal(state.session.received.hits, expected.incomingHits)
   assert.equal(state.session.received.sources.reduce((sum, row) => sum + row.damage, 0), expected.incomingDamage)
   assert.equal(state.session.received.skills.reduce((sum, row) => sum + row.damage, 0), expected.incomingDamage)
+  for (const source of state.session.received.sources) {
+    assert.equal(source.skills.reduce((sum, row) => sum + row.damage, 0), source.damage, 'Habilidades da fonte precisam reconciliar com seu dano na amostra real')
+    assert.equal(source.skills.reduce((sum, row) => sum + row.hits, 0), source.hits)
+  }
   assert.equal(state.config.autoSource, false)
   assert.equal(state.config.reviewEncounterId, null)
   assert.equal(state.status, 'live')

@@ -19,7 +19,11 @@ export interface MeterSkill {
 }
 export interface MeterReceived {
   total: number; hits: number; skills: MeterSkill[]
-  sources: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number }>
+  sources: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number; skills?: MeterSkill[] }>
+}
+function snapshotSkills(rows: Iterable<MeterSkill>): MeterSkill[] {
+  return [...rows].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } }))
+    .sort((a, b) => b.damage - a.damage)
 }
 export interface MeterSession {
   total: number; hits: number; critical: number; heavy: number
@@ -75,6 +79,7 @@ export class OverlayMeter {
   private rows = new Map<string, MeterSkill>()
   private receivedRows = new Map<string, MeterSkill>()
   private receivedSources = new Map<number, { id: number; damage: number; hits: number }>()
+  private receivedSourceSkills = new Map<number, Map<string, MeterSkill>>()
   private healingRows = new Map<string, MeterSkill>()
   private timed: TimedMeasurement | null = null
   constructor(public sourceId: number | null = null, private names: Record<string, string> = {},
@@ -85,7 +90,7 @@ export class OverlayMeter {
     this.ignoreBefore = at
     this.pausedMs = this.startedPauseMs = this.lastDamagePauseMs = 0
     if (this.pausedAt !== null && at > 0) this.pausedAt = at
-    this.rows.clear(); this.receivedRows.clear(); this.receivedSources.clear(); this.healingRows.clear()
+    this.rows.clear(); this.receivedRows.clear(); this.receivedSources.clear(); this.receivedSourceSkills.clear(); this.healingRows.clear()
   }
   get measurementWindow(): TimedMeasurement | null { return this.timed ? { ...this.timed } : null }
   schedule(startsAt: number, durationSec: number): void {
@@ -130,6 +135,9 @@ export class OverlayMeter {
     this.beginActivity(at)
     if (incoming) {
       this.recordSkill(this.receivedRows, event)
+      let skills = this.receivedSourceSkills.get(event.sourceId)
+      if (!skills) { skills = new Map(); this.receivedSourceSkills.set(event.sourceId, skills) }
+      this.recordSkill(skills, event)
       const source = this.receivedSources.get(event.sourceId) ?? { id: event.sourceId, damage: 0, hits: 0 }
       source.damage += event.damage; source.hits++
       this.receivedSources.set(source.id, source)
@@ -166,10 +174,11 @@ export class OverlayMeter {
     rows.set(key, row)
   }
   snapshot(now = Date.now()): MeterSession {
-    const skills = [...this.rows.values()].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
-    const receivedSkills = [...this.receivedRows.values()].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
-    const receivedSources = [...this.receivedSources.values()].map(row => ({ ...row })).sort((a, b) => b.damage - a.damage)
-    const healingSkills = [...this.healingRows.values()].map(row => ({ ...row, skillIds: row.skillIds?.slice(), damageByKind: { ...row.damageByKind } })).sort((a, b) => b.damage - a.damage)
+    const skills = snapshotSkills(this.rows.values())
+    const receivedSkills = snapshotSkills(this.receivedRows.values())
+    const receivedSources = [...this.receivedSources.values()].map(row => ({ ...row,
+      skills: snapshotSkills(this.receivedSourceSkills.get(row.id)?.values() ?? []) })).sort((a, b) => b.damage - a.damage)
+    const healingSkills = snapshotSkills(this.healingRows.values())
     const healing = { total: healingSkills.reduce((sum, row) => sum + row.damage, 0), hits: healingSkills.reduce((sum, row) => sum + row.hits, 0), skills: healingSkills }
     const damageByKind = emptyDamageBreakdown()
     for (const row of skills) for (const kind of Object.keys(damageByKind) as DamageKind[]) damageByKind[kind] += row.damageByKind[kind]
@@ -254,7 +263,8 @@ export function resolveOverlayNames(state: OverlayState, names: Record<string, s
   const { received, healing } = state.session
   return { ...state, session: { ...state.session, skills: resolveSkillRows(state.session.skills, names, icons),
     ...(received ? { received: { ...received, skills: resolveSkillRows(received.skills, names, icons),
-      sources: received.sources.map(row => ({ ...row, name: row.npcId && npcNames[String(row.npcId)] ? npcNames[String(row.npcId)] : row.name })) } } : {}),
+      sources: received.sources.map(row => ({ ...row, name: row.npcId && npcNames[String(row.npcId)] ? npcNames[String(row.npcId)] : row.name,
+        ...(Array.isArray(row.skills) ? { skills: resolveSkillRows(row.skills, names, icons) } : {}) })) } } : {}),
     ...(healing ? { healing: { ...healing,
       done: { ...healing.done, skills: resolveSkillRows(healing.done.skills, names, icons) },
       received: { ...healing.received, skills: resolveSkillRows(healing.received.skills, names, icons) } } } : {}) } }

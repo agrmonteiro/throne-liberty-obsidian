@@ -355,4 +355,15 @@ html:has(body[data-overlay]),body[data-overlay] #root { background:transparent!i
 .overlay-dashboard .meter-analysis-table th button,.overlay-dashboard .meter-row-button { padding:0; border:0; border-radius:0; background:transparent; font:inherit; }
 .overlay-dashboard .meter-analysis-tools { padding-left:var(--meter-chart-padding,12px); }
 .overlay-dashboard .meter-skill-details button { padding:5px 8px; }
+.meter-analysis-table>tbody>.meter-source-detail>td { padding:8px var(--meter-chart-padding,12px) 12px; white-space:normal; text-align:left; background:#ffffff06; border-left:2px solid var(--meter-accent,#ead08d); }
+.meter-source-skills>header { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 12px; margin-bottom:8px; font-size:.88em; }
+.meter-source-skills>header strong { font-weight:500; color:var(--meter-accent,#ead08d); }
+.meter-source-skills>header>span { color:var(--meter-muted,#b2ab9d); font-size:.86em; }
+.meter-source-skills-scroll { max-height:250px; overflow:auto; }
+.meter-source-skills-table { font-size:.95em; }
+.meter-source-skills .meter-source-skills-table th:first-child,.meter-source-skills .meter-source-skills-table td:first-child { width:48%; }
+.meter-source-skills .meter-source-skills-table th:nth-child(2) { width:21%; }.meter-source-skills .meter-source-skills-table th:nth-child(3) { width:18%; }.meter-source-skills .meter-source-skills-table th:nth-child(4) { width:13%; }
+.meter-source-skills-table th,.meter-source-skills-table td { padding-top:5px; padding-bottom:5px; }
+.meter-source-detail .meter-skill-details { max-height:300px; padding:4px 0; }
+.meter-source-legacy { margin:4px 0; font-size:.9em; line-height:1.5; color:var(--meter-muted,#b2ab9d); }
 @media(max-width:560px) { .meter-detail-stats { grid-template-columns:repeat(2,minmax(0,1fr)); }.meter-analysis-table th,.meter-analysis-table td { padding-left:4px; padding-right:4px; }.meter-analysis-table { font-size:.79em; }.meter-analysis-table th:nth-child(6),.meter-analysis-table td:nth-child(6) { display:none; }.meter-analysis-table th:first-child,.meter-analysis-table td:first-child { width:43%; }.meter-analysis-table th:nth-child(2) { width:20%; }.meter-analysis-table th:nth-child(3) { width:12%; }.meter-analysis-table th:nth-child(4) { width:15%; }.meter-analysis-table th:nth-child(5) { width:10%; }.overlay-comparison>header { align-items:start; flex-direction:column; } }

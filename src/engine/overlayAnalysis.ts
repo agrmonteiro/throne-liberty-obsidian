@@ -1,4 +1,4 @@
-import type { DamageBreakdown, MeterSession, OverlayConfig, OverlayEncounter } from './overlayMeter'
+import type { DamageBreakdown, MeterSession, MeterSkill, OverlayConfig, OverlayEncounter } from './overlayMeter'
 
 export type MetricPage = NonNullable<OverlayConfig['metricPage']>
 export type MeterSort = 'name' | 'damage' | 'hits' | 'average'
@@ -6,6 +6,7 @@ export interface AnalysisRow {
   key: string; name: string; damage: number; hits: number
   skillIds?: number[]; iconFile?: string; damageByKind?: DamageBreakdown
   critical?: number; heavy?: number
+  sourceSkills?: MeterSkill[]
 }
 export interface MetricData {
   rows: AnalysisRow[]; total: number; hits: number; available: boolean; healing: boolean
@@ -24,8 +25,13 @@ export function metricData(session: MeterSession, page: MetricPage): MetricData 
     return { rows: data?.skills ?? [], total: data?.total ?? 0, hits: data?.hits ?? 0, available: Boolean(data), healing, rateLabel: 'HPS bruto' }
   }
   const data = session.received
+  // Um registro antigo com uma única fonte permite atribuição exata do total global.
+  const singleSourceSkills = data?.sources.length === 1
+    && data.skills.reduce((sum, row) => sum + row.damage, 0) === data.sources[0].damage
+    && data.skills.reduce((sum, row) => sum + row.hits, 0) === data.sources[0].hits ? data.skills : undefined
   return { rows: page === 'receivedSources' ? data?.sources.map(row => ({
     key: String(row.id), name: row.name ?? `Origem ${row.id}`, damage: row.damage, hits: row.hits,
+    sourceSkills: row.skills ?? singleSourceSkills,
   })) ?? [] : data?.skills ?? [], total: data?.total ?? 0, hits: data?.hits ?? 0,
   available: Boolean(data), healing, rateLabel: 'Dano/s' }
 }
