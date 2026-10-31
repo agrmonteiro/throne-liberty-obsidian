@@ -1,0 +1,872 @@
+{
+  "schemaVersion": 1,
+  "build": "26231302",
+  "scope": "Real decoded PCAP frames; runtime IDs are scoped to each capture/connection.",
+  "cases": [
+    {
+      "name": "apply-remove-silent",
+      "capture": "20261030-094453-reference",
+      "events": [
+        {
+          "time": 1793364296.442067,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7b",
+          "bodyHex": "08b085bf970710e0efec0318dec71220e0efec0328d61830d61838025084be03609ad1d09707681e8a01020002",
+          "expected": {
+            "action": "apply",
+            "effectId": 964157784,
+            "sourceId": 8075232,
+            "targetId": 8075232,
+            "castTokenRaw": "304094",
+            "serialRaw": "57092",
+            "durationMsCandidate": 1579,
+            "remainingMsCandidate": 1579,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.022081,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7c",
+          "bodyHex": "08b085bf970710e0efec0318dec71220e0efec032884be03",
+          "expected": {
+            "action": "remove",
+            "effectId": 964157784,
+            "sourceId": 8075232,
+            "targetId": 8075232,
+            "castTokenRaw": "304094",
+            "serialRaw": "57092"
+          }
+        }
+      ]
+    },
+    {
+      "name": "remaining-updates",
+      "capture": "20261030-094453-reference",
+      "events": [
+        {
+          "time": 1793364297.802354,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7b",
+          "bodyHex": "08a680c68c0710e0efec0318acc81220ccb99d0428d08c0130d08c013802501a60a4aad68707682070fe0578018a010100",
+          "expected": {
+            "action": "apply",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 9000,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364297.926637,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148da8b015002681a701a8001a4aad687078801209001c801980101a00101a801ccc812b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8941,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.255518,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148ac87015002681a701a8001a4aad6870788012090018c01980101a00101a801f6c812b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8662,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.38085,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148b486015002681a701a8001a4aad6870788012090018c01980101a00101a8018ec912b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8602,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.523125,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148de84015002681a701a8001a4aad687078801209001c801980101a00101a801a6c912b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8495,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.523125,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148c285015002681a701a8001a4aad687078801209001c801980101a00101a801b4c912b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8545,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.523125,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148a686015002681a701a8001a4aad687078801209001c801980101a00101a801c2c912b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8595,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.523125,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c01488a87015002681a701a8001a4aad687078801209001c801980101a00101a801d0c912b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8645,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.929722,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148c081015002681a701a8001a4aad687078801209001c801980101a00101a801fec912b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8288,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.929722,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148a482015002681a701a8001a4aad687078801209001c801980101a00101a8018cca12b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8338,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.929722,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c01488883015002681a701a8001a4aad687078801209001c801980101a00101a8019aca12b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8388,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.929722,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148ec83015002681a701a8001a4aad687078801209001c801980101a00101a801a8ca12b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 8438,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364299.761836,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148d2775002681a701a8001a4aad687078801209001c001980101a00101a801e8ca12b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 7657,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364299.823383,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c0148b8775002681a701a8001a4aad687078801209001c001980101a00101a80180cb12b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 7644,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364299.888061,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20a680c68c0728e0efec0330acc81238ccb99d0440d08c014880775002681a701a8001a4aad687078801209001c001980101a00101a80196cb12b2010100",
+          "expected": {
+            "action": "update",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26",
+            "durationMsCandidate": 9000,
+            "remainingMsCandidate": 7616,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364299.921926,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7c",
+          "bodyHex": "08a680c68c0710e0efec0318acc81220ccb99d04281a3001",
+          "expected": {
+            "action": "remove",
+            "effectId": 952680467,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304172",
+            "serialRaw": "26"
+          }
+        }
+      ]
+    },
+    {
+      "name": "stack-updates",
+      "capture": "20261030-094453-reference",
+      "events": [
+        {
+          "time": 1793364297.50631,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7b",
+          "bodyHex": "0898debb970710e0efec031892c81220ccb99d0428e05d30e05d3802501060f4ded08707680270da017801",
+          "expected": {
+            "action": "apply",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304146",
+            "serialRaw": "16",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793364298.412128,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330fac81238ccb99d0440e05d48e05d5004681070448001f8dcee85078801209001c203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304250",
+            "serialRaw": "68",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 2
+          }
+        },
+        {
+          "time": 1793364298.412128,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330fac81238ccb99d0440e05d48e05d5006684470488001f8dcee85078801209001c203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304250",
+            "serialRaw": "72",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 3
+          }
+        },
+        {
+          "time": 1793364298.412128,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330fac81238ccb99d0440e05d48e05d50086848704c8001f8dcee85078801209001c203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304250",
+            "serialRaw": "76",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 4
+          }
+        },
+        {
+          "time": 1793364298.412128,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330fac81238ccb99d0440e05d48e05d500a684c70508001f8dcee85078801209001c203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304250",
+            "serialRaw": "80",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 5
+          }
+        },
+        {
+          "time": 1793364298.805349,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d500c68507082018001a0e99685078801209001a203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "130",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 6
+          }
+        },
+        {
+          "time": 1793364298.805349,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d500e6882017086018001a0e99685078801209001a203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "134",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 7
+          }
+        },
+        {
+          "time": 1793364298.805349,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5010688601708a018001a0e99685078801209001a203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "138",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 8
+          }
+        },
+        {
+          "time": 1793364298.805349,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5012688a01708e018001a0e99685078801209001a203980101b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 9
+          }
+        },
+        {
+          "time": 1793364299.137888,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5014688e01708e018001a0e99685078801209001e004980101a801a4ca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 10
+          }
+        },
+        {
+          "time": 1793364299.137888,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5014688e01708e018001a0e99685078801209001e004980101a801a4ca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 10
+          }
+        },
+        {
+          "time": 1793364299.137888,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5016688e01708e018001a0e99685078801209001e004980101a80196ca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 11
+          }
+        },
+        {
+          "time": 1793364299.137888,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5016688e01708e018001a0e99685078801209001e004980101a80196ca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 11
+          }
+        },
+        {
+          "time": 1793364299.653575,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d501a688e01708e018001a0e996850788012090018e02980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 13
+          }
+        },
+        {
+          "time": 1793364299.653575,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d501a688e01708e018001a0e996850788012090018e02980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 13
+          }
+        },
+        {
+          "time": 1793364299.699367,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d501e688e01708e018001a0e99685078801209001ee02980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 15
+          }
+        },
+        {
+          "time": 1793364299.699367,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d501e688e01708e018001a0e99685078801209001ee02980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 15
+          }
+        },
+        {
+          "time": 1793364299.792577,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5022688e01708e018001a0e99685078801209001f003980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 17
+          }
+        },
+        {
+          "time": 1793364299.792577,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5022688e01708e018001a0e99685078801209001f003980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 17
+          }
+        },
+        {
+          "time": 1793364299.854742,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5026688e01708e018001a0e99685078801209001d404980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 19
+          }
+        },
+        {
+          "time": 1793364299.854742,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d5026688e01708e018001a0e99685078801209001d404980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 19
+          }
+        },
+        {
+          "time": 1793364299.920147,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d502a688e01708e018001a0e99685078801209001cc05980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 21
+          }
+        },
+        {
+          "time": 1793364299.920147,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d502a688e01708e018001a0e99685078801209001cc05980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 21
+          }
+        },
+        {
+          "time": 1793364299.980304,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d502e688e01708e018001a0e99685078801209001aa06980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 23
+          }
+        },
+        {
+          "time": 1793364299.980304,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "2098debb970728e0efec0330dec91238ccb99d0440e05d48e05d502e688e01708e018001a0e99685078801209001aa06980101a801ccca12b201020002",
+          "expected": {
+            "action": "update",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142",
+            "durationMsCandidate": 6000,
+            "remainingMsCandidate": 6000,
+            "stackCountCandidate": 23
+          }
+        },
+        {
+          "time": 1793364306.024357,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7c",
+          "bodyHex": "0898debb970710e0efec0318dec91220ccb99d04288e01",
+          "expected": {
+            "action": "remove",
+            "effectId": 964130700,
+            "sourceId": 8075232,
+            "targetId": 8871116,
+            "castTokenRaw": "304350",
+            "serialRaw": "142"
+          }
+        }
+      ]
+    },
+    {
+      "name": "renewed-passive",
+      "capture": "20261031-155930-reference",
+      "events": [
+        {
+          "time": 1793473172.799593,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7b",
+          "bodyHex": "08d4c8ce9a0710becab60218f4970720becab60228a01f30a01f380250ceda0160f6f4a896076820",
+          "expected": {
+            "action": "apply",
+            "effectId": 967430698,
+            "sourceId": 5088574,
+            "targetId": 5088574,
+            "castTokenRaw": "117748",
+            "serialRaw": "27982",
+            "durationMsCandidate": 2000,
+            "remainingMsCandidate": 2000,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793473174.824129,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20d4c8ce9a0728becab602308e980738becab60240a01f48a01f500268ceda0170d6da018001f6f4a89607880120",
+          "expected": {
+            "action": "update",
+            "effectId": 967430698,
+            "sourceId": 5088574,
+            "targetId": 5088574,
+            "castTokenRaw": "117774",
+            "serialRaw": "27990",
+            "durationMsCandidate": 2000,
+            "remainingMsCandidate": 2000,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793473176.814989,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7c",
+          "bodyHex": "08d4c8ce9a0710becab602188e980720becab60228d6da01",
+          "expected": {
+            "action": "remove",
+            "effectId": 967430698,
+            "sourceId": 5088574,
+            "targetId": 5088574,
+            "castTokenRaw": "117774",
+            "serialRaw": "27990"
+          }
+        }
+      ]
+    },
+    {
+      "name": "remaining-updates",
+      "capture": "20261031-155930-reference",
+      "events": [
+        {
+          "time": 1793473186.671712,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7b",
+          "bodyHex": "08acc2c99a0710eed6aa0318929d0120eed6aa0328a01f30a01f380250825260f6f4a896076820",
+          "expected": {
+            "action": "apply",
+            "effectId": 967389334,
+            "sourceId": 6990702,
+            "targetId": 6990702,
+            "castTokenRaw": "20114",
+            "serialRaw": "10498",
+            "durationMsCandidate": 2000,
+            "remainingMsCandidate": 2000,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793473188.695641,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7d",
+          "bodyHex": "20acc2c99a0728eed6aa0330949d0138eed6aa0340a01f489e1f50026882527088528001f6f4a89607880120",
+          "expected": {
+            "action": "update",
+            "effectId": 967389334,
+            "sourceId": 6990702,
+            "targetId": 6990702,
+            "castTokenRaw": "20116",
+            "serialRaw": "10504",
+            "durationMsCandidate": 2000,
+            "remainingMsCandidate": 1999,
+            "stackCountCandidate": 1
+          }
+        },
+        {
+          "time": 1793473190.702195,
+          "connectionId": "tcp-001",
+          "opcode": "0x12344a7c",
+          "bodyHex": "08acc2c99a0710eed6aa0318949d0120eed6aa03288852",
+          "expected": {
+            "action": "remove",
+            "effectId": 967389334,
+            "sourceId": 6990702,
+            "targetId": 6990702,
+            "castTokenRaw": "20116",
+            "serialRaw": "10504"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -43,6 +43,13 @@ referência de 661 eventos / 2.986.995 de dano.
 
 ## Catálogo local de habilidades
 
+### Buffs/debuffs e presença durante a atividade
+
+Ver [OVERLAY-BUFFS-PROTOCOLO.md](OVERLAY-BUFFS-PROTOCOLO.md) para os opcodes
+`0x12344a7b`/`0x12344a7d`/`0x12344a7c`, os bindings específicos de origem/alvo,
+o catálogo completo de estados e as evidências de aplicação/update/remoção.
+Timers e acúmulos permanecem candidatos; ausência de update não comprova fim.
+
 ### Linha do tempo e candidatos de morte
 
 Consultar [OVERLAY-CAUSA-MORTIS.md](OVERLAY-CAUSA-MORTIS.md) antes de alterar

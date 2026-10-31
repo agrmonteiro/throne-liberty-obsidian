@@ -6,6 +6,13 @@ não depende de memória do jogo ou de executar entradas no personagem.
 
 ## Resultado e localização
 
+Buffs/debuffs: catálogo preservado em
+`reference/datamine/26231302/buff-reference.json.gz`, gerado por
+`tools/unreal/build-buff-reference.py --build 26231302`. Inclui efeitos,
+`TLAbnormalState_*`, `TLAbnormalLooks_*`, nomes PT/EN e caminhos de ícones.
+Consultar [OVERLAY-BUFFS-PROTOCOLO.md](OVERLAY-BUFFS-PROTOCOLO.md) para o ciclo
+observado nos pacotes, seriais, timers candidatos, consultas e atualização.
+
 Para fontes/ataques recebidos, o catálogo específico e as relações de spawn estão
 em [OVERLAY-NOMES-DANO-RECEBIDO.md](OVERLAY-NOMES-DANO-RECEBIDO.md).
 Gerador: `tools/unreal/build-overlay-npc-reference.py`; saída:

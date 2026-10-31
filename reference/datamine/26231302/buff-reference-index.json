@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "build": "26231302",
+  "file": "buff-reference.json.gz",
+  "bytes": 2376690,
+  "sha256": "781d271c9e2c5fea9c5024e1f3dd4ae22384e9f1a87363025429b29ea8803416",
+  "sourceDatabase": "reference-b445a5de2427.sqlite",
+  "counts": {
+    "effects": 56177,
+    "abnormals": 12548,
+    "skills": 16556,
+    "states": 12366,
+    "looks": 5437,
+    "kinds": {
+      "debuff": 17348,
+      "neutral": 4501,
+      "unknown": 25315,
+      "buff": 9013
+    }
+  },
+  "scope": "Static symbol links; wire fields and runtime presence require packet evidence.",
+  "limitations": [
+    "Unknown is not a buff.",
+    "Conflicting/conditional names and icons remain arrays.",
+    "No static duration or runtime identity is inferred from this catalog."
+  ]
+}

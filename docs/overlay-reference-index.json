@@ -23,6 +23,12 @@
     "tcp-001:8075232"
   ],
   "nativeCombatSessionId": "not identified",
+  "buffs": {
+    "catalog": "reference/datamine/26231302/buff-reference.json.gz",
+    "evidence": "reference/datamine/26231302/buff-protocol-evidence.json",
+    "documentation": "docs/OVERLAY-BUFFS-PROTOCOLO.md",
+    "scope": "Observed apply/update/remove; timer and stack fields remain candidates."
+  },
   "identityCorrection": {
     "evidence": "capturas_treinamento/npcap_tl/20261030-184651-reference",
     "finding": "0x1234444a also appears for other entities in the same connection; it is not exclusive proof of the local player.",

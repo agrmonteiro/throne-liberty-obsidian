@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "build": "26231302",
+  "samples": [
+    {
+      "folder": "capturas_treinamento/npcap_tl/20261030-094453-reference",
+      "startedAtUtc": "2026-10-30T12:44:53.011048+00:00",
+      "elapsedSec": 600.0047855000012,
+      "packets": 47846,
+      "manifestSha256": "5aa9ea69363ebcdaad92f1bc0c4a68f776f86c9a7adf65dd96d4d91af2bb3da3",
+      "parts": [
+        {
+          "file": "loopback-000.pcap",
+          "sha256": "611332c93de741d9728b0538797cafbf9a5996420e2341e4c0302b751eb5e8b6"
+        }
+      ],
+      "results": {
+        "counts": {
+          "update": 7844,
+          "apply": 4377,
+          "remove": 4373
+        },
+        "kinds": {
+          "buff": 10363,
+          "debuff": 5091,
+          "neutral": 1048,
+          "unknown": 92
+        },
+        "links": {
+          "start-not-observed": 618,
+          "matched": 11473,
+          "new-application": 4331,
+          "metadata-conflict": 80,
+          "serial-unavailable": 92
+        },
+        "changes": {
+          "update": 1767,
+          "stack-change-candidate": 2872,
+          "application": 4331,
+          "refresh-candidate": 3081,
+          "remaining-update-candidate": 124
+        },
+        "intervals": {
+          "observedClosures": 4090,
+          "applyAndRemoveObserved": 4033,
+          "finiteRemainingPairs": 1822,
+          "removalNearRemainingWithin250Ms": 973
+        },
+        "distinctEffects": 69,
+        "entities": 228,
+        "sourceCastMatchesDamageWithin1Sec": 6942,
+        "selectedPlayers": [],
+        "errors": []
+      }
+    },
+    {
+      "folder": "capturas_treinamento/npcap_tl/20261031-155930-reference",
+      "startedAtUtc": "2026-10-31T18:59:30.227812+00:00",
+      "elapsedSec": 180.00851850000026,
+      "packets": 20777,
+      "manifestSha256": "b175a94a14d405ec4aceb116e5dd949453e397ff350f56c1ec39a4f91ca791a9",
+      "parts": [
+        {
+          "file": "loopback-000.pcap",
+          "sha256": "4c8adb89ddbd741849bf3760b3c8dca7100f0516a539adf9ceae401a700e8a51"
+        }
+      ],
+      "results": {
+        "counts": {
+          "update": 10098,
+          "remove": 3460,
+          "apply": 3487
+        },
+        "kinds": {
+          "buff": 15397,
+          "neutral": 1396,
+          "debuff": 252
+        },
+        "links": {
+          "start-not-observed": 441,
+          "new-application": 3487,
+          "matched": 13026,
+          "metadata-conflict": 91
+        },
+        "changes": {
+          "update": 304,
+          "application": 3487,
+          "refresh-candidate": 9691,
+          "remaining-update-candidate": 17,
+          "stack-change-candidate": 86
+        },
+        "intervals": {
+          "observedClosures": 3181,
+          "applyAndRemoveObserved": 3150,
+          "finiteRemainingPairs": 2054,
+          "removalNearRemainingWithin250Ms": 1867
+        },
+        "distinctEffects": 164,
+        "entities": 131,
+        "sourceCastMatchesDamageWithin1Sec": 0,
+        "selectedPlayers": [],
+        "errors": []
+      }
+    }
+  ],
+  "fixture": "scripts/fixtures/overlay-buff-lifecycle.json",
+  "limitations": [
+    "Counts include multiple entities, not only the player.",
+    "The captures do not contain a matching nominal AgrMonteiro profile; no automatic local-player attribution was made.",
+    "Duration, stack and update-subtype fields remain candidates."
+  ]
+}
