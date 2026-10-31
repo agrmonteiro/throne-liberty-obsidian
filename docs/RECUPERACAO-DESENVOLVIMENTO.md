@@ -63,7 +63,9 @@ reaproveitar a instância existente; não iniciar outra captura de QA nesse perf
 Buffs/debuffs e presença durante a atividade: consultar
 [OVERLAY-BUFFS-PROTOCOLO.md](OVERLAY-BUFFS-PROTOCOLO.md). O catálogo gzip no
 Git, as fixtures reais e os scripts permitem retomar o mapa de efeitos sem
-recapturar tudo. Essa análise offline ainda não é uma página de buffs no app.
+recapturar tudo. A página de buffs, os eventos no recap e o journal ao vivo
+estão em [OVERLAY-BUFFS-AO-VIVO.md](OVERLAY-BUFFS-AO-VIVO.md). Os JSONL em
+`<userData>/logs/dps-meter/buffs/` exigem backup separado; não estão no Git.
 
 Nomes de fontes NPC e habilidades recebidas: consultar
 [OVERLAY-NOMES-DANO-RECEBIDO.md](OVERLAY-NOMES-DANO-RECEBIDO.md) antes de alterar

@@ -229,6 +229,12 @@ class Stream:
                 break
             frame = bytes(self.buffer[:length]); del self.buffer[:length]
             for stamp,opcode,body in decoder.frames(frame,Counter(),lambda _:now, length_key=self.length_key):
+                if opcode in (0x12344a7b, 0x12344a7c, 0x12344a7d) and self.server_to_client:
+                    buff = decoder.buff_state(opcode, body)
+                    if buff:
+                        emit(dict(type='buff', event=dict(time=stamp, connectionId=self.connection_id, **buff),
+                                  raw=packet_details(opcode, body, self.server_to_client)))
+                    continue
                 if opcode == 0x12346f6d and self.server_to_client:
                     state = entity_state(body)
                     if state:

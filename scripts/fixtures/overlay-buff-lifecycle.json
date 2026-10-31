@@ -75,7 +75,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8941,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -92,7 +93,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8662,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -109,7 +111,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8602,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -126,7 +129,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8495,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -143,7 +147,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8545,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -160,7 +165,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8595,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -177,7 +183,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8645,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -194,7 +201,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8288,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -211,7 +219,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8338,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -228,7 +237,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8388,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -245,7 +255,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 8438,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -262,7 +273,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 7657,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -279,7 +291,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 7644,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -296,7 +309,8 @@
             "serialRaw": "26",
             "durationMsCandidate": 9000,
             "remainingMsCandidate": 7616,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "26"
           }
         },
         {
@@ -350,7 +364,8 @@
             "serialRaw": "68",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 2
+            "stackCountCandidate": 2,
+            "previousSerialRaw": "16"
           }
         },
         {
@@ -367,7 +382,8 @@
             "serialRaw": "72",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 3
+            "stackCountCandidate": 3,
+            "previousSerialRaw": "68"
           }
         },
         {
@@ -384,7 +400,8 @@
             "serialRaw": "76",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 4
+            "stackCountCandidate": 4,
+            "previousSerialRaw": "72"
           }
         },
         {
@@ -401,7 +418,8 @@
             "serialRaw": "80",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 5
+            "stackCountCandidate": 5,
+            "previousSerialRaw": "76"
           }
         },
         {
@@ -418,7 +436,8 @@
             "serialRaw": "130",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 6
+            "stackCountCandidate": 6,
+            "previousSerialRaw": "80"
           }
         },
         {
@@ -435,7 +454,8 @@
             "serialRaw": "134",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 7
+            "stackCountCandidate": 7,
+            "previousSerialRaw": "130"
           }
         },
         {
@@ -452,7 +472,8 @@
             "serialRaw": "138",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 8
+            "stackCountCandidate": 8,
+            "previousSerialRaw": "134"
           }
         },
         {
@@ -469,7 +490,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 9
+            "stackCountCandidate": 9,
+            "previousSerialRaw": "138"
           }
         },
         {
@@ -486,7 +508,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 10
+            "stackCountCandidate": 10,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -503,7 +526,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 10
+            "stackCountCandidate": 10,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -520,7 +544,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 11
+            "stackCountCandidate": 11,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -537,7 +562,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 11
+            "stackCountCandidate": 11,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -554,7 +580,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 13
+            "stackCountCandidate": 13,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -571,7 +598,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 13
+            "stackCountCandidate": 13,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -588,7 +616,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 15
+            "stackCountCandidate": 15,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -605,7 +634,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 15
+            "stackCountCandidate": 15,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -622,7 +652,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 17
+            "stackCountCandidate": 17,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -639,7 +670,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 17
+            "stackCountCandidate": 17,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -656,7 +688,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 19
+            "stackCountCandidate": 19,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -673,7 +706,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 19
+            "stackCountCandidate": 19,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -690,7 +724,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 21
+            "stackCountCandidate": 21,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -707,7 +742,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 21
+            "stackCountCandidate": 21,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -724,7 +760,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 23
+            "stackCountCandidate": 23,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -741,7 +778,8 @@
             "serialRaw": "142",
             "durationMsCandidate": 6000,
             "remainingMsCandidate": 6000,
-            "stackCountCandidate": 23
+            "stackCountCandidate": 23,
+            "previousSerialRaw": "142"
           }
         },
         {
@@ -795,7 +833,8 @@
             "serialRaw": "27990",
             "durationMsCandidate": 2000,
             "remainingMsCandidate": 2000,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "27982"
           }
         },
         {
@@ -849,7 +888,8 @@
             "serialRaw": "10504",
             "durationMsCandidate": 2000,
             "remainingMsCandidate": 1999,
-            "stackCountCandidate": 1
+            "stackCountCandidate": 1,
+            "previousSerialRaw": "10498"
           }
         },
         {

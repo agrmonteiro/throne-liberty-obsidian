@@ -9,11 +9,12 @@ import { OverlayTimer } from '../components/OverlayTimer'
 import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
 import { MeterExportButton } from '../components/MeterExportButton'
 import { OverlayDeathView } from '../components/OverlayDeathView'
+import { OverlayBuffView } from '../components/OverlayBuffView'
 import { useOverlayGraphPage, type OverlayGraphPage } from '../hooks/useOverlayGraphPage'
 import '../styles/overlay.css'
 
 const tabs = [{ id: 'live', label: 'Ao vivo' }, { id: 'sources', label: 'Origens' },
-  { id: 'history', label: 'Histórico' }, { id: 'deaths', label: 'Causa mortis' }, { id: 'settings', label: 'Ajustes' }] as const
+  { id: 'history', label: 'Histórico' }, { id: 'buffs', label: 'Buffs' }, { id: 'deaths', label: 'Causa mortis' }, { id: 'settings', label: 'Ajustes' }] as const
 
 export function Overlays(): React.ReactElement {
   const { state, act } = useOverlay()
@@ -72,6 +73,9 @@ export function Overlays(): React.ReactElement {
     </section>
     <section className="overlay-tab-panel" id="meter-view-history" role="tabpanel" aria-labelledby="meter-tab-history" hidden={tab !== 'history'}>
       <OverlayHistoryView state={state} />
+    </section>
+    <section className="overlay-tab-panel" id="meter-view-buffs" role="tabpanel" aria-labelledby="meter-tab-buffs" hidden={tab !== 'buffs'}>
+      <OverlayBuffView state={state} active={tab === 'buffs'} />
     </section>
     <section className="overlay-tab-panel" id="meter-view-deaths" role="tabpanel" aria-labelledby="meter-tab-deaths" hidden={tab !== 'deaths'}>
       <OverlayDeathView state={state} active={tab === 'deaths'} />

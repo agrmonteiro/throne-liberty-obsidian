@@ -14,6 +14,9 @@ import healingReference from '../../src/data/overlayHealingEffects.json'
 import { OverlayDeathLog } from './overlayDeathLog'
 import type { DeathCombatEvent } from '../../src/engine/overlayDeathLog'
 import { recognizedHealing } from '../../src/engine/overlayHealingEvent'
+import { OverlayBuffTracker, validBuffEvent, type BuffEvent, type BuffKind } from '../../src/engine/overlayBuffs'
+import { OverlayBuffLog } from './overlayBuffLog'
+import buffReference from '../../src/data/overlayBuffEffects.json'
 
 export function registerOverlay(owner: BrowserWindow): void {
   const file = path.join(app.getPath('userData'), 'data', 'overlay.json')
@@ -28,6 +31,9 @@ export function registerOverlay(owner: BrowserWindow): void {
   const identity = new OverlayIdentity()
   const history = new OverlayHistory(path.join(app.getPath('userData'), 'data', 'overlay-encounters.json'))
   const deathLog = new OverlayDeathLog(path.join(app.getPath('userData'), 'data', 'overlay-deaths.json'))
+  const buffs = new OverlayBuffTracker()
+  const buffLog = new OverlayBuffLog(path.join(app.getPath('userData'), 'logs', 'dps-meter', 'buffs'))
+  const buffEffects = buffReference.effects as Record<string, { kind: BuffKind; names: string[] }>
   let encounterId = randomUUID()
   let encounterConnectionId: string | null = null
   let encounterClosed = false
@@ -121,9 +127,14 @@ export function registerOverlay(owner: BrowserWindow): void {
         localPlayer: id === player?.sourceId })).sort((a, b) => b.damage - a.damage), deathLog: deathLog.status() }
   }
   function bindDeathLog(connectionId = encounterConnectionId ?? identity.snapshot()?.connectionId): void {
+    buffs.bind(mode && connectionId && meter.sourceId !== null ? { captureId, connectionId, playerId: meter.sourceId } : null)
     deathLog.recorder.bind(mode && connectionId && meter.sourceId !== null ? {
       captureId, connectionId, playerId: meter.sourceId, playerName: config.playerName ?? sourceNames.get(meter.sourceId) ?? 'Personagem selecionado', mode,
     } : null)
+  }
+  function namedBuffStates(): ReturnType<OverlayBuffTracker['states']> {
+    return buffs.states().map(event => ({ ...event, sourceName: entityName(event.sourceId).name ?? event.sourceName,
+      targetName: entityName(event.targetId).name ?? event.targetName }))
   }
   function observeDeathEvent(event: DeathCombatEvent, connectionId: string, candidate = false, aliveCandidate = false): void {
     if (mode !== 'live' || !Number.isFinite(event.time) || event.time * 1000 < captureStartedAt
@@ -133,6 +144,7 @@ export function registerOverlay(owner: BrowserWindow): void {
       || (event.sourceId !== meter.sourceId && event.targetId !== meter.sourceId)) return
     encounterConnectionId ??= connectionId
     bindDeathLog(connectionId)
+    deathLog.recorder.setBuffs(namedBuffStates())
     const source = event.sourceId ? entityName(event.sourceId) : {}
     const target = event.targetId ? entityName(event.targetId) : {}
     const enriched = { ...event, sourceName: source.name, targetName: target.name,
@@ -250,6 +262,8 @@ export function registerOverlay(owner: BrowserWindow): void {
     meter.setPaused(true, mode === 'replay' ? (replayClock ?? Date.now()) : Date.now())
     finishEncounter('stop')
     unknownLog.flush()
+    if (mode === 'live') buffLog.append({ type: 'capture-stop', captureId, time: Date.now()/1000 })
+    buffLog.flush()
     clearTimeout(reconnectTimer); reconnectTimer = undefined
     revision++
     child?.kill(); child = null
@@ -287,6 +301,8 @@ export function registerOverlay(owner: BrowserWindow): void {
     deathLog.recorder.bind(null)
     status = 'starting'; message = replay ? 'Abrindo reprodução…' : 'Conectando ao Npcap…'
     mode = replay ? 'replay' : 'live'
+    buffs.bind(null)
+    if (!replay) buffLog.start(captureId)
     replayClock = null
     let pending = '', errors = ''
     const proc = spawn(python(), ['-u', worker, '--healing-reference', healingFile, ...(replay ? ['--replay', replay, '--speed', String(speed)] : [])],
@@ -310,6 +326,25 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (mode === 'replay' && config.autoSource !== false && data.ids.length === 1 && Number.isSafeInteger(data.ids[0]) && data.ids[0] > 0) {
               bindSource(data.ids[0], replayClock ?? 0, 'replay-source')
             }
+          } else if (data.type === 'buff' && mode === 'live') {
+            if (!validBuffEvent(data.event) || data.event.time * 1000 < captureStartedAt || identity.isRetired(data.event.connectionId)
+              || data.raw?.direction !== 'server-to-client') continue
+            const ref = buffEffects[String(data.event.effectId)]
+            const currentConnection = identity.snapshot()?.connectionId ?? encounterConnectionId
+            const event: BuffEvent = { ...data.event, kind: ref?.kind ?? 'unknown', effectNames: ref?.names ?? [], raw: data.raw,
+              sourceName: currentConnection === data.event.connectionId ? entityName(data.event.sourceId).name : undefined,
+              targetName: currentConnection === data.event.connectionId ? entityName(data.event.targetId).name : undefined }
+            const { fields: _fields, ...raw } = event.raw!
+            buffLog.append({ type: 'buff', captureId, ...event, raw })
+            if ((identity.snapshot() && !identity.accepts(event.connectionId)) || (encounterConnectionId && encounterConnectionId !== event.connectionId)
+              || meter.sourceId === null || (event.sourceId !== meter.sourceId && event.targetId !== meter.sourceId)) continue
+            encounterConnectionId ??= event.connectionId
+            bindDeathLog(event.connectionId)
+            const link = buffs.accept(event)
+            observeDeathEvent({ type: 'buff', time: event.time, sourceId: event.sourceId, targetId: event.targetId,
+              effectId: event.effectId, skillId: event.skillIdCandidate ?? undefined,
+              buff: event, raw: event.raw }, event.connectionId)
+            if (link === 'capacity') message = 'Limite de estados observados atingido. Consulte o registro bruto de buffs.'
           } else if (data.type === 'entity-state') {
             if (!Number.isSafeInteger(data.targetId) || data.targetId <= 0 || !Number.isFinite(data.time)) continue
             observeDeathEvent({ type: 'state', time: data.time, targetId: data.targetId,
@@ -322,12 +357,14 @@ export function registerOverlay(owner: BrowserWindow): void {
                 data.deathCandidate === true, data.aliveCandidate === true)
             }
           } else if (data.type === 'connection-closed' && mode === 'live') {
+            buffLog.append({ type: 'connection-closed', captureId, connectionId: data.connectionId, time: data.time ?? Date.now()/1000 })
             if (identity.accepts(data.connectionId) || encounterConnectionId === data.connectionId) {
               finishEncounter('connection-end')
               sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear(); recentDamage = []
               config.sourceId = null; config.reviewEncounterId = null
               meter.selectSource(null, Date.now()); lastCombatDamageAt = null; newEncounter(null); save()
               deathLog.recorder.bind(null)
+              buffs.bind(null)
             }
             npcTemplates.delete(data.connectionId)
             identity.retire(data.connectionId); broadcast()
@@ -368,6 +405,8 @@ export function registerOverlay(owner: BrowserWindow): void {
               && !(config.playerName && data.name === config.playerName)) continue
             if (!Number.isSafeInteger(data.sourceId) || data.sourceId <= 0 || typeof data.name !== 'string'
               || !data.name.length || data.name.length > 64 || /[\p{C}]/u.test(data.name) || data.name.trim() !== data.name) continue
+            if (mode === 'live') buffLog.append({ type: 'profile-observation', captureId, connectionId: data.connectionId,
+              sourceId: data.sourceId, name: data.name, time: data.time })
             if (conflictingNames.has(data.sourceId)) continue
             const previous = sourceNames.get(data.sourceId)
             if (previous && previous !== data.name) {
@@ -505,8 +544,14 @@ export function registerOverlay(owner: BrowserWindow): void {
   }
   watchForeground()
   ipcMain.handle('overlay:get', state)
+  ipcMain.handle('overlay:buffs', () => {
+    const snapshot = buffs.snapshot()
+    return { ...snapshot, observed: namedBuffStates(), recent: snapshot.recent.map(event => ({ ...event,
+      sourceName: entityName(event.sourceId).name ?? event.sourceName, targetName: entityName(event.targetId).name ?? event.targetName })), journal: buffLog.status() }
+  })
   ipcMain.handle('overlay:deaths', () => deathLog.list())
   ipcMain.handle('overlay:record-death', () => {
+    deathLog.recorder.setBuffs(namedBuffStates())
     if (mode === 'live' && config.sourceId !== null && deathLog.recorder.capture(Date.now() / 1000, 'manual')) deathLog.save()
     return deathLog.list()
   })
@@ -515,6 +560,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     try {
       clearMeterLogFiles(app.getPath('userData'))
       unknownLog.resetAfterClear()
+      buffLog.resetAfterClear(captureId, mode === 'live' && status === 'live')
       clearedThrough = meter.snapshot().lastActivityAt ?? (mode === 'replay' ? (replayClock ?? 0) : Date.now())
       config.reviewEncounterId = null
       history.clear(); save(); broadcast()
@@ -636,7 +682,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (gameForeground && Date.now() - foregroundSeenAt > 5000) { gameForeground = false; controlsEditing = false; showPanels() }
     broadcast()
   }, 250)
-  const logTimer = setInterval(() => { unknownLog.flush(); checkpoint() }, 1000)
+  const logTimer = setInterval(() => { unknownLog.flush(); buffLog.flush(); checkpoint() }, 1000)
   const editShortcut = globalShortcut.register('CommandOrControl+Shift+F9', () => { config.locked = !config.locked; showPanels() })
   const showShortcut = globalShortcut.register('CommandOrControl+Shift+F10', () => {
     const show = !config.totalVisible && !config.skillsVisible
@@ -657,6 +703,6 @@ export function registerOverlay(owner: BrowserWindow): void {
     globalShortcut.unregister('CommandOrControl+Shift+F9'); globalShortcut.unregister('CommandOrControl+Shift+F10')
     globalShortcut.unregister('CommandOrControl+Shift+F8')
     globalShortcut.unregister('CommandOrControl+Shift+F11')
-    for (const name of ['get', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
+    for (const name of ['get', 'buffs', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
   })
 }

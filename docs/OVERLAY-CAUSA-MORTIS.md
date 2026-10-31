@@ -2,6 +2,11 @@
 
 ## Comportamento
 
+Atualização posterior: buffs/debuffs observados agora entram nos 50 eventos e
+há snapshot parcial dos efeitos sem remoção recebida. O seletor ganhou também
+**Buffs e debuffs**, totalizando sete páginas. Ver
+[OVERLAY-BUFFS-AO-VIVO.md](OVERLAY-BUFFS-AO-VIVO.md) para escopo e recuperação.
+
 **Acesso no jogo:** a lista **Página do gráfico** da janela nativa e do controle
 de ajustes agora inclui **Causa mortis**. A aba no app continua disponível.
 Ambos usam os mesmos registros e permitem filtro, inspeção de campos e exportar
@@ -45,8 +50,9 @@ uma troca desses vínculos limpa o buffer, preservando os registros anteriores.
 Parar a leitura interrompe a coleta. Reset, pausa e cronômetro do DPS não a
 interrompem. Ela não altera dano, cura, DPS ou o histórico de encontros.
 
-O botão **Recap agora** salva a morte informada pelo usuário. Não é
-um simulador e não deve ser usado em QA de produção para inventar mortes.
+O botão **Recap agora** salva os eventos atuais também sem uma morte e recebe
+o rótulo **Recap manual**. Não deve ser usado em QA do perfil real para criar
+registros fictícios.
 Exportar JSON inclui todos os eventos e campos, independentemente do filtro da
 tela. Abrir uma linha exibe IDs, nomes conhecidos, flags, timestamp, opcode,
 campos protobuf e corpo hexadecimal; bytes/inteiros grandes permanecem sem

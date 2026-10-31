@@ -3,17 +3,19 @@ export interface CombatPacket {
   direction: 'server-to-client' | 'client-to-server'; fields: Record<string, unknown>
 }
 export interface DeathCombatEvent {
-  type: 'damage' | 'healing' | 'state' | 'effect'; time: number
+  type: 'damage' | 'healing' | 'state' | 'effect' | 'buff'; time: number
   sourceId?: number; targetId?: number; skillId?: number; effectId?: number
   damage?: number; healing?: number; criticalCandidate?: boolean; heavyCandidate?: number
   coverage?: string; stateCode?: number; observedAmount?: number; sourceName?: string; targetName?: string
   sourceNpcId?: number; targetNpcId?: number; skillName?: string; raw?: CombatPacket
   originalType?: 'effect'; classification?: 'healing-effect-catalog'
+  buff?: import('./overlayBuffs').BuffEvent
 }
 export interface DeathReport {
   id: string; captureId: string; connectionId: string; playerId: number; playerName: string
   time: number; trigger: 'manual' | 'state-signal' | 'damage-signal'; mode: 'live' | 'replay'
   events: DeathCombatEvent[]; signal?: DeathCombatEvent
+  buffs?: import('./overlayBuffs').ObservedBuff[]
 }
 export interface DeathLogResult {
   records: DeathReport[]; recent: DeathCombatEvent[]; error: string | null
@@ -27,13 +29,15 @@ export class OverlayDeathRecorder {
   private dead = false
   private deadAt = -Infinity
   private counter = 0
+  private buffs: import('./overlayBuffs').ObservedBuff[] = []
   constructor(records: DeathReport[] = [], private id?: () => string) { this.records = structuredClone(records.slice(0, 20)) }
   bind(scope: NonNullable<OverlayDeathRecorder['scope']> | null): void {
     if (this.scope?.captureId !== scope?.captureId || this.scope?.connectionId !== scope?.connectionId || this.scope?.playerId !== scope?.playerId) {
-      this.events = []; this.dead = false; this.deadAt = -Infinity
+      this.events = []; this.buffs = []; this.dead = false; this.deadAt = -Infinity
     }
     this.scope = scope ? { ...scope } : null
   }
+  setBuffs(buffs: import('./overlayBuffs').ObservedBuff[]): void { this.buffs = structuredClone(buffs) }
   append(event: DeathCombatEvent, connectionId: string): boolean {
     if (!this.scope || connectionId !== this.scope.connectionId || !Number.isFinite(event.time)
       || (event.sourceId !== this.scope.playerId && event.targetId !== this.scope.playerId)) return false
@@ -64,6 +68,7 @@ export class OverlayDeathRecorder {
     if (!this.scope || !Number.isFinite(time)) return null
     const report: DeathReport = { ...this.scope, id: this.id?.() ?? `${time}-${++this.counter}`, time, trigger,
       events: structuredClone(this.events.filter(event => event.time <= time).slice(-50)),
+      ...(this.buffs.length ? { buffs: structuredClone(this.buffs.filter(buff => buff.time <= time)) } : {}),
       ...(signal ? { signal: structuredClone(signal) } : {}) }
     this.records = [report, ...this.records].slice(0, 20)
     return structuredClone(report)

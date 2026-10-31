@@ -16,6 +16,7 @@ function compile(relative, resolve) {
   return module.exports
 }
 const engine = compile('src/engine/overlayMeter.ts', require)
+const buffEngine = compile('src/engine/overlayBuffs.ts', require)
 const { OverlayDeathRecorder } = compile('src/engine/overlayDeathLog.ts', require)
 const healingEvents = compile('src/engine/overlayHealingEvent.ts', name => name.endsWith('/overlayHealingEffects.json')
   ? JSON.parse(fs.readFileSync(path.join(root,'src/data/overlayHealingEffects.json'),'utf8')) : require(name))
@@ -33,7 +34,9 @@ function harness(startAt = 1000000) {
   owner.isDestroyed = () => false
   owner.isFocused = () => false
   owner.webContents = { send() {} }
-  const fakeFs = { existsSync: () => true, readFileSync: () => { throw Error('Empty test profile') }, mkdirSync() {}, writeFileSync() {} }
+  const journal = []
+  const fakeFs = { existsSync: () => true, readFileSync: () => { throw Error('Empty test profile') }, mkdirSync() {}, writeFileSync() {},
+    openSync() { return 1 }, closeSync() {}, appendFileSync(_file, block) { journal.push(...block.trim().split('\n').map(line => JSON.parse(line))) } }
   class History {
     list() { return { encounters: [...records.values()].map(row => structuredClone(row)), error: null } }
     upsert(row) { if (row.session.hits || row.session.received?.hits || row.session.healing?.done.hits || row.session.timed) records.set(row.id, structuredClone(row)) }
@@ -73,11 +76,14 @@ function harness(startAt = 1000000) {
     if (name === 'child_process') return { spawn: (_file, args) => { const child = new Child(); child.args = args; children.push(child); return child } }
     if (name === '@electron-toolkit/utils') return { is: { dev: false } }
     if (name.endsWith('/overlayMeter')) return engine
+    if (name.endsWith('/overlayBuffs')) return buffEngine
     if (name.endsWith('/overlayHealingEvent')) return healingEvents
     if (name.endsWith('/overlayLayout')) return layout
     if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {},
       overlayNpcNames: Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayNpcReference.json'), 'utf8')).npcs).map(([id, row]) => [id, row.name])) }
     if (name.endsWith('/overlayHealingEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayHealingEffects.json'), 'utf8'))
+    if (name.endsWith('/overlayBuffEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayBuffEffects.json'), 'utf8'))
+    if (name === './overlayBuffLog') return compile('electron/main/overlayBuffLog.ts', dependency => dependency === 'fs' ? fakeFs : require(dependency))
     if (name === './overlayHistory') return { OverlayHistory: History }
     if (name === './overlayUnknownLog') return { OverlayUnknownLog: UnknownLog }
     if (name === './overlayDeathLog') return { OverlayDeathLog: DeathLog }
@@ -102,7 +108,7 @@ function harness(startAt = 1000000) {
     const child = children.findLast(row => row.args.some(value => value.endsWith('npcap-overlay-worker.py')))
     child.stdout.emit('data', Buffer.from(JSON.stringify(message) + '\n'))
   }
-  return { state, start, configure, send, records, deaths: () => handlers.get('overlay:deaths')(),
+  return { state, start, configure, send, records, journal, buffs: () => handlers.get('overlay:buffs')(), deaths: () => handlers.get('overlay:deaths')(),
     recordDeath: () => handlers.get('overlay:record-death')(),
     tick: () => ticks.forEach(callback => callback()),
     foreground: (active, extra = {}) => children.find(row => row.args.some(value => value.endsWith('overlay-foreground.py'))).stdout.emit('data',
@@ -124,6 +130,37 @@ function harness(startAt = 1000000) {
 const damage = (id, time, amount, connectionId = 'A') => ({ type: 'damage', connectionId,
   event: { sourceId: id, time, damage: amount, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
 const player = (id, time, connectionId = 'A') => ({ type: 'identity', name: 'AgrMonteiro', sourceId: id, time, connectionId })
+const buffAudit = harness()
+try {
+  const frame = JSON.parse(fs.readFileSync(path.join(root, 'scripts/fixtures/overlay-buff-lifecycle.json'), 'utf8')).cases[0].events[0]
+  const buff = { ...frame.expected, time: 1001, connectionId: 'A', sourceId: 8, targetId: 7 }
+  const raw = { opcode: frame.opcode, bodyHex: frame.bodyHex, bytes: frame.bodyHex.length/2, truncated: false, direction: 'server-to-client', fields: {} }
+  buffAudit.start(); buffAudit.send({type:'status',state:'live',message:'test'})
+  buffAudit.send({ type: 'buff', event: buff, raw })
+  assert.equal(buffAudit.buffs().observed.length, 0, 'Identidade desconhecida não vira jogador por receber buff')
+  buffAudit.send(player(7,1002)); buffAudit.pause(true)
+  buffAudit.send({ type: 'buff', event: { ...buff, time: 1003 }, raw })
+  assert.equal(buffAudit.buffs().observed.length, 1, 'Coleta independente da pausa do DPS')
+  assert.equal(buffAudit.buffs().observed[0].sourceId, 8, 'Origem externa preservada')
+  assert.deepEqual(buffAudit.buffs().observed[0].effectNames, ['Difusão Altruísta'])
+  buffAudit.recordDeath()
+  assert.equal(buffAudit.deaths().records[0].buffs.length, 1)
+  assert.equal(buffAudit.deaths().records[0].events.at(-1).type, 'buff')
+  buffAudit.reset()
+  assert.equal(buffAudit.buffs().observed.length, 1, 'Reset de dano não inventa uma remoção')
+  buffAudit.send({ type: 'buff', event: { ...buff, action: 'remove', time: 1004, connectionId: 'B' }, raw })
+  assert.equal(buffAudit.buffs().observed.length, 1, 'Outra conexão não remove estado atual')
+  buffAudit.send({ type: 'buff', event: { ...buff, action: 'remove', time: 1005 }, raw })
+  assert.equal(buffAudit.buffs().observed.length, 0)
+  assert.equal(buffAudit.deaths().records[0].buffs.length, 1, 'Recap anterior congelado')
+  assert.equal(buffAudit.state().session.total, 0, 'Buff não aumenta dano')
+  buffAudit.tick()
+  assert.equal(buffAudit.journal.filter(row=>row.type === 'buff').length, 4, 'Journal conserva todas as conexões antes/depois da identidade')
+  assert(!('fields' in buffAudit.journal.find(row=>row.type === 'buff').raw), 'JSONL guarda corpo bruto sem duplicar todos os campos')
+  buffAudit.send({ type: 'connection-closed', connectionId: 'A' })
+  assert.equal(buffAudit.buffs().scope, null)
+} finally { buffAudit.close() }
+console.log('OK: buffs ao vivo, origem externa, identificação, pausa/reset, journal bruto e recap congelado.')
 const deathAudit = harness()
 try {
   deathAudit.start(); deathAudit.send({ type: 'status', state: 'live', message: 'test' }); deathAudit.send(player(7, 1001))

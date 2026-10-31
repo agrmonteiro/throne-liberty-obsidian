@@ -5,6 +5,8 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import struct
+import tempfile
 
 root = Path(__file__).resolve().parent.parent
 def module(name, file):
@@ -70,3 +72,36 @@ assert protocol.parse(0x12344a7b, field(1, 2), worker.decoder) is None
 assert protocol.parse(0x12344a7f, body, worker.decoder) is None
 assert protocol.parse(0x12344a7b, b'\xff', worker.decoder) is None
 print('OK: catalogo/hash, namespaces por conexao, captura parcial, sem expiracao inventada, campos ambiguos e IDs de 64 bits sem perda.')
+
+messages = []
+worker.emit = messages.append
+sample = fixture['cases'][0]['events'][0]
+payload = bytes.fromhex(sample['bodyHex'])
+frame = struct.pack('<II', (len(payload)+8) ^ worker.decoder.FRAME_LENGTH_KEYS[1], int(sample['opcode'], 16)) + payload
+for server in (False, True):
+    messages.clear()
+    stream = worker.Stream('test', server)
+    stream.feed(0, frame*2, 1000)
+    assert len(messages) == (2 if server else 0)
+    assert all(row['type'] == 'buff' and row['event']['sourceId'] == sample['expected']['sourceId'] for row in messages)
+    stream.feed(0, frame*2, 1001)
+    assert len(messages) == (2 if server else 0)
+print('OK: worker ao vivo emite buffs apenas do servidor, com retransmissao deduplicada.')
+
+journal_analyzer = module('journal_analyzer_test', root/'scripts/analyze-overlay-buff-journal.py')
+directory = Path(tempfile.mkdtemp(prefix='throne-buff-journal-'))
+journal = directory/'capture.jsonl'
+rows = []
+for case in fixture['cases']:
+    for sample in case['events']:
+        rows.append(dict(type='buff', captureId=case['capture'], connectionId=sample['connectionId'], time=sample['time'],
+                         raw=dict(opcode=sample['opcode'], bodyHex=sample['bodyHex'], direction='server-to-client')))
+rows.append(dict(type='profile-observation', captureId=fixture['cases'][0]['capture'], connectionId='tcp-001', sourceId=8075232, name='Fixture'))
+journal.write_text(''.join(json.dumps(row)+'\n' for row in rows), encoding='utf-8')
+summary = journal_analyzer.analyze(journal, directory/'analysis', 'Fixture')
+assert sum(summary['counts'].values()) == 50 and not summary['errors']
+assert summary['completeIntervals'] == 5 and len(summary['selectedPlayers']) == 1
+events = [json.loads(line) for line in (directory/'analysis/events.jsonl').read_text(encoding='utf-8').splitlines()]
+assert events[0]['sourceName'] == 'Fixture', 'Perfil tardio permite nomear o evento anterior na mesma geração'
+assert all(row.get('sourceName') is None for row in events if row['captureId'] != fixture['cases'][0]['capture'])
+print('OK: journal bruto reprocessado, cinco intervalos completos, perfil tardio e captura/conexao isoladas.')

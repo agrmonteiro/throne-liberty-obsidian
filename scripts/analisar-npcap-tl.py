@@ -160,6 +160,47 @@ def frames(data, counters, timestamp, depth=0, length_key=None):
         offset += length
 
 
+def buff_state(opcode, body):
+    """Aplicação/update/remoção observados; tempos e stacks permanecem candidatos."""
+    action = {0x12344a7b: 'apply', 0x12344a7c: 'remove', 0x12344a7d: 'update'}.get(opcode)
+    if not action:
+        return None
+    try:
+        fields = protobuf(body)
+        def scalar(key, required=True):
+            values = fields.get(key, [])
+            if not values and not required:
+                return None
+            if len(values) != 1 or not isinstance(values[0], int):
+                raise ValueError('Campo ausente ou ambíguo')
+            return values[0]
+        shift = 3 if action == 'update' else 0
+        effect = zigzag(scalar(1 + shift))
+        source, target, cast = scalar(2 + shift), scalar(4 + shift), scalar(3 + shift)
+        if not all(0 < value < 2**53 for value in (effect, source, target)):
+            return None
+        event = dict(action=action, effectId=effect, sourceId=source, targetId=target, castTokenRaw=str(cast),
+                     opcode=hex(opcode), rawFieldNumbers=sorted(fields))
+        if action == 'remove':
+            serial = scalar(5, False)
+            event['serialRaw'] = str(serial) if serial is not None else None
+        else:
+            duration, remaining, stacks = map(zigzag, (scalar(5 + shift), scalar(6 + shift), scalar(7 + shift)))
+            if not -1 <= duration < 2**53 or not -1 <= remaining < 2**53 or not 0 <= stacks < 2**53:
+                return None
+            event.update(durationMsCandidate=duration, remainingMsCandidate=remaining, stackCountCandidate=stacks)
+            skill = scalar(16 if action == 'update' else 12, False)
+            event['skillIdCandidate'] = zigzag(skill) if skill is not None else None
+            if action == 'apply':
+                serial = scalar(10, False)
+                event['serialRaw'] = str(serial) if serial is not None else None
+            else:
+                event.update(previousSerialRaw=str(scalar(13)), serialRaw=str(scalar(14)))
+        return event
+    except (ValueError, TypeError, IndexError, KeyError):
+        return None
+
+
 def zigzag(value):
     return (value >> 1) ^ -(value & 1)
 

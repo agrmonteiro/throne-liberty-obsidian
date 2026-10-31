@@ -9,9 +9,10 @@ Isso não equivale a uma lista completa de todos os buffs enviada continuamente:
 há estados silenciosos entre aplicação e remoção, outros renovados por passivas
 e estados cuja primeira aplicação ocorreu antes de a captura começar.
 
-O resultado desta rodada é um **mapeamento e ferramentas de análise offline**.
-Não adiciona uma nova página de buffs nem altera os contadores ao vivo. Isso
-permite conferir o protocolo antes de usar seus campos como estado do overlay.
+O mapeamento começou como ferramentas offline. A integração posterior adicionou
+consulta ao vivo, journal recuperável e eventos no recap; consultar
+[OVERLAY-BUFFS-AO-VIVO.md](OVERLAY-BUFFS-AO-VIVO.md) para acesso, código e limites.
+As estimativas de tempo/acúmulo descritas aqui permanecem experimentais.
 
 ## Evidência
 

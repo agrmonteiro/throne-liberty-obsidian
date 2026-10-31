@@ -16,9 +16,13 @@ export class OverlayDeathLog {
           && typeof row.id === 'string' && Number.isFinite(row.time) && Number.isSafeInteger(row.playerId)
           && typeof row.connectionId === 'string' && typeof row.playerName === 'string'
           && typeof row.captureId === 'string'
+          && (row.buffs === undefined || Array.isArray(row.buffs) && row.buffs.length <= 2048 && row.buffs.every(buff => buff
+            && Number.isFinite(buff.time) && Number.isSafeInteger(buff.effectId) && Number.isSafeInteger(buff.sourceId)
+            && buff.targetId === row.playerId && buff.connectionId === row.connectionId
+            && (buff.effectNames === undefined || Array.isArray(buff.effectNames) && buff.effectNames.every(name => typeof name === 'string'))))
           && ['manual', 'state-signal', 'damage-signal'].includes(row.trigger) && ['live', 'replay'].includes(row.mode)
           && Array.isArray(row.events) && row.events.length <= 50 && row.events.every(event => event
-            && Number.isFinite(event.time) && ['damage', 'healing', 'state', 'effect'].includes(event.type)
+            && Number.isFinite(event.time) && ['damage', 'healing', 'state', 'effect', 'buff'].includes(event.type)
             && (event.sourceId === row.playerId || event.targetId === row.playerId)))) throw Error('Formato inválido')
         records = data.records.slice(0, 20)
       }

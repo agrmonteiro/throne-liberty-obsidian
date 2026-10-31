@@ -27,6 +27,8 @@
     "catalog": "reference/datamine/26231302/buff-reference.json.gz",
     "evidence": "reference/datamine/26231302/buff-protocol-evidence.json",
     "documentation": "docs/OVERLAY-BUFFS-PROTOCOLO.md",
+    "liveDocumentation": "docs/OVERLAY-BUFFS-AO-VIVO.md",
+    "runtimeCatalog": "src/data/overlayBuffEffects.json",
     "scope": "Observed apply/update/remove; timer and stack fields remain candidates."
   },
   "identityCorrection": {
