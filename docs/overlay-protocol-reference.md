@@ -46,8 +46,9 @@ referência de 661 eventos / 2.986.995 de dano.
 ### Linha do tempo e candidatos de morte
 
 Consultar [OVERLAY-CAUSA-MORTIS.md](OVERLAY-CAUSA-MORTIS.md) antes de alterar
-`0x12346f6d` ou interpretar estados/HP. O sinal de morte ainda é experimental;
-não há validação independente de uma morte do personagem. O documento lista
+`0x12346f6d` ou interpretar estados/HP. A flag 7=1 do dano `0x12344a7f` foi
+observada na morte informada pelo usuário e comparada com mortes de NPCs;
+a detecção continua experimental. O documento lista
 os campos preservados, limites e testes da aba de 50 eventos.
 
 ### Nomes de NPCs e dano recebido

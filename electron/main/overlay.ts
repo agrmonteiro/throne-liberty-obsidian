@@ -127,7 +127,7 @@ export function registerOverlay(owner: BrowserWindow): void {
       captureId, connectionId, playerId: meter.sourceId, playerName: config.playerName ?? sourceNames.get(meter.sourceId) ?? 'Personagem selecionado', mode,
     } : null)
   }
-  function observeDeathEvent(event: DeathCombatEvent, connectionId: string, candidate = false): void {
+  function observeDeathEvent(event: DeathCombatEvent, connectionId: string, candidate = false, aliveCandidate = false): void {
     if (mode !== 'live' || !Number.isFinite(event.time) || event.time * 1000 < captureStartedAt
       || typeof connectionId !== 'string' || !connectionId.length || connectionId.length > 128 || identity.isRetired(connectionId)
       || (identity.snapshot() && !identity.accepts(connectionId))
@@ -142,6 +142,8 @@ export function registerOverlay(owner: BrowserWindow): void {
       skillName: event.skillId ? names[String(event.skillId)] : undefined }
     if (event.type === 'state' && event.stateCode !== undefined) {
       if (deathLog.recorder.observeState(enriched, connectionId, candidate)) deathLog.save()
+    } else if (event.type === 'damage') {
+      if (deathLog.recorder.observeDamage(enriched, connectionId, candidate, aliveCandidate)) deathLog.save()
     } else deathLog.recorder.append(enriched, connectionId)
   }
   function entityName(id: number): { name?: string; npcId?: number } {
@@ -318,7 +320,8 @@ export function registerOverlay(owner: BrowserWindow): void {
             const event = data.event
             if (event && Number.isFinite(event.time) && Number.isFinite(event.damage ?? event.observedAmount) && Number.isSafeInteger(event.sourceId)
               && Number.isSafeInteger(event.targetId) && Number.isSafeInteger(event.skillId)) {
-              observeDeathEvent({ ...event, type: data.type === 'effect-observation' ? 'effect' : 'damage', raw: data.raw }, data.connectionId)
+              observeDeathEvent({ ...event, type: data.type === 'effect-observation' ? 'effect' : 'damage', raw: data.raw }, data.connectionId,
+                data.deathCandidate === true, data.aliveCandidate === true)
             }
           } else if (data.type === 'connection-closed' && mode === 'live') {
             if (identity.accepts(data.connectionId) || encounterConnectionId === data.connectionId) {
@@ -395,7 +398,8 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (healing && (event.sourceId !== event.targetId || !healingSkillIds.has(event.skillId) || !(
               (event.coverage === 'self-periodic' && (healGroup === 'Continuous_Heal' || healGroup === 'Intervallic_Heal'))
               || ((event.coverage === 'self-lifesteal' || event.coverage === 'self-instant') && healGroup === 'Instant_Heal')))) continue
-            observeDeathEvent({ ...event, type: healing ? 'healing' : 'damage', raw: data.raw }, data.connectionId)
+            observeDeathEvent({ ...event, type: healing ? 'healing' : 'damage', raw: data.raw }, data.connectionId,
+              data.deathCandidate === true, data.aliveCandidate === true)
             if (mode === 'replay') replayClock = event.time * 1000
             // Visibilidade acompanha o combate mesmo com a medição pausada ou fora da janela do teste.
             if (mode === 'live' && typeof data.connectionId === 'string' && data.connectionId.length > 0 && data.connectionId.length <= 128

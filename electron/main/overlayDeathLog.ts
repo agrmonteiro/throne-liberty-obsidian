@@ -15,7 +15,7 @@ export class OverlayDeathLog {
           && typeof row.id === 'string' && Number.isFinite(row.time) && Number.isSafeInteger(row.playerId)
           && typeof row.connectionId === 'string' && typeof row.playerName === 'string'
           && typeof row.captureId === 'string'
-          && ['manual', 'state-signal'].includes(row.trigger) && ['live', 'replay'].includes(row.mode)
+          && ['manual', 'state-signal', 'damage-signal'].includes(row.trigger) && ['live', 'replay'].includes(row.mode)
           && Array.isArray(row.events) && row.events.length <= 50 && row.events.every(event => event
             && Number.isFinite(event.time) && ['damage', 'healing', 'state', 'effect'].includes(event.type)
             && (event.sourceId === row.playerId || event.targetId === row.playerId)))) throw Error('Formato inválido')

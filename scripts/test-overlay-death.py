@@ -1,6 +1,7 @@
 """Candidatos de estado: não substitui validação de uma morte do jogador no jogo."""
 import importlib.util
 import struct
+import json
 from pathlib import Path
 here = Path(__file__).resolve().parent
 spec = importlib.util.spec_from_file_location('death_worker', here/'npcap-overlay-worker.py')
@@ -41,3 +42,16 @@ frame = struct.pack('<II', (len(unknown)+8) ^ worker.decoder.FRAME_LENGTH_KEYS[1
 worker.Stream('A', True).feed(0, frame*2, 1000)
 assert len(messages) == 2 and all(row['type'] == 'effect-observation' for row in messages)
 print('OK: estado experimental estrito, direção/retransmissão, inteiro 64 bits, corpo limitado e efeito desconhecido separado da cura.')
+fixture=json.loads((here/'fixtures/overlay-player-death.json').read_text(encoding='utf-8'))
+payload=bytes.fromhex(fixture['bodyHex']); fields=worker.decoder.protobuf(payload)
+assert worker.damage_life_signal(fields) == dict(deathCandidate=True, aliveCandidate=False)
+assert worker.damage_life_signal({7:[1,1]})['deathCandidate'] is False
+assert worker.damage_life_signal({7:[0],9:[field(1,200)]}) == dict(deathCandidate=False,aliveCandidate=True)
+assert worker.damage_life_signal({9:[b'\xff']}) == dict(deathCandidate=False,aliveCandidate=False)
+frame=struct.pack('<II',(len(payload)+8)^worker.decoder.FRAME_LENGTH_KEYS[1],int(fixture['opcode'],16))+payload
+for server in (False,True):
+    messages.clear(); worker.Stream('fixture',server).feed(0,frame*2,fixture['time'])
+    damage=[m for m in messages if m['type']=='damage']
+    assert len(damage)==2 and all(m['event']['damage']==823 and m['event']['targetId']==fixture['targetId'] for m in damage)
+    assert all(m.get('deathCandidate',False)==server for m in damage)
+print('OK: pacote real da morte informada: flag fatal 7=1, dano 823; somente servidor, rearmar por vida positiva e opcionais inválidos sem interromper dano.')

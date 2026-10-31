@@ -11,7 +11,7 @@ export interface DeathCombatEvent {
 }
 export interface DeathReport {
   id: string; captureId: string; connectionId: string; playerId: number; playerName: string
-  time: number; trigger: 'manual' | 'state-signal'; mode: 'live' | 'replay'
+  time: number; trigger: 'manual' | 'state-signal' | 'damage-signal'; mode: 'live' | 'replay'
   events: DeathCombatEvent[]; signal?: DeathCombatEvent
 }
 export interface DeathLogResult {
@@ -24,11 +24,12 @@ export class OverlayDeathRecorder {
   private events: DeathCombatEvent[] = []
   private records: DeathReport[]
   private dead = false
+  private deadAt = -Infinity
   private counter = 0
   constructor(records: DeathReport[] = [], private id?: () => string) { this.records = structuredClone(records.slice(0, 20)) }
   bind(scope: NonNullable<OverlayDeathRecorder['scope']> | null): void {
     if (this.scope?.captureId !== scope?.captureId || this.scope?.connectionId !== scope?.connectionId || this.scope?.playerId !== scope?.playerId) {
-      this.events = []; this.dead = false
+      this.events = []; this.dead = false; this.deadAt = -Infinity
     }
     this.scope = scope ? { ...scope } : null
   }
@@ -42,11 +43,20 @@ export class OverlayDeathRecorder {
   }
   observeState(event: DeathCombatEvent, connectionId: string, deathCandidate: boolean): DeathReport | null {
     if (!this.scope || connectionId !== this.scope.connectionId || event.targetId !== this.scope.playerId || !Number.isFinite(event.time)) return null
-    if (event.stateCode === 1 && this.dead) { this.events = []; this.dead = false }
-    const candidate = deathCandidate && event.stateCode === 2
+    if (event.stateCode === 1 && this.dead && event.time > this.deadAt) { this.events = []; this.dead = false }
+    const candidate = deathCandidate && event.stateCode === 2 && event.time > this.deadAt
     const report = candidate && !this.dead ? this.capture(event.time, 'state-signal', event) : null
-    if (candidate) this.dead = true
+    if (candidate) { this.dead = true; this.deadAt = Math.max(this.deadAt, event.time) }
     this.append(event, connectionId)
+    return report
+  }
+  observeDamage(event: DeathCombatEvent, connectionId: string, deathCandidate: boolean, aliveCandidate: boolean): DeathReport | null {
+    if (!this.scope || connectionId !== this.scope.connectionId || !Number.isFinite(event.time)
+      || event.targetId !== this.scope.playerId) { this.append(event, connectionId); return null }
+    if (this.dead && aliveCandidate && event.time > this.deadAt) { this.events = []; this.dead = false }
+    if (!this.append(event, connectionId) || !deathCandidate || this.dead || event.time <= this.deadAt) return null
+    const report = this.capture(event.time, 'damage-signal', event)
+    this.dead = true; this.deadAt = event.time
     return report
   }
   capture(time: number, trigger: DeathReport['trigger'], signal?: DeathCombatEvent): DeathReport | null {

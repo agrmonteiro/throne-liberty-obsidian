@@ -69,17 +69,17 @@ export function OverlayDeathView({ state, active }: { state: OverlayState; activ
       <button disabled={!report} onClick={() => report && exportReport(report)}>Exportar JSON</button>
     </div></div>
     <p className="death-buffer" role="status"><strong>{buffered}/50</strong> eventos no buffer atual · {data.records.length}/20 registros salvos</p>
-    <p className="overlay-note">O registro congela os últimos 50 eventos anteriores à morte. A detecção por sinal de estado é experimental e ainda aguarda confirmação em uma morte do personagem. Use “Registrar morte agora” para informar uma morte manualmente.</p>
+    <p className="overlay-note">O registro congela até 50 eventos, incluindo o acerto que sinaliza a morte. A detecção automática ainda é experimental. Use “Registrar morte agora” para informar uma morte manualmente.</p>
     {(data.error ?? state.deathLog?.error) && <p role="alert">{data.error ?? state.deathLog?.error}</p>}
     {!report ? <div className="death-empty"><h3>Nenhuma morte registrada</h3><p>{state.config.sourceId === null
       ? 'Aguardando a identificação do personagem para iniciar o buffer.' : buffered ? 'Os eventos estão sendo guardados enquanto você joga.' : 'Aguardando eventos do personagem na leitura ao vivo.'}</p></div>
       : <>
         <div className="death-controls"><label>Registro<select aria-label="Registro de causa mortis" value={report.id} onChange={event => setSelected(event.target.value)}>
-          {data.records.map(row => <option key={row.id} value={row.id}>{clock(row.time)} · {row.playerName} · {row.trigger === 'manual' ? 'Manual' : 'Sinal experimental'}</option>)}
+          {data.records.map(row => <option key={row.id} value={row.id}>{clock(row.time)} · {row.playerName} · {row.trigger === 'manual' ? 'Manual' : row.trigger === 'damage-signal' ? 'Sinal no dano' : 'Sinal de estado'}</option>)}
         </select></label><label>Eventos<select aria-label="Filtrar eventos da morte" value={filter} onChange={event => setFilter(event.target.value)}>
           <option value="all">Todos</option><option value="damage">Dano</option><option value="healing">Cura</option><option value="state">Estado</option><option value="effect">Efeitos não classificados</option>
         </select></label></div>
-        <div className="death-summary"><span>{report.trigger === 'manual' ? 'Morte informada manualmente' : 'Possível morte · sinal de estado experimental'} · {report.events.length} eventos preservados</span>
+        <div className="death-summary"><span>{report.trigger === 'manual' ? 'Morte informada manualmente' : report.trigger === 'damage-signal' ? 'Morte sinalizada no acerto · experimental' : 'Possível morte · sinal de estado experimental'} · {report.events.length} eventos preservados</span>
           <p>{lastDamage ? <>Último dano recebido registrado: <strong>{number(lastDamage.damage!)} de {actor(lastDamage, 'source', report)}</strong>. Isso não confirma que foi o golpe fatal.</> : 'Nenhum dano recebido entre os eventos preservados.'}</p>
           <small>Personagem {report.playerId} · Conexão {report.connectionId.slice(0, 12)} · HP não decodificado</small></div>
         <div className="death-list-heading" aria-hidden="true"><span>Antes da morte</span><span>Evento</span><span>Origem → Alvo</span><span>Habilidade</span><span>Valor</span></div>

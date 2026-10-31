@@ -146,6 +146,15 @@ try {
   assert.equal(deathAudit.deaths().recent.length, 0)
   assert.equal(deathAudit.deaths().records.length, 2)
 } finally { deathAudit.close() }
+const fatalPacket = harness()
+try {
+  fatalPacket.start(); fatalPacket.send({type:'status',state:'live',message:'test'}); fatalPacket.send(player(7,1001))
+  fatalPacket.pause(true)
+  fatalPacket.send({...damage(8,1002,823),deathCandidate:true,event:{...damage(8,1002,823).event,targetId:7}})
+  assert.equal(fatalPacket.deaths().records[0].trigger,'damage-signal')
+  assert.equal(fatalPacket.deaths().records[0].events.at(-1).damage,823)
+  assert.equal(fatalPacket.state().session.received.total,0,'Automatic death remains independent of DPS pause')
+} finally {fatalPacket.close()}
 console.log('OK: causa mortis isolada por identidade/conexão, pausa independente, bruto sem perda e registro congelado.')
 const npcNames = harness()
 try {

@@ -94,6 +94,24 @@ def entity_state(body):
         return None
 
 
+def damage_life_signal(fields):
+    """Flag 7=1: acerto fatal observado em NPCs e na morte informada de 31/10.
+
+    O campo 9 positivo só rearma após um novo acerto contra o personagem;
+    não expõe HP como métrica validada nem estima cura efetiva.
+    """
+    alive = False
+    values = fields.get(9, [])
+    if len(values) == 1 and isinstance(values[0], bytes) and values[0]:
+        try:
+            nested = decoder.protobuf(values[0]).get(1, [])
+            alive = len(nested) == 1 and isinstance(nested[0], int) and 0 < decoder.zigzag(nested[0]) < 2**53
+        except (ValueError, TypeError, IndexError):
+            pass
+    dead = fields.get(7) == [1]
+    return dict(deathCandidate=dead, aliveCandidate=alive and not dead)
+
+
 def npc_identity(body):
     """Spawn 0x12346f68: entidade em 3; UID de template duplicado em 4/32 (zigzag)."""
     try:
@@ -278,7 +296,8 @@ class Stream:
                                  criticalCandidate=False,heavyCandidate=0)
                 else:
                     continue
-                emit(dict(type='damage' if event['damage'] > 0 else 'combat-observation',event=event, connectionId=self.connection_id,
+                life = damage_life_signal(fields) if opcode == 0x12344a7f and self.server_to_client else {}
+                emit(dict(type='damage' if event['damage'] > 0 else 'combat-observation',event=event, connectionId=self.connection_id, **life,
                           raw=packet_details(opcode, body, self.server_to_client)))
 
 

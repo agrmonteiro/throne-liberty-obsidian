@@ -2,9 +2,9 @@
 
 ## Comportamento
 
-A aba **Causa mortis** guarda uma janela móvel de **50 eventos anteriores** ao
-registro da morte, ordenados por timestamp. O pacote de sinal fica separado,
-preservando os 50 eventos anteriores. Até 20 registros são mantidos em
+A aba **Causa mortis** guarda uma janela móvel de **até 50 eventos**, ordenados
+por timestamp. O sinal de dano inclui o próprio acerto fatal entre esses 50;
+o sinal de estado fica separado dos eventos anteriores. Até 20 registros são mantidos em
 `<userData>/data/overlay-deaths.json`, com `schemaVersion: 1`, gravação temporária
 e rename. Um arquivo inválido é preservado e o erro aparece na aba. O buffer
 atual é volátil; somente os registros congelados sobrevivem ao reinício.
@@ -46,6 +46,46 @@ ao sinal é mostrado como contexto, sem afirmar que matou o personagem.
 O usuário avisará “morri” quando acontecer naturalmente. Conferir timestamp,
 conexão e entidade do perfil, comparar o sinal e atualizar esta documentação.
 Não provocar uma morte nem automatizar ações no jogo para validar a hipótese.
+
+### Morte informada pelo usuário e sinal no dano — 31/10/2026
+
+O usuário avisou **“morri”** durante a leitura. Não houve registro automático
+pelo delta de estado. O aviso foi salvo pelo IPC manual com 50 eventos, sem
+reclassificá-lo retroativamente como automático. O último acerto tinha timestamp
+`2026-10-31T13:06:57.309677Z`, dano **823**, habilidade **Cut Down — Nevadinho
+Apanhador**, com o perfil do alvo confirmado na mesma conexão. O horário do
+registro manual é o horário do aviso, aproximadamente 42 s após esse acerto.
+
+Nesse pacote `0x12344a7f`, o **campo 7 = 1**. A comparação com duas capturas
+independentes encontrou **187/187** e **85/85** acertos com essa flag acompanhados
+pelo delta de morte do mesmo NPC em até 1 s. A contagem exclui a duplicação dos
+frames internos comprimidos (auditar somente `depth == 0`). Isso sustenta o
+novo sinal de acerto fatal, agora também observado na morte informada do jogador.
+Ainda é experimental: não prova cobertura de outros opcodes, danos ambientais
+ou todos os modos de morte. O sinal antigo continua como hipótese de estado.
+
+O worker emite `deathCandidate` para campo 7 exatamente `[1]`, somente no sentido
+servidor → cliente. O backend exige alvo igual ao personagem selecionado na
+conexão atual; um abate de NPC ou de terceiro não gera a morte do personagem.
+O registro `damage-signal` inclui o acerto final, congela os últimos 50 e suprime
+um sinal de estado duplicado. Rearma por um acerto posterior com valor positivo
+em `9.1` (zigzag), ou pela hipótese de estado 1 / troca de escopo. Eventos antigos
+não rearmam a morte. Isso não expõe HP como uma métrica validada.
+
+No acerto final, `8.1` era 623 e o campo 9 estava vazio. Os valores anteriores
+de `9.1` diminuíam com dano e cresciam entre curas/regenerações; são candidatos
+de HP restante e dano aplicado, ainda sem validação independente de escala.
+Não usar para corrigir dano, medir cura efetiva ou anunciar excesso de dano.
+
+A fixture compacta `scripts/fixtures/overlay-player-death.json` conserva o corpo
+original deste acerto para testes e recuperação pelo Git. Os 50 eventos pessoais
+completos permanecem no arquivo local `overlay-deaths.json`, fora do repositório.
+Testes cobrem o pacote real, direção, retransmissão, morte de terceiro, pausa,
+inclusão do acerto final, duplicação de sinais e rearmar após reviver.
+TypeScript estrito, testes de buffer/backend/cura e build passaram. A versão
+foi carregada em uma única instância; o registro manual de 50 eventos foi
+conferido após reabrir a aba. A próxima morte real ainda precisa conferir o
+disparo automático de ponta a ponta; não provocar uma morte só para esse teste.
 
 ## Cobertura atual
 

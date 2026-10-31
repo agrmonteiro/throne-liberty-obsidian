@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "evidence": "Morte informada pelo usuário em 31/10/2026; último acerto do buffer preservado",
+  "time": 1793452017.309677,
+  "opcode": "0x12344a7f",
+  "targetId": 1153638,
+  "sourceId": 1332708,
+  "damage": 823,
+  "bodyHex": "08deaec8820710e6b44618e4ab5120222a0308ee0c30013801420308de094a00602a78b2e9ad830a8a01150a0f0db6443e481548e79a441df92f28c710cae3069001ec14"
+}
