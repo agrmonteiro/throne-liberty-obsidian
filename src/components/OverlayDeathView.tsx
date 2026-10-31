@@ -12,7 +12,7 @@ function actor(event: DeathCombatEvent, side: 'source' | 'target', report: Death
 }
 function kind(event: DeathCombatEvent, playerId: number): string {
   if (event.type === 'damage') return event.targetId === playerId ? 'Dano recebido' : 'Dano causado'
-  if (event.type === 'healing') return event.sourceId === playerId && event.targetId === playerId ? 'Autocura' : 'Cura'
+  if (event.type === 'healing') return event.sourceId === playerId && event.targetId === playerId ? 'Autocura' : event.targetId === playerId ? 'Cura recebida' : 'Cura feita'
   return event.type === 'effect' ? 'Efeito não classificado' : 'Estado da entidade'
 }
 function EventRow({ event, report }: { event: DeathCombatEvent; report: DeathReport }): React.ReactElement {
@@ -87,6 +87,6 @@ export function OverlayDeathView({ state, active, compact = false }: { state: Ov
         {!events.length && <p className="overlay-note">Nenhum evento neste filtro.</p>}
         {report.signal && <details className="death-signal"><summary>Pacote que gerou o sinal experimental</summary><pre>{JSON.stringify(report.signal, null, 2)}</pre></details>}
       </>}
-    <p className="overlay-note">{compact ? 'Coleta independente da pausa e cronômetro do DPS. Abra uma linha para ver os campos do pacote.' : 'Cobertura: dano, autocura identificada, efeitos e estados decodificados do personagem nesta conexão. Cada linha abre os campos e o corpo bruto do pacote. Buffs, escudos e HP ainda não têm interpretação completa. Pausa e cronômetro do DPS não interrompem este buffer; parar a leitura interrompe a coleta.'}</p>
+    <p className="overlay-note">{compact ? 'Coleta independente da pausa e cronômetro do DPS. Abra uma linha para ver os campos do pacote.' : 'Cobertura: dano, cura identificada (própria e de terceiros), efeitos e estados decodificados do personagem nesta conexão. Cada linha abre os campos e o corpo bruto do pacote. Buffs, escudos e HP ainda não têm interpretação completa. Pausa e cronômetro do DPS não interrompem este buffer; parar a leitura interrompe a coleta.'}</p>
   </div>
 }

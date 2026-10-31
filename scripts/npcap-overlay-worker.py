@@ -127,7 +127,7 @@ def npc_identity(body):
 
 
 def periodic_healing(body):
-    """Autocura periódica bruta; efeito e habilidade precisam existir no cliente."""
+    """Cura periódica bruta; origem e alvo são preservados separadamente."""
     fields = decoder.protobuf(body)
     if any(key not in fields or len(fields[key]) != 1 or not isinstance(fields[key][0], int) for key in (1, 2, 3, 4, 5)):
         return None
@@ -137,9 +137,10 @@ def periodic_healing(body):
     if HEALING_EFFECTS.get(str(effect), {}).get('group') not in ('Continuous_Heal', 'Intervallic_Heal') or skill not in HEALING_SKILLS or amount <= 0:
         return None
     source, target = fields[4][0], fields[2][0]
-    if not 0 < source < 2**53 or target != source:
+    if not 0 < source < 2**53 or not 0 < target < 2**53:
         return None
-    return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target, coverage='self-periodic')
+    return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target,
+                coverage='self-periodic' if source == target else 'external-periodic')
 
 
 def effect_observation(body, opcode):
@@ -156,7 +157,7 @@ def effect_observation(body, opcode):
 
 
 def vampiric_healing(body):
-    """Autocura instantânea, incluindo vampirismo: valor observado, sem estimar dano."""
+    """Cura instantânea, incluindo vampirismo: valor observado, sem estimar dano."""
     fields = decoder.protobuf(body)
     if any(key not in fields or len(fields[key]) != 1 or not isinstance(fields[key][0], int) for key in (1, 2, 3, 5, 10)):
         return None
@@ -166,10 +167,10 @@ def vampiric_healing(body):
     if HEALING_EFFECTS.get(str(effect), {}).get('group') != 'Instant_Heal' or skill not in HEALING_SKILLS or amount <= 0:
         return None
     source, target = fields[3][0], fields[2][0]
-    if not 0 < source < 2**53 or target != source:
+    if not 0 < source < 2**53 or not 0 < target < 2**53 or (effect == 939538607 and source != target):
         return None
     return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target,
-                coverage='self-lifesteal' if effect == 939538607 else 'self-instant')
+                coverage='external-instant' if source != target else 'self-lifesteal' if effect == 939538607 else 'self-instant')
 
 
 class Stream:

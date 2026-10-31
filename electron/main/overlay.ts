@@ -13,9 +13,7 @@ import { OverlayUnknownLog } from './overlayUnknownLog'
 import healingReference from '../../src/data/overlayHealingEffects.json'
 import { OverlayDeathLog } from './overlayDeathLog'
 import type { DeathCombatEvent } from '../../src/engine/overlayDeathLog'
-
-const healingEffects: Record<string, { row: string; group: string }> = healingReference.effects
-const healingSkillIds = new Set(healingReference.skillIds)
+import { recognizedHealing } from '../../src/engine/overlayHealingEvent'
 
 export function registerOverlay(owner: BrowserWindow): void {
   const file = path.join(app.getPath('userData'), 'data', 'overlay.json')
@@ -394,10 +392,7 @@ export function registerOverlay(owner: BrowserWindow): void {
             const amount = healing ? event?.healing : event?.damage
             if (!event || !Number.isSafeInteger(event.sourceId) || !Number.isSafeInteger(event.skillId)
               || !Number.isFinite(event.time) || !Number.isFinite(amount) || amount <= 0) continue
-            const healGroup = healing ? healingEffects[String(event.effectId)]?.group : null
-            if (healing && (event.sourceId !== event.targetId || !healingSkillIds.has(event.skillId) || !(
-              (event.coverage === 'self-periodic' && (healGroup === 'Continuous_Heal' || healGroup === 'Intervallic_Heal'))
-              || ((event.coverage === 'self-lifesteal' || event.coverage === 'self-instant') && healGroup === 'Instant_Heal')))) continue
+            if (healing && !recognizedHealing(event)) continue
             observeDeathEvent({ ...event, type: healing ? 'healing' : 'damage', raw: data.raw }, data.connectionId,
               data.deathCandidate === true, data.aliveCandidate === true)
             if (mode === 'replay') replayClock = event.time * 1000

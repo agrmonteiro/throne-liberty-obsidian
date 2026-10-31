@@ -30,11 +30,12 @@ para cálculos, limites e referências do addon.
   com dano, acertos e participação dentro daquela fonte. Novos registros salvam
   essa relação; detalhes e limites de recuperação do histórico estão em
   [overlay-source-skills-qa.md](overlay-source-skills-qa.md).
-- Cura é **bruta, experimental e parcial**: autocuras periódicas/instantâneas cujo
+- Cura é **bruta, experimental e parcial**: aplicações periódicas/instantâneas cujo
   efeito está classificado como cura e cuja habilidade existe no catálogo local,
   nos formatos confirmados `0x12344a63` e `0x12344a70`. Inclui Toque de Cura,
   Bênção da Natureza e Buscador de Sangue. Não mede HP efetivamente recuperado,
-  escudos, formatos ainda não reconhecidos ou cura entre jogadores. Autocura aparece em feita e recebida;
+  escudos ou formatos ainda não reconhecidos. Cura externa agora é separada por
+  origem/alvo; ver [OVERLAY-CURA-EXTERNA.md](OVERLAY-CURA-EXTERNA.md). Autocura aparece em feita e recebida;
   esses dois totais não devem ser somados como se fossem eventos diferentes.
 
 ## Ocultar fora de combate

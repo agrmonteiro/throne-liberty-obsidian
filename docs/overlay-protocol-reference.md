@@ -53,6 +53,10 @@ os campos preservados, limites e testes da aba de 50 eventos.
 
 ### Nomes de NPCs e dano recebido
 
+Para bindings de cura, fontes externas e reclassificação de efeitos preservados,
+consultar [OVERLAY-CURA-EXTERNA.md](OVERLAY-CURA-EXTERNA.md). A descrição da
+habilidade sozinha não autoriza contar um efeito como cura.
+
 O spawn `0x12346f68` liga a entidade do campo 3 ao UID de NPC duplicado em
 4/32 (zigzag), somente servidor → cliente. Os dois templates precisam coincidir;
 o vínculo é separado por conexão e não identifica o jogador. Consultar

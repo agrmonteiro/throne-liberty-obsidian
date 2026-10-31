@@ -33,8 +33,10 @@ export function OverlayMetricView({ state, page, historical = false }: {
         <span>{healing ? 'de cura bruta' : 'de dano recebido'} · {number(data.hits)} {healing ? 'aplicações' : 'acertos'}</span>
         <span className="meter-metric-rate">{number(metricRate(total, state.session.elapsedSec))} {data.rateLabel}</span></div>
       <MeterSkillTable key={page} state={state} page={page} emptyMessage={state.config.sourceId === null ? 'Aguardando identificação do personagem.'
-        : healing ? 'Aguardando uma autocura identificada na captura.' : 'Aguardando dano contra o personagem selecionado.'} />
-      <footer className="meter-session-status">{healing ? 'Autocura bruta experimental: efeitos de cura identificados no catálogo local. Cobertura parcial; cura efetiva, escudos e cura entre jogadores não medidos.'
+        : healing ? 'Aguardando uma cura identificada na captura.' : 'Aguardando dano contra o personagem selecionado.'} />
+      <footer className="meter-session-status">{healing ? state.session.healing?.coverage === 'self-observed'
+        ? 'Registro antigo: inclui somente autocuras. Curas externas não coletadas não podem ser reconstruídas neste encontro.'
+        : 'Cura bruta experimental: feita pela origem e recebida pelo alvo, incluindo autocura e cura de terceiros. Cobertura parcial; cura efetiva e escudos não medidos.'
         : page === 'receivedSources' ? 'Fontes identificadas pelo perfil do jogador ou pelo template do NPC recebido nesta conexão. IDs sem nome aguardam os dados da entidade.'
         : 'Ataques de monstros sem nome de exibição usam rótulos descritivos. Clique na habilidade para consultar os detalhes.'}</footer>
     </>}

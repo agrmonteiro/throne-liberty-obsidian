@@ -89,6 +89,6 @@ export function metricCsv(session: MeterSession, page: MetricPage): string {
   const headings = ['Página', 'Nome', 'IDs', 'Total', 'Participação (%)', data.rateLabel, 'Acertos/aplicações', 'Média por acerto/aplicação', 'Duração (s)', 'Cobertura']
   return '\uFEFF' + [headings, ...data.rows.map(row => [page, row.name, row.skillIds?.join(', ') ?? row.key, row.damage,
     data.total > 0 ? row.damage / data.total * 100 : 0, metricRate(row.damage, session.elapsedSec), row.hits, hitAverage(row), session.elapsedSec,
-    data.healing ? 'Autocura bruta experimental; cobertura parcial' : 'Eventos capturados'])]
+    data.healing ? session.healing?.coverage === 'self-observed' ? 'Autocura bruta experimental; cobertura parcial' : 'Cura bruta experimental; cobertura parcial' : 'Eventos capturados'])]
     .map(row => row.map(csvCell).join(';')).join('\r\n')
 }

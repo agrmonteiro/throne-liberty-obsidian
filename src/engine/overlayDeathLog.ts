@@ -8,6 +8,7 @@ export interface DeathCombatEvent {
   damage?: number; healing?: number; criticalCandidate?: boolean; heavyCandidate?: number
   coverage?: string; stateCode?: number; observedAmount?: number; sourceName?: string; targetName?: string
   sourceNpcId?: number; targetNpcId?: number; skillName?: string; raw?: CombatPacket
+  originalType?: 'effect'; classification?: 'healing-effect-catalog'
 }
 export interface DeathReport {
   id: string; captureId: string; connectionId: string; playerId: number; playerName: string

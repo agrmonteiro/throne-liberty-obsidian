@@ -2,6 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { randomUUID } from 'crypto'
 import { OverlayDeathRecorder, type DeathReport } from '../../src/engine/overlayDeathLog'
+import { resolveHealingObservation } from '../../src/engine/overlayHealingEvent'
 
 export class OverlayDeathLog {
   readonly recorder: OverlayDeathRecorder
@@ -32,6 +33,10 @@ export class OverlayDeathLog {
       fs.renameSync(`${this.file}.tmp`, this.file)
     } catch { this.error = 'Não foi possível salvar o registro de causa mortis.' }
   }
-  list(): ReturnType<OverlayDeathRecorder['list']> { return { ...this.recorder.list(), error: this.error } }
+  list(): ReturnType<OverlayDeathRecorder['list']> {
+    const data = this.recorder.list()
+    return { records: data.records.map(row => ({ ...row, events: row.events.map(resolveHealingObservation) })),
+      recent: data.recent.map(resolveHealingObservation), error: this.error }
+  }
   status(): ReturnType<OverlayDeathRecorder['status']> { return { ...this.recorder.status(), error: this.error } }
 }

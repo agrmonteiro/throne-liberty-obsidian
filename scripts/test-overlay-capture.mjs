@@ -17,6 +17,8 @@ function compile(relative, resolve) {
 }
 const engine = compile('src/engine/overlayMeter.ts', require)
 const { OverlayDeathRecorder } = compile('src/engine/overlayDeathLog.ts', require)
+const healingEvents = compile('src/engine/overlayHealingEvent.ts', name => name.endsWith('/overlayHealingEffects.json')
+  ? JSON.parse(fs.readFileSync(path.join(root,'src/data/overlayHealingEffects.json'),'utf8')) : require(name))
 const layout = compile('src/engine/overlayLayout.ts', require)
 function harness(startAt = 1000000) {
   let now = startAt
@@ -71,6 +73,7 @@ function harness(startAt = 1000000) {
     if (name === 'child_process') return { spawn: (_file, args) => { const child = new Child(); child.args = args; children.push(child); return child } }
     if (name === '@electron-toolkit/utils') return { is: { dev: false } }
     if (name.endsWith('/overlayMeter')) return engine
+    if (name.endsWith('/overlayHealingEvent')) return healingEvents
     if (name.endsWith('/overlayLayout')) return layout
     if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {},
       overlayNpcNames: Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayNpcReference.json'), 'utf8')).npcs).map(([id, row]) => [id, row.name])) }
@@ -156,6 +159,31 @@ try {
   assert.equal(fatalPacket.state().session.received.total,0,'Automatic death remains independent of DPS pause')
 } finally {fatalPacket.close()}
 console.log('OK: causa mortis isolada por identidade/conexão, pausa independente, bruto sem perda e registro congelado.')
+const externalFixture=JSON.parse(fs.readFileSync(path.join(root,'scripts/fixtures/overlay-external-healing.json'),'utf8'))
+const externalSamples=externalFixture.events.toSorted((a,b)=>a.time-b.time)
+const externalCapture=harness((externalSamples[0].time-2)*1000)
+try{
+  externalCapture.start();externalCapture.send({type:'status',state:'live',message:'test'})
+  externalCapture.send(player(externalSamples[0].targetId,externalSamples[0].time-1))
+  let total=0
+  for(const sample of externalSamples){
+    const event={time:sample.time,sourceId:sample.sourceId,targetId:sample.targetId,skillId:sample.skillId,effectId:sample.effectId,healing:sample.healing,
+      coverage:sample.opcode==='0x12344a63'?'external-periodic':'external-instant'}
+    externalCapture.send({type:'healing',connectionId:'B',event})
+    externalCapture.send({type:'healing',connectionId:'A',event})
+    total+=sample.healing
+  }
+  assert.equal(externalCapture.state().session.healing.received.total,total)
+  assert.equal(externalCapture.state().session.healing.done.total,0)
+  assert.equal(externalCapture.state().session.total,0)
+  assert.equal(externalCapture.deaths().recent.filter(e=>e.type==='healing').length,4)
+  externalCapture.pause(true)
+  const sample=externalSamples.at(-1)
+  externalCapture.send({type:'healing',connectionId:'A',event:{...sample,time:sample.time+1,coverage:'external-instant'}})
+  assert.equal(externalCapture.state().session.healing.received.total,total,'Pausa mantém totais congelados')
+  assert.equal(externalCapture.deaths().recent.filter(e=>e.type==='healing').length,5,'Linha do tempo continua coletando durante pausa')
+}finally{externalCapture.close()}
+console.log('OK: curas externas reais no IPC, recebida separada de feita, conexão filtrada e linha do tempo independente da pausa.')
 const npcNames = harness()
 try {
   npcNames.start()

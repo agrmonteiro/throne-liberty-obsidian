@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "build": "26231302",
+  "evidence": "Pacotes preservados da cura de AliveS1 em AgrMonteiro, 31/10/2026; IDs de entidade temporários desta conexão",
+  "events": [
+    {
+      "time": 1793454067.413316,
+      "sourceId": 1132628,
+      "targetId": 1556478,
+      "skillId": 980914971,
+      "effectId": 981428966,
+      "healing": 3376,
+      "sourceName": "AliveS1",
+      "targetName": "AgrMonteiro",
+      "opcode": "0x12344a70",
+      "bodyHex": "08ccabfba70710feff5e18d4904520fce60428e03430013a0042040890d40650b6ccbca70758ba017a0408f0df04"
+    },
+    {
+      "time": 1793454061.458457,
+      "sourceId": 1132628,
+      "targetId": 1556478,
+      "skillId": 980594532,
+      "effectId": 980792847,
+      "healing": 17325,
+      "sourceName": "AliveS1",
+      "targetName": "AgrMonteiro",
+      "opcode": "0x12344a70",
+      "bodyHex": "089ed8ada70710feff5e18d4904520f2e40428da8e0230013a0042040890d40650c8bd95a70758ee0472020001"
+    },
+    {
+      "time": 1793454148.267615,
+      "sourceId": 1132628,
+      "targetId": 1556478,
+      "skillId": 967976285,
+      "effectId": 968671975,
+      "healing": 2201,
+      "sourceName": "AliveS1",
+      "targetName": "AgrMonteiro",
+      "opcode": "0x12344a70",
+      "bodyHex": "08ce8be69b0710feff5e18d490452090ed0428b22230013a004204088acd0350ba95919b07587c72020001"
+    },
+    {
+      "time": 1793454072.447243,
+      "sourceId": 1132628,
+      "targetId": 1556478,
+      "skillId": 980859526,
+      "effectId": 981116454,
+      "healing": 202,
+      "sourceName": "AliveS1",
+      "targetName": "AgrMonteiro",
+      "opcode": "0x12344a63",
+      "bodyHex": "08cc98d5a70710feff5e18940320d49045288ceab5a707"
+    }
+  ]
+}

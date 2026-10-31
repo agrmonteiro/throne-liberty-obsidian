@@ -84,7 +84,7 @@ const csv = metricCsv(session, 'damage')
 assert.ok(csv.startsWith('\uFEFF'))
 assert.ok(csv.includes('"Bênção";"10";"300";'))
 assert.ok(csv.includes('"DPS"'))
-assert.ok(metricCsv(session, 'healingDone').includes('Autocura bruta experimental; cobertura parcial'))
+assert.ok(metricCsv(session, 'healingDone').includes('Cura bruta experimental; cobertura parcial'))
 const malicious = structuredClone(session)
 malicious.skills[0].name = '=HYPERLINK("test")'
 assert.ok(metricCsv(malicious, 'damage').includes('"\'=HYPERLINK(""test"")"'), 'Nomes em CSV devem ser texto e não fórmulas')

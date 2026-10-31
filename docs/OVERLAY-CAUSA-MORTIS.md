@@ -121,7 +121,9 @@ disparo automático de ponta a ponta; não provocar uma morte só para esse test
 
 - Dano `0x12344a7f`/`0x12344a62`: inclusive zero/negativo na linha do tempo,
   sem mudar a regra de dano positivo do medidor.
-- Autocura já reconhecida `0x12344a63`/`0x12344a70`: mesma classificação existente.
+- Cura própria e externa reconhecida `0x12344a63`/`0x12344a70`: origem/alvo
+  separados e efeitos conhecidos. A correção e a recuperação dos valores antigos
+  estão em [OVERLAY-CURA-EXTERNA.md](OVERLAY-CURA-EXTERNA.md).
 - Valores desses opcodes sem classificação ficam como **efeito não classificado**,
   inclusive efeitos entre entidades: nunca somar como cura sem validação.
 - Estados `0x12346f6d`, `0x12346f69`, `0x12346f6b`, `0x12346f18` e sinal

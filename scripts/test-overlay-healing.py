@@ -31,7 +31,8 @@ def body(amount=521, effect=963250776, skill=963905802, source=7, target=7):
 
 expected = worker.periodic_healing(body())
 assert expected['healing'] == 521 and expected['sourceId'] == expected['targetId'] == 7
-for invalid in (body(effect=1), body(skill=10), body(amount=0), body(target=8), field(1, 2), body()+field(3, 100)):
+assert worker.periodic_healing(body(target=8))['coverage'] == 'external-periodic'
+for invalid in (body(effect=1), body(skill=10), body(amount=0), body(target=0), body(source=0), field(1, 2), body()+field(3, 100)):
     assert worker.periodic_healing(invalid) is None
 
 payload = body()
@@ -64,7 +65,7 @@ damage = [row['event'] for row in messages if row['type'] == 'damage']
 assert len(damage) == 6392
 assert heals and all(e['sourceId'] == e['targetId'] and e['effectId'] == 963250776 for e in heals)
 assert len(heals) == 655 and sum(e['healing'] for e in heals) == 1243462
-assert all(str(e['effectId']) in worker.HEALING_EFFECTS and e['skillId'] in worker.HEALING_SKILLS and e['sourceId'] == e['targetId'] for e in all_heals)
+assert all(str(e['effectId']) in worker.HEALING_EFFECTS and e['skillId'] in worker.HEALING_SKILLS for e in all_heals)
 blessing = [e for e in all_heals if e['effectId'] == 963467735]
 assert len(blessing) == 171 and all(e['skillId'] == 963774787 for e in blessing)
 assert all(e['skillId'] in (963905802, 963351634) and e['healing'] > 0 for e in heals)
@@ -87,3 +88,19 @@ for part in manifest['parts']:
 blessing = [row['event'] for row in messages if row['type'] == 'healing' and row['event']['effectId'] == 963467735]
 assert len(blessing) == 82 and all(e['skillId'] == 963774787 and e['sourceId'] == e['targetId'] for e in blessing)
 print(f'OK: nova captura de Bênção da Natureza: {len(blessing)} aplicações / {sum(e["healing"] for e in blessing)} de cura bruta candidata.')
+
+fixture=json.loads((here/'fixtures/overlay-external-healing.json').read_text(encoding='utf-8'))
+for sample in fixture['events']:
+    payload=bytes.fromhex(sample['bodyHex']); opcode=int(sample['opcode'],16)
+    parse=worker.periodic_healing if opcode==0x12344a63 else worker.vampiric_healing
+    value=parse(payload)
+    assert value and all(value[key]==sample[key] for key in ('sourceId','targetId','skillId','effectId','healing'))
+    assert value['coverage'].startswith('external-')
+    frame=struct.pack('<II',(len(payload)+8)^worker.decoder.FRAME_LENGTH_KEYS[1],opcode)+payload
+    for server in (False,True):
+        messages.clear(); stream=worker.Stream('external-fixture',server); stream.feed(0,frame*2,sample['time'])
+        assert len(messages)==(2 if server else 0)
+        assert all(row['type']=='healing' and row['event']['healing']==sample['healing'] for row in messages)
+        stream.feed(0,frame*2,sample['time']+1)
+        assert len(messages)==(2 if server else 0),'Retransmissão não duplica cura externa'
+print('OK: 4 pacotes reais AliveS1 -> AgrMonteiro: cura externa instantânea/periódica, valores preservados, sentido e retransmissão.')
