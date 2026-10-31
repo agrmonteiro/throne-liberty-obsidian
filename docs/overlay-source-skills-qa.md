@@ -79,3 +79,38 @@ Regressões: `test-overlay-meter.mjs`, `test-overlay-analysis.mjs`,
   preservados antes de carregar o backend novo em uma única instância. A sessão
   atual estava vazia, portanto não acrescentou um encontro sem atividade ao histórico; aguardar perfil confirmado
   para retomar a seleção automática, sem reutilizar uma entidade antiga.
+
+## Detalhe em degraus — referência visual de 31/10/2026
+
+O usuário esclareceu que os retângulos do desenho representam **habilidades
+dentro de cada fonte**, não parcelas normal/crítico/pesado. A lista filha passa
+a ser um gráfico em degraus: cada largura representa o dano da habilidade
+dividido pelo total da fonte; o início é a soma das parcelas anteriores. A fonte
+principal e as fontes seguintes continuam na lista. A seta abre/recolhe o grupo.
+Os textos seguem **as mesmas colunas da fonte principal**: nome/ícone, dano,
+% da fonte, dano/s, acertos e média. Somente o fundo da barra se desloca em
+degraus; clicar no nome continua abrindo a inspeção da habilidade. Parcelas
+pequenas não deslocam ou comprimem os textos. Parcelas positivas menores
+que um pixel têm um traço mínimo de 1 px; parcela zero não ganha barra.
+
+Inventário de QA desta revisão:
+
+- Abrir/recolher por clique/Enter; várias fontes abertas e fontes seguintes visíveis.
+- Degraus consecutivos, soma das larguras e valores reconciliando com a fonte.
+- Inspeção de habilidade, Voltar, busca e ordenação preservados.
+- Registro real com várias habilidades e fonte de uma habilidade (100%).
+- Parcela minúscula/zero e nome longo: rótulos legíveis, nenhum overflow horizontal.
+- App, histórico e janela nativa; fundo/opacidade, fonte e captura preservados.
+- Atualizar somente os renderers, sem reiniciar o worker ou perder a identidade.
+
+Resultados desta revisão: captura real de Lorde com cinco habilidades somando
+162.087 e captura ao vivo com três habilidades conferidas. Expansão, Enter,
+inspeção e Voltar funcionaram. No layout final, as seis posições X dos textos
+filhos coincidiram exatamente com as da fonte (janela nativa de 726 px, sem
+overflow). As barras continuam começando no final da anterior; somente o
+preenchimento se desloca. A captura continuou durante os reloads de renderer.
+O layout estreito de 480 px também foi conferido com uma cópia isolada do
+registro real: as cinco colunas visíveis coincidem com as do pai e não há
+overflow. A média acompanha a regra existente de ocultar a última coluna
+nessa largura. O ajuste posterior da detecção de morte exigiu um reinício do backend, com
+histórico e registro real de morte preservados antes de carregar a atualização.

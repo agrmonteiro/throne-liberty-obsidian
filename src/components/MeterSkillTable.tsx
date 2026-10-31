@@ -63,20 +63,28 @@ function SourceSkills({ row, state }: { row: AnalysisRow; state: OverlayState })
     received: { total: row.damage, hits: row.hits, skills, sources: [] } } }
   const selected = skills.find(skill => skill.key === selectedKey)
   if (selected) return <SkillDetails row={selected} state={sourceState} page="receivedSkills" onClose={() => setSelectedKey(null)} />
-  const maximum = Math.max(0, ...skills.map(skill => skill.damage))
+  let accumulated = 0
   return <div className="meter-source-skills" role="region" aria-label={`Habilidades de ${row.name}`}>
     <header><strong>Habilidades desta fonte</strong><span>{number(row.damage)} de dano · {skills.length} {skills.length === 1 ? 'habilidade' : 'habilidades'}</span></header>
-    <div className="meter-source-skills-scroll"><table className="meter-table meter-source-skills-table">
-      <thead><tr><th>Habilidade</th><th>Dano</th><th title="Participação no dano deste atacante">% da fonte</th><th>Acertos</th></tr></thead>
-      <tbody>{skills.map(skill => <tr key={skill.key} style={rowBar(skill, maximum, false)}>
-        <td><button type="button" data-overlay-interactive className="meter-row-button"
+    <div className="meter-source-skills-scroll"><table className="meter-table meter-analysis-table meter-source-skills-table" aria-label={`Distribuição por habilidade de ${row.name}`}><tbody>
+      {skills.map(skill => {
+        const start = row.damage > 0 ? Math.min(100, accumulated / row.damage * 100) : 0
+        accumulated += skill.damage
+        const size = row.damage > 0 ? Math.max(0, Math.min(100 - start, skill.damage / row.damage * 100)) : 0
+        return <tr key={skill.key} className="meter-source-step-row" data-step-bar={size > 0 ? 'true' : undefined}
+          style={{ '--step-start': `${start}%`, '--step-size': `${size}%` } as React.CSSProperties}
+          title={`${skill.name} · ${number(skill.damage)} de dano · ${percentage(skill.damage, row.damage)} da fonte`}>
+          <td>{size > 0 && <span className="meter-source-step-bar" aria-hidden="true" />}<button type="button" data-overlay-interactive className="meter-row-button"
           aria-label={`Ver detalhes de ${skill.name} de ${row.name}`} title={`${skill.name} · IDs ${skill.skillIds?.join(', ') ?? skill.key}`}
           onClick={() => setSelectedKey(skill.key)}>
-          <MeterSkillIcon name={skill.name} iconFile={skill.iconFile} /><span className="meter-skill-name">{skill.name}</span>
-          <span className="meter-row-chevron" aria-hidden="true">›</span></button></td>
-        <td>{number(skill.damage)}</td><td>{percentage(skill.damage, row.damage)}</td><td>{number(skill.hits)}</td>
-      </tr>)}</tbody>
-    </table></div>
+            <MeterSkillIcon name={skill.name} iconFile={skill.iconFile} /><span className="meter-skill-name">{skill.name}</span>
+            <span className="meter-row-chevron" aria-hidden="true">›</span>
+          </button></td>
+          <td>{number(skill.damage)}</td><td title="Participação no dano desta fonte">{percentage(skill.damage, row.damage)}</td>
+          <td>{number(metricRate(skill.damage, state.session.elapsedSec))}</td><td>{number(skill.hits)}</td><td>{number(hitAverage(skill))}</td>
+        </tr>
+      })}
+    </tbody></table></div>
     {!skills.length && <p className="meter-source-legacy">Nenhuma habilidade registrada para esta fonte.</p>}
   </div>
 }
@@ -120,7 +128,7 @@ export function MeterSkillTable({ state, page, emptyMessage }: {
         const source = page === 'receivedSources'
         const open = source && expanded.scope === scope && expanded.keys.has(row.key)
         const detailId = `${searchId}-source-${row.key}`
-        return <React.Fragment key={row.key}><tr style={rowBar(row, maximum, data.healing)}>
+        return <React.Fragment key={row.key}><tr className={open ? 'meter-source-expanded' : undefined} style={rowBar(row, maximum, data.healing)}>
         <td><button type="button" data-overlay-interactive className="meter-row-button"
           aria-label={source ? `${open ? 'Recolher' : 'Expandir'} habilidades de ${row.name}` : `Ver detalhes de ${row.name}`}
           aria-expanded={source ? open : undefined} aria-controls={open ? detailId : undefined}
