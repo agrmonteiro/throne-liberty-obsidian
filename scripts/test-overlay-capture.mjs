@@ -16,6 +16,7 @@ function compile(relative, resolve) {
   return module.exports
 }
 const engine = compile('src/engine/overlayMeter.ts', require)
+const { OverlayDeathRecorder } = compile('src/engine/overlayDeathLog.ts', require)
 const layout = compile('src/engine/overlayLayout.ts', require)
 function harness(startAt = 1000000) {
   let now = startAt
@@ -37,6 +38,12 @@ function harness(startAt = 1000000) {
     clear() { records.clear() }
   }
   class UnknownLog { status() { return {} } record() {} flush() {} resetAfterClear() {} }
+  class DeathLog {
+    recorder = new OverlayDeathRecorder()
+    list() { return this.recorder.list() }
+    status() { return this.recorder.status() }
+    save() {}
+  }
   class NativeWindow extends EventEmitter {
     visible = false; focused = false; destroyed = false; url = ''; webContents = new EventEmitter()
     constructor(bounds) { super(); this.focusable = bounds.focusable; this.rect = bounds; this.webContents.send = () => {}; this.webContents.getURL = () => this.url; nativeWindows.push(this) }
@@ -70,6 +77,7 @@ function harness(startAt = 1000000) {
     if (name.endsWith('/overlayHealingEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayHealingEffects.json'), 'utf8'))
     if (name === './overlayHistory') return { OverlayHistory: History }
     if (name === './overlayUnknownLog') return { OverlayUnknownLog: UnknownLog }
+    if (name === './overlayDeathLog') return { OverlayDeathLog: DeathLog }
     if (name === './overlayCleanup') return { clearMeterLogFiles() {} }
     if (name.endsWith('overlaySkillNames.json')) return {}
     return require(name)
@@ -91,7 +99,8 @@ function harness(startAt = 1000000) {
     const child = children.findLast(row => row.args.some(value => value.endsWith('npcap-overlay-worker.py')))
     child.stdout.emit('data', Buffer.from(JSON.stringify(message) + '\n'))
   }
-  return { state, start, configure, send, records,
+  return { state, start, configure, send, records, deaths: () => handlers.get('overlay:deaths')(),
+    recordDeath: () => handlers.get('overlay:record-death')(),
     tick: () => ticks.forEach(callback => callback()),
     foreground: (active, extra = {}) => children.find(row => row.args.some(value => value.endsWith('overlay-foreground.py'))).stdout.emit('data',
       Buffer.from(JSON.stringify({ active, bounds: { x: 0, y: 0, width: 1280, height: 720 }, ...extra }) + '\n')),
@@ -112,6 +121,32 @@ function harness(startAt = 1000000) {
 const damage = (id, time, amount, connectionId = 'A') => ({ type: 'damage', connectionId,
   event: { sourceId: id, time, damage: amount, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
 const player = (id, time, connectionId = 'A') => ({ type: 'identity', name: 'AgrMonteiro', sourceId: id, time, connectionId })
+const deathAudit = harness()
+try {
+  deathAudit.start(); deathAudit.send({ type: 'status', state: 'live', message: 'test' }); deathAudit.send(player(7, 1001))
+  deathAudit.send({ ...damage(8, 1002, 20), event: { ...damage(8, 1002, 20).event, targetId: 7 }, raw: { opcode: '0x12344a7f', fields: { 20: ['18446744073709551615'] } } })
+  deathAudit.pause(true)
+  deathAudit.send({ ...damage(8, 1003, 30), event: { ...damage(8, 1003, 30).event, targetId: 7 } })
+  deathAudit.send({ type: 'effect-observation', connectionId: 'A', event: { sourceId: 8, targetId: 7, time: 1004, skillId: 22, effectId: 23, observedAmount: 99 } })
+  deathAudit.send({ type: 'entity-state', connectionId: 'B', targetId: 7, time: 1005, stateCode: 2, deathCandidate: true })
+  deathAudit.send({ type: 'entity-state', connectionId: 'A', targetId: 9, time: 1005, stateCode: 2, deathCandidate: true })
+  assert.equal(deathAudit.deaths().records.length, 0, 'Morte de terceiro ou outra conexão não cria registro')
+  deathAudit.send({ type: 'entity-state', connectionId: 'A', targetId: 7, time: 1006, stateCode: 2, deathCandidate: true })
+  const report = deathAudit.deaths().records[0]
+  assert.equal(report.trigger, 'state-signal')
+  assert.equal(report.events.length, 3, 'Pausa do DPS não interrompe buffer; inclui efeitos desconhecidos')
+  assert.equal(report.events[0].raw.fields[20][0], '18446744073709551615')
+  assert.equal(deathAudit.state().session.received.total, 20, 'Somente primeiro dano entrou no DPS')
+  deathAudit.send({ ...damage(8, 1007, 70), event: { ...damage(8, 1007, 70).event, targetId: 7 } })
+  assert.equal(deathAudit.deaths().records[0].events.length, 3, 'Registro é congelado antes da morte')
+  assert.equal(deathAudit.recordDeath().records[0].trigger, 'manual')
+  deathAudit.reset()
+  assert.equal(deathAudit.deaths().records.length, 2, 'Reset do DPS preserva registros')
+  deathAudit.send({ type: 'connection-closed', connectionId: 'A' })
+  assert.equal(deathAudit.deaths().recent.length, 0)
+  assert.equal(deathAudit.deaths().records.length, 2)
+} finally { deathAudit.close() }
+console.log('OK: causa mortis isolada por identidade/conexão, pausa independente, bruto sem perda e registro congelado.')
 const npcNames = harness()
 try {
   npcNames.start()
@@ -284,6 +319,7 @@ try {
   assert.equal(trial.state().timer.phase, 'running')
   trial.send(damage(7, end - .001, 200))
   trial.send(damage(7, end, 9999))
+  assert.equal(trial.deaths().recent.length, 4, 'Buffer de causa mortis inclui preparação e eventos fora do cronômetro')
   trial.advance(20000)
   assert.equal(trial.state().timer.phase, 'finished')
   assert.equal(trial.state().session.total, 300)

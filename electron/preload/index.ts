@@ -3,6 +3,8 @@ import { electronAPI } from '@electron-toolkit/preload'
 import type { OverlayAPI } from '../../src/engine/overlayMeter'
 
 const overlayAPI: OverlayAPI = {
+  deaths: () => ipcRenderer.invoke('overlay:deaths'),
+  recordDeath: () => ipcRenderer.invoke('overlay:record-death'),
   clearRecords: () => ipcRenderer.invoke('overlay:clear-records'),
   history: () => ipcRenderer.invoke('overlay:history'),
   get: () => ipcRenderer.invoke('overlay:get'),

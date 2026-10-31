@@ -11,6 +11,8 @@ import { clearMeterLogFiles } from './overlayCleanup'
 import { overlaySkillNames as names, overlaySkillFiles, overlayNpcNames } from '../../src/engine/overlaySkillReference'
 import { OverlayUnknownLog } from './overlayUnknownLog'
 import healingReference from '../../src/data/overlayHealingEffects.json'
+import { OverlayDeathLog } from './overlayDeathLog'
+import type { DeathCombatEvent } from '../../src/engine/overlayDeathLog'
 
 const healingEffects: Record<string, { row: string; group: string }> = healingReference.effects
 const healingSkillIds = new Set(healingReference.skillIds)
@@ -27,6 +29,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   const meter = new OverlayMeter(null, names, overlaySkillFiles)
   const identity = new OverlayIdentity()
   const history = new OverlayHistory(path.join(app.getPath('userData'), 'data', 'overlay-encounters.json'))
+  const deathLog = new OverlayDeathLog(path.join(app.getPath('userData'), 'data', 'overlay-deaths.json'))
   let encounterId = randomUUID()
   let encounterConnectionId: string | null = null
   let encounterClosed = false
@@ -82,6 +85,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     config.sourceId = sourceId; config.reviewEncounterId = null
     lastCombatDamageAt = null
     meter.selectSource(sourceId, Math.max(captureStartedAt, at - 5000))
+    bindDeathLog()
     let restoredDamage = 0, restoredAt = 0
     if (sourceId !== null) for (const row of recentDamage) {
       const accepted = (mode === 'replay' || identity.accepts(row.connectionId))
@@ -116,7 +120,28 @@ export function registerOverlay(owner: BrowserWindow): void {
         remainingSec: Math.max(0, ((now < timed.startsAt ? timed.startsAt : timed.endsAt) - now) / 1000), elapsedSec: session.elapsedSec } } : {}),
       status, mode, message, unknownSkillLog: unknownLog.status(),
       sources: [...sources].map(([id, damage]) => ({ id, damage, name: entityName(id).name, lastDamageAt: sourceLastSeen.get(id),
-        localPlayer: id === player?.sourceId })).sort((a, b) => b.damage - a.damage) }
+        localPlayer: id === player?.sourceId })).sort((a, b) => b.damage - a.damage), deathLog: deathLog.status() }
+  }
+  function bindDeathLog(connectionId = encounterConnectionId ?? identity.snapshot()?.connectionId): void {
+    deathLog.recorder.bind(mode && connectionId && meter.sourceId !== null ? {
+      captureId, connectionId, playerId: meter.sourceId, playerName: config.playerName ?? sourceNames.get(meter.sourceId) ?? 'Personagem selecionado', mode,
+    } : null)
+  }
+  function observeDeathEvent(event: DeathCombatEvent, connectionId: string, candidate = false): void {
+    if (mode !== 'live' || !Number.isFinite(event.time) || event.time * 1000 < captureStartedAt
+      || typeof connectionId !== 'string' || !connectionId.length || connectionId.length > 128 || identity.isRetired(connectionId)
+      || (identity.snapshot() && !identity.accepts(connectionId))
+      || (encounterConnectionId && encounterConnectionId !== connectionId)
+      || (event.sourceId !== meter.sourceId && event.targetId !== meter.sourceId)) return
+    bindDeathLog(connectionId)
+    const source = event.sourceId ? entityName(event.sourceId) : {}
+    const target = event.targetId ? entityName(event.targetId) : {}
+    const enriched = { ...event, sourceName: source.name, targetName: target.name,
+      sourceNpcId: source.npcId, targetNpcId: target.npcId,
+      skillName: event.skillId ? names[String(event.skillId)] : undefined }
+    if (event.type === 'state' && event.stateCode !== undefined) {
+      if (deathLog.recorder.observeState(enriched, connectionId, candidate)) deathLog.save()
+    } else deathLog.recorder.append(enriched, connectionId)
   }
   function entityName(id: number): { name?: string; npcId?: number } {
     const profile = sourceNames.get(id)
@@ -258,6 +283,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     sourceNames.clear(); conflictingNames.clear(); npcTemplates.clear()
     meter.setPaused(false, replay ? 0 : Date.now())
     meter.selectSource(null, replay ? 0 : Date.now()); config.sourceId = null; config.autoSource = true
+    deathLog.recorder.bind(null)
     status = 'starting'; message = replay ? 'Abrindo reprodução…' : 'Conectando ao Npcap…'
     mode = replay ? 'replay' : 'live'
     replayClock = null
@@ -283,12 +309,23 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (mode === 'replay' && config.autoSource !== false && data.ids.length === 1 && Number.isSafeInteger(data.ids[0]) && data.ids[0] > 0) {
               bindSource(data.ids[0], replayClock ?? 0, 'replay-source')
             }
+          } else if (data.type === 'entity-state') {
+            if (!Number.isSafeInteger(data.targetId) || data.targetId <= 0 || !Number.isFinite(data.time)) continue
+            observeDeathEvent({ type: 'state', time: data.time, targetId: data.targetId,
+              stateCode: Number.isSafeInteger(data.stateCode) ? data.stateCode : undefined, raw: data.raw }, data.connectionId, data.deathCandidate === true)
+          } else if (data.type === 'combat-observation' || data.type === 'effect-observation') {
+            const event = data.event
+            if (event && Number.isFinite(event.time) && Number.isFinite(event.damage ?? event.observedAmount) && Number.isSafeInteger(event.sourceId)
+              && Number.isSafeInteger(event.targetId) && Number.isSafeInteger(event.skillId)) {
+              observeDeathEvent({ ...event, type: data.type === 'effect-observation' ? 'effect' : 'damage', raw: data.raw }, data.connectionId)
+            }
           } else if (data.type === 'connection-closed' && mode === 'live') {
             if (identity.accepts(data.connectionId) || encounterConnectionId === data.connectionId) {
               finishEncounter('connection-end')
               sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear(); recentDamage = []
               config.sourceId = null; config.reviewEncounterId = null
               meter.selectSource(null, Date.now()); lastCombatDamageAt = null; newEncounter(null); save()
+              deathLog.recorder.bind(null)
             }
             npcTemplates.delete(data.connectionId)
             identity.retire(data.connectionId); broadcast()
@@ -311,6 +348,7 @@ export function registerOverlay(owner: BrowserWindow): void {
             // 30/10: este sinal também apareceu para terceiros na mesma conexão.
             // Com nome configurado, somente o perfil correspondente autoriza vincular/trocar entidade.
             if (!config.playerName || previous?.sourceId !== data.sourceId || previous?.connectionId !== data.connectionId) continue
+            observeDeathEvent({ type: 'state', time: data.time, targetId: data.sourceId, raw: data.raw }, data.connectionId)
             const change = identity.identify(data.sourceId, data.connectionId, data.time * 1000, previous?.method ?? 'local-state')
             if (change === 'changed') {
               if (previous && previous.connectionId !== data.connectionId) {
@@ -356,6 +394,7 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (healing && (event.sourceId !== event.targetId || !healingSkillIds.has(event.skillId) || !(
               (event.coverage === 'self-periodic' && (healGroup === 'Continuous_Heal' || healGroup === 'Intervallic_Heal'))
               || ((event.coverage === 'self-lifesteal' || event.coverage === 'self-instant') && healGroup === 'Instant_Heal')))) continue
+            observeDeathEvent({ ...event, type: healing ? 'healing' : 'damage', raw: data.raw }, data.connectionId)
             if (mode === 'replay') replayClock = event.time * 1000
             // Visibilidade acompanha o combate mesmo com a medição pausada ou fora da janela do teste.
             if (mode === 'live' && typeof data.connectionId === 'string' && data.connectionId.length > 0 && data.connectionId.length <= 128
@@ -466,6 +505,11 @@ export function registerOverlay(owner: BrowserWindow): void {
   }
   watchForeground()
   ipcMain.handle('overlay:get', state)
+  ipcMain.handle('overlay:deaths', () => deathLog.list())
+  ipcMain.handle('overlay:record-death', () => {
+    if (mode === 'live' && config.sourceId !== null && deathLog.recorder.capture(Date.now() / 1000, 'manual')) deathLog.save()
+    return deathLog.list()
+  })
   ipcMain.handle('overlay:history', () => { checkpoint(); return history.list() })
   ipcMain.handle('overlay:clear-records', () => {
     try {
@@ -611,6 +655,6 @@ export function registerOverlay(owner: BrowserWindow): void {
     globalShortcut.unregister('CommandOrControl+Shift+F9'); globalShortcut.unregister('CommandOrControl+Shift+F10')
     globalShortcut.unregister('CommandOrControl+Shift+F8')
     globalShortcut.unregister('CommandOrControl+Shift+F11')
-    for (const name of ['get', 'history', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
+    for (const name of ['get', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
   })
 }

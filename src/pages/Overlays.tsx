@@ -8,10 +8,11 @@ import { OverlayMetricView, metricPages, type MetricPage } from '../components/O
 import { OverlayTimer } from '../components/OverlayTimer'
 import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
 import { MeterExportButton } from '../components/MeterExportButton'
+import { OverlayDeathView } from '../components/OverlayDeathView'
 import '../styles/overlay.css'
 
 const tabs = [{ id: 'live', label: 'Ao vivo' }, { id: 'sources', label: 'Origens' },
-  { id: 'history', label: 'Histórico' }, { id: 'settings', label: 'Ajustes' }] as const
+  { id: 'history', label: 'Histórico' }, { id: 'deaths', label: 'Causa mortis' }, { id: 'settings', label: 'Ajustes' }] as const
 
 export function Overlays(): React.ReactElement {
   const { state, act } = useOverlay()
@@ -69,6 +70,9 @@ export function Overlays(): React.ReactElement {
     </section>
     <section className="overlay-tab-panel" id="meter-view-history" role="tabpanel" aria-labelledby="meter-tab-history" hidden={tab !== 'history'}>
       <OverlayHistoryView state={state} />
+    </section>
+    <section className="overlay-tab-panel" id="meter-view-deaths" role="tabpanel" aria-labelledby="meter-tab-deaths" hidden={tab !== 'deaths'}>
+      <OverlayDeathView state={state} active={tab === 'deaths'} />
     </section>
     <section className="overlay-tab-panel" id="meter-view-settings" role="tabpanel" aria-labelledby="meter-tab-settings" hidden={tab !== 'settings'}>
       <div className="overlay-settings-grid overlay-inspector">

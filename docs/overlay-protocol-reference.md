@@ -43,6 +43,13 @@ referência de 661 eventos / 2.986.995 de dano.
 
 ## Catálogo local de habilidades
 
+### Linha do tempo e candidatos de morte
+
+Consultar [OVERLAY-CAUSA-MORTIS.md](OVERLAY-CAUSA-MORTIS.md) antes de alterar
+`0x12346f6d` ou interpretar estados/HP. O sinal de morte ainda é experimental;
+não há validação independente de uma morte do personagem. O documento lista
+os campos preservados, limites e testes da aba de 50 eventos.
+
 ### Nomes de NPCs e dano recebido
 
 O spawn `0x12346f68` liga a entidade do campo 3 ao UID de NPC duplicado em

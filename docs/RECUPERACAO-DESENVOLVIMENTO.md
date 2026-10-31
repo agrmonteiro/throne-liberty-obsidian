@@ -189,3 +189,10 @@ Não executar deploy/release para fazer backup de código. Push ao remoto exige
 confirmação do usuário conforme `AGENTS.md`; publicar instalador, GitHub Release
 e notificar Discord só quando houver pedido de release. Nenhum segredo deve
 ser copiado para a documentação ou commits de recuperação.
+
+## Causa mortis
+
+Para retomar a linha do tempo de 50 eventos e a investigação de morte, consulte
+`docs/OVERLAY-CAUSA-MORTIS.md`. Os registros locais ficam em
+`<userData>/data/overlay-deaths.json`; não entram no Git. O sinal automático é
+experimental e ainda aguarda confirmação contra uma morte do jogador.

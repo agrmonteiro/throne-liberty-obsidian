@@ -242,6 +242,41 @@ html:has(body[data-overlay]),body[data-overlay] #root { background:transparent!i
 .overlay-dashboard .overlay-tabs button[aria-selected=true] { border-bottom-color:var(--gold); color:var(--gold); }
 .overlay-dashboard .overlay-tabs button:hover { color:var(--text); background:transparent; }
 .overlay-tab-panel[hidden] { display:none; }
+.death-buffer { color:var(--text-muted); font-size:12px; }
+.death-buffer strong { color:var(--gold); font-variant-numeric:tabular-nums; }
+.death-empty { padding:40px 0; border-block:1px solid var(--border); margin:24px 0; }
+.death-empty h3 { font-size:16px; font-weight:500; margin:0 0 8px; }
+.death-empty p,.death-summary { color:var(--text-muted); font-size:12px; }
+.death-controls { display:flex; gap:16px; margin:24px 0 18px; }
+.death-controls label { display:flex; flex-direction:column; gap:7px; min-width:0; font-size:12px; color:var(--text-muted); }
+.death-controls label:first-child { flex:1; }
+.death-controls select { width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:4px; background:#151921; color:var(--text); font:inherit; }
+.death-summary { padding:14px 0; border-block:1px solid var(--border); }
+.death-summary>span { color:var(--gold); }
+.death-summary p { line-height:1.6; margin:9px 0; }
+.death-list-heading,.death-event summary { display:grid; grid-template-columns:90px 150px minmax(120px,1fr) minmax(120px,1fr) 100px; gap:12px; align-items:center; }
+.death-list-heading { padding:16px 10px 8px; color:var(--text-muted); font-size:11px; }
+.death-list-heading>span:last-child { text-align:right; }
+.death-events { list-style:none; padding:0; margin:0 0 18px; }
+.death-event { border-bottom:1px solid var(--border); font-size:12px; }
+.death-event summary { padding:12px 10px; cursor:pointer; }
+.death-event summary:hover { background:#ffffff05; }
+.death-event summary:focus-visible { outline:2px solid var(--gold); outline-offset:-2px; }
+.death-event time { color:var(--text-muted); font-variant-numeric:tabular-nums; }
+.death-event-kind { color:#d6b47b; }
+.death-event-healing .death-event-kind { color:#8bbf9c; }
+.death-event-state .death-event-kind,.death-event-effect .death-event-kind { color:var(--text-muted); }
+.death-event-actors { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.death-event-skill { display:flex; align-items:center; gap:8px; min-width:0; overflow:hidden; }
+.death-event-skill .meter-skill-icon { flex-shrink:0; }
+.death-event strong { text-align:right; font-weight:500; font-variant-numeric:tabular-nums; }
+.death-event small { display:block; font-size:10px; color:var(--text-muted); }
+.death-event-raw { padding:0 14px 12px; }
+.death-event-raw p { color:var(--text-muted); font-size:11px; }
+.overlay-deaths pre { max-height:320px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; padding:12px; background:#0d1016; border:1px solid var(--border); border-radius:4px; font-size:11px; line-height:1.6; }
+.death-signal { margin-bottom:20px; font-size:12px; }
+@media(max-width:900px) { .death-list-heading,.death-event summary { grid-template-columns:78px 125px minmax(95px,1fr) minmax(95px,1fr) 70px; gap:8px; } }
+@media(max-width:700px) { .death-list-heading { display:none; }.death-event summary { grid-template-columns:78px minmax(0,1fr) 70px; }.death-event-actors { grid-column:2; }.death-event-skill { grid-column:2; }.death-event strong { grid-column:3; grid-row:1/4; }.death-controls { flex-direction:column; }.overlay-tabs { gap:16px; overflow-x:auto; }.overlay-tabs button { white-space:nowrap; } }
 .overlay-tab-panel:not([hidden]) { animation:overlay-pane-in .14s ease-out; }
 @keyframes overlay-pane-in { from { opacity:.4; transform:translateY(3px); } to { opacity:1; transform:translateY(0); } }
 .overlay-section-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:4px; }

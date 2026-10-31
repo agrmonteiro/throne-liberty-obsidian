@@ -222,6 +222,7 @@ export interface OverlayConfig {
   fontFamily?: 'Inter' | 'Arial' | 'Consolas'; fontSize?: number; chartPadding?: number; chartPaddingVertical?: number; theme?: OverlayTheme
 }
 export interface OverlayState {
+  deathLog?: import('./overlayDeathLog').DeathLogStatus
   combat?: { lastDamageAt: number | null; hidden: boolean }
   timer?: TimedMeasurement & { phase: 'countdown' | 'running' | 'finished' | 'cancelled'; remainingSec: number; elapsedSec: number }
   capture?: { id: string; connectionId: string | null; encounterId: string; player: OverlayPlayerIdentity | null }
@@ -270,6 +271,8 @@ export function resolveOverlayNames(state: OverlayState, names: Record<string, s
       received: { ...healing.received, skills: resolveSkillRows(healing.received.skills, names, icons) } } } : {}) } }
 }
 export interface OverlayAPI {
+  deaths: () => Promise<import('./overlayDeathLog').DeathLogResult>
+  recordDeath: () => Promise<import('./overlayDeathLog').DeathLogResult>
   clearRecords: () => Promise<OverlayHistoryResult>
   history: () => Promise<OverlayHistoryResult>
   get: () => Promise<OverlayState>

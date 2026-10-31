@@ -50,6 +50,50 @@ def player_identity(body):
     return decoder.player_identity(body)
 
 
+def packet_details(opcode, body, server_to_client):
+    """Dados brutos locais; inteiros grandes permanecem strings no JSON."""
+    def fields(data, depth=0):
+        try:
+            parsed = decoder.protobuf(data)
+        except (ValueError, TypeError, IndexError):
+            return {}
+        result = {}
+        for key, values in list(parsed.items())[:128]:
+            items = []
+            for value in values[:32]:
+                if isinstance(value, int):
+                    items.append(value if abs(value) <= 2**53-1 else str(value))
+                else:
+                    item = dict(hex=value[:256].hex(), bytes=len(value), hexTruncated=len(value)>256)
+                    if depth < 3 and 0 < len(value) <= 4096:
+                        nested = fields(value, depth+1)
+                        if nested: item['fields'] = nested
+                    items.append(item)
+            result[str(key)] = items
+        return result
+    return dict(opcode=hex(opcode), bytes=len(body), bodyHex=body[:16384].hex(), truncated=len(body)>16384,
+                direction='server-to-client' if server_to_client else 'client-to-server', fields=fields(body[:16384]))
+
+
+def entity_state(body):
+    """Delta da entidade. Estado 2 + campo 5 vazio é um candidato de morte, ainda experimental."""
+    try:
+        f = decoder.protobuf(body)
+        if len(f.get(1, [])) != 1 or not isinstance(f[1][0], int) or not 0 < f[1][0] < 2**53:
+            return None
+        if len(f.get(2, [])) != 1 or not isinstance(f[2][0], bytes):
+            return None
+        delta = decoder.protobuf(f[2][0])
+        state = None
+        if len(delta.get(4, [])) == 1 and isinstance(delta[4][0], bytes):
+            code = decoder.protobuf(delta[4][0]).get(1, [])
+            if len(code) == 1 and isinstance(code[0], int): state = code[0]
+        return dict(targetId=f[1][0], stateCode=state,
+                    deathCandidate=state == 2 and delta.get(5) == [b''])
+    except (ValueError, TypeError, IndexError, KeyError):
+        return None
+
+
 def npc_identity(body):
     """Spawn 0x12346f68: entidade em 3; UID de template duplicado em 4/32 (zigzag)."""
     try:
@@ -78,6 +122,19 @@ def periodic_healing(body):
     if not 0 < source < 2**53 or target != source:
         return None
     return dict(healing=amount, effectId=effect, skillId=skill, sourceId=source, targetId=target, coverage='self-periodic')
+
+
+def effect_observation(body, opcode):
+    """Conserva efeitos sem classificação, sem somá-los como cura ou dano."""
+    f = decoder.protobuf(body)
+    source_key, amount_key, skill_key = (4, 3, 5) if opcode == 0x12344a63 else (3, 5, 10)
+    keys = (1, 2, source_key, amount_key, skill_key)
+    if any(len(f.get(k, [])) != 1 or not isinstance(f[k][0], int) for k in keys):
+        return None
+    if not 0 < f[source_key][0] < 2**53 or not 0 < f[2][0] < 2**53:
+        return None
+    return dict(sourceId=f[source_key][0], targetId=f[2][0], effectId=decoder.zigzag(f[1][0]),
+                skillId=decoder.zigzag(f[skill_key][0]), observedAmount=decoder.zigzag(f[amount_key][0]))
 
 
 def vampiric_healing(body):
@@ -153,6 +210,19 @@ class Stream:
                 break
             frame = bytes(self.buffer[:length]); del self.buffer[:length]
             for stamp,opcode,body in decoder.frames(frame,Counter(),lambda _:now, length_key=self.length_key):
+                if opcode == 0x12346f6d and self.server_to_client:
+                    state = entity_state(body)
+                    if state:
+                        emit(dict(type='entity-state', time=stamp, connectionId=self.connection_id, **state,
+                                  raw=packet_details(opcode, body, self.server_to_client)))
+                    continue
+                if opcode in (0x12346f18, 0x12346f69, 0x12346f6b) and self.server_to_client:
+                    f = decoder.protobuf(body)
+                    entity = f.get(1, [])
+                    if len(entity) == 1 and isinstance(entity[0], int) and 0 < entity[0] < 2**53:
+                        emit(dict(type='entity-state', time=stamp, connectionId=self.connection_id, targetId=entity[0],
+                                  raw=packet_details(opcode, body, self.server_to_client)))
+                    continue
                 if opcode == 0x12346f68 and self.server_to_client:
                     npc = npc_identity(body)
                     if npc:
@@ -161,7 +231,8 @@ class Stream:
                 if opcode == 0x1234444a and self.server_to_client:
                     source = decoder.local_player_entity(body)
                     if source is not None:
-                        emit(dict(type='local-player', sourceId=source, time=stamp, connectionId=self.connection_id))
+                        emit(dict(type='local-player', sourceId=source, time=stamp, connectionId=self.connection_id,
+                                  raw=packet_details(opcode, body, self.server_to_client)))
                     continue
                 if opcode == 0x1234787f:
                     identity = player_identity(body)
@@ -171,12 +242,24 @@ class Stream:
                 if opcode == 0x12344a63 and self.server_to_client:
                     healing = periodic_healing(body)
                     if healing:
-                        emit(dict(type='healing', event=dict(time=stamp, **healing), connectionId=self.connection_id))
+                        emit(dict(type='healing', event=dict(time=stamp, **healing), connectionId=self.connection_id,
+                                  raw=packet_details(opcode, body, self.server_to_client)))
+                    else:
+                        observation = effect_observation(body, opcode)
+                        if observation:
+                            emit(dict(type='effect-observation', event=dict(time=stamp, **observation), connectionId=self.connection_id,
+                                      raw=packet_details(opcode, body, self.server_to_client)))
                     continue
                 if opcode == 0x12344a70 and self.server_to_client:
                     healing = vampiric_healing(body)
                     if healing:
-                        emit(dict(type='healing', event=dict(time=stamp, **healing), connectionId=self.connection_id))
+                        emit(dict(type='healing', event=dict(time=stamp, **healing), connectionId=self.connection_id,
+                                  raw=packet_details(opcode, body, self.server_to_client)))
+                    else:
+                        observation = effect_observation(body, opcode)
+                        if observation:
+                            emit(dict(type='effect-observation', event=dict(time=stamp, **observation), connectionId=self.connection_id,
+                                      raw=packet_details(opcode, body, self.server_to_client)))
                     continue
                 if opcode not in (0x12344a7f,0x12344a62):
                     continue
@@ -195,8 +278,8 @@ class Stream:
                                  criticalCandidate=False,heavyCandidate=0)
                 else:
                     continue
-                if event['damage'] > 0:
-                    emit(dict(type='damage',event=event, connectionId=self.connection_id))
+                emit(dict(type='damage' if event['damage'] > 0 else 'combat-observation',event=event, connectionId=self.connection_id,
+                          raw=packet_details(opcode, body, self.server_to_client)))
 
 
 def live():
