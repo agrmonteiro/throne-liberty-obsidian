@@ -149,6 +149,21 @@ try {
   assert.equal(combatAudit.state().session.elapsedSec,358,'Pausa após saída não altera duração congelada')
 } finally { combatAudit.close() }
 console.log('OK: entrada e saída do personagem congelam tempo e separam encontros; terceiros ignorados.')
+const targetAudit = harness()
+try {
+  targetAudit.start(); targetAudit.send({type:'status',state:'live',message:'test'}); targetAudit.send(player(7,1001))
+  const attack = (at,target,skill,amount,connectionId='A') => ({...damage(7,at,amount,connectionId),event:{...damage(7,at,amount,connectionId).event,targetId:target,skillId:skill}})
+  targetAudit.send(attack(1002,8,10,100)); targetAudit.send(attack(1003,8,11,200)); targetAudit.send(attack(1004,9,10,50))
+  targetAudit.send(attack(1005,9,10,900,'B'))
+  assert.equal(targetAudit.state().session.total,350)
+  assert.equal(targetAudit.state().session.targets[0].damage,300)
+  assert.equal(targetAudit.state().session.targets[0].skills.length,2)
+  targetAudit.send({type:'npc',connectionId:'A',sourceId:8,npcId:10212035,time:1006})
+  assert.equal(targetAudit.state().session.targets[0].name,'Guarda do Apóstolo')
+  targetAudit.configure({metricPage:'damageTargets'});assert.equal(targetAudit.state().config.metricPage,'damageTargets')
+  targetAudit.history();assert.equal(targetAudit.records.get(targetAudit.state().capture.encounterId).session.targets[0].skills.length,2)
+} finally { targetAudit.close() }
+console.log('OK: dano causado por alvo, habilidades, nome tardio, conexão e histórico.')
 const statsAudit=harness()
 try {
   statsAudit.start();statsAudit.send({type:'status',state:'live',message:'test'})

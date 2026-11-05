@@ -175,6 +175,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   function namedSession(at: number): ReturnType<OverlayMeter['snapshot']> {
     const session = meter.snapshot(at)
     if (session.received) session.received.sources = session.received.sources.map(row => ({ ...row, ...entityName(row.id) }))
+    if (session.targets) session.targets = session.targets.map(row => ({ ...row, ...entityName(row.id) }))
     return session
   }
   function broadcast(): void {
@@ -602,7 +603,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   })
   ipcMain.handle('overlay:configure', (_event, patch: Partial<OverlayConfig>) => {
     if (typeof patch.playerName === 'string' && patch.playerName.trim().length <= 64 && !/[\p{C}]/u.test(patch.playerName)) config.playerName = patch.playerName.trim()
-    if (patch.metricPage && ['damage', 'receivedSources', 'receivedSkills', 'healingDone', 'healingReceived'].includes(patch.metricPage)) config.metricPage = patch.metricPage
+    if (patch.metricPage && ['damage', 'damageTargets', 'receivedSources', 'receivedSkills', 'healingDone', 'healingReceived'].includes(patch.metricPage)) config.metricPage = patch.metricPage
     if ('reviewEncounterId' in patch) {
       config.reviewEncounterId = typeof patch.reviewEncounterId === 'string'
         && history.list().encounters.some(row => row.id === patch.reviewEncounterId) ? patch.reviewEncounterId : null

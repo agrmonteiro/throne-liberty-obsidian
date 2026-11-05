@@ -20,6 +20,9 @@ export const hitAverage = (row: AnalysisRow): number => row.hits > 0 ? row.damag
 export function metricData(session: MeterSession, page: MetricPage): MetricData {
   const healing = page === 'healingDone' || page === 'healingReceived'
   if (page === 'damage') return { rows: session.skills, total: session.total, hits: session.hits, available: true, healing, rateLabel: 'DPS' }
+  if (page === 'damageTargets') return { rows: session.targets?.map(row => ({ key: String(row.id),
+    name: row.name ?? (row.id ? `Alvo ${row.id}` : 'Alvo desconhecido'), damage: row.damage, hits: row.hits, sourceSkills: row.skills })) ?? [],
+    total: session.total, hits: session.hits, available: Array.isArray(session.targets), healing: false, rateLabel: 'DPS' }
   if (healing) {
     const data = page === 'healingDone' ? session.healing?.done : session.healing?.received
     return { rows: data?.skills ?? [], total: data?.total ?? 0, hits: data?.hits ?? 0, available: Boolean(data), healing, rateLabel: 'HPS bruto' }

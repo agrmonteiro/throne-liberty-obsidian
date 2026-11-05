@@ -54,18 +54,18 @@ function SkillDetails({ row, state, page, onClose }: {
   </section>
 }
 
-function SourceSkills({ row, state }: { row: AnalysisRow; state: OverlayState }): React.ReactElement {
+function SourceSkills({ row, state, target }: { row: AnalysisRow; state: OverlayState; target: boolean }): React.ReactElement {
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const skills = row.sourceSkills
   if (!skills) return <p className="meter-source-legacy" role="status">
-    Este registro não guardou as habilidades separadas por fonte. Novas medições incluem esse detalhamento.</p>
+    Este registro não guardou as habilidades separadas {target ? 'por alvo' : 'por fonte'}. Novas medições incluem esse detalhamento.</p>
   const sourceState: OverlayState = { ...state, session: { ...state.session,
     received: { total: row.damage, hits: row.hits, skills, sources: [] } } }
   const selected = skills.find(skill => skill.key === selectedKey)
   if (selected) return <SkillDetails row={selected} state={sourceState} page="receivedSkills" onClose={() => setSelectedKey(null)} />
   let accumulated = 0
   return <div className="meter-source-skills" role="region" aria-label={`Habilidades de ${row.name}`}>
-    <header><strong>Habilidades desta fonte</strong><span>{number(row.damage)} de dano · {skills.length} {skills.length === 1 ? 'habilidade' : 'habilidades'}</span></header>
+    <header><strong>Habilidades {target ? 'neste alvo' : 'desta fonte'}</strong><span>{number(row.damage)} de dano · {skills.length} {skills.length === 1 ? 'habilidade' : 'habilidades'}</span></header>
     <div className="meter-source-skills-scroll"><table className="meter-table meter-analysis-table meter-source-skills-table" aria-label={`Distribuição por habilidade de ${row.name}`}><tbody>
       {skills.map(skill => {
         const start = row.damage > 0 ? Math.min(100, accumulated / row.damage * 100) : 0
@@ -73,19 +73,19 @@ function SourceSkills({ row, state }: { row: AnalysisRow; state: OverlayState })
         const size = row.damage > 0 ? Math.max(0, Math.min(100 - start, skill.damage / row.damage * 100)) : 0
         return <tr key={skill.key} className="meter-source-step-row" data-step-bar={size > 0 ? 'true' : undefined}
           style={{ '--step-start': `${start}%`, '--step-size': `${size}%` } as React.CSSProperties}
-          title={`${skill.name} · ${number(skill.damage)} de dano · ${percentage(skill.damage, row.damage)} da fonte`}>
+          title={`${skill.name} · ${number(skill.damage)} de dano · ${percentage(skill.damage, row.damage)} ${target ? 'do alvo' : 'da fonte'}`}>
           <td>{size > 0 && <span className="meter-source-step-bar" aria-hidden="true" />}<button type="button" data-overlay-interactive className="meter-row-button"
           aria-label={`Ver detalhes de ${skill.name} de ${row.name}`} title={`${skill.name} · IDs ${skill.skillIds?.join(', ') ?? skill.key}`}
           onClick={() => setSelectedKey(skill.key)}>
             <MeterSkillIcon name={skill.name} iconFile={skill.iconFile} /><span className="meter-skill-name">{skill.name}</span>
             <span className="meter-row-chevron" aria-hidden="true">›</span>
           </button></td>
-          <td>{number(skill.damage)}</td><td title="Participação no dano desta fonte">{percentage(skill.damage, row.damage)}</td>
+          <td>{number(skill.damage)}</td><td title={target ? 'Participação no dano deste alvo' : 'Participação no dano desta fonte'}>{percentage(skill.damage, row.damage)}</td>
           <td>{number(metricRate(skill.damage, state.session.elapsedSec))}</td><td>{number(skill.hits)}</td><td>{number(hitAverage(skill))}</td>
         </tr>
       })}
     </tbody></table></div>
-    {!skills.length && <p className="meter-source-legacy">Nenhuma habilidade registrada para esta fonte.</p>}
+    {!skills.length && <p className="meter-source-legacy">Nenhuma habilidade registrada {target ? 'para este alvo' : 'para esta fonte'}.</p>}
   </div>
 }
 
@@ -121,11 +121,11 @@ export function MeterSkillTable({ state, page, emptyMessage }: {
       <span aria-live="polite">{rows.length}/{data.rows.length}</span>
     </div>
     <div className="meter-skills-scroll"><table className="meter-table meter-analysis-table">
-      <thead><tr>{header('name', page === 'receivedSources' ? 'Fonte' : 'Habilidade')}
+      <thead><tr>{header('name', page === 'receivedSources' ? 'Fonte' : page === 'damageTargets' ? 'Alvo' : 'Habilidade')}
         {header('damage', data.healing ? 'Cura' : 'Dano')}<th>%</th><th title="Contribuição por segundo usando a duração completa da medição">{data.rateLabel}</th>
         {header('hits', data.healing ? 'Aplic.' : 'Acertos')}{header('average', 'Média')}</tr></thead>
       <tbody>{rows.map(row => {
-        const source = page === 'receivedSources'
+        const source = page === 'receivedSources' || page === 'damageTargets'
         const open = source && expanded.scope === scope && expanded.keys.has(row.key)
         const detailId = `${searchId}-source-${row.key}`
         return <React.Fragment key={row.key}><tr className={open ? 'meter-source-expanded' : undefined} style={rowBar(row, maximum, data.healing)}>
@@ -134,12 +134,12 @@ export function MeterSkillTable({ state, page, emptyMessage }: {
           aria-expanded={source ? open : undefined} aria-controls={open ? detailId : undefined}
           title={`${row.name} · ${row.skillIds?.join(', ') ?? row.key} · ${source ? 'Expandir ou recolher habilidades' : 'Clique para detalhar'}`}
           onClick={() => source ? toggleSource(row.key) : setSelection({ scope, key: row.key })}>
-          {page !== 'receivedSources' && <MeterSkillIcon name={row.name} iconFile={row.iconFile} />}
+          {!source && <MeterSkillIcon name={row.name} iconFile={row.iconFile} />}
           <span className="meter-skill-name">{row.name}</span><span className="meter-row-chevron" aria-hidden="true">{source ? open ? '▾' : '▸' : '›'}</span></button></td>
         <td>{number(row.damage)}</td><td>{percentage(row.damage, data.total)}</td>
         <td>{number(metricRate(row.damage, state.session.elapsedSec))}</td><td>{number(row.hits)}</td><td>{number(hitAverage(row))}</td>
       </tr>{open && <tr className="meter-source-detail" id={detailId}><td colSpan={6}>
-        <SourceSkills row={row} state={state} />
+        <SourceSkills row={row} state={state} target={page === 'damageTargets'} />
       </td></tr>}</React.Fragment>})}</tbody>
     </table>
     {!rows.length && <div className="meter-empty" role="status">{data.rows.length ? 'Nenhum resultado. Tente outro nome ou ID.' : emptyMessage}</div>}

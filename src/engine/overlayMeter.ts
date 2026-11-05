@@ -33,6 +33,7 @@ export interface MeterSession {
   paused?: boolean
   gameCombatEnded?: boolean
   lastActivityAt?: number | null; received?: MeterReceived
+  targets?: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number; skills: MeterSkill[] }>
   healing?: { done: MeterHealing; received: MeterHealing; coverage: 'self-observed' | 'observed' }
   timed?: TimedMeasurement
 }
@@ -83,6 +84,7 @@ export class OverlayMeter {
   private receivedRows = new Map<string, MeterSkill>()
   private receivedSources = new Map<number, { id: number; damage: number; hits: number }>()
   private receivedSourceSkills = new Map<number, Map<string, MeterSkill>>()
+  private targets = new Map<number, { id: number; damage: number; hits: number; skills: Map<string, MeterSkill> }>()
   private healingDoneRows = new Map<string, MeterSkill>()
   private healingReceivedRows = new Map<string, MeterSkill>()
   private timed: TimedMeasurement | null = null
@@ -97,6 +99,7 @@ export class OverlayMeter {
     this.pausedMs = this.startedPauseMs = this.lastDamagePauseMs = 0
     if (this.pausedAt !== null && at > 0) this.pausedAt = at
     this.rows.clear(); this.receivedRows.clear(); this.receivedSources.clear(); this.receivedSourceSkills.clear()
+    this.targets.clear()
     this.healingDoneRows.clear(); this.healingReceivedRows.clear()
   }
   get measurementWindow(): TimedMeasurement | null { return this.timed ? { ...this.timed } : null }
@@ -166,6 +169,11 @@ export class OverlayMeter {
     if (!outgoing) return false
     this.lastDamageAt = at
     this.recordSkill(this.rows, event)
+    const id = Number.isSafeInteger(event.targetId) && event.targetId! > 0 ? event.targetId! : 0
+    let target = this.targets.get(id)
+    if (!target) { target = { id, damage: 0, hits: 0, skills: new Map() }; this.targets.set(id, target) }
+    target.damage += event.damage; target.hits++
+    this.recordSkill(target.skills, event)
     return true
   }
   addHealing(event: MeterHealingEvent): boolean {
@@ -221,6 +229,8 @@ export class OverlayMeter {
       ...(this.timed ? { timed: { ...this.timed } } : {}),
       received: { total: receivedSources.reduce((sum, row) => sum + row.damage, 0),
         hits: receivedSources.reduce((sum, row) => sum + row.hits, 0), skills: receivedSkills, sources: receivedSources },
+      targets: [...this.targets.values()].map(row => ({ id: row.id, damage: row.damage, hits: row.hits,
+        skills: snapshotSkills(row.skills.values()) })).sort((a,b) => b.damage-a.damage),
       hits: skills.reduce((sum, row) => sum + row.hits, 0),
       critical: skills.reduce((sum, row) => sum + row.critical, 0),
       heavy: skills.reduce((sum, row) => sum + row.heavy, 0),
@@ -237,7 +247,7 @@ export interface OverlayTheme {
 }
 export interface OverlayConfig {
   reviewEncounterId?: string | null
-  metricPage?: 'damage' | 'receivedSources' | 'receivedSkills' | 'healingDone' | 'healingReceived'
+  metricPage?: 'damage' | 'damageTargets' | 'receivedSources' | 'receivedSkills' | 'healingDone' | 'healingReceived'
   countdownSec?: number; durationSec?: number
   hideOutOfCombat?: boolean; combatHideDelaySec?: number
   autoSource?: boolean
@@ -290,6 +300,9 @@ export function resolveOverlayNames(state: OverlayState, names: Record<string, s
   npcNames: Record<string, string> = {}): OverlayState {
   const { received, healing } = state.session
   return { ...state, session: { ...state.session, skills: resolveSkillRows(state.session.skills, names, icons),
+    ...(state.session.targets ? { targets: state.session.targets.map(row => ({ ...row,
+      name: row.npcId && npcNames[String(row.npcId)] ? npcNames[String(row.npcId)] : row.name,
+      skills: resolveSkillRows(row.skills, names, icons) })) } : {}),
     ...(received ? { received: { ...received, skills: resolveSkillRows(received.skills, names, icons),
       sources: received.sources.map(row => ({ ...row, name: row.npcId && npcNames[String(row.npcId)] ? npcNames[String(row.npcId)] : row.name,
         ...(Array.isArray(row.skills) ? { skills: resolveSkillRows(row.skills, names, icons) } : {}) })) } } : {}),

@@ -90,6 +90,7 @@ caminhos úteis, cálculos e recuperação da cópia de consulta.
 | Foco | Menus e janelas dos próprios overlays mantêm a cena visível. Considerar proprietários/ancestrais nativos dos popups. `docs/overlay-focus-qa.md`. |
 | Aparência | Fonte, tamanho, cores, transparência e posicionamento persistidos. `chartPadding` ajusta a margem horizontal de 0 a 32 px (padrão 12); `chartPaddingVertical` ajusta acima/abaixo de cada linha de 0 a 32 px (padrão 10). |
 | Nomes | Mapear por evidência explícita; não inferir nome por dano, proximidade numérica ou frequência. |
+| Dano por alvo | A página `damageTargets` agrega o dano causado por ID de alvo e habilidade, com cascata proporcional ao total do alvo. Eventos sem ID ficam em alvo desconhecido; nomes chegam por perfil ou template de NPC da mesma conexão. O histórico anterior à coleta não permite reconstruir os alvos. |
 | Especializações | Variantes com ícone próprio recebem nome distinto para não se fundirem com a habilidade base. |
 
 Antes de investigar protocolo ou IDs, ler

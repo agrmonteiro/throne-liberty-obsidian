@@ -34,6 +34,7 @@ export class OverlayHistory {
       && previous.session.total === encounter.session.total && previous.reason === encounter.reason
       && previous.session.received?.total === encounter.session.received?.total
       && JSON.stringify(previous.session.received?.sources) === JSON.stringify(encounter.session.received?.sources)
+      && JSON.stringify(previous.session.targets) === JSON.stringify(encounter.session.targets)
       && previous.session.healing?.done.total === encounter.session.healing?.done.total
       && previous.session.timed?.endsAt === encounter.session.timed?.endsAt
       && previous.session.timed?.cancelled === encounter.session.timed?.cancelled
