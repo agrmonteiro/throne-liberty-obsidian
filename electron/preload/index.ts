@@ -4,6 +4,12 @@ import type { OverlayAPI } from '../../src/engine/overlayMeter'
 
 const overlayAPI: OverlayAPI = {
   characterStats: () => ipcRenderer.invoke('overlay:character-stats'),
+  openBuildImport: () => ipcRenderer.invoke('overlay:open-build-import'),
+  onBuildImport: callback => {
+    const listener = (): void => callback()
+    ipcRenderer.on('overlay:open-build-import', listener)
+    return () => ipcRenderer.removeListener('overlay:open-build-import', listener)
+  },
   buffs: () => ipcRenderer.invoke('overlay:buffs'),
   deaths: () => ipcRenderer.invoke('overlay:deaths'),
   recordDeath: () => ipcRenderer.invoke('overlay:record-death'),

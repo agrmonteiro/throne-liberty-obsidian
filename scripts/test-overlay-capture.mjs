@@ -31,9 +31,12 @@ function harness(startAt = 1000000) {
     kill() {}
   }
   const owner = new EventEmitter()
+  const ownerMessages = []
   owner.isDestroyed = () => false
   owner.isFocused = () => false
-  owner.webContents = { send() {} }
+  owner.isMinimized = () => false
+  owner.show = () => {}; owner.focus = () => {}
+  owner.webContents = { send(channel) { ownerMessages.push(channel) } }
   const journal = []
   const fakeFs = { existsSync: () => true, readFileSync: () => { throw Error('Empty test profile') }, mkdirSync() {}, writeFileSync() {},
     openSync() { return 1 }, closeSync() {}, appendFileSync(_file, block) { journal.push(...block.trim().split('\n').map(line => JSON.parse(line))) } }
@@ -109,7 +112,7 @@ function harness(startAt = 1000000) {
     const child = children.findLast(row => row.args.some(value => value.endsWith('npcap-overlay-worker.py')))
     child.stdout.emit('data', Buffer.from(JSON.stringify(message) + '\n'))
   }
-  return { state, start, configure, send, records, journal, characterStats: () => handlers.get('overlay:character-stats')(), buffs: () => handlers.get('overlay:buffs')(), deaths: () => handlers.get('overlay:deaths')(),
+  return { state, start, configure, send, records, journal, ownerMessages, openBuildImport: () => handlers.get('overlay:open-build-import')(), characterStats: () => handlers.get('overlay:character-stats')(), buffs: () => handlers.get('overlay:buffs')(), deaths: () => handlers.get('overlay:deaths')(),
     recordDeath: () => handlers.get('overlay:record-death')(),
     tick: () => ticks.forEach(callback => callback()),
     foreground: (active, extra = {}) => children.find(row => row.args.some(value => value.endsWith('overlay-foreground.py'))).stdout.emit('data',
@@ -171,6 +174,8 @@ try {
   statsAudit.send(stats('A',1001,{'14':{total:32380},'28':{total:20320}}))
   assert.equal(statsAudit.characterStats().live,null,'Tabela anterior ao perfil não escolhe identidade')
   statsAudit.send(player(7,1002))
+  statsAudit.openBuildImport()
+  assert.equal(statsAudit.ownerMessages.at(-1),'overlay:open-build-import','Botão aciona a janela principal sem reiniciar a medição')
   assert.equal(statsAudit.characterStats().live.values['14'].total,32380)
   statsAudit.pause(true);statsAudit.send(stats('A',1003,{'14':{total:33000}}));statsAudit.reset()
   assert.equal(statsAudit.characterStats().live.values['14'].total,33000,'Pausa/reset de DPS independentes da ficha')

@@ -122,7 +122,7 @@ interface QueueItem {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function Builds(): React.ReactElement {
+export function Builds({ importRequest = 0 }: { importRequest?: number } = {}): React.ReactElement {
   const t = useT()
   const { builds, saveBuild, deleteBuild, setActive, activeBuildId,
           importFromFile, importFromUrlPython, exportBuild, createEmpty } = useBuilds()
@@ -668,7 +668,7 @@ export function Builds(): React.ReactElement {
           </div>
         </div>
 
-        <ImportCharacterBuild onImported={build => { startEdit(build);showStatus('Ficha importada. Revise os valores recebidos e os campos usados pela calculadora.',false,Infinity) }} />
+        <ImportCharacterBuild readRequest={importRequest} onImported={build => { startEdit(build);showStatus('Ficha importada. Revise os valores recebidos e os campos usados pela calculadora.',false,Infinity) }} />
         <div className="tl-panel" style={{ marginBottom: '1.25rem', borderColor: 'rgba(124, 92, 252, 0.45)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: 240 }}>

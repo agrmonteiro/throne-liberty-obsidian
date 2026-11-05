@@ -312,6 +312,8 @@ export function resolveOverlayNames(state: OverlayState, names: Record<string, s
 }
 export interface OverlayAPI {
   characterStats: () => Promise<import('./characterStats').CharacterStatsResult>
+  openBuildImport: () => Promise<void>
+  onBuildImport: (callback: () => void) => () => void
   buffs: () => Promise<import('./overlayBuffs').BuffResult>
   deaths: () => Promise<import('./overlayDeathLog').DeathLogResult>
   recordDeath: () => Promise<import('./overlayDeathLog').DeathLogResult>

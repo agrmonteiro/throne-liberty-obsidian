@@ -578,6 +578,12 @@ export function registerOverlay(owner: BrowserWindow): void {
   watchForeground()
   ipcMain.handle('overlay:get', state)
   ipcMain.handle('overlay:character-stats', characterState)
+  ipcMain.handle('overlay:open-build-import', () => {
+    if (owner.isDestroyed()) throw Error('A janela principal não está disponível.')
+    if (owner.isMinimized()) owner.restore()
+    owner.show(); owner.focus()
+    owner.webContents.send('overlay:open-build-import')
+  })
   ipcMain.handle('overlay:buffs', () => {
     const snapshot = buffs.snapshot()
     return { ...snapshot, observed: namedBuffStates(), recent: snapshot.recent.map(event => ({ ...event,
@@ -737,6 +743,6 @@ export function registerOverlay(owner: BrowserWindow): void {
     globalShortcut.unregister('CommandOrControl+Shift+F9'); globalShortcut.unregister('CommandOrControl+Shift+F10')
     globalShortcut.unregister('CommandOrControl+Shift+F8')
     globalShortcut.unregister('CommandOrControl+Shift+F11')
-    for (const name of ['get', 'character-stats', 'buffs', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
+    for (const name of ['get', 'character-stats', 'open-build-import', 'buffs', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
   })
 }

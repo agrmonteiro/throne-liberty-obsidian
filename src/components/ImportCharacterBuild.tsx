@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useBuilds } from '../store/useBuilds'
 import { characterStatRows, importCharacterSnapshot, type CharacterStatsResult } from '../engine/characterStats'
 import type { Build } from '../engine/types'
 
-export function ImportCharacterBuild({ onImported }: { onImported: (build: Build) => void }): React.ReactElement {
+export function ImportCharacterBuild({ onImported, readRequest = 0 }: { onImported: (build: Build) => void; readRequest?: number }): React.ReactElement {
   const { builds,createEmpty,saveBuild,setActive } = useBuilds()
   const [data,setData] = useState<CharacterStatsResult | null>(null), [error,setError] = useState(''), [busy,setBusy] = useState(false)
   const [selected,setSelected] = useState(''), [target,setTarget] = useState(''), [attack,setAttack] = useState<''|'melee'|'ranged'|'magic'>('')
+  const sectionRef = useRef<HTMLElement>(null)
   const snapshots = data ? [data.live,...data.saved.filter(row=>row.id!==data.live?.id)].filter((row): row is NonNullable<typeof row> => Boolean(row)) : []
   const snapshot = snapshots.find(row=>row.id===selected) ?? snapshots[0]
   const rows = snapshot ? characterStatRows(snapshot) : []
@@ -21,6 +22,11 @@ export function ImportCharacterBuild({ onImported }: { onImported: (build: Build
     } catch { setError('Não foi possível consultar a ficha. Abra pelo aplicativo desktop atualizado.') }
     finally { setBusy(false) }
   }
+  useEffect(() => {
+    if (!readRequest) return
+    sectionRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    void read()
+  }, [readRequest])
   async function save(): Promise<void> {
     if (!snapshot) return
     setBusy(true);setError('')
@@ -32,7 +38,7 @@ export function ImportCharacterBuild({ onImported }: { onImported: (build: Build
     } catch(error) { setError(String(error)) }
     finally { setBusy(false) }
   }
-  return <section className="tl-panel" style={{marginBottom:'1.25rem'}} aria-label="Importar atributos do jogo">
+  return <section ref={sectionRef} className="tl-panel" style={{marginBottom:'1.25rem'}} aria-label="Importar atributos do jogo">
     <div style={{display:'flex',alignItems:'center',gap:12,flexWrap:'wrap'}}><div style={{flex:1,minWidth:230}}>
       <div className="tl-eyebrow">Importar do jogo · experimental</div><p style={{fontSize:12,color:'var(--text-muted)'}}>Lê os atributos recebidos nos pacotes do personagem. Valores podem incluir buffs.</p>
     </div><button className="tl-btn" disabled={busy} onClick={()=>void read()}>{busy ? 'Lendo…' : 'Ler ficha do jogo'}</button></div>

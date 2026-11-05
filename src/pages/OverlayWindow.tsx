@@ -70,6 +70,8 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
       </select>
       <button title="Voltar ao atual · Ctrl+Shift+F8" disabled={journalView}
         onClick={() => act(() => window.overlayAPI.configure({ reviewEncounterId: null }))}>Atual</button>
+      {panel === 'skills' && <button data-overlay-interactive aria-label="Importar build" title="Abrir a ficha do jogo para importar uma build"
+        onClick={() => act(() => window.overlayAPI.openBuildImport())}>Build</button>}
       {panel === 'skills' && <button disabled={state.config.locked || Boolean(selected) || journalView}
         title="Alternar entre habilidades e origens da leitura atual" onClick={() => setGroupSources(value => !value)}>
         {groupSources ? 'Habilidades' : 'Origens'}</button>}

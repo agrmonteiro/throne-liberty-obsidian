@@ -10,6 +10,11 @@ uma nova build; também é possível complementar uma existente. O seletor de ti
 de dano escolhe qual família de crítico/pesado vai para a calculadora. Os três
 tipos permanecem preservados entre os status completos.
 
+O botão **Build** na barra do gráfico e **Importar build** nos ajustes do overlay
+abrem a janela principal na importação e solicitam a leitura automaticamente.
+A criação ou atualização da build continua sujeita à escolha e revisão no painel;
+o atalho não pausa nem reinicia a medição do overlay.
+
 A leitura dos overlays precisa estar ativa. Para pegar os blocos iniciais,
 iniciar a leitura antes de entrar no personagem. Abrir a ficha visualmente nem
 sempre solicita os valores ao servidor. Trocar equipamento pode enviar apenas

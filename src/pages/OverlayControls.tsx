@@ -65,7 +65,8 @@ export function OverlayControls(): React.ReactElement {
         </select></label>
         <div><span title={state.capture?.encounterId}>Medição {state.capture?.encounterId.slice(0, 8) ?? '—'}</span>
           <button onClick={() => configure({ reviewEncounterId: null })}>{config.reviewEncounterId ? 'Voltar ao vivo' : 'Ao vivo'}</button>
-          <button onClick={() => act(() => window.overlayAPI.reset())}>Nova medição</button></div>
+          <button onClick={() => act(() => window.overlayAPI.reset())}>Nova medição</button>
+          <button onClick={() => act(() => window.overlayAPI.openBuildImport())} title="Abrir a ficha atual para revisar e importar na janela principal">Importar build</button></div>
       </section>
       <div className="overlay-control-visibility">
         <label><input type="checkbox" checked={config.totalVisible} onChange={event => configure({ totalVisible: event.target.checked })} />Total</label>

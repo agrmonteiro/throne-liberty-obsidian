@@ -25,6 +25,7 @@ type Page = 'dashboard' | 'calculator' | 'comparator' | 'sensitivity' | 'builds'
 
 export default function App(): React.ReactElement {
   const [page, setPage]                     = useState<Page>('dashboard')
+  const [buildImportRequest, setBuildImportRequest] = useState(0)
   const [splitLogReader, setSplitLogReader] = useState(false)
   const [scraperMissing, setScraperMissing] = useState(false)
   const { loadFromDisk }                    = useBuilds()
@@ -34,6 +35,10 @@ export default function App(): React.ReactElement {
   }, [page])
 
   useEffect(() => { loadFromDisk() }, [])
+  useEffect(() => window.overlayAPI?.onBuildImport?.(() => {
+    setPage('builds'); setBuildImportRequest(value => value + 1)
+  }), [])
+  useEffect(() => { if (page !== 'builds') setBuildImportRequest(0) }, [page])
 
   useEffect(() => {
     function onFocus(e: FocusEvent) {
@@ -131,6 +136,8 @@ export default function App(): React.ReactElement {
             </>
           ) : page === 'dashboard' ? (
             <Dashboard onNavigate={setPage} />
+          ) : page === 'builds' ? (
+            <Builds importRequest={buildImportRequest} />
           ) : (
             <PageComponent />
           )}
