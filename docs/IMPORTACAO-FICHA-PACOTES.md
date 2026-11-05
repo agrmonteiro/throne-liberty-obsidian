@@ -91,6 +91,29 @@ identificam automaticamente o jogador. Outra conexão, captura ou troca de
 entidade não deve herdar a leitura anterior. Pausa/reset/cronômetro do DPS são
 independentes dos atributos.
 
+### Comparação da tela de espécies — 04/11/2026
+
+Na interface, os rótulos longos rolam horizontalmente. Conforme indicado pelo
+usuário, cada espécie ocupa duas linhas: na coluna ofensiva vêm ampliação e,
+logo abaixo, bônus de dano; na defensiva vêm resistência e, abaixo, redução de
+dano. O nome da espécie na segunda linha ajuda a interpretar o rótulo que está
+rolando. As quatro categorias permanecem distintas; a associação dos valores
+automáticos usa os IDs dos pacotes, não a posição visual nem OCR.
+
+Na ficha do AgrMonteiro, os valores de ampliação visíveis coincidiram com a
+leitura: humanoides `236` = 190,2; mortos-vivos `237` = 190,2; selvagens `238`
+= 190,2; construtos `239` = 208,2; demônios `240` = 190,2. As resistências
+`241`–`245` também coincidiram com a coluna defensiva. A redução de dano de
+mortos-vivos `108` = 39 e o bônus de dano contra mortos-vivos `114` = 15
+coincidiram igualmente.
+
+A tela mostrava bônus de dano 15 também para as outras quatro espécies, mas os
+IDs correspondentes `112`, `113`, `115` e `116` não foram recebidos nessa leitura.
+Não copiar o valor de mortos-vivos para os demais: a regra que gera o valor
+exibido ainda precisa ser validada. A ampliação e o bônus de dano são campos
+diferentes; a calculadora tem apenas uma ampliação de espécie por vez e ainda
+precisa de escolha explícita da espécie e tratamento próprio do bônus plano.
+
 ## Identificação sem OCR — decisão de 04/11/2026
 
 Por orientação do usuário, esta importação usa arquivos/tabelas locais e captura

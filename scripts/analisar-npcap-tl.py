@@ -261,6 +261,22 @@ def player_identity(body, opcode=0x1234787f):
         return None
 
 
+def combat_transition(body):
+    """0x1234446c: dois ciclos observados; aceitar apenas a variante inequívoca."""
+    try:
+        fields = protobuf(body)
+        if set(fields) not in ({1, 2}, {1, 3}) or len(fields[1]) != 1:
+            return None
+        actor = fields[1][0]
+        if not isinstance(actor, int) or not 0 < actor < 2**53:
+            return None
+        if fields.get(2) == [2]: return dict(sourceId=actor, action='enter')
+        if fields.get(3) == [2]: return dict(sourceId=actor, action='exit')
+        return None
+    except (ValueError, TypeError, KeyError, IndexError):
+        return None
+
+
 def local_player_entity(body):
     """0x1234444a: entidade local validada contra os logs de duas capturas.
 

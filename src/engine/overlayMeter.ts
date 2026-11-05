@@ -31,6 +31,7 @@ export interface MeterSession {
   startedAt: number | null; lastDamageAt: number | null; elapsedSec: number
   dps: number; idleSec: number; waitingReset: boolean; skills: MeterSkill[]
   paused?: boolean
+  gameCombatEnded?: boolean
   lastActivityAt?: number | null; received?: MeterReceived
   healing?: { done: MeterHealing; received: MeterHealing; coverage: 'self-observed' | 'observed' }
   timed?: TimedMeasurement
@@ -68,6 +69,8 @@ export class OverlayIdentity {
   }
 }
 export class OverlayMeter {
+  private combatEndedAt: number | null = null
+  private gameCombatActive = false
   private startedAt: number | null = null
   private lastDamageAt: number | null = null
   private lastActivityAt: number | null = null
@@ -86,6 +89,8 @@ export class OverlayMeter {
   constructor(public sourceId: number | null = null, private names: Record<string, string> = {},
     private icons: Record<string, string> = {}) {}
   reset(at = 0): void {
+    this.combatEndedAt = null
+    this.gameCombatActive = false
     this.startedAt = this.lastDamageAt = this.lastActivityAt = null
     this.timed = null
     this.ignoreBefore = at
@@ -95,6 +100,7 @@ export class OverlayMeter {
     this.healingDoneRows.clear(); this.healingReceivedRows.clear()
   }
   get measurementWindow(): TimedMeasurement | null { return this.timed ? { ...this.timed } : null }
+  get combatEnded(): boolean { return this.combatEndedAt !== null }
   schedule(startsAt: number, durationSec: number): void {
     this.reset(startsAt)
     this.pausedAt = null
@@ -105,23 +111,36 @@ export class OverlayMeter {
     if (this.timed && at < this.timed.endsAt) this.timed = { ...this.timed, endsAt: Math.max(this.timed.startsAt, at), cancelled: true }
   }
   acceptsTime(at: number): boolean {
-    return !this.paused && Number.isFinite(at) && at >= this.ignoreBefore
+    return !this.paused && this.combatEndedAt === null && Number.isFinite(at) && at >= this.ignoreBefore
       && (this.lastActivityAt === null || at >= this.lastActivityAt)
       && (!this.timed || (at >= this.timed.startsAt && at < this.timed.endsAt))
   }
   private beginActivity(at: number): void {
-    if (!this.timed && this.lastActivityAt !== null && at - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs >= METER_IDLE_MS) this.reset()
+    if (!this.timed && !this.gameCombatActive && this.lastActivityAt !== null && at - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs >= METER_IDLE_MS) this.reset()
     if (this.startedAt === null) this.startedPauseMs = this.pausedMs
     this.startedAt ??= at
     this.lastActivityAt = at
     this.lastDamagePauseMs = this.pausedMs
+  }
+  beginCombat(at: number): void {
+    if (this.timed || !Number.isFinite(at)) return
+    if (this.combatEndedAt !== null) this.reset(at)
+    this.gameCombatActive = true
+    if (this.startedAt === null) { this.startedAt = at; this.startedPauseMs = this.pausedMs }
+  }
+  endCombat(at: number): boolean {
+    if (this.timed || !Number.isFinite(at) || this.combatEndedAt !== null || this.startedAt === null || at < this.startedAt
+      || (this.lastActivityAt !== null && at < this.lastActivityAt)) return false
+    this.combatEndedAt = at
+    this.gameCombatActive = false
+    return true
   }
   get paused(): boolean { return this.pausedAt !== null }
   setPaused(value: boolean, at = Date.now()): void {
     if (!Number.isFinite(at) || value === this.paused) return
     if (value) this.pausedAt = at
     else {
-      this.pausedMs += Math.max(0, at - this.pausedAt!)
+      this.pausedMs += Math.max(0, Math.min(at, this.combatEndedAt ?? at) - this.pausedAt!)
       this.pausedAt = null
       this.ignoreBefore = Math.max(this.ignoreBefore, at)
     }
@@ -191,11 +210,11 @@ export class OverlayMeter {
     const damageByKind = emptyDamageBreakdown()
     for (const row of skills) for (const kind of Object.keys(damageByKind) as DamageKind[]) damageByKind[kind] += row.damageByKind[kind]
     const total = skills.reduce((sum, row) => sum + row.damage, 0)
-    const clock = this.timed ? Math.max(this.timed.startsAt, Math.min(now, this.timed.endsAt)) : this.pausedAt ?? now
+    const clock = this.timed ? Math.max(this.timed.startsAt, Math.min(now, this.timed.endsAt)) : Math.min(this.pausedAt ?? now, this.combatEndedAt ?? now)
     const elapsedSec = this.startedAt === null ? 0 : Math.max(0, (clock - this.startedAt - this.pausedMs + this.startedPauseMs) / 1000)
     const idleSec = this.lastActivityAt === null ? 0 : Math.max(0, (clock - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs) / 1000)
     return {
-      total, elapsedSec, idleSec, skills, damageByKind, paused: this.paused || Boolean(this.timed && (now < this.timed.startsAt || now >= this.timed.endsAt)), dps: elapsedSec >= 1 ? total / elapsedSec : 0,
+      total, elapsedSec, idleSec, skills, damageByKind, gameCombatEnded: this.combatEndedAt !== null, paused: this.paused || Boolean(this.timed && (now < this.timed.startsAt || now >= this.timed.endsAt)), dps: elapsedSec >= 1 ? total / elapsedSec : 0,
       startedAt: this.startedAt, lastDamageAt: this.lastDamageAt,
       lastActivityAt: this.lastActivityAt,
       healing: { done: healingSnapshot(this.healingDoneRows), received: healingSnapshot(this.healingReceivedRows), coverage: 'observed' },
@@ -205,7 +224,7 @@ export class OverlayMeter {
       hits: skills.reduce((sum, row) => sum + row.hits, 0),
       critical: skills.reduce((sum, row) => sum + row.critical, 0),
       heavy: skills.reduce((sum, row) => sum + row.heavy, 0),
-      waitingReset: !this.timed && this.lastActivityAt !== null && idleSec >= METER_IDLE_MS / 1000,
+      waitingReset: !this.timed && !this.gameCombatActive && this.combatEndedAt === null && this.lastActivityAt !== null && idleSec >= METER_IDLE_MS / 1000,
     }
   }
 }

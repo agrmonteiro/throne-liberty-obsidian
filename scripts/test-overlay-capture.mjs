@@ -131,6 +131,24 @@ function harness(startAt = 1000000) {
 const damage = (id, time, amount, connectionId = 'A') => ({ type: 'damage', connectionId,
   event: { sourceId: id, time, damage: amount, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
 const player = (id, time, connectionId = 'A') => ({ type: 'identity', name: 'AgrMonteiro', sourceId: id, time, connectionId })
+const gameCombat = (sourceId,time,action,connectionId='A') => ({type:'combat-state',sourceId,time,action,connectionId,raw:{direction:'server-to-client'}})
+const combatAudit = harness()
+try {
+  combatAudit.start();combatAudit.send({type:'status',state:'live',message:'test'});combatAudit.send(player(7,1001))
+  combatAudit.send(gameCombat(8,1002,'enter'));combatAudit.send(gameCombat(7,1003,'enter'))
+  combatAudit.send(damage(7,1005,200));combatAudit.send(gameCombat(8,1006,'exit'))
+  combatAudit.send(gameCombat(7,1013,'exit'));combatAudit.advance(20000)
+  assert.equal(combatAudit.state().session.elapsedSec,10,'Tempo termina no sinal de saída')
+  assert.equal(combatAudit.state().session.total,200)
+  assert.equal(combatAudit.history().encounters[0].reason,'game-combat-end')
+  combatAudit.send(gameCombat(7,1035,'enter'));combatAudit.send(damage(7,1037,100));combatAudit.send(gameCombat(7,1040,'exit'))
+  assert.equal(combatAudit.state().session.elapsedSec,5);assert.equal(combatAudit.state().session.total,100)
+  combatAudit.send(gameCombat(7,1042,'enter'));combatAudit.send(damage(7,1043,100));combatAudit.send(damage(7,1400,50))
+  assert.equal(combatAudit.state().session.total,150,'Combate ativo não reinicia após cinco minutos sem atividade')
+  combatAudit.pause(true);combatAudit.send(gameCombat(7,1401,'exit'));combatAudit.advance(20000);combatAudit.pause(false)
+  assert.equal(combatAudit.state().session.elapsedSec,358,'Pausa após saída não altera duração congelada')
+} finally { combatAudit.close() }
+console.log('OK: entrada e saída do personagem congelam tempo e separam encontros; terceiros ignorados.')
 const statsAudit=harness()
 try {
   statsAudit.start();statsAudit.send({type:'status',state:'live',message:'test'})
@@ -411,6 +429,7 @@ try {
   assert.equal(trial.state().session.total, 0)
   trial.send(damage(7, start, 100))
   assert.equal(trial.state().timer.phase, 'running')
+  trial.send(gameCombat(7,start+.5,'enter'));trial.send(gameCombat(7,start+1,'exit'))
   trial.send(damage(7, end - .001, 200))
   trial.send(damage(7, end, 9999))
   assert.equal(trial.deaths().recent.length, 4, 'Buffer de causa mortis inclui preparação e eventos fora do cronômetro')

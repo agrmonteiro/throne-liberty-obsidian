@@ -85,7 +85,7 @@ caminhos úteis, cálculos e recuperação da cópia de consulta.
 | --- | --- |
 | Origem do dano | Seguir a entidade local identificada pelo protocolo, nunca o primeiro atacante ou o maior dano. `src/engine/overlayMeter.ts`, `electron/main/overlay.ts`. |
 | Conexão e identidade | IDs de entidade são temporários, separados por conexão. Rejeitar conexões aposentadas e eventos atrasados. |
-| Sessão | O app cria UUID de encontro; ainda não foi validado um ID nativo de combate. A flag do sinal local não delimita combate. |
+| Sessão | UUID próprio de encontro. A variante 2 do pacote `0x1234446c` indicou entrada/saída em dois ciclos da captura de 04/11: campos `2=2`/`3=2`, vinculados ao ator nominal da mesma conexão. O tempo congela na saída; variantes distintas não são interpretadas. Sem sinal, mantém fallback de cinco minutos. O cronômetro programado é independente. Nenhum ID nativo de encontro foi validado. |
 | Ancoragem | Total, habilidades e controle acompanham a janela do TL; posições relativas ficam dentro da área do jogo. `overlayLayout.ts`. |
 | Foco | Menus e janelas dos próprios overlays mantêm a cena visível. Considerar proprietários/ancestrais nativos dos popups. `docs/overlay-focus-qa.md`. |
 | Aparência | Fonte, tamanho, cores, transparência e posicionamento persistidos. `chartPadding` ajusta a margem horizontal de 0 a 32 px (padrão 12); `chartPaddingVertical` ajusta acima/abaixo de cada linha de 0 a 32 px (padrão 10). |

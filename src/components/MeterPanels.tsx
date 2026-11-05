@@ -56,8 +56,8 @@ export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, prev
         <DamageLegend values={session.damageByKind} total={session.total} /></div>
     </div> : <><MeterSkillTable state={state} page="damage" emptyMessage={captureNotice ?? 'Aguardando dano do seu personagem…'} /><DamageLegend /></>}
     <footer className="meter-session-status">
-      <span>{historical ? 'Registro salvo' : state.status === 'error' ? state.message : session.paused && ['live', 'replay'].includes(state.status) ? 'Medição pausada · tempo congelado' : captureNotice ?? (session.waitingReset ? 'Nova sessão no próximo dano' : session.lastDamageAt ? `Sem dano há ${duration(session.idleSec)}` : 'Aguardando primeiro dano')}</span>
-      <span>{historical ? 'SOMENTE LEITURA' : editable ? 'Reset após 5 min' : 'TRAVADO'}</span>
+      <span>{historical ? 'Registro salvo' : state.status === 'error' ? state.message : session.paused && ['live', 'replay'].includes(state.status) ? 'Medição pausada · tempo congelado' : captureNotice ?? (session.gameCombatEnded ? 'Combate encerrado · tempo congelado' : session.waitingReset ? 'Nova sessão no próximo dano' : session.lastDamageAt ? `Sem dano há ${duration(session.idleSec)}` : 'Aguardando primeiro dano')}</span>
+      <span>{historical ? 'SOMENTE LEITURA' : editable ? 'Combate do jogo' : 'TRAVADO'}</span>
     </footer>
   </section>
 }

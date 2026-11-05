@@ -58,6 +58,16 @@ assert w.player_identity(field(1,field(5,field(1,profile))),0x1234787f) is None
 assert w.player_identity(field(1,field(1,profile+field(19,7)))) is None
 assert w.player_identity(field(1,field(1,profile.replace(b'tribe.Pc',b'tribe.Np')))) is None
 print('OK: perfil nominal nos dois envelopes observados, somente servidor, sem campos duplicados nem entidade de NPC.')
+for body,action in [('08feb294031002','enter'),('08feb294031802','exit')]:
+    assert w.decoder.combat_transition(bytes.fromhex(body))==dict(sourceId=6625662,action=action)
+    packet=bytes.fromhex(body);framed=struct.pack('<II',(len(packet)+8)^w.decoder.FRAME_LENGTH_KEYS[1],0x1234446c)+packet
+    framed+=struct.pack('<II',8^w.decoder.FRAME_LENGTH_KEYS[1],0x1234746b)
+    for server in (False,True):
+        messages.clear();w.Stream('test',server).feed(0,framed,1000)
+        assert len([m for m in messages if m['type']=='combat-state'])==int(server)
+assert w.decoder.combat_transition(bytes.fromhex('08feb294031803')) is None
+assert w.decoder.combat_transition(bytes.fromhex('08feb2940310021802')) is None
+print('OK: transições de combate reais, apenas servidor e variante 2 reconhecida.')
 
 # Exercita o loop real de captura: o filtro antigo não acompanhava outro túnel/PID.
 class EndCapture(Exception): pass

@@ -66,7 +66,7 @@ export function Overlays(): React.ReactElement {
       <div className="overlay-live-skills">{!config.metricPage || config.metricPage === 'damage'
         ? <MeterPanel panel="skills" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} />
         : <OverlayMetricView state={state} page={config.metricPage} />}</div>
-      <p className="overlay-note">DPS inclui intervalos sem atacar. A pausa manual congela valores e tempo; ataques durante a pausa são descartados. Após 5 min ativos sem dano, o próximo acerto inicia outra sessão.</p>
+      <p className="overlay-note">DPS inclui intervalos sem atacar e o tempo é congelado ao receber a saída de combate do jogo. Quando o estado não for observado, cinco minutos sem atividade separam a próxima sessão. A pausa manual descarta ataques durante a pausa.</p>
     </section>
     <section className="overlay-tab-panel" id="meter-view-sources" role="tabpanel" aria-labelledby="meter-tab-sources" hidden={tab !== 'sources'}>
       <OverlaySourcesView state={state} />

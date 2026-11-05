@@ -258,6 +258,12 @@ class Stream:
                     if npc:
                         emit(dict(type='npc', time=stamp, connectionId=self.connection_id, **npc))
                     continue
+                if opcode == 0x1234446c and self.server_to_client:
+                    transition = decoder.combat_transition(body)
+                    if transition:
+                        emit(dict(type='combat-state', time=stamp, connectionId=self.connection_id, **transition,
+                                  raw=packet_details(opcode, body, self.server_to_client)))
+                    continue
                 if opcode == 0x1234444a and self.server_to_client:
                     source = decoder.local_player_entity(body)
                     if source is not None:

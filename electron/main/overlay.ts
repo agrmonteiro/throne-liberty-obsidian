@@ -51,6 +51,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   let captureStartedAt = 0
   let resumedAt = 0
   let lastCombatDamageAt: number | null = null
+  let lastGameCombatStateAt = 0
   let combatPanelsVisible = true
   const sourceNames = new Map<number, string>()
   const conflictingNames = new Set<number>()
@@ -87,6 +88,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     encounterId = randomUUID(); encounterConnectionId = connectionId; encounterClosed = false; clearedThrough = null
   }
   function bindSource(sourceId: number | null, at: number, reason: string): void {
+    lastGameCombatStateAt = 0
     finishEncounter(reason, meter.snapshot(at).lastActivityAt ?? at)
     newEncounter()
     config.sourceId = sourceId; config.reviewEncounterId = null
@@ -395,6 +397,18 @@ export function registerOverlay(owner: BrowserWindow): void {
             const previous = templates.get(data.sourceId)
             templates.set(data.sourceId, previous === undefined || previous === data.npcId ? data.npcId : null)
             broadcast()
+          } else if (data.type === 'combat-state' && mode === 'live') {
+            const player = identity.snapshot(), at = data.time * 1000
+            if (!player || player.method !== 'profile-name' || player.sourceId !== meter.sourceId
+              || player.sourceId !== data.sourceId || player.connectionId !== data.connectionId
+              || data.raw?.direction !== 'server-to-client' || !Number.isFinite(at) || at < captureStartedAt || at < lastGameCombatStateAt
+              || !['enter','exit'].includes(data.action) || meter.measurementWindow) continue
+            lastGameCombatStateAt = at
+            if (data.action === 'enter') {
+              if (meter.combatEnded) newEncounter(data.connectionId)
+              meter.beginCombat(at)
+            } else if (meter.endCombat(at)) finishEncounter('game-combat-end', at)
+            broadcast()
           } else if (data.type === 'local-player' && mode === 'live') {
             const previous = identity.snapshot()
             // 30/10: este sinal também apareceu para terceiros na mesma conexão.
@@ -446,6 +460,10 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (!event || !Number.isSafeInteger(event.sourceId) || !Number.isSafeInteger(event.skillId)
               || !Number.isFinite(event.time) || !Number.isFinite(amount) || amount <= 0) continue
             if (healing && !recognizedHealing(event)) continue
+            if (!healing && meter.combatEnded && !meter.paused && identity.accepts(data.connectionId)
+              && (event.sourceId === meter.sourceId || event.targetId === meter.sourceId) && event.time * 1000 >= lastGameCombatStateAt) {
+              newEncounter(data.connectionId); meter.reset(event.time * 1000)
+            }
             observeDeathEvent({ ...event, type: healing ? 'healing' : 'damage', raw: data.raw }, data.connectionId,
               data.deathCandidate === true, data.aliveCandidate === true)
             if (mode === 'replay') replayClock = event.time * 1000
