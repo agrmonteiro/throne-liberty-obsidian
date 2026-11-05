@@ -15,6 +15,15 @@ iniciar a leitura antes de entrar no personagem. Abrir a ficha visualmente nem
 sempre solicita os valores ao servidor. Trocar equipamento pode enviar apenas
 os status alterados e nem sempre reenvia o perfil nominal.
 
+Desde a preparação da primeira instalação, a leitura pode ser iniciada antes de
+abrir o TL. Enquanto procura o túnel, o capturador acompanha TCP loopback e
+retém temporariamente trechos em memória, por até cinco segundos e com limite de
+2 MiB/16 fluxos. Apenas fluxos confirmados pelo inventário de sockets do processo
+TL são decodificados; quando a porta é identificada, o filtro é restringido a ela.
+Se o buffer atingir o limite durante a descoberta, pacotes novos são descartados
+e a leitura inicial pode ficar incompleta. Ainda é necessário validar o fluxo de
+primeira instalação com um novo usuário e a captura sem ExitLag.
+
 A interface identifica separadamente **Atual** e **Captura salva**, com horário.
 Uma captura antiga não serve como prova de atributos da sessão atual. Os arquivos
 salvos não restauram identidade nem contadores ao vivo.

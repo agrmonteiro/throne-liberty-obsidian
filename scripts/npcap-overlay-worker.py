@@ -322,15 +322,15 @@ class PendingConnections:
         self.limit = limit
 
     def offer(self, a, b, seq, payload, at):
-        if not payload or (a not in self.server_ports and b not in self.server_ports): return
-        pair = (b, a) if a in self.server_ports else (a, b)
+        if not payload or (self.server_ports and a not in self.server_ports and b not in self.server_ports): return
+        pair = ((b, a) if a in self.server_ports else (a, b)) if self.server_ports else tuple(sorted((a,b)))
         if pair not in self.rows and len(self.rows) >= 16 or self.size+len(payload) > self.limit:
             raise ValueError('Início de conexão excedeu o buffer de validação do TL.')
         self.rows.setdefault(pair, []).append((a,b,seq,payload,at))
         self.size += len(payload)
 
     def drain(self, pair):
-        rows = self.rows.pop(pair, [])
+        rows = self.rows.pop(pair if self.server_ports else tuple(sorted(pair)), [])
         self.size -= sum(len(row[3]) for row in rows)
         return rows
 
@@ -339,17 +339,19 @@ class PendingConnections:
             if rows and at-rows[0][4] > 5: self.drain(pair)
 
 
-def live(reference_server_ports=()):
+def live(reference_server_ports=(), follow=False):
     api,directory = capture.load_api()
     api.pcap_datalink.restype = C.c_int
     api.pcap_datalink.argtypes = [C.c_void_p]
     data = capture.endpoints()
     local = [e for e in data['tcp'] if e['RemoteAddress'] == '127.0.0.1']
-    if not local and not reference_server_ports:
+    if follow and not reference_server_ports and local:
+        reference_server_ports = tuple(sorted({int(e['RemotePort']) for e in local if e['LocalAddress'] == '127.0.0.1'}))
+    if not local and not reference_server_ports and not follow:
         raise ValueError('Conexão local do TL não encontrada. O caminho validado usa ExitLag.')
     if reference_server_ports and not all(isinstance(port, int) and 0 < port < 65536 for port in reference_server_ports):
         raise ValueError('Porta de referência inválida.')
-    expression = ('tcp and host 127.0.0.1 and ('+' or '.join(f'port {port}' for port in reference_server_ports)+')') if reference_server_ports else capture.filter_expression(dict(tcp=local,udp=[]))
+    expression = ('tcp and host 127.0.0.1 and ('+' or '.join(f'port {port}' for port in reference_server_ports)+')') if reference_server_ports else 'tcp and host 127.0.0.1' if follow else capture.filter_expression(dict(tcp=local,udp=[]))
     device = next((d for d in capture.interfaces(api) if 'Loopback' in d['name']),None)
     if not device:
         raise ValueError('Npcap Loopback indisponível.')
@@ -397,28 +399,29 @@ def live(reference_server_ports=()):
             connection = connections.get(pair)
             if connection and payload:
                 streams.setdefault((a,b),Stream(connection, server_to_client)).feed(seq,payload,at)
-        emit(dict(type='status',state='live',message='Leitura experimental ativa.'))
+        emit(dict(type='status',state='live',message='Leitura experimental ativa.' if local else 'Aguardando conexão local do TL.'))
         while True:
             if updates:
                 refreshed_pids, refreshed = updates.pop()
                 refreshed_ports = tuple(sorted({int(e['RemotePort']) for e in refreshed}))
                 changed_process = refreshed_pids != game_pids
-                changed_tunnel = bool(reference_server_ports and refreshed_ports and refreshed_ports != tuple(reference_server_ports))
+                discovering = follow and not reference_server_ports
+                changed_tunnel = bool(refreshed_ports and (reference_server_ports or follow) and refreshed_ports != tuple(reference_server_ports))
                 if changed_process or changed_tunnel:
                     for pair in list(connections): retire(pair)
                     streams.clear()
                     game_pids = refreshed_pids
-                    if reference_server_ports and refreshed_ports: reference_server_ports = refreshed_ports
+                    if (reference_server_ports or follow) and refreshed_ports: reference_server_ports = refreshed_ports
                     # Outro PID com a mesma porta pode já ter enviado o início
                     # do fluxo. Só drenar após validar o novo par no inventário.
-                    if changed_tunnel:
+                    if changed_tunnel and not discovering:
                         pending_connections = PendingConnections(reference_server_ports)
                 pairs = {(int(e['LocalPort']), int(e['RemotePort'])) for e in refreshed}
                 if pairs != set(connections) or changed_process or changed_tunnel:
                     for pair in list(connections):
                         if pair not in pairs:
                             retire(pair)
-                    if not refreshed and not reference_server_ports:
+                    if not refreshed and not reference_server_ports and not follow:
                         raise ValueError('Conexão local do TL não encontrada. Aguardando reconexão.')
                     if not reference_server_ports or changed_tunnel:
                         expression = ('tcp and host 127.0.0.1 and ('+' or '.join(f'port {port}' for port in reference_server_ports)+')') if reference_server_ports else capture.filter_expression(dict(tcp=refreshed, udp=[]))
@@ -433,6 +436,8 @@ def live(reference_server_ports=()):
                     for pair in pairs:
                         connections.setdefault(pair, uuid4().hex)
                         for buffered in pending_connections.drain(pair): consume(*buffered)
+                    if discovering and reference_server_ports:
+                        pending_connections = PendingConnections(reference_server_ports)
             header,pointer = C.c_void_p(),C.c_void_p()
             result = api.pcap_next_ex(handle,C.byref(header),C.byref(pointer))
             if result == 0:
@@ -453,7 +458,7 @@ def live(reference_server_ports=()):
             if len(tcp) < 20:
                 continue
             a,b,seq = struct.unpack_from('!HHI',tcp)
-            if reference_server_ports and raw[12:20] != b'\x7f\x00\x00\x01'*2:
+            if (reference_server_ports or follow) and raw[12:20] != b'\x7f\x00\x00\x01'*2:
                 continue
             server_to_client = (b, a) in connections
             pair = (b, a) if server_to_client else (a, b)
@@ -464,12 +469,14 @@ def live(reference_server_ports=()):
                 pair = candidate_pair
             connection = connections.get(pair)
             if not connection:
-                if reference_server_ports:
+                if reference_server_ports or follow:
                     pending_connections.expire(seconds+micros/1e6)
                     if tcp[13] & 5:
                         pending_connections.drain((b,a) if a in reference_server_ports else (a,b))
                     else:
-                        pending_connections.offer(a,b,seq,tcp[(tcp[12]>>4)*4:],seconds+micros/1e6)
+                        try: pending_connections.offer(a,b,seq,tcp[(tcp[12]>>4)*4:],seconds+micros/1e6)
+                        except ValueError:
+                            if reference_server_ports: raise
                 continue
             payload = tcp[(tcp[12]>>4)*4:]
             consume(a,b,seq,payload,seconds+micros/1e6)
@@ -521,8 +528,7 @@ if __name__ == '__main__':
             replay(args.replay,args.speed)
         else:
             ports = tuple(sorted({int(e['RemotePort']) for e in capture.endpoints()['tcp'] if e['LocalAddress'] == e['RemoteAddress'] == '127.0.0.1'})) if args.follow_loopback_server else ()
-            if args.follow_loopback_server and not ports: raise ValueError('Conexão do TL necessária para identificar a porta do túnel.')
-            live(ports)
+            live(ports, follow=args.follow_loopback_server)
     except KeyboardInterrupt:
         pass
     except Exception as error:

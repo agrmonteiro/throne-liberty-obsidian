@@ -79,7 +79,6 @@ def endpoints():
     script = """
 $ErrorActionPreference='Stop'
 $taskPids=@(Get-Process -Name TL -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Id)
-if ($taskPids.Count -eq 0) { throw 'Abra o TL no personagem antes do pre-voo.' }
 $taskTcp=@(Get-NetTCPConnection -State Established | Where-Object { $_.OwningProcess -in $taskPids } | Select-Object LocalAddress,LocalPort,RemoteAddress,RemotePort)
 $taskUdp=@(Get-NetUDPEndpoint | Where-Object { $_.OwningProcess -in $taskPids } | Select-Object LocalAddress,LocalPort)
 @{pids=$taskPids;tcp=$taskTcp;udp=$taskUdp} | ConvertTo-Json -Depth 4 -Compress

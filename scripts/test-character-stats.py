@@ -74,7 +74,7 @@ class TestThread:
 class Directory:
     def close(self): pass
 def endpoint(local,remote):return dict(LocalAddress='127.0.0.1',RemoteAddress='127.0.0.1',LocalPort=local,RemotePort=remote)
-def filter_case(new_pid,new_remote):
+def filter_case(new_pid,new_remote,discover=False):
     filters=[];emitted=[]
     created_pending=[]
     pending_class=w.PendingConnections
@@ -92,7 +92,7 @@ def filter_case(new_pid,new_remote):
         pcap_setnonblock=Function(lambda *_:0)
         pcap_close=Function(lambda *_:None)
         pcap_next_ex=Function(lambda *_:(_ for _ in ()).throw(EndCapture()))
-    snapshots=iter([dict(pids=[1],tcp=[endpoint(50000,61731)]),dict(pids=[new_pid],tcp=[endpoint(50001,new_remote)])])
+    snapshots=iter([dict(pids=[] if discover else [1],tcp=[] if discover else [endpoint(50000,61731)]),dict(pids=[new_pid],tcp=[endpoint(50001,new_remote)])])
     saved=(w.capture.load_api,w.capture.endpoints,w.capture.interfaces,w.Event,w.Thread,w.emit,w.PendingConnections)
     try:
         w.capture.load_api=lambda:(Api(),Directory())
@@ -100,14 +100,18 @@ def filter_case(new_pid,new_remote):
         w.capture.interfaces=lambda _:[dict(name='Loopback test')]
         w.Event,w.Thread,w.emit=TestEvent,TestThread,emitted.append
         w.PendingConnections=pending_factory
-        try:w.live((61731,))
+        try:w.live(() if discover else (61731,), follow=discover)
         except EndCapture:pass
     finally:w.capture.load_api,w.capture.endpoints,w.capture.interfaces,w.Event,w.Thread,w.emit,w.PendingConnections=saved
-    assert sum(row['type']=='connection-closed' for row in emitted)==1
-    if new_remote!=61731:
+    assert sum(row['type']=='connection-closed' for row in emitted)==(0 if discover else 1)
+    if discover:
+        assert filters[0]=='tcp and host 127.0.0.1' and len(filters)==2 and 'port 61731' in filters[-1]
+        assert any(row['type']=='character-stats' for row in emitted), 'Drenar início somente após validar a conexão do TL'
+    elif new_remote!=61731:
         assert len(filters)==2 and f'port {new_remote}' in filters[-1] and '61731' not in filters[-1]
     else:
         assert any(row['type']=='character-stats' for row in emitted), 'Preservar início do fluxo até validar o novo PID'
 filter_case(1,49793)
 filter_case(2,61731)
+filter_case(2,61731,discover=True)
 print('OK: loop real troca a porta do túnel e aposenta conexões ao mudar o PID do TL.')
