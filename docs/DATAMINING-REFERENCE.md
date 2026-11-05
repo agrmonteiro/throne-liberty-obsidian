@@ -6,6 +6,12 @@ não depende de memória do jogo ou de executar entradas no personagem.
 
 ## Resultado e localização
 
+Atributos da ficha: `TLStats` e `TLStatAttrLooks`, com catálogo preservado em
+`reference/datamine/26231302/character-stat-reference.json.gz`. Gerador:
+`tools/unreal/build-character-stat-reference.py`. Os números `EItemStats` não
+são intercambiáveis com IDs da rede. Ver
+[IMPORTACAO-FICHA-PACOTES.md](IMPORTACAO-FICHA-PACOTES.md).
+
 Buffs/debuffs: catálogo preservado em
 `reference/datamine/26231302/buff-reference.json.gz`, gerado por
 `tools/unreal/build-buff-reference.py --build 26231302`. Inclui efeitos,

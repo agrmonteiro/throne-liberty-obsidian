@@ -9,6 +9,7 @@ import { NumericInput } from '../components/NumericInput'
 import { HelpTip } from '../components/HelpTip'
 import { STAT_HELP } from '../engine/statHelp'
 import { parseBuildOcrText, statsPatchFromOcrRaw } from '../engine/buildOcr'
+import { ImportCharacterBuild } from '../components/ImportCharacterBuild'
 const now  = () => new Date().toISOString()
 
 // ─── Stat groups for the full stats editor ───────────────────────────────────
@@ -667,6 +668,7 @@ export function Builds(): React.ReactElement {
           </div>
         </div>
 
+        <ImportCharacterBuild onImported={build => { startEdit(build);showStatus('Ficha importada. Revise os valores recebidos e os campos usados pela calculadora.',false,Infinity) }} />
         <div className="tl-panel" style={{ marginBottom: '1.25rem', borderColor: 'rgba(124, 92, 252, 0.45)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <div style={{ flex: 1, minWidth: 240 }}>
@@ -831,7 +833,7 @@ export function Builds(): React.ReactElement {
                       <div style={{ display: 'flex', gap: '0.4rem', marginTop: 8, flexWrap: 'wrap' }}>
                         {ATTRIBUTE_NAMES.filter((a) => b.rawAttributes![a]).map((a) => (
                           <span key={a} style={{ fontSize: '0.67rem', fontFamily: 'JetBrains Mono, monospace', padding: '2px 7px', background: 'rgba(124,92,252,0.1)', border: '1px solid rgba(124,92,252,0.2)', borderRadius: 4, color: '#a992f8' }}>
-                            {a.slice(0, 3).toUpperCase()} <b style={{ color: '#c4b5fd' }}>{b.rawAttributes[a].display}</b>
+                            {a.slice(0, 3).toUpperCase()} <b style={{ color: '#c4b5fd' }}>{b.rawAttributes?.[a]?.display}</b>
                           </span>
                         ))}
                       </div>

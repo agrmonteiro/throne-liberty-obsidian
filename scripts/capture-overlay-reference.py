@@ -23,6 +23,7 @@ def utc():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--duration', type=int, default=600, choices=range(10, 1801))
+    parser.add_argument('--follow-loopback-server', action='store_true', help='Diagnóstico: preserva o início da reconexão na porta loopback do túnel atual do TL.')
     args = parser.parse_args()
     out = HERE.parent/'capturas_treinamento/npcap_tl'/datetime.now().strftime('%Y%m%d-%H%M%S-reference')
     out.mkdir(parents=True)
@@ -43,6 +44,15 @@ def main():
             file.write(json.dumps(dict(timeUtc=utc(), endpoints=snapshot), ensure_ascii=False)+'\n')
         return snapshot
     worker.capture.endpoints = recorded_endpoints
+    reference_ports = ()
+    if args.follow_loopback_server:
+        initial = recorded_endpoints()
+        reference_ports = tuple(sorted({int(e['RemotePort']) for e in initial['tcp'] if e['LocalAddress'] == e['RemoteAddress'] == '127.0.0.1'}))
+        if not reference_ports:
+            raise RuntimeError('Entre no personagem para identificar primeiro a porta do túnel do TL.')
+        manifest.update(scope='Npcap Loopback, somente porta(s) servidoras do túnel do TL identificadas no início. Portas locais novas são atribuídas ao TL pelo inventário posterior.',
+                        followedServerPorts=list(reference_ports), initialPids=initial['pids'])
+        manifest['limitations'].append('PCAP pode incluir outros clientes dessa mesma porta loopback; apenas conexões confirmadas pelo inventário do TL podem ser interpretadas.')
     last_heartbeat = start
     def save():
         manifest.update(elapsedSec=time.monotonic()-start, messageTypes=dict(counts))
@@ -111,7 +121,7 @@ def main():
     try:
         while time.monotonic() < deadline:
             try:
-                worker.live()
+                worker.live(reference_ports)
             except Finished:
                 break
             except Exception as error:

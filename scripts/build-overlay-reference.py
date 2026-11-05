@@ -203,6 +203,9 @@ def build(folder, player_name=None):
             limitation='Critical/heavy fields not identified; normal defaults are inferred from the older reference.'),
         '0x1234787f': dict(role='profile identity', evidence='older profile and attacker/log correspondence', fields={
             '1.1.2': 'name, UTF-8', '1.1.19': 'player entity ID', '1.1.20': 'selected target, NOT player identity', '1.1.26': 'tribe.Pc discriminator'}),
+        '0x1234787d': dict(role='entry profile identity', evidence='20261031-205037-reference tcp-005; same nominal profile and entity as 0x1234787f', fields={
+            '1.5.1.1': 'persistent character ID candidate, NOT combat entity ID', '1.5.1.2': 'name, UTF-8',
+            '1.5.1.19': 'player entity ID', '1.5.1.26': 'tribe.Pc discriminator'}),
         '0x1234444a': dict(role='entity state signal; not exclusive to local player', evidence='older samples matched local attacker, but 20261030-184651-reference includes other entities in the same connection',
             fields={'1': 'entity ID; local-only hypothesis disproved', '2': 'state flag 0/1; full meaning unknown'},
             limitation='Require the configured player name to match a profile for automatic selection. Flag does not define combat sessions.'),

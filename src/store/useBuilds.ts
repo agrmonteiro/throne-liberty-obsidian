@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Build, BuildMap, BuildStats } from '../engine/types'
 import { DEFAULT_STATS } from '../engine/types'
+import { isCharacterSnapshot } from '../engine/characterStats'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -108,6 +109,9 @@ export const useBuilds = create<BuildsState>((set, get) => ({
             notes:       (obj.notes as string) || '',
             importedAt:  new Date().toISOString(),
             sourceUrl:   (obj.sourceUrl as string) || undefined,
+            rawStats: obj.rawStats && typeof obj.rawStats==='object' ? Object.fromEntries(Object.entries(obj.rawStats).filter((entry): entry is [string,string]=>typeof entry[1]==='string')) : undefined,
+            rawAttributes: obj.rawAttributes && typeof obj.rawAttributes==='object' ? Object.fromEntries(Object.entries(obj.rawAttributes).filter((entry): entry is [string,{total:number;display:string}]=>Boolean(entry[1] && typeof entry[1]==='object' && Number.isFinite((entry[1] as {total?:number}).total) && typeof (entry[1] as {display?:string}).display==='string'))) : undefined,
+            characterSnapshot: isCharacterSnapshot(obj.characterSnapshot) ? obj.characterSnapshot : undefined,
           }
         } else {
           // Maybe it's a Python-format build (from questlog importer)

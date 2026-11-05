@@ -3,6 +3,7 @@ import { electronAPI } from '@electron-toolkit/preload'
 import type { OverlayAPI } from '../../src/engine/overlayMeter'
 
 const overlayAPI: OverlayAPI = {
+  characterStats: () => ipcRenderer.invoke('overlay:character-stats'),
   buffs: () => ipcRenderer.invoke('overlay:buffs'),
   deaths: () => ipcRenderer.invoke('overlay:deaths'),
   recordDeath: () => ipcRenderer.invoke('overlay:record-death'),

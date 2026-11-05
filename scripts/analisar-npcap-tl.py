@@ -160,6 +160,38 @@ def frames(data, counters, timestamp, depth=0, length_key=None):
         offset += length
 
 
+def character_stats(opcode, body):
+    """Totais explícitos da tabela local de atributos; ausências não viram zeros."""
+    paths = {0x12346e77: (1,), 0x12347e7d: (15, 6), 0x12347e7f: (15, 6), 0x123444dd: (5, 6), 0x12344437: (4, 6)}
+    if opcode not in paths:
+        return None
+    try:
+        fields = protobuf(body)
+        if opcode == 0x12346e77 and fields.get(2) != [b'']:
+            return None
+        for key in paths[opcode]:
+            if len(fields.get(key, [])) != 1 or not isinstance(fields[key][0], bytes):
+                return None
+            fields = protobuf(fields[key][0])
+        values = {}
+        if not 1 <= len(fields.get(98, [])) <= 1024:
+            return None
+        for raw in fields[98]:
+            if not isinstance(raw, bytes): return None
+            row = protobuf(raw)
+            if len(row.get(1, [])) != 1 or not isinstance(row[1][0], int): return None
+            uid = row[1][0]
+            if not 0 < uid <= 4096 or str(uid) in values: return None
+            total = row.get(6, [0])
+            if len(total) != 1 or not isinstance(total[0], int): return None
+            total = zigzag(total[0])
+            if abs(total) >= 2**53: return None
+            values[str(uid)] = dict(total=total, fields={str(k): [str(v) for v in vs] for k,vs in row.items() if all(isinstance(v,int) for v in vs)})
+        return dict(values=values, path='.'.join(map(str, (*paths[opcode], 98))))
+    except (ValueError, TypeError, IndexError, KeyError):
+        return None
+
+
 def buff_state(opcode, body):
     """Aplicação/update/remoção observados; tempos e stacks permanecem candidatos."""
     action = {0x12344a7b: 'apply', 0x12344a7c: 'remove', 0x12344a7d: 'update'}.get(opcode)
@@ -205,10 +237,19 @@ def zigzag(value):
     return (value >> 1) ^ -(value & 1)
 
 
-def player_identity(body):
+def player_identity(body, opcode=0x1234787f):
     """Perfil observado: campo 19 = jogador; campo 20 = alvo selecionado."""
     try:
-        profile = protobuf(protobuf(protobuf(body)[1][0])[1][0])
+        paths = {0x1234787f: (1, 1), 0x1234787d: (1, 5, 1)}
+        if opcode not in paths:
+            return None
+        profile = protobuf(body)
+        for key in paths[opcode]:
+            if len(profile.get(key, [])) != 1 or not isinstance(profile[key][0], bytes):
+                return None
+            profile = protobuf(profile[key][0])
+        if any(len(profile.get(key, [])) != 1 for key in (2, 19, 26)):
+            return None
         name = profile[2][0].decode('utf-8')
         source = profile[19][0]
         if profile[26][0] != b'tribe.Pc' or not isinstance(source, int) or not 0 < source <= 2**53-1:
@@ -269,8 +310,8 @@ def main():
         opcode_counts = Counter()
         for timestamp,opcode,body in frames(bytes(stream),local,lambda i:timestamps[bisect.bisect_right(boundaries,i)]):
             opcode_counts[hex(opcode)] += 1
-            if opcode == 0x1234787f:
-                identity = player_identity(body)
+            if opcode in (0x1234787f, 0x1234787d):
+                identity = player_identity(body, opcode)
                 if identity:
                     identities.append(dict(time=timestamp, **identity))
             try:

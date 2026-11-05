@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "build": "26231302",
+  "file": "character-stat-reference.json.gz",
+  "sha256": "02d870c915b1740bb2d4c5a4b534f6b08666ee5772c0f838ce33ab808775fa5b",
+  "counts": {
+    "looks": 287,
+    "namedPt": 285,
+    "itemStats": 292
+  },
+  "limitations": [
+    "TLStats.num belongs to EItemStats, not a universal wire ID.",
+    "List ordinals are candidates for EPcStatsType until validated against packets/UI.",
+    "Static metadata does not contain the equipped character values."
+  ]
+}

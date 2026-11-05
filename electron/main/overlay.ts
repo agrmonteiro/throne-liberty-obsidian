@@ -17,6 +17,7 @@ import { recognizedHealing } from '../../src/engine/overlayHealingEvent'
 import { OverlayBuffTracker, validBuffEvent, type BuffEvent, type BuffKind } from '../../src/engine/overlayBuffs'
 import { OverlayBuffLog } from './overlayBuffLog'
 import buffReference from '../../src/data/overlayBuffEffects.json'
+import { CharacterStatsLog } from './characterStats'
 
 export function registerOverlay(owner: BrowserWindow): void {
   const file = path.join(app.getPath('userData'), 'data', 'overlay.json')
@@ -32,6 +33,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   const history = new OverlayHistory(path.join(app.getPath('userData'), 'data', 'overlay-encounters.json'))
   const deathLog = new OverlayDeathLog(path.join(app.getPath('userData'), 'data', 'overlay-deaths.json'))
   const buffs = new OverlayBuffTracker()
+  const characterStats = new CharacterStatsLog(path.join(app.getPath('userData'), 'data', 'character-snapshots.json'))
   const buffLog = new OverlayBuffLog(path.join(app.getPath('userData'), 'logs', 'dps-meter', 'buffs'))
   const buffEffects = buffReference.effects as Record<string, { kind: BuffKind; names: string[] }>
   let encounterId = randomUUID()
@@ -69,6 +71,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   let saveTimer: ReturnType<typeof setTimeout> | undefined
   let focusHideTimer: ReturnType<typeof setTimeout> | undefined
   function checkpoint(reason = 'current', at = mode === 'replay' ? (replayClock ?? Date.now()) : Date.now()): void {
+    characterState()
     if (encounterClosed || !mode) return
     const session = namedSession(at)
     if (reason === 'current' && session.timed && Date.now() >= session.timed.endsAt) reason = session.timed.cancelled ? 'timed-cancelled' : 'timed-end'
@@ -125,6 +128,10 @@ export function registerOverlay(owner: BrowserWindow): void {
       status, mode, message, unknownSkillLog: unknownLog.status(),
       sources: [...sources].map(([id, damage]) => ({ id, damage, name: entityName(id).name, lastDamageAt: sourceLastSeen.get(id),
         localPlayer: id === player?.sourceId })).sort((a, b) => b.damage - a.damage), deathLog: deathLog.status() }
+  }
+  function characterState(): ReturnType<CharacterStatsLog['get']> {
+    const player = identity.snapshot()
+    return characterStats.get(captureId, mode === 'live' && player?.method === 'profile-name' && player.sourceId === config.sourceId ? player : null, config.playerName ?? '')
   }
   function bindDeathLog(connectionId = encounterConnectionId ?? identity.snapshot()?.connectionId): void {
     buffs.bind(mode && connectionId && meter.sourceId !== null ? { captureId, connectionId, playerId: meter.sourceId } : null)
@@ -285,6 +292,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     lastCombatDamageAt = null
     resumedAt = captureStartedAt
     identity.clear(); sourceLastSeen.clear(); recentDamage = []
+    characterStats.reset()
     config.reviewEncounterId = null
     const scripts = app.isPackaged ? path.join(process.resourcesPath, 'npcap-overlay') : path.join(app.getAppPath(), 'scripts')
     const worker = path.join(scripts, 'npcap-overlay-worker.py')
@@ -305,7 +313,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (!replay) buffLog.start(captureId)
     replayClock = null
     let pending = '', errors = ''
-    const proc = spawn(python(), ['-u', worker, '--healing-reference', healingFile, ...(replay ? ['--replay', replay, '--speed', String(speed)] : [])],
+    const proc = spawn(python(), ['-u', worker, '--healing-reference', healingFile, ...(replay ? ['--replay', replay, '--speed', String(speed)] : ['--follow-loopback-server'])],
       { windowsHide: true, env: { ...process.env, PYTHONIOENCODING: 'utf-8' } })
     child = proc
     proc.stdout?.on('data', buffer => {
@@ -326,6 +334,10 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (mode === 'replay' && config.autoSource !== false && data.ids.length === 1 && Number.isSafeInteger(data.ids[0]) && data.ids[0] > 0) {
               bindSource(data.ids[0], replayClock ?? 0, 'replay-source')
             }
+          } else if (data.type === 'character-stats' && mode === 'live') {
+            if (!Number.isFinite(data.time) || data.time*1000 < captureStartedAt || typeof data.connectionId!=='string'
+              || identity.isRetired(data.connectionId) || data.raw?.direction!=='server-to-client') continue
+            characterStats.observe(data.connectionId,data.time,data.values)
           } else if (data.type === 'buff' && mode === 'live') {
             if (!validBuffEvent(data.event) || data.event.time * 1000 < captureStartedAt || identity.isRetired(data.event.connectionId)
               || data.raw?.direction !== 'server-to-client') continue
@@ -357,6 +369,7 @@ export function registerOverlay(owner: BrowserWindow): void {
                 data.deathCandidate === true, data.aliveCandidate === true)
             }
           } else if (data.type === 'connection-closed' && mode === 'live') {
+            characterState(); characterStats.retire(data.connectionId)
             buffLog.append({ type: 'connection-closed', captureId, connectionId: data.connectionId, time: data.time ?? Date.now()/1000 })
             if (identity.accepts(data.connectionId) || encounterConnectionId === data.connectionId) {
               finishEncounter('connection-end')
@@ -415,6 +428,7 @@ export function registerOverlay(owner: BrowserWindow): void {
               sourceNames.set(data.sourceId, data.name)
               if (mode === 'live' && config.playerName && data.name === config.playerName) {
                 const previousPlayer = identity.snapshot()
+                if (previousPlayer && previousPlayer.connectionId === data.connectionId && previousPlayer.sourceId !== data.sourceId) characterStats.retire(data.connectionId)
                 const change = identity.identify(data.sourceId, data.connectionId, Number.isFinite(data.time) ? data.time * 1000 : Date.now(), 'profile-name')
                 if (change === 'changed' && previousPlayer && previousPlayer.connectionId !== data.connectionId) {
                   finishEncounter('connection-change')
@@ -544,6 +558,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   }
   watchForeground()
   ipcMain.handle('overlay:get', state)
+  ipcMain.handle('overlay:character-stats', characterState)
   ipcMain.handle('overlay:buffs', () => {
     const snapshot = buffs.snapshot()
     return { ...snapshot, observed: namedBuffStates(), recent: snapshot.recent.map(event => ({ ...event,
@@ -703,6 +718,6 @@ export function registerOverlay(owner: BrowserWindow): void {
     globalShortcut.unregister('CommandOrControl+Shift+F9'); globalShortcut.unregister('CommandOrControl+Shift+F10')
     globalShortcut.unregister('CommandOrControl+Shift+F8')
     globalShortcut.unregister('CommandOrControl+Shift+F11')
-    for (const name of ['get', 'buffs', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
+    for (const name of ['get', 'character-stats', 'buffs', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
   })
 }

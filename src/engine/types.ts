@@ -58,6 +58,7 @@ export const DEFAULT_STATS: BuildStats = {
 // ─── Stored build model ───────────────────────────────────────────────────────
 
 export interface Build {
+  characterSnapshot?: import('./characterStats').CharacterSnapshot
   id:             string
   name:           string
   weaponCombo:    string

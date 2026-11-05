@@ -279,6 +279,7 @@ export function resolveOverlayNames(state: OverlayState, names: Record<string, s
       received: { ...healing.received, skills: resolveSkillRows(healing.received.skills, names, icons) } } } : {}) } }
 }
 export interface OverlayAPI {
+  characterStats: () => Promise<import('./characterStats').CharacterStatsResult>
   buffs: () => Promise<import('./overlayBuffs').BuffResult>
   deaths: () => Promise<import('./overlayDeathLog').DeathLogResult>
   recordDeath: () => Promise<import('./overlayDeathLog').DeathLogResult>

@@ -60,6 +60,12 @@ reaproveitar a instância existente; não iniciar outra captura de QA nesse perf
 
 ## Decisões dos overlays
 
+Importação da ficha por pacotes: consultar
+[IMPORTACAO-FICHA-PACOTES.md](IMPORTACAO-FICHA-PACOTES.md). Inclui esquema,
+validação visual, catálogo, reconexão e importação em Builds. Preservar também
+`<userData>/data/character-snapshots.json` e `Build.characterSnapshot` no backup
+dos dados; não usar essas leituras para restaurar identidade ao vivo.
+
 Buffs/debuffs e presença durante a atividade: consultar
 [OVERLAY-BUFFS-PROTOCOLO.md](OVERLAY-BUFFS-PROTOCOLO.md). O catálogo gzip no
 Git, as fixtures reais e os scripts permitem retomar o mapa de efeitos sem

@@ -23,6 +23,13 @@
     "tcp-001:8075232"
   ],
   "nativeCombatSessionId": "not identified",
+  "characterStats": {
+    "documentation": "docs/IMPORTACAO-FICHA-PACOTES.md",
+    "catalog": "reference/datamine/26231302/character-stat-reference.json.gz",
+    "runtimeCatalog": "src/data/characterStatReference.json",
+    "fixture": "scripts/fixtures/character-stats.json",
+    "scope": "Observed local stat totals; missing fields are not inferred as zero. Labels/scales remain experimental."
+  },
   "buffs": {
     "catalog": "reference/datamine/26231302/buff-reference.json.gz",
     "evidence": "reference/datamine/26231302/buff-protocol-evidence.json",

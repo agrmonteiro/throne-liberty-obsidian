@@ -84,6 +84,7 @@ function harness(startAt = 1000000) {
     if (name.endsWith('/overlayHealingEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayHealingEffects.json'), 'utf8'))
     if (name.endsWith('/overlayBuffEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayBuffEffects.json'), 'utf8'))
     if (name === './overlayBuffLog') return compile('electron/main/overlayBuffLog.ts', dependency => dependency === 'fs' ? fakeFs : require(dependency))
+    if (name === './characterStats') return compile('electron/main/characterStats.ts', dependency => dependency === 'fs' ? { ...fakeFs, existsSync:file=>!file.endsWith('character-snapshots.json'), renameSync() {} } : require(dependency))
     if (name === './overlayHistory') return { OverlayHistory: History }
     if (name === './overlayUnknownLog') return { OverlayUnknownLog: UnknownLog }
     if (name === './overlayDeathLog') return { OverlayDeathLog: DeathLog }
@@ -108,7 +109,7 @@ function harness(startAt = 1000000) {
     const child = children.findLast(row => row.args.some(value => value.endsWith('npcap-overlay-worker.py')))
     child.stdout.emit('data', Buffer.from(JSON.stringify(message) + '\n'))
   }
-  return { state, start, configure, send, records, journal, buffs: () => handlers.get('overlay:buffs')(), deaths: () => handlers.get('overlay:deaths')(),
+  return { state, start, configure, send, records, journal, characterStats: () => handlers.get('overlay:character-stats')(), buffs: () => handlers.get('overlay:buffs')(), deaths: () => handlers.get('overlay:deaths')(),
     recordDeath: () => handlers.get('overlay:record-death')(),
     tick: () => ticks.forEach(callback => callback()),
     foreground: (active, extra = {}) => children.find(row => row.args.some(value => value.endsWith('overlay-foreground.py'))).stdout.emit('data',
@@ -130,6 +131,25 @@ function harness(startAt = 1000000) {
 const damage = (id, time, amount, connectionId = 'A') => ({ type: 'damage', connectionId,
   event: { sourceId: id, time, damage: amount, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
 const player = (id, time, connectionId = 'A') => ({ type: 'identity', name: 'AgrMonteiro', sourceId: id, time, connectionId })
+const statsAudit=harness()
+try {
+  statsAudit.start();statsAudit.send({type:'status',state:'live',message:'test'})
+  const stats=(connectionId,time,values)=>({type:'character-stats',connectionId,time,values,raw:{direction:'server-to-client'}})
+  statsAudit.send(stats('A',1001,{'14':{total:32380},'28':{total:20320}}))
+  assert.equal(statsAudit.characterStats().live,null,'Tabela anterior ao perfil não escolhe identidade')
+  statsAudit.send(player(7,1002))
+  assert.equal(statsAudit.characterStats().live.values['14'].total,32380)
+  statsAudit.pause(true);statsAudit.send(stats('A',1003,{'14':{total:33000}}));statsAudit.reset()
+  assert.equal(statsAudit.characterStats().live.values['14'].total,33000,'Pausa/reset de DPS independentes da ficha')
+  statsAudit.send(stats('B',1004,{'14':{total:1}}))
+  assert.equal(statsAudit.characterStats().live.values['14'].total,33000,'Outra conexão não altera os atributos locais')
+  statsAudit.configure({sourceId:8})
+  assert.equal(statsAudit.characterStats().live,null,'Seleção manual de terceiro não herda ficha local')
+  statsAudit.send({type:'connection-closed',connectionId:'A'})
+  assert.equal(statsAudit.characterStats().live,null)
+  assert.equal(statsAudit.characterStats().saved[0].values['14'].total,33000)
+}finally{statsAudit.close()}
+console.log('OK: ficha pelo perfil nominal, pré-captura, conexão, pausa/reset de DPS e arquivo salvo sem identidade inventada.')
 const buffAudit = harness()
 try {
   const frame = JSON.parse(fs.readFileSync(path.join(root, 'scripts/fixtures/overlay-buff-lifecycle.json'), 'utf8')).cases[0].events[0]

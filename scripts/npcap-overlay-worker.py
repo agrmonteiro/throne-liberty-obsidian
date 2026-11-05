@@ -46,8 +46,8 @@ def emit(value):
     print(json.dumps(value, ensure_ascii=True), flush=True)
 
 
-def player_identity(body):
-    return decoder.player_identity(body)
+def player_identity(body, opcode=0x1234787f):
+    return decoder.player_identity(body, opcode)
 
 
 def packet_details(opcode, body, server_to_client):
@@ -229,6 +229,11 @@ class Stream:
                 break
             frame = bytes(self.buffer[:length]); del self.buffer[:length]
             for stamp,opcode,body in decoder.frames(frame,Counter(),lambda _:now, length_key=self.length_key):
+                if opcode in (0x12346e77, 0x12347e7d, 0x12347e7f, 0x123444dd, 0x12344437) and self.server_to_client:
+                    stats = decoder.character_stats(opcode, body)
+                    if stats:
+                        emit(dict(type='character-stats', time=stamp, connectionId=self.connection_id, **stats,
+                                  raw=packet_details(opcode, body, self.server_to_client)))
                 if opcode in (0x12344a7b, 0x12344a7c, 0x12344a7d) and self.server_to_client:
                     buff = decoder.buff_state(opcode, body)
                     if buff:
@@ -259,8 +264,8 @@ class Stream:
                         emit(dict(type='local-player', sourceId=source, time=stamp, connectionId=self.connection_id,
                                   raw=packet_details(opcode, body, self.server_to_client)))
                     continue
-                if opcode == 0x1234787f:
-                    identity = player_identity(body)
+                if opcode in (0x1234787f, 0x1234787d) and self.server_to_client:
+                    identity = player_identity(body, opcode)
                     if identity:
                         emit(dict(type='identity', time=stamp, connectionId=self.connection_id, **identity))
                     continue
@@ -308,15 +313,43 @@ class Stream:
                           raw=packet_details(opcode, body, self.server_to_client)))
 
 
-def live():
+class PendingConnections:
+    """Retém o início do túnel até o inventário confirmar que a porta cliente pertence ao TL."""
+    def __init__(self, server_ports, limit=2*1024*1024):
+        self.server_ports = set(server_ports)
+        self.rows = {}
+        self.size = 0
+        self.limit = limit
+
+    def offer(self, a, b, seq, payload, at):
+        if not payload or (a not in self.server_ports and b not in self.server_ports): return
+        pair = (b, a) if a in self.server_ports else (a, b)
+        if pair not in self.rows and len(self.rows) >= 16 or self.size+len(payload) > self.limit:
+            raise ValueError('Início de conexão excedeu o buffer de validação do TL.')
+        self.rows.setdefault(pair, []).append((a,b,seq,payload,at))
+        self.size += len(payload)
+
+    def drain(self, pair):
+        rows = self.rows.pop(pair, [])
+        self.size -= sum(len(row[3]) for row in rows)
+        return rows
+
+    def expire(self, at):
+        for pair, rows in list(self.rows.items()):
+            if rows and at-rows[0][4] > 5: self.drain(pair)
+
+
+def live(reference_server_ports=()):
     api,directory = capture.load_api()
     api.pcap_datalink.restype = C.c_int
     api.pcap_datalink.argtypes = [C.c_void_p]
     data = capture.endpoints()
     local = [e for e in data['tcp'] if e['RemoteAddress'] == '127.0.0.1']
-    if not local:
+    if not local and not reference_server_ports:
         raise ValueError('Conexão local do TL não encontrada. O caminho validado usa ExitLag.')
-    expression = capture.filter_expression(dict(tcp=local,udp=[]))
+    if reference_server_ports and not all(isinstance(port, int) and 0 < port < 65536 for port in reference_server_ports):
+        raise ValueError('Porta de referência inválida.')
+    expression = ('tcp and host 127.0.0.1 and ('+' or '.join(f'port {port}' for port in reference_server_ports)+')') if reference_server_ports else capture.filter_expression(dict(tcp=local,udp=[]))
     device = next((d for d in capture.interfaces(api) if 'Loopback' in d['name']),None)
     if not device:
         raise ValueError('Npcap Loopback indisponível.')
@@ -339,14 +372,16 @@ def live():
         if link != 0:
             raise ValueError(f'Formato de interface não validado: {link}')
         streams = {}
+        pending_connections = PendingConnections(reference_server_ports)
         connections = {(int(e['LocalPort']), int(e['RemotePort'])): uuid4().hex for e in local}
+        game_pids = tuple(sorted(data['pids']))
         updates = deque(maxlen=1)
         stop_watch = Event()
         def watch_connections():
             while not stop_watch.wait(2):
                 try:
                     snapshot = capture.endpoints()
-                    updates.append([e for e in snapshot['tcp'] if e['RemoteAddress'] == '127.0.0.1'])
+                    updates.append((tuple(sorted(snapshot['pids'])), [e for e in snapshot['tcp'] if e['LocalAddress'] == e['RemoteAddress'] == '127.0.0.1']))
                 except Exception:
                     # O encerramento real também é detectado por FIN/RST; repetir o inventário.
                     continue
@@ -356,28 +391,48 @@ def live():
             streams.pop(pair, None); streams.pop(pair[::-1], None)
             if connection:
                 emit(dict(type='connection-closed', connectionId=connection, time=time.time()))
+        def consume(a, b, seq, payload, at):
+            server_to_client = (b,a) in connections
+            pair = (b,a) if server_to_client else (a,b)
+            connection = connections.get(pair)
+            if connection and payload:
+                streams.setdefault((a,b),Stream(connection, server_to_client)).feed(seq,payload,at)
         emit(dict(type='status',state='live',message='Leitura experimental ativa.'))
         while True:
             if updates:
-                refreshed = updates.pop()
+                refreshed_pids, refreshed = updates.pop()
+                refreshed_ports = tuple(sorted({int(e['RemotePort']) for e in refreshed}))
+                changed_process = refreshed_pids != game_pids
+                changed_tunnel = bool(reference_server_ports and refreshed_ports and refreshed_ports != tuple(reference_server_ports))
+                if changed_process or changed_tunnel:
+                    for pair in list(connections): retire(pair)
+                    streams.clear()
+                    game_pids = refreshed_pids
+                    if reference_server_ports and refreshed_ports: reference_server_ports = refreshed_ports
+                    # Outro PID com a mesma porta pode já ter enviado o início
+                    # do fluxo. Só drenar após validar o novo par no inventário.
+                    if changed_tunnel:
+                        pending_connections = PendingConnections(reference_server_ports)
                 pairs = {(int(e['LocalPort']), int(e['RemotePort'])) for e in refreshed}
-                if pairs != set(connections):
+                if pairs != set(connections) or changed_process or changed_tunnel:
                     for pair in list(connections):
                         if pair not in pairs:
                             retire(pair)
-                    if not refreshed:
+                    if not refreshed and not reference_server_ports:
                         raise ValueError('Conexão local do TL não encontrada. Aguardando reconexão.')
-                    expression = capture.filter_expression(dict(tcp=refreshed, udp=[]))
-                    program = capture.Program()
-                    if api.pcap_compile(handle, C.byref(program), expression.encode(), 1, 0xffffffff):
-                        raise ValueError(api.pcap_geterr(handle).decode(errors='replace'))
-                    try:
-                        if api.pcap_setfilter(handle, C.byref(program)):
-                            raise ValueError('Falha ao atualizar conexões do TL.')
-                    finally:
-                        api.pcap_freecode(C.byref(program))
+                    if not reference_server_ports or changed_tunnel:
+                        expression = ('tcp and host 127.0.0.1 and ('+' or '.join(f'port {port}' for port in reference_server_ports)+')') if reference_server_ports else capture.filter_expression(dict(tcp=refreshed, udp=[]))
+                        program = capture.Program()
+                        if api.pcap_compile(handle, C.byref(program), expression.encode(), 1, 0xffffffff):
+                            raise ValueError(api.pcap_geterr(handle).decode(errors='replace'))
+                        try:
+                            if api.pcap_setfilter(handle, C.byref(program)):
+                                raise ValueError('Falha ao atualizar conexões do TL.')
+                        finally:
+                            api.pcap_freecode(C.byref(program))
                     for pair in pairs:
                         connections.setdefault(pair, uuid4().hex)
+                        for buffered in pending_connections.drain(pair): consume(*buffered)
             header,pointer = C.c_void_p(),C.c_void_p()
             result = api.pcap_next_ex(handle,C.byref(header),C.byref(pointer))
             if result == 0:
@@ -398,14 +453,26 @@ def live():
             if len(tcp) < 20:
                 continue
             a,b,seq = struct.unpack_from('!HHI',tcp)
+            if reference_server_ports and raw[12:20] != b'\x7f\x00\x00\x01'*2:
+                continue
             server_to_client = (b, a) in connections
             pair = (b, a) if server_to_client else (a, b)
+            if reference_server_ports and tcp[13] & 2 and not tcp[13] & 16:
+                candidate_pair = (b,a) if a in reference_server_ports else (a,b)
+                pending_connections.drain(candidate_pair)
+                if candidate_pair in connections: retire(candidate_pair)
+                pair = candidate_pair
             connection = connections.get(pair)
             if not connection:
+                if reference_server_ports:
+                    pending_connections.expire(seconds+micros/1e6)
+                    if tcp[13] & 5:
+                        pending_connections.drain((b,a) if a in reference_server_ports else (a,b))
+                    else:
+                        pending_connections.offer(a,b,seq,tcp[(tcp[12]>>4)*4:],seconds+micros/1e6)
                 continue
             payload = tcp[(tcp[12]>>4)*4:]
-            if payload:
-                streams.setdefault((a,b),Stream(connection, server_to_client)).feed(seq,payload,seconds + micros / 1e6)
+            consume(a,b,seq,payload,seconds+micros/1e6)
             if tcp[13] & 5:
                 retire(pair)
     finally:
@@ -443,6 +510,7 @@ if __name__ == '__main__':
     parser.add_argument('--replay')
     parser.add_argument('--speed',type=float,default=1)
     parser.add_argument('--healing-reference', type=Path)
+    parser.add_argument('--follow-loopback-server', action='store_true')
     args = parser.parse_args()
     try:
         if args.healing_reference:
@@ -452,7 +520,9 @@ if __name__ == '__main__':
                 raise ValueError('Velocidade de reprodução inválida.')
             replay(args.replay,args.speed)
         else:
-            live()
+            ports = tuple(sorted({int(e['RemotePort']) for e in capture.endpoints()['tcp'] if e['LocalAddress'] == e['RemoteAddress'] == '127.0.0.1'})) if args.follow_loopback_server else ()
+            if args.follow_loopback_server and not ports: raise ValueError('Conexão do TL necessária para identificar a porta do túnel.')
+            live(ports)
     except KeyboardInterrupt:
         pass
     except Exception as error:
