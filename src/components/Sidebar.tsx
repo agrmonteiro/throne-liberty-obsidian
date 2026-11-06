@@ -83,24 +83,25 @@ export function Sidebar({ active, onChange }: Props): React.ReactElement {
   useEffect(() => {
     if (!window.updateAPI) return
     const api = window.updateAPI
-    api.onNotAvailable(() => {
+    const unsubscribeNotAvailable = api.onNotAvailable(() => {
       setCheckState('upToDate')
       setTimeout(() => setCheckState('idle'), 4000)
     })
-    api.onAvailable(() => { setCheckState('available') })
-    api.onError(() => { setCheckState('idle') })
+    const unsubscribeAvailable = api.onAvailable(() => { setCheckState('available') })
+    const unsubscribeError = api.onError(() => { setCheckState('idle') })
+    return () => {
+      unsubscribeNotAvailable()
+      unsubscribeAvailable()
+      unsubscribeError()
+    }
   }, [])
 
   function handleCheckUpdate() {
     if (checkState === 'checking') return
     setCheckState('checking')
-    const guard = setTimeout(() => {
+    setTimeout(() => {
       setCheckState(prev => prev === 'checking' ? 'idle' : prev)
     }, 35_000)
-    const cleanup = () => clearTimeout(guard)
-    window.updateAPI?.onNotAvailable(cleanup)
-    window.updateAPI?.onAvailable(cleanup)
-    window.updateAPI?.onError(cleanup)
     window.updateAPI?.checkNow()
   }
 

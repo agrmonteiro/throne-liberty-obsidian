@@ -19,12 +19,12 @@ export function UpdateNotifier(): React.ReactElement | null {
 
     const api = window.updateAPI
 
-    api.onAvailable(({ version }) => {
+    const unsubscribeAvailable = api.onAvailable(({ version }) => {
       setState({ phase: 'available', version })
       setDismissed(false)
     })
 
-    api.onProgress(({ percent }) => {
+    const unsubscribeProgress = api.onProgress(({ percent }) => {
       setDismissed(false)
       setState(prev => ({
         phase: 'downloading',
@@ -33,12 +33,12 @@ export function UpdateNotifier(): React.ReactElement | null {
       }))
     })
 
-    api.onDownloaded(({ version }) => {
+    const unsubscribeDownloaded = api.onDownloaded(({ version }) => {
       setState({ phase: 'ready', version })
       setDismissed(false)
     })
 
-    api.onError(() => {
+    const unsubscribeError = api.onError(() => {
       setState(prev =>
         prev.phase === 'idle'
           ? prev  // erro no check silencioso (sidebar já trata)
@@ -46,14 +46,20 @@ export function UpdateNotifier(): React.ReactElement | null {
       )
     })
 
-    api.onStalled(() => {
+    const unsubscribeStalled = api.onStalled(() => {
       setState(prev => ({
         phase: 'stalled',
         version: 'version' in prev ? prev.version : '',
       }))
     })
 
-    // sem cleanup de listeners: a preload já garante remoção ao re-registrar
+    return () => {
+      unsubscribeAvailable()
+      unsubscribeProgress()
+      unsubscribeDownloaded()
+      unsubscribeError()
+      unsubscribeStalled()
+    }
   }, [])
 
   if (dismissed || state.phase === 'idle') return null

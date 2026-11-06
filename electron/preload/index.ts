@@ -111,44 +111,55 @@ type UpdateAvailablePayload  = { version: string }
 type UpdateProgressPayload   = { percent: number }
 type UpdateDownloadedPayload = { version: string }
 type UpdateErrorPayload      = { message: string }
-let _updateAvailableCb:    ((_e: Electron.IpcRendererEvent, p: UpdateAvailablePayload)  => void) | null = null
-let _updateProgressCb:     ((_e: Electron.IpcRendererEvent, p: UpdateProgressPayload)   => void) | null = null
-let _updateDownloadedCb:   ((_e: Electron.IpcRendererEvent, p: UpdateDownloadedPayload) => void) | null = null
-let _updateNotAvailableCb: ((_e: Electron.IpcRendererEvent) => void) | null = null
-let _updateErrorCb:        ((_e: Electron.IpcRendererEvent, p: UpdateErrorPayload)      => void) | null = null
-let _updateStalledCb:      ((_e: Electron.IpcRendererEvent) => void) | null = null
+
+type Unsubscribe = () => void
+
+// O updater possui dois consumidores na janela principal: Sidebar e
+// UpdateNotifier. Um único callback por canal fazia a última inscrição apagar
+// a anterior, deixando o estado do botão de atualização sem evento terminal.
+const updateAvailableListeners = new Set<(p: UpdateAvailablePayload) => void>()
+const updateProgressListeners = new Set<(p: UpdateProgressPayload) => void>()
+const updateDownloadedListeners = new Set<(p: UpdateDownloadedPayload) => void>()
+const updateNotAvailableListeners = new Set<() => void>()
+const updateErrorListeners = new Set<(p: UpdateErrorPayload) => void>()
+const updateStalledListeners = new Set<() => void>()
+
+function subscribe<T>(listeners: Set<(payload: T) => void>, callback: (payload: T) => void): Unsubscribe {
+  listeners.add(callback)
+  return () => listeners.delete(callback)
+}
+
+function subscribeWithoutPayload(listeners: Set<() => void>, callback: () => void): Unsubscribe {
+  listeners.add(callback)
+  return () => listeners.delete(callback)
+}
+
+ipcRenderer.on('update:available', (_event, payload: UpdateAvailablePayload) => {
+  updateAvailableListeners.forEach(listener => listener(payload))
+})
+ipcRenderer.on('update:not-available', () => {
+  updateNotAvailableListeners.forEach(listener => listener())
+})
+ipcRenderer.on('update:progress', (_event, payload: UpdateProgressPayload) => {
+  updateProgressListeners.forEach(listener => listener(payload))
+})
+ipcRenderer.on('update:downloaded', (_event, payload: UpdateDownloadedPayload) => {
+  updateDownloadedListeners.forEach(listener => listener(payload))
+})
+ipcRenderer.on('update:error', (_event, payload: UpdateErrorPayload) => {
+  updateErrorListeners.forEach(listener => listener(payload))
+})
+ipcRenderer.on('update:stalled', () => {
+  updateStalledListeners.forEach(listener => listener())
+})
 
 const updateAPI = {
-  onAvailable: (cb: (p: UpdateAvailablePayload) => void) => {
-    if (_updateAvailableCb) ipcRenderer.removeListener('update:available', _updateAvailableCb)
-    _updateAvailableCb = (_e, p) => cb(p)
-    ipcRenderer.on('update:available', _updateAvailableCb)
-  },
-  onNotAvailable: (cb: () => void) => {
-    if (_updateNotAvailableCb) ipcRenderer.removeListener('update:not-available', _updateNotAvailableCb)
-    _updateNotAvailableCb = (_e) => cb()
-    ipcRenderer.on('update:not-available', _updateNotAvailableCb)
-  },
-  onProgress: (cb: (p: UpdateProgressPayload) => void) => {
-    if (_updateProgressCb) ipcRenderer.removeListener('update:progress', _updateProgressCb)
-    _updateProgressCb = (_e, p) => cb(p)
-    ipcRenderer.on('update:progress', _updateProgressCb)
-  },
-  onDownloaded: (cb: (p: UpdateDownloadedPayload) => void) => {
-    if (_updateDownloadedCb) ipcRenderer.removeListener('update:downloaded', _updateDownloadedCb)
-    _updateDownloadedCb = (_e, p) => cb(p)
-    ipcRenderer.on('update:downloaded', _updateDownloadedCb)
-  },
-  onError: (cb: (p: UpdateErrorPayload) => void) => {
-    if (_updateErrorCb) ipcRenderer.removeListener('update:error', _updateErrorCb)
-    _updateErrorCb = (_e, p) => cb(p)
-    ipcRenderer.on('update:error', _updateErrorCb)
-  },
-  onStalled: (cb: () => void) => {
-    if (_updateStalledCb) ipcRenderer.removeListener('update:stalled', _updateStalledCb)
-    _updateStalledCb = (_e) => cb()
-    ipcRenderer.on('update:stalled', _updateStalledCb)
-  },
+  onAvailable: (cb: (p: UpdateAvailablePayload) => void) => subscribe(updateAvailableListeners, cb),
+  onNotAvailable: (cb: () => void) => subscribeWithoutPayload(updateNotAvailableListeners, cb),
+  onProgress: (cb: (p: UpdateProgressPayload) => void) => subscribe(updateProgressListeners, cb),
+  onDownloaded: (cb: (p: UpdateDownloadedPayload) => void) => subscribe(updateDownloadedListeners, cb),
+  onError: (cb: (p: UpdateErrorPayload) => void) => subscribe(updateErrorListeners, cb),
+  onStalled: (cb: () => void) => subscribeWithoutPayload(updateStalledListeners, cb),
   install:   () => ipcRenderer.send('update:install'),
   checkNow:  () => ipcRenderer.send('update:check'),
 }

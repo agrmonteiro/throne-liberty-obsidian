@@ -443,6 +443,10 @@ export function Builds({ importRequest = 0 }: { importRequest?: number } = {}): 
       s = s.replace(/[,.](\d{3})(?!\d)/g, '$1').replace(',', '.')
       return parseFloat(s) || fallback
     }
+    // A ficha/pacote não envia todos os campos em toda atualização. Ausente é
+    // diferente de zero: na réplica, mantenha o valor já salvo da calculadora.
+    const has = (k: string): boolean => raw[k] != null && String(raw[k]).trim() !== ''
+    const hasAny = (...keys: string[]): boolean => keys.some(has)
     const maxOf = (...keys: string[]) => Math.max(0, ...keys.map((k) => n(k)))
 
     // Max Damage range → min/max weapon
@@ -476,14 +480,14 @@ export function Builds({ importRequest = 0 }: { importRequest?: number } = {}): 
     // Boss Crit/Heavy do Questlog já somam o valor base → extrair só o delta extra.
     const critHitChance      = familyValue('Critical Hit Chance', editData.stats.critHitChance)
     const heavyAttackChance  = familyValue('Heavy Attack Chance', editData.stats.heavyAttackChance)
-    const rawBossCrit        = attackFamily
-      ? n(`Boss ${attackFamily} Critical Hit Chance`)
-      : maxOf('Boss Melee Critical Hit Chance', 'Boss Ranged Critical Hit Chance', 'Boss Magic Critical Hit Chance')
-    const rawBossHeavy       = attackFamily
-      ? n(`Boss ${attackFamily} Heavy Attack Chance`)
-      : maxOf('Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance')
-    const bossCritChance     = Math.max(0, rawBossCrit  - critHitChance)
-    const bossHeavyChance    = Math.max(0, rawBossHeavy - heavyAttackChance)
+    const bossCritFields = attackFamily ? [`Boss ${attackFamily} Critical Hit Chance`]
+      : ['Boss Melee Critical Hit Chance', 'Boss Ranged Critical Hit Chance', 'Boss Magic Critical Hit Chance']
+    const bossHeavyFields = attackFamily ? [`Boss ${attackFamily} Heavy Attack Chance`]
+      : ['Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance']
+    const rawBossCrit        = attackFamily ? n(bossCritFields[0]) : maxOf(...bossCritFields)
+    const rawBossHeavy       = attackFamily ? n(bossHeavyFields[0]) : maxOf(...bossHeavyFields)
+    const bossCritChance     = hasAny(...bossCritFields) ? Math.max(0, rawBossCrit - critHitChance) : editData.stats.bossCritChance
+    const bossHeavyChance    = hasAny(...bossHeavyFields) ? Math.max(0, rawBossHeavy - heavyAttackChance) : editData.stats.bossHeavyChance
 
     const updated: BuildStats = {
       ...editData.stats,

@@ -7,7 +7,6 @@ import { OverlaySourcesView } from '../components/OverlaySourcesView'
 import { overlayAppearance } from '../components/overlayAppearance'
 import { OverlayMetricView, overlayGraphPages } from '../components/OverlayMetricView'
 import { OverlayDeathView } from '../components/OverlayDeathView'
-import { OverlayBuffView } from '../components/OverlayBuffView'
 import { useOverlayGraphPage, type OverlayGraphPage } from '../hooks/useOverlayGraphPage'
 import { OverlayTimerStatus } from '../components/OverlayTimer'
 import { OverlayDragLabel } from '../components/OverlayDragLabel'
@@ -22,8 +21,7 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
   const [groupSources, setGroupSources] = useState(false)
   const { page, selectPage } = useOverlayGraphPage(state.config.metricPage, patch => act(() => window.overlayAPI.configure(patch)))
   const deathView = panel === 'skills' && page === 'deaths'
-  const buffView = panel === 'skills' && page === 'buffs'
-  const journalView = deathView || buffView
+  const journalView = deathView
   useEffect(() => {
     if (!state.config.locked) return
     let interactive = false
@@ -66,7 +64,7 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
       <select aria-label="Registro do overlay" disabled={state.config.locked || journalView}
         title={history.error ?? (state.config.locked ? 'Ctrl+Shift+F9 para escolher registros' : 'Escolher registro salvo')}
         value={journalView ? '' : selected?.id ?? ''} onChange={event => act(() => window.overlayAPI.configure({ reviewEncounterId: event.target.value || null }))}>
-        <option value="">{buffView ? 'Buffs da leitura atual' : deathView ? 'Registros de morte abaixo' : `Atual${state.mode === 'replay' ? ' · reprodução' : ' · ao vivo'}`}</option>
+        <option value="">{deathView ? 'Registros de morte abaixo' : `Atual${state.mode === 'replay' ? ' · reprodução' : ' · ao vivo'}`}</option>
         {history.encounters.map(row => <option key={row.id} value={row.id}>
           {new Date(row.session.startedAt!).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })} · {Math.round(row.session.total).toLocaleString('pt-BR')}{row.mode === 'replay' ? ' · Replay' : ''}
         </option>)}
@@ -86,8 +84,7 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
         setGroupSources(false); selectPage(event.target.value as OverlayGraphPage)
       }}>{overlayGraphPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}</select>}
     {!journalView && selected && selected.attributionVersion !== 2 && <div role="alert">Registro anterior à correção de atacante/alvo; atribuição pode estar incorreta.</div>}
-    <div className="overlay-panel-content">{buffView ? <section className="meter-panel overlay-death-panel" aria-label="Buffs e debuffs">
-      <OverlayBuffView state={state} active compact /></section> : deathView ? <section className="meter-panel overlay-death-panel" aria-label="Causa mortis">
+    <div className="overlay-panel-content">{deathView ? <section className="meter-panel overlay-death-panel" aria-label="Causa mortis">
       <OverlayDeathView state={state} active compact /></section> : panel === 'skills' && groupSources && (selected ? Boolean(selected.groupConnections?.length) : true) ? <OverlaySourcesView state={display} compact
         onSelectSegment={groupSegmentId => act(() => window.overlayAPI.configure({ groupSegmentId }))} /> : panel === 'skills' && state.config.metricPage && state.config.metricPage !== 'damage'
       ? <div className="overlay-unified-content"><OverlayCombatOverview state={display} historical={Boolean(selected)} />

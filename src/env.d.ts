@@ -84,12 +84,12 @@ type GameCaptureResult = {
 }
 
 interface UpdateAPI {
-  onAvailable:    (cb: (p: { version: string }) => void) => void
-  onNotAvailable: (cb: () => void) => void
-  onProgress:     (cb: (p: { percent: number }) => void) => void
-  onDownloaded:   (cb: (p: { version: string }) => void) => void
-  onError:        (cb: (p: { message: string }) => void) => void
-  onStalled:      (cb: () => void) => void
+  onAvailable:    (cb: (p: { version: string }) => void) => () => void
+  onNotAvailable: (cb: () => void) => () => void
+  onProgress:     (cb: (p: { percent: number }) => void) => () => void
+  onDownloaded:   (cb: (p: { version: string }) => void) => () => void
+  onError:        (cb: (p: { message: string }) => void) => () => void
+  onStalled:      (cb: () => void) => () => void
   install:        () => void
   checkNow:       () => void
 }

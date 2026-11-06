@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 import type { MetricPage } from '../engine/overlayAnalysis'
 import type { OverlayConfig } from '../engine/overlayMeter'
 
-export type OverlayGraphPage = MetricPage | 'deaths' | 'buffs'
+export type OverlayGraphPage = MetricPage | 'deaths'
 const storageKey = 'throne.overlay.graph-view.v1'
 const changeEvent = 'overlay-graph-view-change'
 let fallback = 'meter'
@@ -20,10 +20,12 @@ export function useOverlayGraphPage(metricPage: MetricPage | undefined, configur
   page: OverlayGraphPage; selectPage: (page: OverlayGraphPage) => void
 } {
   const view = useSyncExternalStore(subscribe, snapshot)
-  return { page: view === 'deaths' || view === 'buffs' ? view : metricPage ?? 'damage', selectPage: page => {
-    fallback = page === 'deaths' || page === 'buffs' ? page : 'meter'
+  // "buffs" existiu no overlay em versões anteriores; a análise agora é exclusiva
+  // do app principal, então uma preferência persistida volta ao medidor de dano.
+  return { page: view === 'deaths' ? view : metricPage ?? 'damage', selectPage: page => {
+    fallback = page === 'deaths' ? page : 'meter'
     try { window.localStorage.setItem(storageKey, fallback) } catch { /* a navegação desta janela continua disponível */ }
     window.dispatchEvent(new Event(changeEvent))
-    if (page !== 'deaths' && page !== 'buffs') configure({ metricPage: page })
+    if (page !== 'deaths') configure({ metricPage: page })
   } }
 }
