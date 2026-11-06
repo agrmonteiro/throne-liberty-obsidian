@@ -23,6 +23,9 @@ Para fontes/ataques recebidos, o catálogo específico e as relações de spawn 
 em [OVERLAY-NOMES-DANO-RECEBIDO.md](OVERLAY-NOMES-DANO-RECEBIDO.md).
 Gerador: `tools/unreal/build-overlay-npc-reference.py`; saída:
 `src/data/overlayNpcReference.json`. Inclui os monstros fora de `TLSkillPcLooks*`.
+Cada NPC traz também `CreatureRank`, `CreatureSubRank` e nível quando presentes
+no template. `CreatureRank` é a referência local usada para a qualidade que o
+cliente apresenta no retrato/nameplate: chefe, champion, elite ou normal.
 
 | Conteúdo | Quantidade |
 | --- | ---: |

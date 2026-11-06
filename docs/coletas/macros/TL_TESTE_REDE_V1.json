@@ -1,0 +1,56 @@
+{
+  "status": "gerada_validada_nao_instalada_nao_executada",
+  "importFile": "C:\\Users\\admin\\Downloads\\TL_TESTE_REDE_V1.xml",
+  "durationMs": 110000,
+  "holdMs": 80,
+  "triggerMode": "Executar uma vez: configurar na atribuição do botão no Synapse",
+  "initialIdleSec": 25,
+  "explanation": "10 s de preparação mais 15 s de referência sem habilidades.",
+  "plannedPresses": [
+    {
+      "ms": 25000,
+      "key": "=",
+      "label": "Luar"
+    },
+    {
+      "ms": 26000,
+      "key": "=",
+      "label": "Luar repetido"
+    },
+    {
+      "ms": 45000,
+      "key": "-",
+      "label": "Umbral"
+    },
+    {
+      "ms": 46000,
+      "key": "-",
+      "label": "Umbral repetido"
+    },
+    {
+      "ms": 65000,
+      "key": "4",
+      "label": "Golpe Sombrio"
+    },
+    {
+      "ms": 66000,
+      "key": "4",
+      "label": "Golpe repetido"
+    },
+    {
+      "ms": 85000,
+      "key": "6",
+      "label": "Fenda"
+    },
+    {
+      "ms": 86000,
+      "key": "6",
+      "label": "Fenda consecutiva"
+    }
+  ],
+  "limitations": [
+    "Tempos relativos ao botão físico; sincronizar pelo vídeo, não pelo início da captura.",
+    "Tempo programado não confirma que o jogo aceitou a habilidade.",
+    "Ataque automático pode ocorrer após uma habilidade; documentar no vídeo/log."
+  ]
+}

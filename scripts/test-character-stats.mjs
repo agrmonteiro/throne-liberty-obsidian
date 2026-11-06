@@ -16,6 +16,7 @@ const snapshot={id:'fixture:A',captureId:'fixture',connectionId:'A',playerName:f
   values:Object.fromEntries(Object.entries(f.expected).map(([key,total])=>[key,{total}])),origin:'pcap',observedOnly:true}
 const base={id:'build',name:'Teste',weaponCombo:'',notes:'Preservar',importedAt:'fixture',stats:{...DEFAULT_STATS,targetDefense:543,heavyAttackDmgComp:17}}
 const build=importCharacterSnapshot(base,snapshot,'ranged')
+assert.equal(build.calculatorAttackType,'ranged','A família ofensiva escolhida deve permanecer na build')
 assert.deepEqual(Object.fromEntries(Object.entries(build.rawAttributes).map(([k,v])=>[k,v.total])),{Strength:67,Dexterity:130,Perception:90,Wisdom:114,Fortitude:22})
 assert.equal(build.stats.minWeaponDmg,264);assert.equal(build.stats.maxWeaponDmg,965)
 assert.equal(build.stats.critHitChance,2790);assert.equal(build.stats.heavyAttackChance,954.6)

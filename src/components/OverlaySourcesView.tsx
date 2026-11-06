@@ -1,27 +1,129 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { number } from './MeterPanels'
-import type { OverlayState } from '../engine/overlayMeter'
+import { MeterSkillIcon } from './MeterSkillIcon'
+import type { GroupSource, OverlayCombatSegment, OverlayState } from '../engine/overlayMeter'
 
-export function OverlaySourcesView({ state, compact = false }: { state: OverlayState; compact?: boolean }): React.ReactElement {
+type View = 'skills' | 'targets'
+type Filter = 'players' | 'npc' | 'unknown'
+
+const percent = (value: number, total: number): string => total ? `${(value / total * 100).toFixed(1).replace('.', ',')}%` : '0%'
+const sourceName = (source: GroupSource): string => source.name ?? `Origem ${source.id}`
+const sourceKind = (source: GroupSource): string => {
+  const kind = source.kind === 'player' ? 'Jogador' : source.kind === 'npc' ? 'NPC' : source.kind === 'conflict' ? 'Identidade' : 'Entidade'
+  const evidence = source.evidence === 'profile' ? 'Perfil confirmado' : source.evidence === 'npc-template' ? 'Template confirmado'
+    : source.evidence === 'conflict' ? 'Conflito' : 'ID pendente'
+  return `${kind} · ${evidence}`
+}
+const targetEvidence = (value?: string): string => value === 'profile' ? 'Perfil confirmado' : value === 'npc-template' ? 'Template confirmado'
+  : value === 'conflict' ? 'Conflito de identidade' : 'ID pendente'
+const rankHint = (value?: string, source?: string): string => {
+  const label = value === 'boss' ? 'Chefe' : value === 'champion' ? 'Champion'
+    : value === 'elite' ? 'Elite' : value === 'normal' ? 'Normal' : value === 'unique' ? 'Único' : ''
+  if (!label) return ''
+  return source === 'row-fallback' ? `Pista do template: ${label}` : `Classificação do cliente: ${label}`
+}
+const connectionLabel = (id: string, lastAt: number, sources: GroupSource[], currentId?: string | null): string => {
+  const players = sources.filter(source => source.kind === 'player').length
+  const at = Number.isFinite(lastAt) && lastAt > 0 ? new Date(lastAt * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'sem horário'
+  return `${id === currentId ? 'Atual · ' : ''}${at} · ${players} jogadores`
+}
+const segmentLabel = (segment: OverlayCombatSegment): string => {
+  const time = new Date(segment.startedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const duration = Math.max(0, ((segment.endedAt ?? segment.lastActivityAt) - segment.startedAt) / 1000)
+  const rank = segment.dominantTarget?.rank === 'boss' ? 'Chefe' : segment.dominantTarget?.rank === 'champion' ? 'Champion'
+    : segment.dominantTarget?.rank === 'elite' ? 'Elite' : segment.dominantTarget?.rank === 'normal' ? 'Normal' : ''
+  const target = segment.dominantTarget ? `${segment.dominantTarget.name ?? `NPC ${segment.dominantTarget.templateId}`} · ${rank}` : 'alvo pendente'
+  return `${time} · ${duration.toFixed(0)} s · ${target}`
+}
+
+function SourceDetail({ source, view }: { source: GroupSource; view: View }): React.ReactElement {
+  const skills = source.session.skills
+  const targets = source.session.targets ?? []
+  return <tr className="overlay-source-detail"><td colSpan={4}>
+    <div className="overlay-source-detail-title">{view === 'skills' ? 'Habilidades desta origem' : 'Alvos desta origem'}</div>
+    {view === 'skills' ? (!skills.length ? <p className="meter-empty">Nenhum detalhe disponível.</p> : <div className="overlay-source-detail-list">
+      {skills.map(skill => <div className="overlay-source-detail-row" key={skill.key}>
+        <MeterSkillIcon name={skill.name} iconFile={skill.iconFile} /><span>{skill.name}<small>{skill.identity === 'catalog' ? 'Catálogo confirmado' : `ID pendente · ${skill.skillIds?.join(', ') ?? skill.key}`} · {skill.hits} acertos</small></span>
+        <b>{number(skill.damage)}</b><em>{percent(skill.damage, source.session.total)}</em>
+      </div>)}
+    </div>) : (!targets.length ? <p className="meter-empty">Nenhum detalhe disponível.</p> : <div className="overlay-source-detail-list">
+      {targets.map(target => <div className="overlay-source-detail-row" key={target.id}>
+        <span /><span>{target.name ?? `Alvo ${target.id}`}<small>{targetEvidence(target.identity)}{rankHint(target.rank, target.rankSource) ? ` · ${rankHint(target.rank, target.rankSource)}` : ''} · ID {target.id} · {target.hits} acertos</small></span>
+        <b>{number(target.damage)}</b><em>{percent(target.damage, source.session.total)}</em>
+      </div>)}
+    </div>)}
+  </td></tr>
+}
+
+export function OverlaySourcesView({ state, compact = false, onSelectSegment }: { state: OverlayState; compact?: boolean; onSelectSegment?: (id: number | null) => void }): React.ReactElement {
   const [search, setSearch] = useState('')
-  const sources = state.sources.filter(row => row.damage > 0).sort((a, b) => b.damage - a.damage)
-  const total = sources.reduce((sum, row) => sum + row.damage, 0)
-  const maximum = sources[0]?.damage ?? 0
-  const visible = sources.filter(row => `${row.id} ${row.name ?? ''}`.toLocaleLowerCase().includes(search.trim().toLocaleLowerCase()))
-  return <section id={compact ? undefined : 'overlay-sources'} className={`overlay-sources ${compact ? 'meter-panel compact' : ''}`} aria-label="Dano por origem">
-    <header><strong>Dano por origem</strong><span>{state.mode === 'replay' ? 'REPRODUÇÃO' : 'LEITURA ATUAL'}</span></header>
-    <div className="overlay-sources-intro"><p>{sources.length} origens · {number(total)} de dano observado na captura</p>
-      <input aria-label="Buscar origem por nome ou ID" placeholder="Buscar nome ou ID" value={search} onChange={event => setSearch(event.target.value)} /></div>
-    <div className="overlay-sources-scroll"><table>
-      <thead><tr><th>Origem</th><th>Dano</th><th>%</th></tr></thead>
-      <tbody>{visible.map(row => <tr key={row.id} style={{ backgroundSize: `${maximum ? row.damage / maximum * 100 : 0}% 100%` }}>
-        <td>{row.name ?? `Origem ${row.id}`}{row.name && <small>ID {row.id}</small>}{row.id === state.config.sourceId && <small>Selecionada no medidor</small>}</td>
-        <td>{number(row.damage)}</td><td>{total ? (row.damage / total * 100).toFixed(1).replace('.', ',') : '0'}%</td>
-      </tr>)}</tbody>
-    </table>
-      {!visible.length && <p className="meter-empty">{sources.length ? 'Nenhuma origem com esse nome ou ID.' : 'Aguardando eventos de dano…'}</p>}
+  const [connectionId, setConnectionId] = useState('')
+  const [filter, setFilter] = useState<Filter>('players')
+  // IDs de entidade só são únicos dentro da conexão. Guardar também a conexão
+  // escolhida evita que uma atualização do ranking abra o detalhe da fonte local.
+  const [detail, setDetail] = useState<{ connectionId: string; sourceId: number } | null>(null)
+  const [view, setView] = useState<View>('skills')
+  const connections = state.groupConnections ?? []
+  const currentConnectionId = state.capture?.player?.connectionId
+  const selectedConnection = connections.find(row => row.id === connectionId)
+    ?? connections.find(row => row.id === currentConnectionId)
+    ?? connections.find(row => !row.closed)
+    ?? connections[0]
+  const sources = useMemo(() => (selectedConnection?.sources ?? []).filter(row => {
+    if (filter === 'players') return row.kind === 'player' && row.evidence === 'profile'
+    if (filter === 'npc') return row.kind === 'npc' && row.evidence === 'npc-template'
+    return row.kind === 'unknown' || row.kind === 'conflict'
+  }).sort((a, b) => b.session.total - a.session.total), [selectedConnection, filter])
+  const total = sources.reduce((sum, row) => sum + row.session.total, 0)
+  const maximum = sources[0]?.session.total ?? 0
+  const query = search.trim().toLocaleLowerCase()
+  const visible = sources.filter(row => `${row.id} ${row.name ?? ''}`.toLocaleLowerCase().includes(query))
+  const title = compact ? 'Grupo / origens observadas' : 'Dano por origem observada'
+  const isCurrent = selectedConnection?.id === currentConnectionId
+  const segments = state.combatSegments ?? []
+  const detailConnection = detail ? connections.find(row => row.id === detail.connectionId) : undefined
+  const detailSource = detail ? detailConnection?.sources.find(row => row.id === detail.sourceId) : undefined
+  const showDetail = Boolean(detailSource)
+  const resetDetail = (): void => { setDetail(null) }
+  return <section id={compact ? undefined : 'overlay-sources'} className={`overlay-sources ${compact ? 'meter-panel compact' : ''}`} aria-label={title}>
+    <header>{showDetail && <button className="overlay-source-back" data-overlay-interactive onClick={resetDetail}>‹ Voltar ao ranking</button>}<strong>{showDetail ? sourceName(detailSource!) : title}</strong><span>{isCurrent ? 'CONEXÃO ATUAL' : selectedConnection?.closed ? 'CONEXÃO ENCERRADA' : 'EVENTOS RECENTES'}</span></header>
+    {showDetail ? <>
+      <div className="overlay-source-detail-meta"><span>{sourceKind(detailSource!)} · ID {detailSource!.id}{rankHint(detailSource!.rank, detailSource!.rankSource) ? ` · ${rankHint(detailSource!.rank, detailSource!.rankSource)}` : ''}</span><strong>{number(detailSource!.session.total)} dano · {detailSource!.session.hits} acertos</strong></div>
+      <nav className="overlay-source-detail-tabs" aria-label="Detalhes da origem" data-overlay-interactive>
+        <button aria-pressed={view === 'skills'} onClick={() => setView('skills')}>Habilidades</button>
+        <button aria-pressed={view === 'targets'} onClick={() => setView('targets')}>Alvos</button>
+      </nav>
+      <div className="overlay-sources-scroll overlay-source-detail-scroll"><table><tbody><SourceDetail source={detailSource!} view={view} /></tbody></table></div>
+    </> : <>
+    <div className="overlay-sources-intro"><p>{sources.length} origens exibidas · {number(total)} de dano</p>
+      <input data-overlay-interactive aria-label="Buscar origem por nome ou ID" placeholder="Buscar nome ou ID" value={search} onChange={event => setSearch(event.target.value)} /></div>
+    <div className="overlay-source-controls" data-overlay-interactive>
+      <select aria-label="Segmento de combate" disabled={state.config.locked} value={state.config.groupSegmentId ?? ''}
+        onChange={event => { resetDetail(); onSelectSegment?.(event.target.value ? Number(event.target.value) : null) }}>
+        <option value="">Toda a leitura</option>
+        {[...segments].reverse().map(segment => <option key={segment.id} value={segment.id}>{segmentLabel(segment)}</option>)}
+      </select>
+      <select aria-label="Conexão observada" value={selectedConnection?.id ?? ''} onChange={event => { setConnectionId(event.target.value); resetDetail() }}>
+        {connections.map(row => <option key={row.id} value={row.id}>{connectionLabel(row.id, row.lastAt, row.sources, currentConnectionId)} · {row.closed ? 'encerrada' : 'ativa'}</option>)}
+      </select>
+      <select aria-label="Filtro de origens" value={filter} onChange={event => { setFilter(event.target.value as Filter); resetDetail() }}>
+        <option value="players">Jogadores · perfil confirmado</option><option value="npc">NPCs · template confirmado</option><option value="unknown">Sem identidade segura</option>
+      </select>
     </div>
-    <footer>Nomes vêm dos perfis de jogador e dos templates de NPC recebidos nesta conexão. Fontes sem esses dados continuam identificadas pelo ID.
-      {!compact && ' Acumulado desde o início da leitura; consultar ou buscar não altera a origem selecionada nem o seu medidor.'}</footer>
+    <div className="overlay-sources-scroll"><table>
+      <thead><tr><th>Origem</th><th>Dano</th><th>%</th><th></th></tr></thead>
+      <tbody>{visible.map(row => <React.Fragment key={row.id}>
+        <tr style={{ backgroundSize: `${maximum ? row.session.total / maximum * 100 : 0}% 100%` }}>
+          <td>{sourceName(row)}<small>{sourceKind(row)}{rankHint(row.rank, row.rankSource) ? ` · ${rankHint(row.rank, row.rankSource)}` : ''} · ID {row.id}</small>{row.id === state.config.sourceId && <small>Selecionada no medidor individual</small>}</td>
+          <td>{number(row.session.total)}<small>{row.session.hits} acertos</small></td><td>{percent(row.session.total, total)}</td>
+          <td><button data-overlay-interactive className="overlay-source-expand" aria-label={`Ver detalhes de ${sourceName(row)}`}
+            onClick={() => selectedConnection && setDetail({ connectionId: selectedConnection.id, sourceId: row.id })}>Ver detalhes ›</button></td>
+        </tr>
+      </React.Fragment>)}</tbody>
+    </table>
+      {!visible.length && <p className="meter-empty">{sources.length ? 'Nenhuma origem com esse nome ou ID.' : 'Aguardando eventos de dano nesta conexão…'}</p>}
+    </div>
+    <footer>“Jogador identificado” significa que o perfil nominal foi recebido nesta conexão; não prova participação no grupo. NPCs e fontes sem perfil não são misturados aos jogadores. Os valores são cumulativos enquanto a leitura estiver ativa.</footer>
+    </>}
   </section>
 }

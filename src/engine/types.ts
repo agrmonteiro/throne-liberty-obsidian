@@ -59,6 +59,8 @@ export const DEFAULT_STATS: BuildStats = {
 
 export interface Build {
   characterSnapshot?: import('./characterStats').CharacterSnapshot
+  /** Família ofensiva escolhida ao importar a ficha; reutilizada pela calculadora. */
+  calculatorAttackType?: 'melee' | 'ranged' | 'magic'
   id:             string
   name:           string
   weaponCombo:    string

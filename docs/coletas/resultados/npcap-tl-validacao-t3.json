@@ -1,0 +1,24 @@
+{
+  "status": "validacao_temporal",
+  "capture": "20261021-170507-516139",
+  "captureStartUtc": "2026-10-21T20:05:07.517225+00:00",
+  "captureEndUtc": "2026-10-21T20:08:07.593879+00:00",
+  "logEventsFull": 904,
+  "logDamageFull": 4049378,
+  "eventsInside": 661,
+  "matchedInside": 661,
+  "missingInside": 0,
+  "logDamageInside": 2986995,
+  "packetMatchedDamageInside": 2986995,
+  "eventsBefore": 0,
+  "eventsAfter": 243,
+  "damageAfter": 1062383,
+  "criticalAgreementInside": 661,
+  "heavyAgreementInside": 661,
+  "decoderSha256": "8a17dfae6dae878da07d5bcaac86998e36d0cfaafcee5d05497ab77682952cd2",
+  "limitations": [
+    "Janela usa início/fim do capturador; não é duração de combate ou janela de DPS.",
+    "Cobertura desta amostra não garante outras habilidades ou versões do protocolo.",
+    "Mensagens secundárias ainda inferem normal/sem pesado como na referência."
+  ]
+}

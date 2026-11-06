@@ -18,7 +18,9 @@ worker.emit = lambda message: (observed.append(message['event']) if message['typ
 streams = {}
 for packet in worker.decoder.packets(folder/'interface-4.pcap'):
     key = packet['source'],packet['dest']
-    streams.setdefault(key,worker.Stream()).feed(packet['sequence'],packet['payload'],packet['time'])
+    # Esta fixture é o fluxo servidor → cliente: perfis só podem ser aceitos
+    # nessa direção, para não identificar jogadores por um pacote enviado pelo cliente.
+    streams.setdefault(key,worker.Stream(server_to_client=True)).feed(packet['sequence'],packet['payload'],packet['time'])
 signature = lambda e: (e['skillId'],e['damage'],e['sourceId'],e['criticalCandidate'],bool(e['heavyCandidate']))
 assert Counter(map(signature,observed)) == Counter(map(signature,reference['damageCandidates']))
 assert len(observed) == 661

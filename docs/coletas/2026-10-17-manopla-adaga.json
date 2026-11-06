@@ -2507,5 +2507,750 @@
       ]
     },
     "repeatReport": "docs/coletas/2026-10-17-v13-repeticao.md"
+  },
+  "buffExperiment": {
+    "status": "testado_uma_amostra",
+    "source": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_DEBUFF_V13.xml",
+    "output": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_BUFF_V14.xml",
+    "importFile": "C:\\Users\\admin\\Downloads\\TL_MA_BUFF_V14.xml",
+    "sourceSha256": "bec1aee011f2d20ebf26258f741d43d913e5c0940f7af49ffd4b201ff7130960",
+    "outputSha256": "614ea18f844f52c371fcba77f12cc8d68c155fb31acb8297c87b9a3da469d3dd",
+    "pressCount": 93,
+    "holdMs": 20,
+    "gapMs": 3,
+    "cycleDurationMs": 2139,
+    "luarAttemptsMs": [
+      23,
+      368,
+      736,
+      1104,
+      1472,
+      1840
+    ],
+    "umbralAttemptsMs": [
+      115,
+      483,
+      897,
+      1265,
+      1633,
+      2001
+    ],
+    "arremessoAttemptsMs": [
+      138,
+      851,
+      1564
+    ],
+    "preserved": [
+      "Contagem de cada tecla da V13",
+      "Tempos e pares de pressionamento/soltura",
+      "Ordem das teclas exceto Umbral, Luar e Arremesso",
+      "Horários de Arremesso"
+    ],
+    "hypothesis": "Espaçar as tentativas pode permitir registro dos buffs após bloqueios de animação; ganho não garantido.",
+    "validation": [
+      "XML relido",
+      "93 pares equilibrados",
+      "Tempos idênticos aos da V13",
+      "Sem tecla 0"
+    ],
+    "nextTest": "Mesma build, buffs e alvo; 120 s desde o primeiro dano. Filmar a abertura e conferir ativação de - e =.",
+    "limitations": [
+      "Sem detecção de cooldown, ativação ou fim de animação.",
+      "Primeira tentativa antecipada não garante que o buff ative antes do dano.",
+      "A mudança vale para cada repetição do ciclo, não só o início do combate."
+    ],
+    "result120s": {
+      "macro": "V14",
+      "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261018_191950.txt",
+      "video": "C:\\Users\\admin\\Downloads\\TL_COMBATE_V14_2026-10-18.mp4",
+      "windowStartLogTime": "2026-10-18T19:20:39.127000",
+      "windowDurationSec": 120,
+      "fullLogSpanSec": 127.71,
+      "lastWindowDamageSec": 119.919,
+      "totalDamage": 50751727,
+      "dps": 422931.05833333335,
+      "damageEvents": 6845,
+      "skills": {
+        "Golpe Sombrio": {
+          "damage": 329870,
+          "damageEvents": 24,
+          "critEvents": 19,
+          "heavyEvents": 21
+        },
+        "Garras Consecutivas": {
+          "damage": 14892574,
+          "damageEvents": 795,
+          "critEvents": 312,
+          "heavyEvents": 266
+        },
+        "Tempestade de Sangue": {
+          "damage": 4550176,
+          "damageEvents": 335,
+          "critEvents": 172,
+          "heavyEvents": 124
+        },
+        "Garra": {
+          "damage": 1929502,
+          "damageEvents": 269,
+          "critEvents": 102,
+          "heavyEvents": 71
+        },
+        "Dança da Espada Frenética": {
+          "damage": 1237841,
+          "damageEvents": 116,
+          "critEvents": 89,
+          "heavyEvents": 80
+        },
+        "Injeção Letal": {
+          "damage": 1853729,
+          "damageEvents": 1097,
+          "critEvents": 35,
+          "heavyEvents": 28
+        },
+        "Limite Venenoso": {
+          "damage": 10065473,
+          "damageEvents": 1172,
+          "critEvents": 931,
+          "heavyEvents": 737
+        },
+        "Lança Perfurante": {
+          "damage": 218196,
+          "damageEvents": 7,
+          "critEvents": 4,
+          "heavyEvents": 4
+        },
+        "Arremesso de Relâmpago": {
+          "damage": 352323,
+          "damageEvents": 97,
+          "critEvents": 74,
+          "heavyEvents": 59
+        },
+        "Estigma Fatal": {
+          "damage": 4833444,
+          "damageEvents": 9,
+          "critEvents": 6,
+          "heavyEvents": 7
+        },
+        "Espírito Umbral": {
+          "damage": 7890831,
+          "damageEvents": 2775,
+          "critEvents": 2194,
+          "heavyEvents": 1790
+        },
+        "Fenda Enluarada": {
+          "damage": 2597768,
+          "damageEvents": 149,
+          "critEvents": 108,
+          "heavyEvents": 92
+        }
+      },
+      "damageByMinute": [
+        24502509,
+        26249218
+      ],
+      "cumulativeDamageBySec": {
+        "15": 4787444,
+        "30": 12938429,
+        "60": 24502509,
+        "90": 37973550,
+        "120": 50751727
+      },
+      "supportDiagnostics": {
+        "Arremesso de Relâmpago": {
+          "damageGroups": 11,
+          "groupStartSec": [
+            8.123,
+            22.502,
+            31.881,
+            43.44,
+            53.49,
+            64.997,
+            75.085,
+            85.178,
+            95.264,
+            104.637,
+            114.02
+          ],
+          "medianGroupIntervalSec": 10.086999999999996,
+          "maxGroupIntervalSec": 14.379
+        },
+        "Golpe Sombrio": {
+          "damageGroups": 17,
+          "groupStartSec": [
+            0.0,
+            6.911,
+            13.275,
+            19.523,
+            28.416,
+            34.18,
+            42.354,
+            50.022,
+            57.471,
+            67.315,
+            74.204,
+            80.252,
+            88.18,
+            96.357,
+            101.88,
+            107.921,
+            114.601
+          ],
+          "medianGroupIntervalSec": 6.899999999999998,
+          "maxGroupIntervalSec": 9.844000000000001
+        },
+        "Dança da Espada Frenética": {
+          "damageGroups": 11,
+          "groupStartSec": [
+            3.367,
+            16.375,
+            18.509,
+            30.014,
+            46.198,
+            59.595,
+            73.712,
+            87.662,
+            90.481,
+            100.655,
+            118.617
+          ],
+          "medianGroupIntervalSec": 13.202499999999999,
+          "maxGroupIntervalSec": 17.962000000000003
+        },
+        "Fenda Enluarada": {
+          "damageGroups": 40,
+          "groupStartSec": [
+            12.597,
+            14.132,
+            15.867,
+            16.926,
+            21.227,
+            23.421,
+            27.045,
+            28.817,
+            31.39,
+            32.497,
+            35.752,
+            37.857,
+            39.618,
+            44.39,
+            47.638,
+            51.901,
+            53.942,
+            55.238,
+            59.127,
+            60.108,
+            62.34,
+            63.458,
+            66.658,
+            68.823,
+            71.38,
+            74.671,
+            76.763,
+            82.188,
+            84.339,
+            86.514,
+            91.936,
+            94.076,
+            95.855,
+            99.463,
+            102.74,
+            109.204,
+            111.338,
+            112.564,
+            113.518,
+            116.772
+          ],
+          "medianGroupIntervalSec": 2.174999999999997,
+          "maxGroupIntervalSec": 6.463999999999999
+        }
+      },
+      "limitations": [
+        "Hits e grupos de dano não equivalem a usos nem medem uptime.",
+        "Buffs e condições de teste não certificados.",
+        "Janela final exclusiva; danos após 120 s excluídos."
+      ]
+    },
+    "userObservation": "Muitas falhas de Luar; Umbral funcionou melhor."
+  },
+  "luarExperiment": {
+    "status": "testada_uma_amostra_nao_recomendada",
+    "source": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_BUFF_V14.xml",
+    "output": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_LUAR_V15.xml",
+    "importFile": "C:\\Users\\admin\\Downloads\\TL_MA_LUAR_V15.xml",
+    "outputSha256": "4df19b0c0b1c1405b69e562b746becfae9c39f95482c0f6858dec9237532d750",
+    "pressCount": 93,
+    "cycleDurationMs": 2179,
+    "previousCycleDurationMs": 2139,
+    "change": "Somente o primeiro pressionamento de = por ciclo passa de 20 para 60 ms.",
+    "unchanged": "Sequência, códigos, número de tentativas, demais holds e intervalos de 3 ms.",
+    "arremessoAttemptsMs": [
+      178,
+      891,
+      1604
+    ],
+    "nominalAttemptFrequencyChangePct": -1.8357044515832976,
+    "limitations": [
+      "Pressionar por mais tempo não garante aceitar input durante animação.",
+      "Teste diagnóstico; não garante ganho de DPS.",
+      "Ciclo 40 ms mais longo desloca os eventos posteriores e reduz frequência nominal em cerca de 1,84%."
+    ],
+    "result120s": {
+      "macro": "V15",
+      "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261018_193117.txt",
+      "video": "C:\\Users\\admin\\Downloads\\TL_COMBATE_V15_2026-10-18.mp4",
+      "windowStartLogTime": "2026-10-18T19:32:04.099000",
+      "windowDurationSec": 120,
+      "fullLogSpanSec": 129.006,
+      "lastWindowDamageSec": 119.796,
+      "totalDamage": 47315091,
+      "dps": 394292.425,
+      "damageEvents": 6565,
+      "skills": {
+        "Golpe Sombrio": {
+          "damage": 229642,
+          "damageEvents": 21,
+          "critEvents": 16,
+          "heavyEvents": 13
+        },
+        "Dança da Espada Frenética": {
+          "damage": 1313510,
+          "damageEvents": 132,
+          "critEvents": 103,
+          "heavyEvents": 86
+        },
+        "Garras Consecutivas": {
+          "damage": 14894303,
+          "damageEvents": 808,
+          "critEvents": 332,
+          "heavyEvents": 253
+        },
+        "Tempestade de Sangue": {
+          "damage": 4343141,
+          "damageEvents": 337,
+          "critEvents": 161,
+          "heavyEvents": 124
+        },
+        "Arremesso de Relâmpago": {
+          "damage": 312628,
+          "damageEvents": 84,
+          "critEvents": 64,
+          "heavyEvents": 56
+        },
+        "Espírito Umbral": {
+          "damage": 7300724,
+          "damageEvents": 2675,
+          "critEvents": 2101,
+          "heavyEvents": 1657
+        },
+        "Fenda Enluarada": {
+          "damage": 2259134,
+          "damageEvents": 134,
+          "critEvents": 101,
+          "heavyEvents": 77
+        },
+        "Garra": {
+          "damage": 1903502,
+          "damageEvents": 261,
+          "critEvents": 102,
+          "heavyEvents": 77
+        },
+        "Lança Perfurante": {
+          "damage": 271997,
+          "damageEvents": 7,
+          "critEvents": 6,
+          "heavyEvents": 3
+        },
+        "Injeção Letal": {
+          "damage": 1595108,
+          "damageEvents": 999,
+          "critEvents": 29,
+          "heavyEvents": 17
+        },
+        "Limite Venenoso": {
+          "damage": 8999726,
+          "damageEvents": 1099,
+          "critEvents": 843,
+          "heavyEvents": 677
+        },
+        "Estigma Fatal": {
+          "damage": 3891676,
+          "damageEvents": 8,
+          "critEvents": 5,
+          "heavyEvents": 6
+        }
+      },
+      "damageByMinute": [
+        22728324,
+        24586767
+      ],
+      "cumulativeDamageBySec": {
+        "15": 4016275,
+        "30": 10117619,
+        "60": 22728324,
+        "90": 34783487,
+        "120": 47315091
+      },
+      "supportDiagnostics": {
+        "Arremesso de Relâmpago": {
+          "damageGroups": 9,
+          "groupStartSec": [
+            3.193,
+            12.756,
+            25.133,
+            37.65,
+            47.902,
+            61.134,
+            77.282,
+            89.727,
+            104.446
+          ],
+          "medianGroupIntervalSec": 12.481000000000003,
+          "maxGroupIntervalSec": 16.147999999999996
+        },
+        "Golpe Sombrio": {
+          "damageGroups": 17,
+          "groupStartSec": [
+            0.0,
+            5.335,
+            12.301,
+            19.827,
+            26.756,
+            34.978,
+            44.789,
+            54.154,
+            60.765,
+            66.36,
+            74.248,
+            79.604,
+            87.644,
+            95.02,
+            100.837,
+            109.218,
+            114.843
+          ],
+          "medianGroupIntervalSec": 7.170999999999996,
+          "maxGroupIntervalSec": 9.811
+        },
+        "Dança da Espada Frenética": {
+          "damageGroups": 15,
+          "groupStartSec": [
+            0.266,
+            14.469,
+            15.669,
+            29.485,
+            43.772,
+            56.308,
+            57.549,
+            71.302,
+            73.51,
+            84.911,
+            86.725,
+            98.128,
+            100.343,
+            111.005,
+            113.186
+          ],
+          "medianGroupIntervalSec": 11.031499999999994,
+          "maxGroupIntervalSec": 14.286999999999999
+        },
+        "Fenda Enluarada": {
+          "damageGroups": 37,
+          "groupStartSec": [
+            4.064,
+            11.102,
+            13.291,
+            15.108,
+            17.262,
+            22.829,
+            24.291,
+            28.238,
+            31.97,
+            37.057,
+            39.276,
+            40.789,
+            45.234,
+            47.397,
+            50.695,
+            52.907,
+            54.66,
+            55.869,
+            62.842,
+            64.647,
+            66.809,
+            70.067,
+            72.286,
+            76.657,
+            78.866,
+            80.403,
+            82.218,
+            85.508,
+            89.212,
+            93.672,
+            96.948,
+            102.49,
+            106.895,
+            108.698,
+            111.976,
+            116.753,
+            119.711
+          ],
+          "medianGroupIntervalSec": 3.107999999999997,
+          "maxGroupIntervalSec": 7.038
+        }
+      },
+      "limitations": [
+        "Hits e grupos de dano não equivalem a usos nem medem uptime.",
+        "Buffs e condições de teste não certificados.",
+        "Janela final exclusiva; danos após 120 s excluídos."
+      ]
+    },
+    "deltaPctVsV14": -6.771466121734143,
+    "decision": "Manter V14 como referência; investigar restrição de uso antes de outra mudança de tempo.",
+    "report": "docs/coletas/2026-10-18-resultado-v15.md"
+  },
+  "luarTripleExperiment": {
+    "status": "testada_uma_amostra_melhor_candidata",
+    "source": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_BUFF_V14.xml",
+    "importFile": "C:\\Users\\admin\\Downloads\\TL_MA_LUAR_V16.xml",
+    "change": "Cada uma das seis tentativas de = vira três consecutivas. Demais eventos preservados.",
+    "pressCount": 105,
+    "luarPressCount": 18,
+    "holdMs": 20,
+    "gapMs": 3,
+    "cycleDurationMs": 2415,
+    "luarAttemptsMs": [
+      23,
+      46,
+      69,
+      414,
+      437,
+      460,
+      828,
+      851,
+      874,
+      1242,
+      1265,
+      1288,
+      1656,
+      1679,
+      1702,
+      2070,
+      2093,
+      2116
+    ],
+    "limitations": [
+      "Três tentativas ocupam 69 ms, incluindo o intervalo final.",
+      "Um bloqueio de animação mais longo pode rejeitar as três.",
+      "Ciclo mais longo desloca horários e reduz frequência das demais teclas por segundo; ganho não garantido."
+    ],
+    "result120s": {
+      "macro": "V16",
+      "sourceLog": "C:\\Users\\admin\\AppData\\Local\\TL\\Saved\\CombatLogs\\TLCombatLog-261018_194524.txt",
+      "video": "C:\\Users\\admin\\Downloads\\TL_COMBATE_V16_2026-10-18.mp4",
+      "windowStartLogTime": "2026-10-18T19:46:01.631000",
+      "windowDurationSec": 120,
+      "fullLogSpanSec": 127.889,
+      "lastWindowDamageSec": 119.97,
+      "totalDamage": 54156307,
+      "dps": 451302.55833333335,
+      "damageEvents": 6993,
+      "skills": {
+        "Golpe Sombrio": {
+          "damage": 354691,
+          "damageEvents": 31,
+          "critEvents": 23,
+          "heavyEvents": 21
+        },
+        "Garra": {
+          "damage": 2490347,
+          "damageEvents": 330,
+          "critEvents": 126,
+          "heavyEvents": 102
+        },
+        "Garras Consecutivas": {
+          "damage": 16014746,
+          "damageEvents": 829,
+          "critEvents": 337,
+          "heavyEvents": 274
+        },
+        "Espírito Umbral": {
+          "damage": 8478031,
+          "damageEvents": 2913,
+          "critEvents": 2270,
+          "heavyEvents": 1816
+        },
+        "Dança da Espada Frenética": {
+          "damage": 1545473,
+          "damageEvents": 152,
+          "critEvents": 115,
+          "heavyEvents": 100
+        },
+        "Tempestade de Sangue": {
+          "damage": 4608951,
+          "damageEvents": 328,
+          "critEvents": 159,
+          "heavyEvents": 127
+        },
+        "Arremesso de Relâmpago": {
+          "damage": 345363,
+          "damageEvents": 86,
+          "critEvents": 77,
+          "heavyEvents": 50
+        },
+        "Lança Perfurante": {
+          "damage": 283960,
+          "damageEvents": 7,
+          "critEvents": 5,
+          "heavyEvents": 4
+        },
+        "Injeção Letal": {
+          "damage": 1500356,
+          "damageEvents": 1027,
+          "critEvents": 21,
+          "heavyEvents": 15
+        },
+        "Limite Venenoso": {
+          "damage": 10594320,
+          "damageEvents": 1175,
+          "critEvents": 917,
+          "heavyEvents": 784
+        },
+        "Estigma Fatal": {
+          "damage": 6111472,
+          "damageEvents": 13,
+          "critEvents": 8,
+          "heavyEvents": 6
+        },
+        "Fenda Enluarada": {
+          "damage": 1828597,
+          "damageEvents": 102,
+          "critEvents": 74,
+          "heavyEvents": 65
+        }
+      },
+      "damageByMinute": [
+        23921830,
+        30234477
+      ],
+      "cumulativeDamageBySec": {
+        "15": 4641116,
+        "30": 11069456,
+        "60": 23921830,
+        "90": 40680794,
+        "120": 54156307
+      },
+      "supportDiagnostics": {
+        "Arremesso de Relâmpago": {
+          "damageGroups": 10,
+          "groupStartSec": [
+            5.139,
+            17.392,
+            26.313,
+            36.869,
+            46.695,
+            63.824,
+            73.598,
+            84.145,
+            94.697,
+            110.243
+          ],
+          "medianGroupIntervalSec": 10.552000000000007,
+          "maxGroupIntervalSec": 17.128999999999998
+        },
+        "Golpe Sombrio": {
+          "damageGroups": 20,
+          "groupStartSec": [
+            0.0,
+            5.912,
+            12.746,
+            18.885,
+            24.787,
+            32.089,
+            38.835,
+            45.419,
+            51.628,
+            57.199,
+            62.58,
+            69.45,
+            75.083,
+            80.989,
+            86.307,
+            92.889,
+            98.285,
+            104.404,
+            109.721,
+            116.685
+          ],
+          "medianGroupIntervalSec": 6.119,
+          "maxGroupIntervalSec": 7.302
+        },
+        "Dança da Espada Frenética": {
+          "damageGroups": 15,
+          "groupStartSec": [
+            2.14,
+            16.804,
+            19.812,
+            29.574,
+            31.447,
+            43.69,
+            60.038,
+            62.056,
+            75.451,
+            88.205,
+            90.67,
+            101.145,
+            102.877,
+            115.105,
+            116.256
+          ],
+          "medianGroupIntervalSec": 10.118499999999997,
+          "maxGroupIntervalSec": 16.348
+        },
+        "Fenda Enluarada": {
+          "damageGroups": 29,
+          "groupStartSec": [
+            8.598,
+            12.289,
+            14.689,
+            24.053,
+            28.212,
+            30.18,
+            33.067,
+            37.89,
+            39.907,
+            44.82,
+            47.68,
+            54.601,
+            56.263,
+            59.51,
+            60.694,
+            64.806,
+            76.619,
+            79.469,
+            85.061,
+            86.802,
+            92.461,
+            94.162,
+            96.545,
+            103.919,
+            105.939,
+            108.388,
+            111.195,
+            115.661,
+            118.569
+          ],
+          "medianGroupIntervalSec": 2.897500000000001,
+          "maxGroupIntervalSec": 11.813000000000002
+        }
+      },
+      "limitations": [
+        "Hits e grupos de dano não equivalem a usos nem medem uptime.",
+        "Buffs e condições de teste não certificados.",
+        "Janela final exclusiva; danos após 120 s excluídos."
+      ]
+    },
+    "deltaPctVsV14": 6.708303739102317,
+    "decision": "Repetir V16 sem mudanças; investigar Fenda depois.",
+    "report": "docs/coletas/2026-10-18-resultado-v16.md"
   }
 }

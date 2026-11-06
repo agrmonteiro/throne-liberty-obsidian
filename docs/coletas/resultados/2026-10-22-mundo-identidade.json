@@ -1,0 +1,26 @@
+{
+  "capture": "capturas_treinamento\\npcap_tl\\20261022-085801-488648",
+  "damageSchemaVersion": 2,
+  "logDamage": 557501,
+  "matchedDamage": 557501,
+  "positiveLogEvents": 127,
+  "matchedEvents": 127,
+  "unmatchedZeroDamage": 9,
+  "attackerIds": [
+    17375758
+  ],
+  "targetIds": [
+    17387210,
+    17569792,
+    17588058,
+    17731416,
+    18246016,
+    22645938
+  ],
+  "identityProfilePackets": 0,
+  "notes": [
+    "Inversão de atacante/alvo corrigida no leitor ao vivo e offline.",
+    "Nomes presentes no chat e em listas não confirmam a entidade de combate.",
+    "Associação anterior do perfil corrigida: campo 19 jogador, campo 20 alvo."
+  ]
+}

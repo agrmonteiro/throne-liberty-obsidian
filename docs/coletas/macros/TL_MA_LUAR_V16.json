@@ -1,0 +1,36 @@
+{
+  "status": "experimental_nao_instalada_nao_testada",
+  "source": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_BUFF_V14.xml",
+  "importFile": "C:\\Users\\admin\\Downloads\\TL_MA_LUAR_V16.xml",
+  "change": "Cada uma das seis tentativas de = vira três consecutivas. Demais eventos preservados.",
+  "pressCount": 105,
+  "luarPressCount": 18,
+  "holdMs": 20,
+  "gapMs": 3,
+  "cycleDurationMs": 2415,
+  "luarAttemptsMs": [
+    23,
+    46,
+    69,
+    414,
+    437,
+    460,
+    828,
+    851,
+    874,
+    1242,
+    1265,
+    1288,
+    1656,
+    1679,
+    1702,
+    2070,
+    2093,
+    2116
+  ],
+  "limitations": [
+    "Três tentativas ocupam 69 ms, incluindo o intervalo final.",
+    "Um bloqueio de animação mais longo pode rejeitar as três.",
+    "Ciclo mais longo desloca horários e reduz frequência das demais teclas por segundo; ganho não garantido."
+  ]
+}

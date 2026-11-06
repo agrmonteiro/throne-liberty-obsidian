@@ -1,0 +1,176 @@
+[
+  {
+    "capture": "20261021-155810-381198",
+    "decodedMessages": 6174,
+    "nameMatches": [
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609150.850721
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609151.179867
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609170.848762
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609171.076656
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609190.852332
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609191.243693
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609191.856091
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792609192.247272
+      }
+    ]
+  },
+  {
+    "capture": "20261021-164539-793239",
+    "decodedMessages": 9309,
+    "nameMatches": [
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612006.305544
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612006.620042
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612026.303974
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612026.507629
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612046.300641
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612046.697332
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612047.294346
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612047.685156
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612116.307073
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792612116.620034
+      }
+    ]
+  },
+  {
+    "capture": "20261021-170507-516139",
+    "decodedMessages": 8652,
+    "nameMatches": [
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613179.3631
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613179.691717
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613199.372867
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613199.57734
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613219.368195
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613219.759517
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613220.403861
+      },
+      {
+        "opcode": "0x1234787f",
+        "name": "AgrMonteiro",
+        "encoding": "utf-8",
+        "time": 1792613220.750057
+      }
+    ]
+  }
+]

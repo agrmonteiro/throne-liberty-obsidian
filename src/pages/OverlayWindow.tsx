@@ -16,6 +16,8 @@ import '../styles/overlay.css'
 export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.ReactElement {
   const { state, act } = useOverlay()
   const [history, setHistory] = useState<OverlayHistoryResult>({ encounters: [], error: null })
+  // A leitura começa sem grupo/perfis confirmados. Mostrar primeiro o medidor
+  // individual dá retorno imediato ao jogador; o ranking continua a um clique.
   const [groupSources, setGroupSources] = useState(false)
   const { page, selectPage } = useOverlayGraphPage(state.config.metricPage, patch => act(() => window.overlayAPI.configure(patch)))
   const deathView = panel === 'skills' && page === 'deaths'
@@ -49,13 +51,13 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
     return () => { active = false; clearInterval(timer) }
   }, [])
   const selected = history.encounters.find(row => row.id === state.config.reviewEncounterId)
-  const display = selected ? resolveOverlayNames({ ...state, session: selected.session,
+  const display = selected ? resolveOverlayNames({ ...state, session: selected.session, groupConnections: selected.groupConnections,
     mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles, overlayNpcNames) : state
   const drag = useRef<{ x: number; y: number; width: number; height: number } | null>(null)
   return <div className="overlay-window" style={{ ...overlayAppearance(state.config), fontSize: `${(state.config.fontSize ?? 13) * state.config.scale}px` }}>
     <header className={`overlay-record-toolbar overlay-titlebar ${state.config.locked ? 'is-locked' : 'meter-drag'}`}
       aria-label={state.config.locked ? 'Barra de título travada' : 'Barra de título para mover a janela'}>
-      <OverlayDragLabel label={panel === 'total' ? 'Total' : 'Gráfico'} locked={state.config.locked} />
+      <OverlayDragLabel label={`${panel === 'total' ? 'Total' : state.config.singleWindow !== false ? 'Combate' : 'Gráfico'} · DEV`} locked={state.config.locked} />
       <button data-overlay-interactive aria-label={state.session.paused ? 'Retomar medição' : 'Pausar medição'}
         aria-pressed={Boolean(state.session.paused)} disabled={!['live', 'replay'].includes(state.status) || Boolean(state.timer)}
         title="Pausar ou retomar todos os painéis; o tempo pausado fica fora do DPS"
@@ -72,19 +74,21 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
         onClick={() => act(() => window.overlayAPI.configure({ reviewEncounterId: null }))}>Atual</button>
       {panel === 'skills' && <button data-overlay-interactive aria-label="Importar build" title="Abrir a ficha do jogo para importar uma build"
         onClick={() => act(() => window.overlayAPI.openBuildImport())}>Build</button>}
-      {panel === 'skills' && <button disabled={state.config.locked || Boolean(selected) || journalView}
-        title="Alternar entre habilidades e origens da leitura atual" onClick={() => setGroupSources(value => !value)}>
-        {groupSources ? 'Habilidades' : 'Origens'}</button>}
+      {panel === 'skills' && <><button data-overlay-interactive disabled={state.config.locked || Boolean(selected) || journalView}
+        aria-pressed={groupSources} title="Ranking do grupo observado nesta luta" onClick={() => setGroupSources(true)}>Grupo</button>
+      <button data-overlay-interactive disabled={state.config.locked || journalView}
+        aria-pressed={!groupSources} title="Seu medidor individual e páginas de métricas" onClick={() => setGroupSources(false)}>Meu dano</button></>}
     </header>
     <OverlayTimerStatus state={state} />
-    {panel === 'skills' && <select className="overlay-metric-switch" aria-label="Página do gráfico" disabled={state.config.locked}
+    {panel === 'skills' && !groupSources && <select data-overlay-interactive className="overlay-metric-switch" aria-label="Página do gráfico" disabled={state.config.locked}
       value={page} onChange={event => {
         setGroupSources(false); selectPage(event.target.value as OverlayGraphPage)
       }}>{overlayGraphPages.map(page => <option key={page.id} value={page.id}>{page.label}</option>)}</select>}
     {!journalView && selected && selected.attributionVersion !== 2 && <div role="alert">Registro anterior à correção de atacante/alvo; atribuição pode estar incorreta.</div>}
     <div className="overlay-panel-content">{buffView ? <section className="meter-panel overlay-death-panel" aria-label="Buffs e debuffs">
       <OverlayBuffView state={state} active compact /></section> : deathView ? <section className="meter-panel overlay-death-panel" aria-label="Causa mortis">
-      <OverlayDeathView state={state} active compact /></section> : panel === 'skills' && groupSources && !selected ? <OverlaySourcesView state={state} compact /> : panel === 'skills' && state.config.metricPage && state.config.metricPage !== 'damage'
+      <OverlayDeathView state={state} active compact /></section> : panel === 'skills' && groupSources && (selected ? Boolean(selected.groupConnections?.length) : true) ? <OverlaySourcesView state={display} compact
+        onSelectSegment={groupSegmentId => act(() => window.overlayAPI.configure({ groupSegmentId }))} /> : panel === 'skills' && state.config.metricPage && state.config.metricPage !== 'damage'
       ? <OverlayMetricView state={display} page={state.config.metricPage} historical={Boolean(selected)} /> : <MeterPanel panel={panel} state={display} historical={Boolean(selected)} onReset={() => act(() => window.overlayAPI.reset())}
       onSelectSource={sourceId => act(() => window.overlayAPI.configure({ sourceId }))}
       onHide={() => act(() => window.overlayAPI.configure(panel === 'total' ? { totalVisible: false } : { skillsVisible: false }))} />}</div>

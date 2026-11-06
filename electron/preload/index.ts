@@ -11,6 +11,7 @@ const overlayAPI: OverlayAPI = {
     return () => ipcRenderer.removeListener('overlay:open-build-import', listener)
   },
   buffs: () => ipcRenderer.invoke('overlay:buffs'),
+  buffContributions: () => ipcRenderer.invoke('overlay:buff-contributions'),
   deaths: () => ipcRenderer.invoke('overlay:deaths'),
   recordDeath: () => ipcRenderer.invoke('overlay:record-death'),
   clearRecords: () => ipcRenderer.invoke('overlay:clear-records'),

@@ -340,6 +340,13 @@
       "looksRow": "Skill_TallandTownThiefSling_Flee"
     }
   ],
+  "npcRanks": {
+    "boss": 797,
+    "normal": 8948,
+    "elite": 880,
+    "champion": 94
+  },
+  "rankRule": "CreatureRank is the authoritative client template classification; row-fallback is only used when the field is absent.",
   "skillNames": {
     "descriptive": 7603
   },
@@ -2137,6 +2144,7 @@
   "rules": [
     "NPC names require an exact template UID from a server spawn, scoped to its connection.",
     "Descriptive attack labels are derived from exact TLSkill symbols; they are not official localized skill names.",
+    "CreatureRank is read directly from the NPC template and corresponds to the client rank used by target/nameplate presentation.",
     "This catalog never identifies the player or attributes an entity by its skill alone."
   ]
 }

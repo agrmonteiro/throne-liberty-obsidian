@@ -12,7 +12,7 @@ interface NavItem {
   group: NavGroup
 }
 
-const WIP_PAGES: Set<Page> = new Set(['skillsdb', 'masterytrees', 'rotation', 'macro'])
+const WIP_PAGES: Set<Page> = new Set(['skillsdb', 'masterytrees', 'rotation', 'macro', 'overlays'])
 
 const NAV: NavItem[] = [
   { id: 'dashboard',    icon: '⚡', group: 'overview'     },

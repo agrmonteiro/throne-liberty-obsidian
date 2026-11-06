@@ -23,6 +23,21 @@ ACTIONS = {
 def readable(symbol):
     return re.sub(r'(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])', ' ', symbol).replace('_', ' ').strip()
 
+def creature_rank_hint(value):
+    """Converte a classificação explícita do template no rótulo usado pelo overlay."""
+    ranks = {
+        'ETLCreatureRank::Boss': 'boss',
+        'ETLCreatureRank::BossWorld': 'boss',
+        'ETLCreatureRank::PartyChampion': 'champion',
+        'ETLCreatureRank::SoloElite': 'elite',
+        'ETLCreatureRank::PartyElite': 'elite',
+        # Estes são os templates sem qualidade especial exibida no retrato.
+        'ETLCreatureRank::NoRank': 'normal',
+        'ETLCreatureRank::Solo': 'normal',
+        'ETLCreatureRank::Party': 'normal',
+    }
+    return ranks.get(value)
+
 def build(root, output, report):
     index = json.loads((root/'reference-index.json').read_text(encoding='utf-8'))
     db = sqlite3.connect((root/index['database']).resolve().as_uri()+'?mode=ro', uri=True)
@@ -52,8 +67,17 @@ def build(root, output, report):
         name = pt or en or race_names.get('pt') or race_names.get('en')
         if not name or uid > 2**53-1:
             continue
+        creature_rank = data.get('CreatureRank')
+        rank = creature_rank_hint(creature_rank)
+        # Todo NPC conhecido tem CreatureRank. A leitura do nome interno só serve
+        # como reserva para um template excepcional que não o forneça.
+        rank_source = 'creature-rank' if rank else None
+        if not rank and '_M_' in f'_{row.upper()}_':
+            rank, rank_source = 'unique', 'row-fallback'
         candidates[uid].append(dict(name=name, english=en or race_names.get('en'), row=row,
-                                   nameOrigin='localized' if pt or en else 'race'))
+                                   nameOrigin='localized' if pt or en else 'race', rank=rank,
+                                   rankSource=rank_source, creatureRank=creature_rank,
+                                   creatureSubRank=data.get('CreatureSubRank'), level=data.get('Level')))
     ambiguous = []
     for uid, rows in candidates.items():
         if len({row['name'] for row in rows}) > 1:
@@ -85,15 +109,19 @@ def build(root, output, report):
             missing[action] += 1
         skills[str(uid)] = dict(name=official_pt or official_en or f'{label} · {family_name}', row=row,
                                 nameOrigin='localized' if official_pt or official_en else 'descriptive')
-    result = dict(schemaVersion=1, build=index['build'], npcs=npcs, skills=skills)
+    rank_counts = Counter(row.get('rank') or 'unclassified' for row in npcs.values())
+    result = dict(schemaVersion=2, build=index['build'], npcs=npcs, skills=skills)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     summary = dict(build=index['build'], npcs=len(npcs), skills=len(skills), ambiguousNpcUids=ambiguous,
                    caseInsensitiveLooksMatches=case_matches,
+                   npcRanks=dict(rank_counts),
+                   rankRule='CreatureRank is the authoritative client template classification; row-fallback is only used when the field is absent.',
                    skillNames=dict(Counter(row['nameOrigin'] for row in skills.values())),
                    untranslatedActionCounts=dict(missing.most_common()),
                    rules=['NPC names require an exact template UID from a server spawn, scoped to its connection.',
                           'Descriptive attack labels are derived from exact TLSkill symbols; they are not official localized skill names.',
+                          'CreatureRank is read directly from the NPC template and corresponds to the client rank used by target/nameplate presentation.',
                           'This catalog never identifies the player or attributes an entity by its skill alone.'])
     report.parent.mkdir(parents=True, exist_ok=True)
     report.write_text(json.dumps(summary, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')

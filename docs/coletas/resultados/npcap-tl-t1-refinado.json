@@ -1,0 +1,131 @@
+{
+  "status": "experimental_uma_captura",
+  "frameCounters": {
+    "frames": 6579,
+    "compressedFrames": 405
+  },
+  "packetDamageCandidates": 420,
+  "logDamageEvents": 420,
+  "matchedDamageEvents": 420,
+  "unmatchedLogEvents": 0,
+  "matchedDamage": 2047077,
+  "logDamage": 2047077,
+  "criticalFieldAgreement": 420,
+  "heavyFieldAgreement": 420,
+  "flagsCompared": [
+    {
+      "flags": 6,
+      "crit": 1,
+      "heavy": 1,
+      "count": 99
+    },
+    {
+      "flags": 6,
+      "crit": 1,
+      "heavy": 0,
+      "count": 77
+    },
+    {
+      "flags": null,
+      "crit": 0,
+      "heavy": 0,
+      "count": 192
+    },
+    {
+      "flags": 1,
+      "crit": 0,
+      "heavy": 1,
+      "count": 27
+    },
+    {
+      "flags": 1,
+      "crit": 0,
+      "heavy": 0,
+      "count": 25
+    }
+  ],
+  "candidateDamageSum": 2047077,
+  "candidateBySkill": [
+    {
+      "skillId": 940907488,
+      "referenceName": null,
+      "events": 15,
+      "damageSum": 72090
+    },
+    {
+      "skillId": 940842037,
+      "referenceName": null,
+      "events": 85,
+      "damageSum": 349747
+    },
+    {
+      "skillId": 940973120,
+      "referenceName": null,
+      "events": 148,
+      "damageSum": 639378
+    },
+    {
+      "skillId": 940710828,
+      "referenceName": null,
+      "events": 122,
+      "damageSum": 567889
+    },
+    {
+      "skillId": 941169852,
+      "referenceName": null,
+      "events": 29,
+      "damageSum": 131934
+    },
+    {
+      "skillId": 939780553,
+      "referenceName": null,
+      "events": 1,
+      "damageSum": 133646
+    },
+    {
+      "skillId": 940624689,
+      "referenceName": null,
+      "events": 2,
+      "damageSum": 10836
+    },
+    {
+      "skillId": 940821350,
+      "referenceName": null,
+      "events": 4,
+      "damageSum": 40504
+    },
+    {
+      "skillId": 940755821,
+      "referenceName": null,
+      "events": 4,
+      "damageSum": 36935
+    },
+    {
+      "skillId": 940953339,
+      "referenceName": null,
+      "events": 4,
+      "damageSum": 14284
+    },
+    {
+      "skillId": 941412647,
+      "referenceName": null,
+      "events": 4,
+      "damageSum": 40504
+    },
+    {
+      "skillId": 941609259,
+      "referenceName": null,
+      "events": 2,
+      "damageSum": 9330
+    }
+  ],
+  "limitations": [
+    "Uma captura, validação independente ainda pendente.",
+    "Mapeamento experimental de campos e framing; não é API oficial.",
+    "Tipo secundário: crítico/pesado ausentes são inferidos normais a partir da referência, não flags descobertas.",
+    "Buffs e recusa de input ainda não decodificados.",
+    "Campos de tempo do log assumidos UTC-3; janela de correspondência 0,5 s."
+  ],
+  "capture": "20261021-155810-381198",
+  "matchedDamageCoveragePct": 100
+}

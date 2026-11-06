@@ -16,7 +16,13 @@ function compile(relative, resolve) {
   return module.exports
 }
 const engine = compile('src/engine/overlayMeter.ts', require)
+const segmentEngine = compile('src/engine/overlaySegments.ts', require)
+const groupHealingEngine = compile('src/engine/groupHealingMeter.ts', require)
+const groupReceivedEngine = compile('src/engine/groupReceivedMeter.ts', require)
+const encounterClassification = compile('src/engine/overlayEncounterClassification.ts', name => name.endsWith('/overlayNpcReference.json')
+  ? JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayNpcReference.json'), 'utf8')) : require(name))
 const buffEngine = compile('src/engine/overlayBuffs.ts', require)
+const buffContributionEngine = compile('src/engine/overlayBuffContribution.ts', require)
 const { OverlayDeathRecorder } = compile('src/engine/overlayDeathLog.ts', require)
 const healingEvents = compile('src/engine/overlayHealingEvent.ts', name => name.endsWith('/overlayHealingEffects.json')
   ? JSON.parse(fs.readFileSync(path.join(root,'src/data/overlayHealingEffects.json'),'utf8')) : require(name))
@@ -79,10 +85,15 @@ function harness(startAt = 1000000) {
     if (name === 'child_process') return { spawn: (_file, args) => { const child = new Child(); child.args = args; children.push(child); return child } }
     if (name === '@electron-toolkit/utils') return { is: { dev: false } }
     if (name.endsWith('/overlayMeter')) return engine
+    if (name.endsWith('/overlaySegments')) return segmentEngine
+    if (name.endsWith('/groupHealingMeter')) return groupHealingEngine
+    if (name.endsWith('/groupReceivedMeter')) return groupReceivedEngine
+    if (name.endsWith('/overlayEncounterClassification')) return encounterClassification
     if (name.endsWith('/overlayBuffs')) return buffEngine
+    if (name.endsWith('/overlayBuffContribution')) return buffContributionEngine
     if (name.endsWith('/overlayHealingEvent')) return healingEvents
     if (name.endsWith('/overlayLayout')) return layout
-    if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {},
+    if (name.endsWith('/overlaySkillReference')) return { overlaySkillNames: {}, overlaySkillFiles: {}, overlayNpcRankHints: {}, overlayNpcRankSources: {},
       overlayNpcNames: Object.fromEntries(Object.entries(JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayNpcReference.json'), 'utf8')).npcs).map(([id, row]) => [id, row.name])) }
     if (name.endsWith('/overlayHealingEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayHealingEffects.json'), 'utf8'))
     if (name.endsWith('/overlayBuffEffects.json')) return JSON.parse(fs.readFileSync(path.join(root, 'src/data/overlayBuffEffects.json'), 'utf8'))
@@ -323,10 +334,17 @@ try {
 } finally { manualNpcNames.close() }
 console.log('OK: nomes de NPCs por conexão, histórico nomeado, chegada tardia, conflitos, seleção manual e sem inferir jogador por monstro.')
 if (process.platform === 'win32') {
+  const singleWindow = harness()
+  try {
+    singleWindow.start(); singleWindow.configure({ totalVisible: true, skillsVisible: true, controlsVisible: true })
+    singleWindow.foreground(true)
+    assert.deepEqual(singleWindow.visiblePanels(), { skills: true }, 'Layout Details abre somente a janela principal de combate')
+  } finally { singleWindow.close() }
+  console.log('OK: layout de janela única mantém resumo e ranking no mesmo overlay.')
   const visibility = harness()
   try {
     visibility.start(); visibility.send({ type: 'status', state: 'live', message: 'test' }); visibility.send(player(7, 1001))
-    visibility.configure({ totalVisible: true, skillsVisible: true, controlsVisible: true, hideOutOfCombat: true, combatHideDelaySec: 10 })
+    visibility.configure({ singleWindow: false, totalVisible: true, skillsVisible: true, controlsVisible: true, hideOutOfCombat: true, combatHideDelaySec: 10 })
     visibility.foreground(true)
     assert.deepEqual(visibility.visiblePanels(), { total: false, skills: false, controls: true })
     visibility.send(damage(8, 1002, 9000))
@@ -484,6 +502,19 @@ try {
 } finally { named.close() }
 console.log('OK: nome confirmado pelo perfil impede primeiro atacante indevido e trocas pelo sinal ambíguo de terceiros.')
 
+const identityRefinement = harness()
+try {
+  identityRefinement.start(); identityRefinement.send({ type: 'status', state: 'live', message: 'test' })
+  identityRefinement.send(damage(7, 1001, 40)); identityRefinement.send(damage(7, 1029, 80))
+  identityRefinement.send({ type: 'identity', sourceId: 7, name: 'agrmonteiro', connectionId: 'A', time: 1030 })
+  assert.equal(identityRefinement.state().config.sourceId, 7, 'Nome normalizado deve confirmar a origem configurada')
+  assert.equal(identityRefinement.state().session.total, 120, 'Perfil atrasado recupera até 30 s da mesma conexão')
+  identityRefinement.send({ type: 'identity', sourceId: 7, name: 'Outro jogador', connectionId: 'B', time: 1031 })
+  identityRefinement.send(damage(7, 1032, 999, 'B'))
+  assert.equal(identityRefinement.state().session.total, 120, 'Perfil homônimo por ID em outra conexão não pode alterar a origem ativa')
+} finally { identityRefinement.close() }
+console.log('OK: gatilho nominal normalizado recupera abertura atrasada e isola IDs repetidos por conexão.')
+
 const confirmedResume = harness()
 try {
   confirmedResume.start(); confirmedResume.send({ type: 'status', state: 'live', message: 'test' })
@@ -506,6 +537,47 @@ try {
   assert.equal(confirmedResume.state().session.total, 20)
 } finally { confirmedResume.close() }
 console.log('OK: retomada explícita com acompanhamento futuro do perfil, sem inferir identidade por ataque ou sinal ambíguo.')
+
+const groupCapture = harness()
+try {
+  groupCapture.start(); groupCapture.send({ type: 'status', state: 'live', message: 'test' })
+  groupCapture.send({ type: 'identity', sourceId: 7, name: 'Jogador A', connectionId: 'A', time: 1001 })
+  groupCapture.send({ type: 'identity', sourceId: 8, name: 'Jogador B', connectionId: 'A', time: 1001 })
+  groupCapture.send({ type: 'damage', connectionId: 'A', raw: { direction: 'server-to-client' },
+    event: { sourceId: 7, targetId: 8, time: 1002, damage: 120, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
+  groupCapture.send({ type: 'identity', sourceId: 7, name: 'Outro jogador', connectionId: 'B', time: 1003 })
+  groupCapture.send({ type: 'damage', connectionId: 'B', raw: { direction: 'server-to-client' },
+    event: { sourceId: 7, targetId: 44, time: 1004, damage: 80, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
+  groupCapture.send({ type: 'identity', sourceId: 11, name: 'Jogador C', connectionId: 'C', time: 1005 })
+  groupCapture.send({ type: 'npc', sourceId: 55, npcId: 10130144, connectionId: 'C', time: 1005 })
+  groupCapture.send({ type: 'damage', connectionId: 'C', raw: { direction: 'server-to-client' },
+    event: { sourceId: 11, targetId: 55, time: 1006, damage: 40, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
+  const wholeRead = groupCapture.state()
+  const connections = wholeRead.groupConnections
+  assert.equal(connections.length, 3)
+  const first = connections.find(row => row.id === 'A').sources.find(row => row.id === 7)
+  const second = connections.find(row => row.id === 'B').sources.find(row => row.id === 7)
+  assert.equal(first.name, 'Jogador A'); assert.equal(first.session.targets[0].name, 'Jogador B')
+  assert.equal(first.session.total, 120); assert.equal(second.name, 'Outro jogador'); assert.equal(second.session.total, 80)
+  assert.equal(wholeRead.combatSegments.length, 3, 'Cada conexão mantém seu segmento de grupo isolado')
+  const segmentA = wholeRead.combatSegments.find(row => row.connectionId === 'A')
+  const segmentB = wholeRead.combatSegments.find(row => row.connectionId === 'B')
+  const segmentC = wholeRead.combatSegments.find(row => row.connectionId === 'C')
+  assert.deepEqual(segmentC.dominantTarget, { templateId: '10130144', name: 'Quimer-Rex', rank: 'boss', level: 50 },
+    'Segmento usa o CreatureRank e o nome do template do alvo dominante')
+  groupCapture.configure({ groupSegmentId: segmentA.id })
+  assert.equal(groupCapture.state().groupConnections.length, 1)
+  assert.equal(groupCapture.state().groupConnections[0].sources[0].session.total, 120, 'Seleção de segmento não mistura a outra conexão')
+  groupCapture.configure({ groupSegmentId: segmentB.id })
+  assert.equal(groupCapture.state().groupConnections[0].sources[0].session.total, 80)
+  groupCapture.configure({ groupSegmentId: null })
+  assert.equal(groupCapture.state().groupConnections.length, 3, 'Toda a leitura restaura o acumulado global')
+  groupCapture.send({ type: 'connection-closed', connectionId: 'A', time: 1005 })
+  groupCapture.send({ type: 'damage', connectionId: 'A', raw: { direction: 'server-to-client' },
+    event: { sourceId: 7, targetId: 8, time: 1006, damage: 999, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
+  assert.equal(groupCapture.state().groupConnections.find(row => row.id === 'A').sources.find(row => row.id === 7).session.total, 120)
+} finally { groupCapture.close() }
+console.log('OK: captura real alimenta origens por conexão, detalhes por alvo e ignora conexão encerrada.')
 
 const folder = path.join(root, 'capturas_treinamento/npcap_tl/20261030-094453-reference')
 const manifest = JSON.parse(fs.readFileSync(path.join(folder, 'manifest.json'), 'utf8'))

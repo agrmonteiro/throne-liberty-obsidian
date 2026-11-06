@@ -1,0 +1,106 @@
+{
+  "status": "extraido_sem_log_nao_validado",
+  "frameCounters": {
+    "frames": 9838,
+    "compressedFrames": 529
+  },
+  "packetDamageCandidates": 713,
+  "logDamageEvents": null,
+  "matchedDamageEvents": null,
+  "unmatchedLogEvents": null,
+  "matchedDamage": null,
+  "logDamage": null,
+  "criticalFieldAgreement": null,
+  "heavyFieldAgreement": null,
+  "flagsCompared": [],
+  "candidateDamageSum": 3392653,
+  "candidateBySkill": [
+    {
+      "skillId": 940907488,
+      "referenceName": "Garra",
+      "events": 39,
+      "damageSum": 215761
+    },
+    {
+      "skillId": 941169852,
+      "referenceName": "Garra",
+      "events": 35,
+      "damageSum": 171216
+    },
+    {
+      "skillId": 940973120,
+      "referenceName": "Garra",
+      "events": 251,
+      "damageSum": 1098327
+    },
+    {
+      "skillId": 939780553,
+      "referenceName": "Estigma Fatal",
+      "events": 1,
+      "damageSum": 115837
+    },
+    {
+      "skillId": 940710828,
+      "referenceName": "Garra",
+      "events": 178,
+      "damageSum": 807567
+    },
+    {
+      "skillId": 940842037,
+      "referenceName": "Garra",
+      "events": 179,
+      "damageSum": 844321
+    },
+    {
+      "skillId": 940624689,
+      "referenceName": "Dança da Espada Frenética",
+      "events": 2,
+      "damageSum": 18866
+    },
+    {
+      "skillId": 940821350,
+      "referenceName": "Dança da Espada Frenética",
+      "events": 4,
+      "damageSum": 17253
+    },
+    {
+      "skillId": 940755821,
+      "referenceName": "Dança da Espada Frenética",
+      "events": 2,
+      "damageSum": 9586
+    },
+    {
+      "skillId": 940953339,
+      "referenceName": "Dança da Espada Frenética",
+      "events": 2,
+      "damageSum": 11411
+    },
+    {
+      "skillId": 941412647,
+      "referenceName": "Dança da Espada Frenética",
+      "events": 2,
+      "damageSum": 11827
+    },
+    {
+      "skillId": 941609259,
+      "referenceName": "Dança da Espada Frenética",
+      "events": 4,
+      "damageSum": 30985
+    },
+    {
+      "skillId": 967068704,
+      "referenceName": null,
+      "events": 14,
+      "damageSum": 39696
+    }
+  ],
+  "limitations": [
+    "Uma captura, validação independente ainda pendente.",
+    "Mapeamento experimental de campos e framing; não é API oficial.",
+    "Tipo secundário: crítico/pesado ausentes são inferidos normais a partir da referência, não flags descobertas.",
+    "Buffs e recusa de input ainda não decodificados.",
+    "Campos de tempo do log assumidos UTC-3; janela de correspondência 0,5 s.",
+    "Sem log: soma dos candidatos não comprova dano total, identidade do jogador, DPS ou cobertura."
+  ],
+  "capture": "20261021-164539-793239"
+}

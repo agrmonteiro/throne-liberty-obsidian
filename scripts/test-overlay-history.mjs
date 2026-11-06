@@ -19,11 +19,14 @@ history.upsert({ ...encounter(25), reason: 'stop' })
 assert.equal(history.list().encounters.length, 20, 'Finalizar não duplica registro')
 const restored = new OverlayHistory(file)
 assert.equal(restored.list().encounters[0].reason, 'stop')
+restored.upsert({ ...encounter(26), session: { ...encounter(26).session, hits: 0, total: 0 }, groupConnections: [{ id:'grupo', closed:false, lastAt:26,
+  sources:[{ id:77, name:'DedaolosBar', kind:'player', evidence:'profile', session:{ ...encounter(26).session, total:321, hits:3 } }] }] })
+assert.equal(new OverlayHistory(file).list().encounters[0].groupConnections[0].sources[0].name, 'DedaolosBar', 'Ranking do grupo precisa sobreviver ao reinício')
 const copy = restored.list()
 copy.encounters[0].session.total = 0
-assert.equal(restored.list().encounters[0].session.total, 25, 'Consulta não pode alterar registro')
+assert.equal(restored.list().encounters[0].session.total, 0, 'Consulta não pode alterar registro')
 restored.upsert({ ...encounter(30), session: { ...encounter(30).session, hits: 0 } })
-assert.equal(restored.list().encounters[0].id, '25', 'Sessão vazia não ocupa histórico')
+assert.equal(restored.list().encounters[0].id, '26', 'Sessão vazia não ocupa histórico')
 restored.upsert({ ...encounter(31), session: { ...encounter(31).session, total: 0, hits: 0,
   received: { total: 100, hits: 2, sources: [{ id: 8, damage: 100, hits: 2 }], skills: [] } } })
 assert.equal(new OverlayHistory(file).list().encounters[0].session.received.total, 100, 'Encontro só de dano recebido precisa persistir')

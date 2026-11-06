@@ -6,6 +6,7 @@ import { OverlayMetricView, metricPages, type MetricPage } from './OverlayMetric
 import { comparableEncounters } from '../engine/overlayAnalysis'
 import { OverlayEncounterComparison } from './OverlayEncounterComparison'
 import { MeterExportButton } from './MeterExportButton'
+import { OverlaySourcesView } from './OverlaySourcesView'
 
 export function OverlayHistoryView({ state }: { state: OverlayState }): React.ReactElement {
   const [history, setHistory] = useState<OverlayHistoryResult>({ encounters: [], error: null })
@@ -24,7 +25,7 @@ export function OverlayHistoryView({ state }: { state: OverlayState }): React.Re
     return () => clearInterval(timer)
   }, [refresh])
   const selected = history.encounters.find(row => row.id === selectedId) ?? history.encounters[0]
-  const historical = selected ? resolveOverlayNames({ ...state, session: selected.session,
+  const historical = selected ? resolveOverlayNames({ ...state, session: selected.session, groupConnections: selected.groupConnections,
     mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles, overlayNpcNames) : null
   const candidates = selected ? history.encounters.filter(row => comparableEncounters(selected, row)) : []
   const reference = candidates.find(row => row.id === referenceId)
@@ -68,6 +69,9 @@ export function OverlayHistoryView({ state }: { state: OverlayState }): React.Re
         <div>{page === 'damage' ? <MeterPanel key={selected.id} panel="skills" state={historical} historical onReset={() => {}} />
           : <OverlayMetricView key={selected.id} state={historical} historical page={page} />}</div>
       </div>}
+      {historical?.groupConnections?.length ? <section className="overlay-history-group"><h3>Grupo observado neste encontro</h3>
+        <OverlaySourcesView state={historical} />
+      </section> : <p className="overlay-note">Este encontro não possui um snapshot de grupo. Os próximos encontros salvarão o ranking de grupo junto com o histórico.</p>}
       {historical && reference && referenceSession && <OverlayEncounterComparison
         current={{ ...selected, session: historical.session }} reference={{ ...reference, session: referenceSession }} page={page} />}
     </>}

@@ -1,0 +1,52 @@
+{
+  "status": "experimental_nao_instalada_nao_testada",
+  "source": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_DEBUFF_V13.xml",
+  "output": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_BUFF_V14.xml",
+  "importFile": "C:\\Users\\admin\\Downloads\\TL_MA_BUFF_V14.xml",
+  "sourceSha256": "bec1aee011f2d20ebf26258f741d43d913e5c0940f7af49ffd4b201ff7130960",
+  "outputSha256": "614ea18f844f52c371fcba77f12cc8d68c155fb31acb8297c87b9a3da469d3dd",
+  "pressCount": 93,
+  "holdMs": 20,
+  "gapMs": 3,
+  "cycleDurationMs": 2139,
+  "luarAttemptsMs": [
+    23,
+    368,
+    736,
+    1104,
+    1472,
+    1840
+  ],
+  "umbralAttemptsMs": [
+    115,
+    483,
+    897,
+    1265,
+    1633,
+    2001
+  ],
+  "arremessoAttemptsMs": [
+    138,
+    851,
+    1564
+  ],
+  "preserved": [
+    "Contagem de cada tecla da V13",
+    "Tempos e pares de pressionamento/soltura",
+    "Ordem das teclas exceto Umbral, Luar e Arremesso",
+    "Horários de Arremesso"
+  ],
+  "hypothesis": "Espaçar as tentativas pode permitir registro dos buffs após bloqueios de animação; ganho não garantido.",
+  "validation": [
+    "XML relido",
+    "93 pares equilibrados",
+    "Tempos idênticos aos da V13",
+    "Sem tecla 0"
+  ],
+  "nextTest": "Mesma build, buffs e alvo; 120 s desde o primeiro dano. Filmar a abertura e conferir ativação de - e =.",
+  "limitations": [
+    "Sem detecção de cooldown, ativação ou fim de animação.",
+    "Primeira tentativa antecipada não garante que o buff ative antes do dano.",
+    "A mudança vale para cada repetição do ciclo, não só o início do combate."
+  ]
+}

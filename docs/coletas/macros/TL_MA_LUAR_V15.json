@@ -1,0 +1,23 @@
+{
+  "status": "experimental_nao_instalada_nao_testada",
+  "source": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_BUFF_V14.xml",
+  "output": "C:\\projetos\\throne_and_liberty_node\\docs\\coletas\\macros\\TL_MA_LUAR_V15.xml",
+  "importFile": "C:\\Users\\admin\\Downloads\\TL_MA_LUAR_V15.xml",
+  "outputSha256": "4df19b0c0b1c1405b69e562b746becfae9c39f95482c0f6858dec9237532d750",
+  "pressCount": 93,
+  "cycleDurationMs": 2179,
+  "previousCycleDurationMs": 2139,
+  "change": "Somente o primeiro pressionamento de = por ciclo passa de 20 para 60 ms.",
+  "unchanged": "Sequência, códigos, número de tentativas, demais holds e intervalos de 3 ms.",
+  "arremessoAttemptsMs": [
+    178,
+    891,
+    1604
+  ],
+  "nominalAttemptFrequencyChangePct": -1.8357044515832976,
+  "limitations": [
+    "Pressionar por mais tempo não garante aceitar input durante animação.",
+    "Teste diagnóstico; não garante ganho de DPS.",
+    "Ciclo 40 ms mais longo desloca os eventos posteriores e reduz frequência nominal em cerca de 1,84%."
+  ]
+}

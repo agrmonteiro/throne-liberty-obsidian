@@ -1,0 +1,51 @@
+{
+  "status": "experimental_uma_captura",
+  "frameCounters": {
+    "frames": 6579,
+    "compressedFrames": 405
+  },
+  "packetDamageCandidates": 228,
+  "logDamageEvents": 420,
+  "matchedDamageEvents": 228,
+  "unmatchedLogEvents": 192,
+  "matchedDamage": 1828817,
+  "logDamage": 2047077,
+  "criticalFieldAgreement": 228,
+  "heavyFieldAgreement": 228,
+  "flagsCompared": [
+    {
+      "flags": 6,
+      "crit": 1,
+      "heavy": 1,
+      "count": 99
+    },
+    {
+      "flags": 6,
+      "crit": 1,
+      "heavy": 0,
+      "count": 77
+    },
+    {
+      "flags": 1,
+      "crit": 0,
+      "heavy": 1,
+      "count": 27
+    },
+    {
+      "flags": 1,
+      "crit": 0,
+      "heavy": 0,
+      "count": 25
+    }
+  ],
+  "limitations": [
+    "Uma captura, validação independente ainda pendente.",
+    "Mapeamento experimental de campos e framing; não é API oficial.",
+    "Buffs e recusa de input ainda não decodificados.",
+    "Campos de tempo do log assumidos UTC-3; janela de correspondência 0,5 s."
+  ],
+  "capture": "20261021-155810-381198",
+  "matchedDamageCoveragePct": 89.33796823470735,
+  "matchedEventCoveragePct": 54.285714285714285,
+  "decision": "Viável nesta configuração; interpretação parcial, confirmar em captura independente antes de integrar."
+}

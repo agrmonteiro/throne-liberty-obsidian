@@ -41,6 +41,7 @@ export function ImportCharacterBuild({ onImported, readRequest = 0 }: { onImport
   return <section ref={sectionRef} className="tl-panel" style={{marginBottom:'1.25rem'}} aria-label="Importar atributos do jogo">
     <div style={{display:'flex',alignItems:'center',gap:12,flexWrap:'wrap'}}><div style={{flex:1,minWidth:230}}>
       <div className="tl-eyebrow">Importar do jogo · experimental</div><p style={{fontSize:12,color:'var(--text-muted)'}}>Lê os atributos recebidos nos pacotes do personagem. Valores podem incluir buffs.</p>
+      <p role="note" style={{fontSize:12,color:'var(--accent)',margin:'4px 0 0'}}>Para criar uma build atualizada, troque todo o equipamento ou relogue com o personagem; a leitura receberá uma nova ficha automaticamente.</p>
     </div><button className="tl-btn" disabled={busy} onClick={()=>void read()}>{busy ? 'Lendo…' : 'Ler ficha do jogo'}</button></div>
     {error && <p role="alert" style={{fontSize:12}}>{error}</p>}
     {data && !data.live && Boolean(data.pending?.length) && <p role="status" style={{fontSize:12,color:'var(--text-muted)'}}>

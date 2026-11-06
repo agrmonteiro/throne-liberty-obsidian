@@ -1,9 +1,22 @@
 # Retomada da análise — 17/10/2026
 
-Desenvolvimento pausado a pedido do usuário. Próximo foco: falhas de ativação
+Análise retomada em 18/10/2026. Próximo foco: falhas de ativação
 de `-` (Espírito Umbral) e `=` (Luar) vistas pelo usuário na última V13,
-principalmente na abertura. Não foi criada uma V14 nem alterado o XML da V13
-depois desse relato.
+principalmente na abertura. V14 testada: 50.751.727 de dano em 120 s e abertura
+de 12.938.429 em 30 s. Usuário viu Umbral funcionar melhor, Luar ainda falhando.
+V15 alongou apenas uma tentativa de Luar por ciclo para 60 ms, mas caiu para
+47.315.091 (-6,77% contra V14); não recomendada nesta rodada. Manter V14 como
+referência de trabalho. Antes de outro ajuste, distinguir falha de tecla de
+bloqueio por animação/condição de uso.
+
+Em seguida, usuário solicitou triplicar cada tentativa de Luar, aceitando ciclo
+maior. V16 gerada da V14: 18 tentativas de Luar em seis trios, 20 ms de hold,
+3 ms de intervalo e ciclo de 2.415 ms. Primeiro teste fez 54.156.307 em 120 s
+(451.302,56 DPS), +6,71% contra V14. Melhor candidata atual, ainda uma amostra.
+Repetir V16 sem mudanças; Fenda caiu para 1.828.597 e fica como investigação
+posterior. Melhor resultado total não comprova uptime de Luar. Nenhuma V17.
+Detalhes em `2026-10-18-resultado-v14.md`, `2026-10-18-resultado-v15.md` e
+`2026-10-18-resultado-v16.md`.
 
 ## Resultados nos primeiros 120 segundos
 

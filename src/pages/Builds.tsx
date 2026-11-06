@@ -461,11 +461,27 @@ export function Builds({ importRequest = 0 }: { importRequest?: number } = {}): 
       'Undead Damage Boost', 'Humanoid Damage Boost', 'Construct Damage Boost', 'Magic Damage Boost',
     )
 
-    // Boss Crit/Heavy do quest log já somam o valor base → extrair só o delta extra
-    const critHitChance      = n('Magic Critical Hit Chance') || n('Melee Critical Hit Chance') || editData.stats.critHitChance
-    const heavyAttackChance  = n('Magic Heavy Attack Chance') || n('Melee Heavy Attack Chance') || editData.stats.heavyAttackChance
-    const rawBossCrit        = maxOf('Boss Melee Critical Hit Chance', 'Boss Ranged Critical Hit Chance', 'Boss Magic Critical Hit Chance')
-    const rawBossHeavy       = maxOf('Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance')
+    // A importação da ficha registra a família escolhida pelo jogador. Ao
+    // replicar, usar a mesma família evita que uma build de adaga/arco leia
+    // por engano os campos mágicos que o Questlog também mantém no rawStats.
+    const attackFamily = editData.calculatorAttackType === 'melee' ? 'Melee'
+      : editData.calculatorAttackType === 'ranged' ? 'Ranged'
+        : editData.calculatorAttackType === 'magic' ? 'Magic' : null
+    const familyValue = (suffix: string, fallback: number): number => attackFamily
+      ? n(`${attackFamily} ${suffix}`, fallback)
+      // Builds antigas não têm a preferência salva: conserva a compatibilidade
+      // anterior, sem substituir nenhum valor existente por zero.
+      : n(`Magic ${suffix}`) || n(`Melee ${suffix}`) || n(`Ranged ${suffix}`) || fallback
+
+    // Boss Crit/Heavy do Questlog já somam o valor base → extrair só o delta extra.
+    const critHitChance      = familyValue('Critical Hit Chance', editData.stats.critHitChance)
+    const heavyAttackChance  = familyValue('Heavy Attack Chance', editData.stats.heavyAttackChance)
+    const rawBossCrit        = attackFamily
+      ? n(`Boss ${attackFamily} Critical Hit Chance`)
+      : maxOf('Boss Melee Critical Hit Chance', 'Boss Ranged Critical Hit Chance', 'Boss Magic Critical Hit Chance')
+    const rawBossHeavy       = attackFamily
+      ? n(`Boss ${attackFamily} Heavy Attack Chance`)
+      : maxOf('Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance')
     const bossCritChance     = Math.max(0, rawBossCrit  - critHitChance)
     const bossHeavyChance    = Math.max(0, rawBossHeavy - heavyAttackChance)
 

@@ -62,5 +62,8 @@ export function importCharacterSnapshot(base: Build, snapshot: CharacterSnapshot
   }
   return { ...base, stats: { ...base.stats, ...patch }, rawStats, rawAttributes,
     characterSnapshot: structuredClone(snapshot), editedAt: new Date().toISOString(),
+    // A escolha não é só um auxílio visual desta importação: a calculadora deve
+    // continuar usando a mesma família quando a build for replicada depois.
+    ...(attackType ? { calculatorAttackType: attackType } : {}),
     notes: [base.notes, `Ficha de ${snapshot.playerName} lida em ${new Date(snapshot.observedAt*1000).toLocaleString('pt-BR')}: ${rows.length} status observados. Importação experimental; valores podem incluir buffs. Campos ausentes e parâmetros de habilidade/alvo foram preservados.`].filter(Boolean).join('\n') }
 }

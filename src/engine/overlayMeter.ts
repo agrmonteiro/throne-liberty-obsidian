@@ -1,3 +1,6 @@
+import type { GroupHealingSnapshot } from './groupHealingMeter'
+import type { GroupReceivedSegment } from './groupReceivedMeter'
+
 export const METER_IDLE_MS = 5 * 60 * 1000
 export type DamageKind = 'normal' | 'critical' | 'heavy' | 'criticalHeavy'
 export type DamageBreakdown = Record<DamageKind, number>
@@ -15,6 +18,8 @@ export interface TimedMeasurement { startsAt: number; endsAt: number; durationSe
 export interface MeterSkill {
   key: string; name: string; damage: number; hits: number; critical: number; heavy: number
   skillIds?: number[]; iconFile?: string
+  /** Nome vindo do catálogo local ou somente o ID ainda não resolvido. */
+  identity?: 'catalog' | 'unresolved'
   damageByKind: DamageBreakdown
 }
 export interface MeterReceived {
@@ -33,12 +38,27 @@ export interface MeterSession {
   paused?: boolean
   gameCombatEnded?: boolean
   lastActivityAt?: number | null; received?: MeterReceived
-  targets?: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number; skills: MeterSkill[] }>
+  targets?: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number; identity?: EntityIdentityEvidence; rank?: NpcRankHint; rankSource?: NpcRankSource; skills: MeterSkill[] }>
   healing?: { done: MeterHealing; received: MeterHealing; coverage: 'self-observed' | 'observed' }
   timed?: TimedMeasurement
 }
 export interface OverlayPlayerIdentity {
   sourceId: number; connectionId: string; observedAt: number; method: 'local-state' | 'profile-name'
+}
+export type EntityIdentityEvidence = 'profile' | 'npc-template' | 'unresolved' | 'conflict'
+/** Qualidade do NPC normalizada a partir do template local do cliente. */
+export type NpcRankHint = 'boss' | 'champion' | 'elite' | 'normal' | 'unique'
+/** `creature-rank` é o campo explícito do cliente; fallback só existe para builds incompletos. */
+export type NpcRankSource = 'creature-rank' | 'row-fallback'
+export interface GroupSource {
+  id: number; name?: string; npcId?: number; rank?: NpcRankHint; rankSource?: NpcRankSource
+  kind: 'player' | 'npc' | 'unknown' | 'conflict'; evidence: EntityIdentityEvidence; session: MeterSession
+}
+export interface GroupConnection { id: string; closed: boolean; lastAt: number; sources: GroupSource[] }
+export interface OverlayCombatSegment {
+  id: number; connectionId: string; startedAt: number; endedAt: number | null; lastActivityAt: number
+  endReason: 'combat-exit' | 'inactivity' | null; events: number
+  dominantTarget?: { templateId: string; name?: string; rank: 'boss' | 'champion' | 'elite' | 'normal'; level?: number }
 }
 /** Identidade local só muda com evidência do protocolo, nunca por dano/inatividade. */
 export class OverlayIdentity {
@@ -194,7 +214,7 @@ export class OverlayMeter {
     const name = this.names[String(event.skillId)] ?? `Habilidade ${event.skillId}`
     const iconFile = this.icons[String(event.skillId)]
     const key = this.names[String(event.skillId)] ? (iconFile ? `${name}::${iconFile}` : name) : String(event.skillId)
-    const row = rows.get(key) ?? { key, name, iconFile, skillIds: [], damage: 0, hits: 0, critical: 0, heavy: 0, damageByKind: emptyDamageBreakdown() }
+    const row = rows.get(key) ?? { key, name, iconFile, skillIds: [], identity: this.names[String(event.skillId)] ? 'catalog' : 'unresolved', damage: 0, hits: 0, critical: 0, heavy: 0, damageByKind: emptyDamageBreakdown() }
     row.skillIds ??= []
     if (!row.skillIds.includes(event.skillId)) row.skillIds.push(event.skillId)
     row.damage += event.damage; row.hits++
@@ -238,6 +258,86 @@ export class OverlayMeter {
     }
   }
 }
+/** Fontes observadas são isoladas por conexão; perfil nominal não comprova participação no grupo. */
+export class ObservedGroupDamage {
+  private connections = new Map<string, { closed: boolean; lastAt: number; names: Map<number, Set<string>>;
+    labels: Map<number, Set<string>>; npcs: Map<number, Set<number>>; actors: Map<number, OverlayMeter> }>()
+  constructor(private names: Record<string, string> = {}, private icons: Record<string, string> = {}, private npcNames: Record<string, string> = {},
+    private npcRanks: Record<string, NpcRankHint> = {}, private npcRankSources: Record<string, NpcRankSource> = {}) {}
+  private connection(id: string) {
+    if (!id || id.length > 128) return undefined
+    let value = this.connections.get(id)
+    if (!value && this.connections.size < 128) {
+      value = { closed: false, lastAt: 0, names: new Map(), labels: new Map(), npcs: new Map(), actors: new Map() }
+      this.connections.set(id, value)
+    }
+    return value
+  }
+  clear(): void { this.connections.clear() }
+  /** Replica somente evidências observadas da mesma conexão para um acumulado segmentado novo. */
+  copyConnectionIdentityTo(connectionId: string, target: ObservedGroupDamage): void {
+    const conn = this.connections.get(connectionId)
+    if (!conn) return
+    for (const [actor, names] of conn.names) for (const name of names) target.profile(connectionId, actor, name)
+    for (const [actor, labels] of conn.labels) for (const label of labels) target.label(connectionId, actor, label)
+    for (const [actor, templates] of conn.npcs) for (const template of templates) target.npc(connectionId, actor, template)
+  }
+  clearDamage(): void { for (const connection of this.connections.values()) connection.actors.clear() }
+  close(id: string): void { const row = this.connections.get(id); if (row) row.closed = true }
+  profile(id: string, actor: number, name: string): void {
+    if (!Number.isSafeInteger(actor) || actor <= 0 || typeof name !== 'string' || !name.trim() || name.length > 64
+      || name.trim() !== name || /[\p{C}]/u.test(name)) return
+    const conn = this.connection(id); if (!conn || conn.closed) return
+    const values = conn.names.get(actor) ?? new Set<string>(); values.add(name.trim()); conn.names.set(actor, values)
+  }
+  /** Nome visto em evento do servidor, sem elevá-lo a perfil de jogador ou template de NPC. */
+  label(id: string, actor: number, name: string): void {
+    if (!Number.isSafeInteger(actor) || actor <= 0 || typeof name !== 'string' || !name.trim() || name.length > 96 || name.trim() !== name || /[\p{C}]/u.test(name)) return
+    const conn = this.connection(id); if (!conn || conn.closed) return
+    const values = conn.labels.get(actor) ?? new Set<string>(); values.add(name); conn.labels.set(actor, values)
+  }
+  npc(id: string, actor: number, template: number): void {
+    if (!Number.isSafeInteger(actor) || actor <= 0 || !Number.isSafeInteger(template) || template <= 0) return
+    const conn = this.connection(id); if (!conn || conn.closed) return
+    const values = conn.npcs.get(actor) ?? new Set<number>(); values.add(template); conn.npcs.set(actor, values)
+  }
+  add(id: string, event: MeterEvent): void {
+    const conn = this.connection(id)
+    if (!conn || conn.closed || !Number.isSafeInteger(event.sourceId) || event.sourceId <= 0 || !Number.isFinite(event.time)) return
+    let meter = conn.actors.get(event.sourceId)
+    if (!meter) {
+      if (conn.actors.size >= 512) return
+      meter = new OverlayMeter(event.sourceId, this.names, this.icons)
+      meter.beginCombat(event.time * 1000); conn.actors.set(event.sourceId, meter)
+    }
+    if (meter.add(event)) conn.lastAt = Math.max(conn.lastAt, event.time)
+  }
+  snapshot(at: number): GroupConnection[] {
+    const result: GroupConnection[] = []
+    for (const [id, conn] of this.connections) {
+      const identify = (actor: number): {name?: string; npcId?: number; rank?: NpcRankHint; rankSource?: NpcRankSource; kind: GroupSource['kind']; evidence: EntityIdentityEvidence} => {
+        const profiles = conn.names.get(actor), labels = conn.labels.get(actor), npcs = conn.npcs.get(actor)
+        if (profiles?.size === 1 && !npcs?.size) return { name: [...profiles][0], kind: 'player', evidence: 'profile' }
+        if (npcs?.size === 1 && !profiles?.size) {
+          const npcId = [...npcs][0]
+          return { name: this.npcNames[String(npcId)], npcId, rank: this.npcRanks[String(npcId)], rankSource: this.npcRankSources[String(npcId)], kind: 'npc', evidence: 'npc-template' }
+        }
+        const label = labels?.size === 1 ? [...labels][0] : undefined
+        return { name: label, kind: (profiles?.size || npcs?.size) ? 'conflict' : 'unknown', evidence: (profiles?.size || npcs?.size) ? 'conflict' : 'unresolved' }
+      }
+      const sources = [...conn.actors].map(([actor, meter]) => {
+        const session = meter.snapshot(at)
+        if (session.targets) session.targets = session.targets.map(target => {
+          const identified = identify(target.id)
+          return { ...target, name: identified.name, npcId: identified.npcId, identity: identified.evidence, rank: identified.rank, rankSource: identified.rankSource }
+        })
+        return { id: actor, ...identify(actor), session }
+      }).filter(row => row.session.hits > 0).sort((a,b) => b.session.total-a.session.total)
+      if (sources.length) result.push({ id, closed: conn.closed, lastAt: conn.lastAt, sources })
+    }
+    return result.sort((a,b) => Number(a.closed)-Number(b.closed) || b.lastAt-a.lastAt)
+  }
+}
 export interface PanelBounds { x: number; y: number; width: number; height: number }
 export type OverlayPanel = 'total' | 'skills' | 'controls'
 export interface PanelAnchor { x: number; y: number }
@@ -247,11 +347,15 @@ export interface OverlayTheme {
 }
 export interface OverlayConfig {
   reviewEncounterId?: string | null
+  /** `null` mantém toda a leitura; um ID mostra apenas o acumulado daquele segmento. */
+  groupSegmentId?: number | null
   metricPage?: 'damage' | 'damageTargets' | 'receivedSources' | 'receivedSkills' | 'healingDone' | 'healingReceived'
   countdownSec?: number; durationSec?: number
   hideOutOfCombat?: boolean; combatHideDelaySec?: number
   autoSource?: boolean
   playerName?: string
+  /** Layout atual: uma única janela de combate; legado mantém painéis separados. */
+  singleWindow?: boolean
   locked: boolean; totalVisible: boolean; skillsVisible: boolean; opacity: number; scale: number
   sourceId: number | null; totalBounds?: PanelBounds; skillsBounds?: PanelBounds
   controlsVisible?: boolean; controlsExpanded?: boolean; controlsBounds?: PanelBounds
@@ -259,6 +363,11 @@ export interface OverlayConfig {
   fontFamily?: 'Inter' | 'Arial' | 'Consolas'; fontSize?: number; chartPadding?: number; chartPaddingVertical?: number; theme?: OverlayTheme
 }
 export interface OverlayState {
+  groupConnections?: GroupConnection[]
+  combatSegments?: OverlayCombatSegment[]
+  /** Dados de grupo observados por segmento; a UI ainda decide como exibi-los. */
+  groupHealing?: Array<{ connectionId: string; segmentId: number; snapshot: GroupHealingSnapshot }>
+  groupReceived?: GroupReceivedSegment[]
   deathLog?: import('./overlayDeathLog').DeathLogStatus
   combat?: { lastDamageAt: number | null; hidden: boolean }
   timer?: TimedMeasurement & { phase: 'countdown' | 'running' | 'finished' | 'cancelled'; remainingSec: number; elapsedSec: number }
@@ -273,6 +382,8 @@ export interface OverlayState {
 export interface OverlayEncounter {
   captureId?: string; connectionId?: string | null
   sourceName?: string; attributionVersion?: number
+  /** Snapshot observado do grupo no mesmo encontro, preservado para consulta após reiniciar. */
+  groupConnections?: GroupConnection[]
   id: string; sourceId: number | null; mode: 'live' | 'replay'; reason: string
   savedAt: number; session: MeterSession
 }
@@ -288,7 +399,9 @@ function resolveSkillRows(skills: MeterSkill[], names: Record<string, string>, i
     const iconFile = files.length === 1 ? files[0] : files.length > 1 ? undefined : original.iconFile
     const key = iconFile ? `${name}::${iconFile}` : names[original.key] || mapped.length === 1 ? name : original.key
     const row = rows.get(key)
-    if (!row) { rows.set(key, { ...original, key, name, iconFile, skillIds, damageByKind: { ...original.damageByKind } }); continue }
+    if (!row) { rows.set(key, { ...original, key, name, iconFile,
+      identity: names[original.key] || mapped.length === 1 ? 'catalog' : original.identity ?? 'unresolved', skillIds,
+      damageByKind: { ...original.damageByKind } }); continue }
     row.skillIds = [...new Set([...(row.skillIds ?? []), ...skillIds])]
     row.damage += original.damage; row.hits += original.hits
     row.critical += original.critical; row.heavy += original.heavy
@@ -315,6 +428,7 @@ export interface OverlayAPI {
   openBuildImport: () => Promise<void>
   onBuildImport: (callback: () => void) => () => void
   buffs: () => Promise<import('./overlayBuffs').BuffResult>
+  buffContributions: () => Promise<import('./overlayBuffContribution').BuffContributionRow[]>
   deaths: () => Promise<import('./overlayDeathLog').DeathLogResult>
   recordDeath: () => Promise<import('./overlayDeathLog').DeathLogResult>
   clearRecords: () => Promise<OverlayHistoryResult>

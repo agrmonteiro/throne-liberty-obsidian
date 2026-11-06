@@ -10,6 +10,7 @@ import { OverlayCombatSettings } from '../components/OverlayCombatSettings'
 import { MeterExportButton } from '../components/MeterExportButton'
 import { OverlayDeathView } from '../components/OverlayDeathView'
 import { OverlayBuffView } from '../components/OverlayBuffView'
+import { OverlayLayoutMap } from '../components/OverlayLayoutMap'
 import { useOverlayGraphPage, type OverlayGraphPage } from '../hooks/useOverlayGraphPage'
 import '../styles/overlay.css'
 
@@ -31,7 +32,7 @@ export function Overlays(): React.ReactElement {
   const { selectPage } = useOverlayGraphPage(config.metricPage, configure)
   return <div className="overlay-editor overlay-dashboard">
     <header className="overlay-editor-heading">
-      <div><span className="overlay-eyebrow">THRONE AND LIBERTY · EXPERIMENTAL</span><h1>Medidor de dano</h1></div>
+      <div><span className="overlay-eyebrow">THRONE AND LIBERTY · EXPERIMENTAL</span><h1>Medidor de dano <span className="overlay-dev-tag">DEV</span></h1></div>
       <button className="overlay-primary" onClick={() => act(() => busy ? window.overlayAPI.stop() : window.overlayAPI.start())}>
         {busy ? 'Parar leitura' : 'Iniciar leitura'}</button>
     </header>
@@ -101,22 +102,22 @@ export function Overlays(): React.ReactElement {
         </section>
         <section><h2>Overlays sobre o jogo</h2>
           <OverlayCombatSettings config={config} configure={configure} />
-          <label className="overlay-switch"><input type="checkbox" checked={config.controlsVisible !== false} onChange={event => configure({ controlsVisible: event.target.checked })} />Controle de ajustes no jogo</label>
-          <label className="overlay-switch"><input type="checkbox" checked={config.totalVisible} onChange={event => configure({ totalVisible: event.target.checked })} />Total geral</label>
-          <button onClick={() => configure({ totalVisible: true, anchors: { total: { x: .5, y: 0 } } })}>Restaurar total no topo</button>
-          <label className="overlay-switch"><input type="checkbox" checked={config.skillsVisible} onChange={event => configure({ skillsVisible: event.target.checked })} />Por habilidade</label>
+          <label className="overlay-switch"><input type="checkbox" checked={config.skillsVisible} onChange={event => configure({ skillsVisible: event.target.checked })} />Mostrar painel de combate no jogo</label>
+          <label className="overlay-switch"><input type="checkbox" checked={config.singleWindow !== false} onChange={event => configure({ singleWindow: event.target.checked })} />Janela única de combate</label>
+          <p>O resumo, ranking do grupo e detalhe por habilidade/alvo ficam na mesma janela. Ajustes continuam nesta tela do app.</p>
           <label className="overlay-switch"><input type="checkbox" checked={config.locked} onChange={event => configure({ locked: event.target.checked })} />Travar e passar cliques ao jogo</label>
           <label>Opacidade <span>{Math.round(config.opacity * 100)}%</span><input aria-label="Opacidade" type="range" min="25" max="100" value={config.opacity * 100} onChange={event => configure({ opacity: Number(event.target.value) / 100 })} /></label>
           <label>Escala <span>{Math.round(config.scale * 100)}%</span><input aria-label="Escala" type="range" min="75" max="150" value={config.scale * 100} onChange={event => configure({ scale: Number(event.target.value) / 100 })} /></label>
           <label>Margem horizontal do gráfico <span>{config.chartPadding ?? 12} px</span><input aria-label="Margem horizontal do gráfico" type="range" min="0" max="32" step="1" value={config.chartPadding ?? 12} onChange={event => configure({ chartPadding: Number(event.target.value) })} /></label>
           <label>Margem vertical do gráfico <span>{config.chartPaddingVertical ?? 10} px</span><input aria-label="Margem vertical do gráfico" type="range" min="0" max="32" step="1" value={config.chartPaddingVertical ?? 10} onChange={event => configure({ chartPaddingVertical: Number(event.target.value) })} /></label>
           <p>Ajuste as distâncias laterais e acima/abaixo do conteúdo em cada linha do gráfico.</p>
-          <p>Os painéis acompanham a janela do TL e ficam dentro da área do jogo. Ajuste fonte, cores e posições pelo controle no jogo. A captura continua ao alternar de aplicativo.</p>
+          <OverlayLayoutMap config={config} attached={Boolean(state.game?.attached)} gameBounds={state.game?.bounds} configure={configure} />
+          <p>O mapa usa a área útil da janela do TL. A âncora é o marcador ⌖ no canto do painel; os controles numéricos continuam disponíveis no painel rápido.</p>
         </section>
       </div>
       <div className="overlay-help-sections">
         <details className="overlay-requirements"><summary>Requisitos e compatibilidade</summary>
-          <ul><li>Windows e Python de 64 bits. Python testado: 3.14.</li><li>Npcap com Loopback disponível. Versão testada: 1.89.</li>
+          <ul><li>Windows e <a href="https://www.python.org/downloads/windows/" target="_blank" rel="noreferrer">Python de 64 bits</a>. Python testado: 3.14.</li><li><a href="https://npcap.com/#download" target="_blank" rel="noreferrer">Npcap com Loopback disponível</a>. Versão testada: 1.89.</li>
             <li>ExitLag ativo para TL e personagem conectado.</li></ul>
           <p>Sem ExitLag, a leitura ao vivo ainda não é suportada. Python e Npcap são instalações separadas. Node.js, Git, Razer e log de combate não são necessários.</p>
           <p>Use janela ou janela sem bordas para conferir os painéis. Tela cheia exclusiva não foi validada.</p>

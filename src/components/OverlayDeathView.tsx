@@ -5,6 +5,7 @@ import { overlaySkillFiles, overlaySkillNames } from '../engine/overlaySkillRefe
 import { MeterSkillIcon } from './MeterSkillIcon'
 import { number } from './MeterPanels'
 import { buffName } from './OverlayBuffView'
+import { EventTimeline, TimelineToggle } from './EventTimeline'
 
 const clock = (time: number): string => new Date(time * 1000).toLocaleString('pt-BR')
 function actor(event: DeathCombatEvent, side: 'source' | 'target', report: DeathReport): string {
@@ -15,12 +16,12 @@ function kind(event: DeathCombatEvent, playerId: number): string {
   if (event.type === 'buff') return event.buff?.action === 'remove' ? 'Efeito removido' : event.buff?.action === 'update' ? 'Efeito atualizado' : 'Efeito aplicado'
   if (event.type === 'damage') return event.targetId === playerId ? 'Dano recebido' : 'Dano causado'
   if (event.type === 'healing') return event.sourceId === playerId && event.targetId === playerId ? 'Autocura' : event.targetId === playerId ? 'Cura recebida' : 'Cura feita'
-  return event.type === 'effect' ? 'Efeito não classificado' : 'Estado da entidade'
+  return event.type === 'effect' ? ((event.observedAmount ?? 0) > 0 ? 'Efeito (com dano)' : 'Efeito não classificado') : 'Estado da entidade'
 }
 function EventRow({ event, report }: { event: DeathCombatEvent; report: DeathReport }): React.ReactElement {
   const [expanded, setExpanded] = useState(false)
   const skill = event.buff ? buffName(event.buff) : event.skillName ?? overlaySkillNames[String(event.skillId)] ?? (event.skillId ? `Habilidade ${event.skillId}` : '—')
-  const amount = event.type === 'damage' ? event.damage : event.type === 'healing' ? event.healing : undefined
+  const amount = event.type === 'damage' ? event.damage : event.type === 'healing' ? event.healing : event.type === 'effect' && (event.observedAmount ?? 0) > 0 ? event.observedAmount : undefined
   const relative = event.time - report.time
   return <li className={`death-event death-event-${event.type}`}><details onToggle={event => setExpanded(event.currentTarget.open)}>
     <summary title="Abrir todos os campos deste evento"><time>{relative.toFixed(3)} s</time>
@@ -44,6 +45,7 @@ export function OverlayDeathView({ state, active, compact = false }: { state: Ov
   const [data, setData] = useState<DeathLogResult>({ records: [], recent: [], error: null })
   const [selected, setSelected] = useState<string | null>(null)
   const [filter, setFilter] = useState('all')
+  const [timeline, setTimeline] = useState(false)
   const [saving, setSaving] = useState(false)
   useEffect(() => {
     if (!active || !window.overlayAPI?.deaths) return
@@ -59,7 +61,10 @@ export function OverlayDeathView({ state, active, compact = false }: { state: Ov
   const report = data.records.find(row => row.id === selected) ?? data.records[0]
   const events = report?.events.filter(event => filter === 'all' || event.type === filter) ?? []
   const buffered = state.deathLog?.buffered ?? data.recent.length
-  const lastDamage = report?.events.slice().reverse().find(event => event.type === 'damage' && event.targetId === report.playerId && (event.damage ?? 0) > 0)
+  const playerId = report?.playerId
+  const lastDamage = playerId !== undefined ? report?.events.slice().reverse().find(event =>
+    event.targetId === playerId &&
+    ((event.type === 'damage' && (event.damage ?? 0) > 0) || (event.type === 'effect' && (event.observedAmount ?? 0) > 0))) : undefined
   return <div className={`overlay-deaths${compact ? ' is-compact' : ''}`} data-overlay-interactive={compact ? true : undefined}>
     <div className="overlay-section-heading"><h2>Causa mortis</h2><div className="overlay-heading-actions">
       <button disabled={saving || state.status !== 'live' || state.config.sourceId === null || buffered === 0}
@@ -69,6 +74,7 @@ export function OverlayDeathView({ state, active, compact = false }: { state: Ov
             .catch(() => setData(previous => ({ ...previous, error: 'Não foi possível salvar o recap.' }))).finally(() => setSaving(false))
         }}>{saving ? 'Registrando…' : 'Recap agora'}</button>
       <button disabled={!report} onClick={() => report && exportReport(report)}>Exportar JSON</button>
+      <TimelineToggle active={timeline} onClick={() => setTimeline(value => !value)} />
     </div></div>
     <p className="death-buffer" role="status"><strong>{buffered}/50</strong> eventos no buffer atual · {data.records.length}/20 registros salvos</p>
     <p className="overlay-note">{compact ? 'Até 50 eventos por recap. Detecção automática de morte experimental.' : 'O registro congela até 50 eventos, incluindo o acerto que sinaliza a morte. A detecção automática ainda é experimental. “Recap agora” salva os eventos também sem uma morte.'}</p>
@@ -82,11 +88,15 @@ export function OverlayDeathView({ state, active, compact = false }: { state: Ov
           <option value="all">Todos</option><option value="damage">Dano</option><option value="healing">Cura</option><option value="buff">Buffs e debuffs</option><option value="state">Estado</option><option value="effect">Efeitos não classificados</option>
         </select></label></div>
         <div className="death-summary"><span>{report.trigger === 'manual' ? 'Recap manual' : report.trigger === 'damage-signal' ? 'Morte sinalizada no acerto · experimental' : 'Possível morte · sinal de estado experimental'} · {report.events.length} eventos preservados</span>
-          <p>{lastDamage ? <>Último dano recebido registrado: <strong>{number(lastDamage.damage!)} de {actor(lastDamage, 'source', report)}</strong>. Isso não confirma que foi o golpe fatal.</> : 'Nenhum dano recebido entre os eventos preservados.'}</p>
+          <p>{lastDamage ? <>Último dano recebido registrado: <strong>{number((lastDamage.damage ?? lastDamage.observedAmount)!)} de {actor(lastDamage, 'source', report)}</strong>{lastDamage.type === 'effect' ? ' (efeito)' : ''}. Isso não confirma que foi o golpe fatal.</> : 'Nenhum dano recebido entre os eventos preservados.'}</p>
           <small>Personagem {report.playerId} · Conexão {report.connectionId.slice(0, 12)} · HP não decodificado</small></div>
-        <div className="death-list-heading" aria-hidden="true"><span>Antes da morte</span><span>Evento</span><span>Origem → Alvo</span><span>Habilidade</span><span>Valor</span></div>
-        <ol className="death-events" aria-label="Eventos anteriores à morte">{events.map((event, index) => <EventRow key={`${report.id}-${filter}-${index}`} event={event} report={report} />)}</ol>
-        {!events.length && <p className="overlay-note">Nenhum evento neste filtro.</p>}
+        {timeline ? <EventTimeline ariaLabel="Linha do tempo anterior à morte" events={events.map((event, index) => ({ id: `${report.id}-${filter}-${index}`, time: event.time - report.time,
+          label: `${kind(event, report.playerId)} · ${event.buff ? buffName(event.buff) : event.skillName ?? overlaySkillNames[String(event.skillId)] ?? 'Evento'}`,
+          detail: `${actor(event, 'source', report)} → ${actor(event, 'target', report)}`, tone: event.type === 'damage' || event.type === 'effect' ? 'damage' : event.type === 'healing' ? 'healing' : event.type === 'buff' ? 'buff' : 'state' }))} /> : <>
+          <div className="death-list-heading" aria-hidden="true"><span>Antes da morte</span><span>Evento</span><span>Origem → Alvo</span><span>Habilidade</span><span>Valor</span></div>
+          <ol className="death-events" aria-label="Eventos anteriores à morte">{events.map((event, index) => <EventRow key={`${report.id}-${filter}-${index}`} event={event} report={report} />)}</ol>
+          {!events.length && <p className="overlay-note">Nenhum evento neste filtro.</p>}
+        </>}
         {report.buffs && <details className="overlay-buff-timeline"><summary>Efeitos sem remoção observada no recap · {report.buffs.length}</summary>
           <ul>{report.buffs.map((buff, index) => <li key={`${buff.serialRaw}-${index}`}>{buffName(buff)} · {buff.sourceId === report.playerId ? report.playerName : buff.sourceName ?? `Entidade ${buff.sourceId}`}{buff.startedAt === null ? ' · Início não observado' : ''}</li>)}</ul>
           <p className="overlay-note">Presença parcial observada nesta captura; o tempo estimado não confirma término nem presença até a morte.</p></details>}

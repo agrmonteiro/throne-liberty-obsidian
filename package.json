@@ -1,6 +1,6 @@
 {
   "name": "tier2-command-lab",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Tier2 Command Lab — Análise de builds e maximização de personagens por AgrMonteiro",
   "main": "dist-electron/main/index.js",
   "author": "Luis Monteiro",
@@ -46,6 +46,7 @@
     "directories": {
       "output": "release"
     },
+    "artifactName": "Tier2-Command-Lab-Setup-${version}.${ext}",
     "files": [
       "dist-electron/**",
       "dist/**"
@@ -54,7 +55,12 @@
       {
         "from": "scripts",
         "to": "npcap-overlay",
-        "filter": ["npcap-overlay-worker.py", "analisar-npcap-tl.py", "teste-npcap-tl.py", "overlay-foreground.py"]
+        "filter": [
+          "npcap-overlay-worker.py",
+          "analisar-npcap-tl.py",
+          "teste-npcap-tl.py",
+          "overlay-foreground.py"
+        ]
       },
       {
         "from": "resources/questlog_scraper.exe",
