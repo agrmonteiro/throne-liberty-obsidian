@@ -14,6 +14,11 @@ export interface MeterHealingEvent {
   coverage: 'self-periodic' | 'self-lifesteal' | 'self-instant' | 'external-periodic' | 'external-instant'
 }
 export interface MeterHealing { total: number; hits: number; skills: MeterSkill[] }
+/** Eventos consolidados por segundo para inspeção temporal, com memória limitada. */
+export interface MeterTimelineEvent {
+  time: number; kind: 'damage' | 'received' | 'healingDone' | 'healingReceived'
+  skillId: number; sourceId: number; targetId?: number; amount: number; hits: number
+}
 export interface TimedMeasurement { startsAt: number; endsAt: number; durationSec: number; cancelled?: boolean }
 export interface MeterSkill {
   key: string; name: string; damage: number; hits: number; critical: number; heavy: number
@@ -41,6 +46,8 @@ export interface MeterSession {
   targets?: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number; identity?: EntityIdentityEvidence; rank?: NpcRankHint; rankSource?: NpcRankSource; skills: MeterSkill[] }>
   healing?: { done: MeterHealing; received: MeterHealing; coverage: 'self-observed' | 'observed' }
   timed?: TimedMeasurement
+  /** Granularidade de um segundo; não representa cada pacote individual. */
+  timeline?: MeterTimelineEvent[]
 }
 export interface OverlayPlayerIdentity {
   sourceId: number; connectionId: string; observedAt: number; method: 'local-state' | 'profile-name'
@@ -107,6 +114,7 @@ export class OverlayMeter {
   private targets = new Map<number, { id: number; damage: number; hits: number; skills: Map<string, MeterSkill> }>()
   private healingDoneRows = new Map<string, MeterSkill>()
   private healingReceivedRows = new Map<string, MeterSkill>()
+  private timeline = new Map<string, MeterTimelineEvent>()
   private timed: TimedMeasurement | null = null
   constructor(public sourceId: number | null = null, private names: Record<string, string> = {},
     private icons: Record<string, string> = {}) {}
@@ -121,6 +129,7 @@ export class OverlayMeter {
     this.rows.clear(); this.receivedRows.clear(); this.receivedSources.clear(); this.receivedSourceSkills.clear()
     this.targets.clear()
     this.healingDoneRows.clear(); this.healingReceivedRows.clear()
+    this.timeline.clear()
   }
   get measurementWindow(): TimedMeasurement | null { return this.timed ? { ...this.timed } : null }
   get combatEnded(): boolean { return this.combatEndedAt !== null }
@@ -185,6 +194,7 @@ export class OverlayMeter {
       const source = this.receivedSources.get(event.sourceId) ?? { id: event.sourceId, damage: 0, hits: 0 }
       source.damage += event.damage; source.hits++
       this.receivedSources.set(source.id, source)
+      this.recordTimeline('received', event)
     }
     if (!outgoing) return false
     this.lastDamageAt = at
@@ -194,6 +204,7 @@ export class OverlayMeter {
     if (!target) { target = { id, damage: 0, hits: 0, skills: new Map() }; this.targets.set(id, target) }
     target.damage += event.damage; target.hits++
     this.recordSkill(target.skills, event)
+    this.recordTimeline('damage', event)
     return true
   }
   addHealing(event: MeterHealingEvent): boolean {
@@ -206,9 +217,20 @@ export class OverlayMeter {
       || !Number.isFinite(event.healing) || event.healing <= 0 || !this.acceptsTime(at)) return false
     this.beginActivity(at)
     const application = { ...event, damage: event.healing, criticalCandidate: false, heavyCandidate: 0 }
-    if (event.sourceId === this.sourceId) this.recordSkill(this.healingDoneRows, application)
-    if (event.targetId === this.sourceId) this.recordSkill(this.healingReceivedRows, application)
+    if (event.sourceId === this.sourceId) { this.recordSkill(this.healingDoneRows, application); this.recordTimeline('healingDone', application) }
+    if (event.targetId === this.sourceId) { this.recordSkill(this.healingReceivedRows, application); this.recordTimeline('healingReceived', application) }
     return true
+  }
+  private recordTimeline(kind: MeterTimelineEvent['kind'], event: MeterEvent): void {
+    const second = Math.floor(event.time)
+    const targetId = Number.isSafeInteger(event.targetId) && event.targetId! > 0 ? event.targetId : undefined
+    const key = `${second}:${kind}:${event.skillId}:${event.sourceId}:${targetId ?? ''}`
+    const row = this.timeline.get(key) ?? { time: second, kind, skillId: event.skillId, sourceId: event.sourceId, targetId, amount: 0, hits: 0 }
+    row.amount += event.damage; row.hits++
+    this.timeline.set(key, row)
+    // Combates longos em grupo podem ter muitos eventos. Preservar a janela mais recente
+    // evita que o histórico cresça sem limite, sem afetar os totais do medidor.
+    while (this.timeline.size > 4000) this.timeline.delete(this.timeline.keys().next().value!)
   }
   private recordSkill(rows: Map<string, MeterSkill>, event: MeterEvent): void {
     const name = this.names[String(event.skillId)] ?? `Habilidade ${event.skillId}`
@@ -254,6 +276,7 @@ export class OverlayMeter {
       hits: skills.reduce((sum, row) => sum + row.hits, 0),
       critical: skills.reduce((sum, row) => sum + row.critical, 0),
       heavy: skills.reduce((sum, row) => sum + row.heavy, 0),
+      timeline: [...this.timeline.values()].map(row => ({ ...row })).sort((a, b) => a.time - b.time || a.skillId - b.skillId),
       waitingReset: !this.timed && !this.gameCombatActive && this.combatEndedAt === null && this.lastActivityAt !== null && idleSec >= METER_IDLE_MS / 1000,
     }
   }
@@ -384,6 +407,8 @@ export interface OverlayEncounter {
   sourceName?: string; attributionVersion?: number
   /** Snapshot observado do grupo no mesmo encontro, preservado para consulta após reiniciar. */
   groupConnections?: GroupConnection[]
+  /** Fases observadas pelo estado de combate; usadas na visão temporal do histórico. */
+  combatSegments?: OverlayCombatSegment[]
   id: string; sourceId: number | null; mode: 'live' | 'replay'; reason: string
   savedAt: number; session: MeterSession
 }

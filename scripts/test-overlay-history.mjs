@@ -22,11 +22,15 @@ assert.equal(restored.list().encounters[0].reason, 'stop')
 restored.upsert({ ...encounter(26), session: { ...encounter(26).session, hits: 0, total: 0 }, groupConnections: [{ id:'grupo', closed:false, lastAt:26,
   sources:[{ id:77, name:'DedaolosBar', kind:'player', evidence:'profile', session:{ ...encounter(26).session, total:321, hits:3 } }] }] })
 assert.equal(new OverlayHistory(file).list().encounters[0].groupConnections[0].sources[0].name, 'DedaolosBar', 'Ranking do grupo precisa sobreviver ao reinício')
+restored.upsert({ ...encounter(27), combatSegments: [{ id: 2, connectionId: 'grupo', startedAt: 27000, endedAt: 42000,
+  lastActivityAt: 42000, endReason: 'combat-exit', events: 38, dominantTarget: { templateId: '10130144', name: 'Quimer-Rex', rank: 'boss', level: 50 } }] })
+assert.equal(new OverlayHistory(file).list().encounters[0].combatSegments[0].dominantTarget.name, 'Quimer-Rex', 'Fases observadas precisam sobreviver para a linha do tempo do histórico')
 const copy = restored.list()
+const copiedTotal = copy.encounters[0].session.total
 copy.encounters[0].session.total = 0
-assert.equal(restored.list().encounters[0].session.total, 0, 'Consulta não pode alterar registro')
+assert.equal(restored.list().encounters[0].session.total, copiedTotal, 'Consulta não pode alterar registro')
 restored.upsert({ ...encounter(30), session: { ...encounter(30).session, hits: 0 } })
-assert.equal(restored.list().encounters[0].id, '26', 'Sessão vazia não ocupa histórico')
+assert.equal(restored.list().encounters[0].id, '27', 'Sessão vazia não ocupa histórico')
 restored.upsert({ ...encounter(31), session: { ...encounter(31).session, total: 0, hits: 0,
   received: { total: 100, hits: 2, sources: [{ id: 8, damage: 100, hits: 2 }], skills: [] } } })
 assert.equal(new OverlayHistory(file).list().encounters[0].session.received.total, 100, 'Encontro só de dano recebido precisa persistir')
@@ -43,6 +47,9 @@ restored.upsert(targetEncounter)
 targetEncounter.session.targets[0].name = 'Alvo identificado depois'
 restored.upsert(targetEncounter)
 assert.equal(new OverlayHistory(file).list().encounters[0].session.targets[0].name,'Alvo identificado depois','Nome do alvo tardio precisa ser persistido sem novo dano')
+const timedEncounter = { ...encounter(33), session: { ...encounter(33).session, timeline: [{ time: 33, kind: 'damage', skillId: 10, sourceId: 7, targetId: 8, amount: 64, hits: 2 }] } }
+restored.upsert(timedEncounter)
+assert.equal(new OverlayHistory(file).list().encounters[0].session.timeline[0].amount, 64, 'A linha temporal agregada precisa sobreviver ao reinício')
 const corrupt = path.join(root, 'corrupt.json')
 fs.writeFileSync(corrupt, 'incompleto')
 const broken = new OverlayHistory(corrupt)
@@ -52,4 +59,4 @@ assert.equal(fs.readFileSync(corrupt, 'utf8'), 'incompleto', 'Erro não pode des
 assert.equal(restored.clear(), true)
 assert.equal(restored.list().encounters.length, 0)
 assert.equal(new OverlayHistory(file).list().encounters.length, 0, 'Limpeza precisa persistir')
-console.log('OK: últimos 20, ordem, atualização sem duplicar, persistência, leitura isolada e arquivo inválido.')
+console.log('OK: últimos 20, ordem, atualização sem duplicar, ranking/fases persistentes, leitura isolada e arquivo inválido.')

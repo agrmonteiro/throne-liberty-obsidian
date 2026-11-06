@@ -41,6 +41,7 @@ export class OverlayHistory {
       && previous.session.timed?.cancelled === encounter.session.timed?.cancelled
       && previous.session.paused === encounter.session.paused
       && JSON.stringify(previous.groupConnections) === JSON.stringify(encounter.groupConnections)
+      && JSON.stringify(previous.combatSegments) === JSON.stringify(encounter.combatSegments)
       && previous.sourceName === encounter.sourceName && previous.attributionVersion === encounter.attributionVersion) return
     const next = [structuredClone(encounter), ...this.encounters.filter(row => row.id !== encounter.id)].slice(0, 20)
     try {

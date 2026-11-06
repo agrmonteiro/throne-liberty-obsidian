@@ -108,7 +108,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (clearedThrough !== null && (session.lastActivityAt === null || session.lastActivityAt! <= clearedThrough)) return
     history.upsert({ id: encounterId, captureId, connectionId: encounterConnectionId,
       sourceId: meter.sourceId, sourceName: entityName(meter.sourceId!).name, attributionVersion: 2, mode, reason,
-      savedAt: Date.now(), session, groupConnections: groupDamage.snapshot(at) })
+      savedAt: Date.now(), session, groupConnections: groupDamage.snapshot(at), combatSegments: combatSegments(at) })
   }
   function finishEncounter(reason: string, at?: number): void {
     checkpoint(reason, at); encounterClosed = true

@@ -19,6 +19,26 @@ Atividades de baixo risco devem ser executadas diretamente sem solicitar aprova�
 - Ações irreversíveis em bancos de dados (drop, delete em produção)
 - Publicar ou enviar para serviços externos
 
+## Encaminhamento de tarefas ao Jarvis Dev
+
+O agente principal deve priorizar o Jarvis Dev para tarefas curtas e de baixo risco com um resultado fácil de revisar. Exemplos incluem ajustes pequenos de interface, testes unitários, documentação, catálogos e refatorações pontuais. Leia a [skill do Jarvis Dev](.agents/skills/jarvis-dev/SKILL.md) para alinhar o escopo antes de encaminhar.
+
+O usuário autorizou o envio à Groq do pedido e dos trechos de código necessários a essas tarefas, dentro do escopo do Jarvis Dev no Command Lab. Essa autorização vale para o encaminhamento automático de tarefas elegíveis. Aplique as demais regras de aprovação acima para qualquer envio ou ação fora desse escopo. Use apenas o contexto necessário e deixe credenciais, dados pessoais, logs privados e capturas de rede fora do pedido.
+
+Encaminhe a tarefa antes de implementar a mesma mudança. No PowerShell, substitua o texto de exemplo por um objetivo e, quando conhecidos, os caminhos relevantes.
+
+```powershell
+$openJarvis = Join-Path $env:USERPROFILE 'Projects\OpenJarvis'
+$python = Join-Path $openJarvis '.venv\Scripts\python.exe'
+$jarvisDev = Join-Path $openJarvis 'scripts\jarvis-dev.py'
+& $python $jarvisDev status
+& $python $jarvisDev tarefa 'Revise src/App.tsx e sugira uma simplificação pequena.' --enviar-contexto-groq
+```
+
+Acompanhe a tarefa até o `report.md` aparecer. Revise `changes.diff` antes de integrar uma implementação e rode as verificações pertinentes. Cada tarefa parte do último commit local. Mantenha com o agente principal trabalhos que dependam de alterações ainda sem commit, depuração complexa, arquitetura, protocolo dos overlays, CI/CD, releases e publicação. Se o serviço estiver indisponível ou a tarefa falhar, prossiga localmente.
+
+Esta seção orienta o agente principal. O Jarvis Dev executa o pedido no próprio worktree, sem encaminhá-lo novamente.
+
 ## Leitura de Arquivos
 
 Ao ler arquivos grandes, usar `limit` de até 300 linhas por chamada (aproximadamente 20k tokens). Ler em partes sequenciais com `offset` quando necessário.

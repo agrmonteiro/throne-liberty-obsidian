@@ -2,9 +2,9 @@ import React, { useMemo, useState } from 'react'
 import { number } from './MeterPanels'
 import { MeterSkillIcon } from './MeterSkillIcon'
 import type { GroupSource, OverlayCombatSegment, OverlayState } from '../engine/overlayMeter'
+import { OverlaySessionTimeline } from './OverlaySessionTimeline'
 
 type View = 'skills' | 'targets'
-type Filter = 'players' | 'npc' | 'unknown'
 
 const percent = (value: number, total: number): string => total ? `${(value / total * 100).toFixed(1).replace('.', ',')}%` : '0%'
 const sourceName = (source: GroupSource): string => source.name ?? `Origem ${source.id}`
@@ -36,6 +36,28 @@ const segmentLabel = (segment: OverlayCombatSegment): string => {
   return `${time} · ${duration.toFixed(0)} s · ${target}`
 }
 
+function SourceTargetRows({ source }: { source: GroupSource }): React.ReactElement {
+  const [openTarget, setOpenTarget] = useState<number | null>(null)
+  const targets = source.session.targets ?? []
+  if (!targets.length) return <p className="meter-empty">Nenhum detalhe disponível.</p>
+  return <div className="overlay-source-detail-list">
+    {targets.map(target => <React.Fragment key={target.id}>
+      <button type="button" data-overlay-interactive className="overlay-source-detail-row overlay-source-target-row"
+        aria-expanded={openTarget === target.id} onClick={() => setOpenTarget(value => value === target.id ? null : target.id)}>
+        <span className="overlay-source-target-chevron" aria-hidden="true">{openTarget === target.id ? '▾' : '▸'}</span>
+        <span>{target.name ?? `Alvo ${target.id}`}<small>{targetEvidence(target.identity)}{rankHint(target.rank, target.rankSource) ? ` · ${rankHint(target.rank, target.rankSource)}` : ''} · {target.hits} acertos</small></span>
+        <b>{number(target.damage)}</b><em>{percent(target.damage, source.session.total)}</em>
+      </button>
+      {openTarget === target.id && <div className="overlay-source-target-skills" aria-label={`Habilidades contra ${target.name ?? `alvo ${target.id}`} `}>
+        {target.skills.length ? target.skills.map(skill => <div className="overlay-source-detail-row" key={skill.key}>
+          <MeterSkillIcon name={skill.name} iconFile={skill.iconFile} /><span>{skill.name}<small>{skill.hits} acertos</small></span>
+          <b>{number(skill.damage)}</b><em>{percent(skill.damage, target.damage)}</em>
+        </div>) : <p className="meter-empty">Nenhuma habilidade registrada para este alvo.</p>}
+      </div>}
+    </React.Fragment>)}
+  </div>
+}
+
 function SourceDetail({ source, view }: { source: GroupSource; view: View }): React.ReactElement {
   const skills = source.session.skills
   const targets = source.session.targets ?? []
@@ -46,34 +68,28 @@ function SourceDetail({ source, view }: { source: GroupSource; view: View }): Re
         <MeterSkillIcon name={skill.name} iconFile={skill.iconFile} /><span>{skill.name}<small>{skill.identity === 'catalog' ? 'Catálogo confirmado' : `ID pendente · ${skill.skillIds?.join(', ') ?? skill.key}`} · {skill.hits} acertos</small></span>
         <b>{number(skill.damage)}</b><em>{percent(skill.damage, source.session.total)}</em>
       </div>)}
-    </div>) : (!targets.length ? <p className="meter-empty">Nenhum detalhe disponível.</p> : <div className="overlay-source-detail-list">
-      {targets.map(target => <div className="overlay-source-detail-row" key={target.id}>
-        <span /><span>{target.name ?? `Alvo ${target.id}`}<small>{targetEvidence(target.identity)}{rankHint(target.rank, target.rankSource) ? ` · ${rankHint(target.rank, target.rankSource)}` : ''} · ID {target.id} · {target.hits} acertos</small></span>
-        <b>{number(target.damage)}</b><em>{percent(target.damage, source.session.total)}</em>
-      </div>)}
-    </div>)}
+    </div>) : <SourceTargetRows source={source} />}
   </td></tr>
 }
 
 export function OverlaySourcesView({ state, compact = false, onSelectSegment }: { state: OverlayState; compact?: boolean; onSelectSegment?: (id: number | null) => void }): React.ReactElement {
   const [search, setSearch] = useState('')
   const [connectionId, setConnectionId] = useState('')
-  const [filter, setFilter] = useState<Filter>('players')
   // IDs de entidade só são únicos dentro da conexão. Guardar também a conexão
   // escolhida evita que uma atualização do ranking abra o detalhe da fonte local.
   const [detail, setDetail] = useState<{ connectionId: string; sourceId: number } | null>(null)
   const [view, setView] = useState<View>('skills')
+  const [timeline, setTimeline] = useState(false)
   const connections = state.groupConnections ?? []
   const currentConnectionId = state.capture?.player?.connectionId
   const selectedConnection = connections.find(row => row.id === connectionId)
     ?? connections.find(row => row.id === currentConnectionId)
     ?? connections.find(row => !row.closed)
     ?? connections[0]
-  const sources = useMemo(() => (selectedConnection?.sources ?? []).filter(row => {
-    if (filter === 'players') return row.kind === 'player' && row.evidence === 'profile'
-    if (filter === 'npc') return row.kind === 'npc' && row.evidence === 'npc-template'
-    return row.kind === 'unknown' || row.kind === 'conflict'
-  }).sort((a, b) => b.session.total - a.session.total), [selectedConnection, filter])
+  // A evidência de identidade orienta a leitura, mas nunca deve esconder dano
+  // observado: numa luta real o perfil/template pode chegar depois dos acertos.
+  const sources = useMemo(() => [...(selectedConnection?.sources ?? [])]
+    .sort((a, b) => b.session.total - a.session.total), [selectedConnection])
   const total = sources.reduce((sum, row) => sum + row.session.total, 0)
   const maximum = sources[0]?.session.total ?? 0
   const query = search.trim().toLocaleLowerCase()
@@ -86,7 +102,7 @@ export function OverlaySourcesView({ state, compact = false, onSelectSegment }: 
   const showDetail = Boolean(detailSource)
   const resetDetail = (): void => { setDetail(null) }
   return <section id={compact ? undefined : 'overlay-sources'} className={`overlay-sources ${compact ? 'meter-panel compact' : ''}`} aria-label={title}>
-    <header>{showDetail && <button className="overlay-source-back" data-overlay-interactive onClick={resetDetail}>‹ Voltar ao ranking</button>}<strong>{showDetail ? sourceName(detailSource!) : title}</strong><span>{isCurrent ? 'CONEXÃO ATUAL' : selectedConnection?.closed ? 'CONEXÃO ENCERRADA' : 'EVENTOS RECENTES'}</span></header>
+    <header>{showDetail && <button className="overlay-source-back" data-overlay-interactive onClick={resetDetail}>‹ Voltar ao ranking</button>}<strong>{showDetail ? sourceName(detailSource!) : timeline ? 'Fases do combate' : title}</strong><span>{!showDetail && <button className="overlay-source-timeline-toggle" data-overlay-interactive aria-pressed={timeline} onClick={() => setTimeline(value => !value)}>{timeline ? 'Ranking' : 'Linha do tempo'}</button>}{!timeline && (isCurrent ? 'CONEXÃO ATUAL' : selectedConnection?.closed ? 'CONEXÃO ENCERRADA' : 'EVENTOS RECENTES')}</span></header>
     {showDetail ? <>
       <div className="overlay-source-detail-meta"><span>{sourceKind(detailSource!)} · ID {detailSource!.id}{rankHint(detailSource!.rank, detailSource!.rankSource) ? ` · ${rankHint(detailSource!.rank, detailSource!.rankSource)}` : ''}</span><strong>{number(detailSource!.session.total)} dano · {detailSource!.session.hits} acertos</strong></div>
       <nav className="overlay-source-detail-tabs" aria-label="Detalhes da origem" data-overlay-interactive>
@@ -94,7 +110,7 @@ export function OverlaySourcesView({ state, compact = false, onSelectSegment }: 
         <button aria-pressed={view === 'targets'} onClick={() => setView('targets')}>Alvos</button>
       </nav>
       <div className="overlay-sources-scroll overlay-source-detail-scroll"><table><tbody><SourceDetail source={detailSource!} view={view} /></tbody></table></div>
-    </> : <>
+    </> : timeline ? <OverlaySessionTimeline segments={segments} className="overlay-source-timeline" /> : <>
     <div className="overlay-sources-intro"><p>{sources.length} origens exibidas · {number(total)} de dano</p>
       <input data-overlay-interactive aria-label="Buscar origem por nome ou ID" placeholder="Buscar nome ou ID" value={search} onChange={event => setSearch(event.target.value)} /></div>
     <div className="overlay-source-controls" data-overlay-interactive>
@@ -105,9 +121,6 @@ export function OverlaySourcesView({ state, compact = false, onSelectSegment }: 
       </select>
       <select aria-label="Conexão observada" value={selectedConnection?.id ?? ''} onChange={event => { setConnectionId(event.target.value); resetDetail() }}>
         {connections.map(row => <option key={row.id} value={row.id}>{connectionLabel(row.id, row.lastAt, row.sources, currentConnectionId)} · {row.closed ? 'encerrada' : 'ativa'}</option>)}
-      </select>
-      <select aria-label="Filtro de origens" value={filter} onChange={event => { setFilter(event.target.value as Filter); resetDetail() }}>
-        <option value="players">Jogadores · perfil confirmado</option><option value="npc">NPCs · template confirmado</option><option value="unknown">Sem identidade segura</option>
       </select>
     </div>
     <div className="overlay-sources-scroll"><table>
@@ -123,7 +136,7 @@ export function OverlaySourcesView({ state, compact = false, onSelectSegment }: 
     </table>
       {!visible.length && <p className="meter-empty">{sources.length ? 'Nenhuma origem com esse nome ou ID.' : 'Aguardando eventos de dano nesta conexão…'}</p>}
     </div>
-    <footer>“Jogador identificado” significa que o perfil nominal foi recebido nesta conexão; não prova participação no grupo. NPCs e fontes sem perfil não são misturados aos jogadores. Os valores são cumulativos enquanto a leitura estiver ativa.</footer>
+    <footer>Todas as origens com dano observado aparecem no ranking. “Perfil confirmado” e “Template confirmado” descrevem a evidência do nome; “ID pendente” não reduz nem exclui o dano. Os valores são cumulativos enquanto a leitura estiver ativa.</footer>
     </>}
   </section>
 }

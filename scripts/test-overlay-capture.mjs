@@ -170,6 +170,8 @@ try {
   targetAudit.send(attack(1002,8,10,100)); targetAudit.send(attack(1003,8,11,200)); targetAudit.send(attack(1004,9,10,50))
   targetAudit.send(attack(1005,9,10,900,'B'))
   assert.equal(targetAudit.state().session.total,350)
+  assert.deepEqual(targetAudit.state().session.timeline.map(row => [row.time,row.skillId,row.targetId,row.amount,row.hits]),
+    [[1002,10,8,100,1],[1003,11,8,200,1],[1004,10,9,50,1]], 'Linha temporal guarda somente eventos válidos e separa habilidade/alvo')
   assert.equal(targetAudit.state().session.targets[0].damage,300)
   assert.equal(targetAudit.state().session.targets[0].skills.length,2)
   targetAudit.send({type:'npc',connectionId:'A',sourceId:8,npcId:10212035,time:1006})

@@ -11,6 +11,7 @@ import { OverlayBuffView } from '../components/OverlayBuffView'
 import { useOverlayGraphPage, type OverlayGraphPage } from '../hooks/useOverlayGraphPage'
 import { OverlayTimerStatus } from '../components/OverlayTimer'
 import { OverlayDragLabel } from '../components/OverlayDragLabel'
+import { OverlayCombatOverview } from '../components/OverlayCombatOverview'
 import '../styles/overlay.css'
 
 export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.ReactElement {
@@ -51,7 +52,7 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
     return () => { active = false; clearInterval(timer) }
   }, [])
   const selected = history.encounters.find(row => row.id === state.config.reviewEncounterId)
-  const display = selected ? resolveOverlayNames({ ...state, session: selected.session, groupConnections: selected.groupConnections,
+  const display = selected ? resolveOverlayNames({ ...state, session: selected.session, groupConnections: selected.groupConnections, combatSegments: selected.combatSegments,
     mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles, overlayNpcNames) : state
   const drag = useRef<{ x: number; y: number; width: number; height: number } | null>(null)
   return <div className="overlay-window" style={{ ...overlayAppearance(state.config), fontSize: `${(state.config.fontSize ?? 13) * state.config.scale}px` }}>
@@ -89,9 +90,15 @@ export function OverlayWindow({ panel }: { panel: 'total' | 'skills' }): React.R
       <OverlayBuffView state={state} active compact /></section> : deathView ? <section className="meter-panel overlay-death-panel" aria-label="Causa mortis">
       <OverlayDeathView state={state} active compact /></section> : panel === 'skills' && groupSources && (selected ? Boolean(selected.groupConnections?.length) : true) ? <OverlaySourcesView state={display} compact
         onSelectSegment={groupSegmentId => act(() => window.overlayAPI.configure({ groupSegmentId }))} /> : panel === 'skills' && state.config.metricPage && state.config.metricPage !== 'damage'
-      ? <OverlayMetricView state={display} page={state.config.metricPage} historical={Boolean(selected)} /> : <MeterPanel panel={panel} state={display} historical={Boolean(selected)} onReset={() => act(() => window.overlayAPI.reset())}
-      onSelectSource={sourceId => act(() => window.overlayAPI.configure({ sourceId }))}
-      onHide={() => act(() => window.overlayAPI.configure(panel === 'total' ? { totalVisible: false } : { skillsVisible: false }))} />}</div>
+      ? <div className="overlay-unified-content"><OverlayCombatOverview state={display} historical={Boolean(selected)} />
+        <OverlayMetricView state={display} page={state.config.metricPage} historical={Boolean(selected)} /></div>
+      : panel === 'skills' && state.config.singleWindow !== false ? <div className="overlay-unified-content"><OverlayCombatOverview state={display} historical={Boolean(selected)} />
+        <MeterPanel panel="skills" state={display} historical={Boolean(selected)} onReset={() => act(() => window.overlayAPI.reset())}
+          onSelectSource={sourceId => act(() => window.overlayAPI.configure({ sourceId }))}
+          onHide={() => act(() => window.overlayAPI.configure({ skillsVisible: false }))} /></div>
+      : <MeterPanel panel={panel} state={display} historical={Boolean(selected)} onReset={() => act(() => window.overlayAPI.reset())}
+        onSelectSource={sourceId => act(() => window.overlayAPI.configure({ sourceId }))}
+        onHide={() => act(() => window.overlayAPI.configure(panel === 'total' ? { totalVisible: false } : { skillsVisible: false }))} />}</div>
     {!state.config.locked && <div className="overlay-resize" title="Arrastar para redimensionar" role="slider" aria-label="Redimensionar painel" aria-valuemin={0} aria-valuenow={window.innerWidth}
       onPointerDown={event => {
         event.currentTarget.setPointerCapture(event.pointerId)

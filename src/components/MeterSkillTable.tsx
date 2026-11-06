@@ -5,6 +5,7 @@ import { healingDescriptionTitle } from '../engine/overlayHealingClassification'
 import { MeterSkillIcon } from './MeterSkillIcon'
 import { damageKinds, duration, number, percentage } from './meterFormatting'
 import { overlayDescriptiveSkillIds } from '../engine/overlaySkillReference'
+import { EventTimeline, TimelineToggle } from './EventTimeline'
 
 function rowBar(row: AnalysisRow, maximum: number, healing: boolean): React.CSSProperties {
   let offset = 0
@@ -24,6 +25,15 @@ function SkillDetails({ row, state, page, onClose }: {
   const data = metricData(state.session, page)
   const healing = data.healing
   const critical = row.critical ?? 0, heavy = row.heavy ?? 0
+  const [timeline, setTimeline] = useState(false)
+  const relatedTimeline = (state.session.timeline ?? []).filter(event => {
+    const skillMatch = row.skillIds?.includes(event.skillId) ?? false
+    if (page === 'damageTargets') return event.kind === 'damage' && event.targetId === Number(row.key)
+    if (page === 'receivedSources') return event.kind === 'received' && event.sourceId === Number(row.key)
+    if (page === 'healingDone') return event.kind === 'healingDone' && skillMatch
+    if (page === 'healingReceived') return event.kind === 'healingReceived' && skillMatch
+    return event.kind === (page === 'damage' ? 'damage' : 'received') && skillMatch
+  })
   return <section className="meter-skill-details" data-overlay-interactive aria-label={`Detalhes de ${row.name}`}>
     <header><button type="button" onClick={onClose} aria-label="Voltar à lista">← Voltar</button>
       <span>{duration(state.session.elapsedSec)} de medição</span></header>
@@ -50,6 +60,12 @@ function SkillDetails({ row, state, page, onClose }: {
       <br />Cura bruta experimental. Cura efetiva e excesso de cura ainda não medidos.</p>}
     {row.skillIds?.some(id => overlayDescriptiveSkillIds.has(id)) && <p className="meter-detail-description">
       Nome descritivo do ataque: esta habilidade de NPC não possui um nome de exibição traduzido no catálogo do jogo.</p>}
+    <div className="meter-detail-timeline"><TimelineToggle active={timeline} onClick={() => setTimeline(value => !value)} />
+      {timeline && <EventTimeline ariaLabel={`Linha do tempo de ${row.name}`} events={relatedTimeline.map((event, index) => ({
+        id: `${event.time}-${event.kind}-${event.skillId}-${event.sourceId}-${event.targetId ?? ''}-${index}`, time: event.time,
+        tone: event.kind.startsWith('healing') ? 'healing' as const : 'damage' as const,
+        label: row.name, detail: `${number(event.amount)} · ${event.hits} ${event.hits === 1 ? 'aplicação' : 'aplicações'} · agregado por segundo`,
+      }))} />}</div>
     <p className="meter-detail-ids">{page === 'receivedSources' ? 'Fonte' : 'IDs'}: {row.skillIds?.join(', ') ?? row.key}</p>
   </section>
 }
@@ -59,10 +75,15 @@ function SourceSkills({ row, state, target }: { row: AnalysisRow; state: Overlay
   const skills = row.sourceSkills
   if (!skills) return <p className="meter-source-legacy" role="status">
     Este registro não guardou as habilidades separadas {target ? 'por alvo' : 'por fonte'}. Novas medições incluem esse detalhamento.</p>
-  const sourceState: OverlayState = { ...state, session: { ...state.session,
-    received: { total: row.damage, hits: row.hits, skills, sources: [] } } }
+  const scopedTimeline = state.session.timeline?.filter(event => target
+    ? event.kind === 'damage' && event.targetId === Number(row.key)
+    : event.kind === 'received' && event.sourceId === Number(row.key))
+  const sourceState: OverlayState = target
+    ? { ...state, session: { ...state.session, skills, timeline: scopedTimeline } }
+    : { ...state, session: { ...state.session, timeline: scopedTimeline,
+      received: { total: row.damage, hits: row.hits, skills, sources: [] } } }
   const selected = skills.find(skill => skill.key === selectedKey)
-  if (selected) return <SkillDetails row={selected} state={sourceState} page="receivedSkills" onClose={() => setSelectedKey(null)} />
+  if (selected) return <SkillDetails row={selected} state={sourceState} page={target ? 'damage' : 'receivedSkills'} onClose={() => setSelectedKey(null)} />
   let accumulated = 0
   return <div className="meter-source-skills" role="region" aria-label={`Habilidades de ${row.name}`}>
     <header><strong>Habilidades {target ? 'neste alvo' : 'desta fonte'}</strong><span>{number(row.damage)} de dano · {skills.length} {skills.length === 1 ? 'habilidade' : 'habilidades'}</span></header>
