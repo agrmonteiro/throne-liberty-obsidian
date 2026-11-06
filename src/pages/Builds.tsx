@@ -477,7 +477,8 @@ export function Builds({ importRequest = 0 }: { importRequest?: number } = {}): 
       // anterior, sem substituir nenhum valor existente por zero.
       : n(`Magic ${suffix}`) || n(`Melee ${suffix}`) || n(`Ranged ${suffix}`) || fallback
 
-    // Boss Crit/Heavy do Questlog já somam o valor base → extrair só o delta extra.
+    // Os campos de boss são o bônus específico contra chefe (não incluem o
+    // atributo normal). A calculadora soma esse valor ao crítico/pesado base.
     const critHitChance      = familyValue('Critical Hit Chance', editData.stats.critHitChance)
     const heavyAttackChance  = familyValue('Heavy Attack Chance', editData.stats.heavyAttackChance)
     const bossCritFields = attackFamily ? [`Boss ${attackFamily} Critical Hit Chance`]
@@ -486,8 +487,8 @@ export function Builds({ importRequest = 0 }: { importRequest?: number } = {}): 
       : ['Boss Melee Heavy Attack Chance', 'Boss Ranged Heavy Attack Chance', 'Boss Magic Heavy Attack Chance']
     const rawBossCrit        = attackFamily ? n(bossCritFields[0]) : maxOf(...bossCritFields)
     const rawBossHeavy       = attackFamily ? n(bossHeavyFields[0]) : maxOf(...bossHeavyFields)
-    const bossCritChance     = hasAny(...bossCritFields) ? Math.max(0, rawBossCrit - critHitChance) : editData.stats.bossCritChance
-    const bossHeavyChance    = hasAny(...bossHeavyFields) ? Math.max(0, rawBossHeavy - heavyAttackChance) : editData.stats.bossHeavyChance
+    const bossCritChance     = hasAny(...bossCritFields) ? rawBossCrit : editData.stats.bossCritChance
+    const bossHeavyChance    = hasAny(...bossHeavyFields) ? rawBossHeavy : editData.stats.bossHeavyChance
 
     const updated: BuildStats = {
       ...editData.stats,
