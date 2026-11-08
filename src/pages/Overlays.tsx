@@ -86,6 +86,13 @@ export function Overlays(): React.ReactElement {
         <section><h2>Origem do dano</h2>
           <label>Nome do personagem<input key={config.playerName ?? ''} aria-label="Nome do personagem" defaultValue={config.playerName ?? ''} maxLength={64}
             placeholder="Nome exato no jogo" onBlur={event => configure({ playerName: event.target.value })} /></label>
+          <label>Código da minha origem<input key={config.autoSource === false ? config.sourceId ?? '' : 'auto'} aria-label="Código da minha origem" type="number" min="1" step="1"
+            defaultValue={config.autoSource === false ? config.sourceId ?? '' : ''} placeholder="Ex.: 8864474" onBlur={event => {
+              const value = event.target.value.trim()
+              const sourceId = Number(value)
+              if (!value) configure({ sourceId: null })
+              else if (Number.isSafeInteger(sourceId) && sourceId > 0) configure({ sourceId })
+            }} /></label>
           <label>Origem do dano<select aria-label="Origem do dano" value={config.autoSource !== false ? 'auto' : config.sourceId ?? ''}
             onChange={event => configure({ sourceId: event.target.value === 'auto' ? null : Number(event.target.value) })}>
             <option value="auto">Meu personagem · automático</option>
@@ -95,7 +102,7 @@ export function Overlays(): React.ReactElement {
             {state.sources.map(source => <option key={source.id} value={source.id}>{source.localPlayer ? 'Entidade local (manual)' : source.name ?? 'Origem manual'} · {source.id} · {number(source.damage)}</option>)}
           </select></label>
           <button onClick={() => configure({ sourceId: null })}>Seguir meu personagem</button>
-          <p>A seleção automática acompanha a entidade local identificada pelo protocolo. A origem manual fica fixa. Trocar de origem inicia outra medição.</p>
+          <p>Informe o código exibido em Origens para fixar sua leitura sem aguardar o perfil. Ele vale nesta execução do app e é descartado ao reiniciar, pois o ID pode mudar ao relogar. Trocar de origem inicia outra medição.</p>
           <p title={state.capture?.encounterId}>Medição: {state.capture?.encounterId.slice(0, 8) ?? '—'} · Entidade local: {state.capture?.player?.sourceId ?? 'aguardando identificação'}</p>
           <h2 className="overlay-subheading">Atalhos</h2>
           <dl><dt>Voltar ao atual</dt><dd>Ctrl + Shift + F8</dd><dt>Travar / editar</dt><dd>Ctrl + Shift + F9</dd><dt>Mostrar / ocultar</dt><dd>Ctrl + Shift + F10</dd><dt>Painel de ajustes</dt><dd>Ctrl + Shift + F11</dd></dl>

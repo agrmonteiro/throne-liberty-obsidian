@@ -146,6 +146,15 @@ const damage = (id, time, amount, connectionId = 'A') => ({ type: 'damage', conn
   event: { sourceId: id, time, damage: amount, skillId: 1, criticalCandidate: false, heavyCandidate: 0 } })
 const player = (id, time, connectionId = 'A') => ({ type: 'identity', name: 'AgrMonteiro', sourceId: id, time, connectionId })
 const gameCombat = (sourceId,time,action,connectionId='A') => ({type:'combat-state',sourceId,time,action,connectionId,raw:{direction:'server-to-client'}})
+const configuredOrigin = harness()
+try {
+  configuredOrigin.configure({ sourceId: 7 })
+  configuredOrigin.start(); configuredOrigin.send({ type: 'status', state: 'live', message: 'test' })
+  configuredOrigin.send(damage(7, 1001, 120))
+  assert.equal(configuredOrigin.state().config.sourceId, 7, 'Código manual informado antes do início deve sobreviver à abertura da leitura')
+  assert.equal(configuredOrigin.state().config.autoSource, false)
+  assert.equal(configuredOrigin.state().session.total, 120, 'Código manual deve medir sem aguardar perfil nominal')
+} finally { configuredOrigin.close() }
 const combatAudit = harness()
 try {
   combatAudit.start();combatAudit.send({type:'status',state:'live',message:'test'});combatAudit.send(player(7,1001))

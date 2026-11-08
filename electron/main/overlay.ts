@@ -447,8 +447,15 @@ export function registerOverlay(owner: BrowserWindow): void {
     } catch { status = 'error'; message = 'Não foi possível preparar a referência de cura.'; return }
     sources.clear()
     sourceNames.clear(); conflictingNames.clear(); observedNames.clear(); npcTemplates.clear()
+    // Uma origem que o usuário informou manualmente vale para a sessão atual
+    // inteira, inclusive se ele configurar o código antes de iniciar a leitura.
+    // Ela continua sendo apagada ao reiniciar o app, pois IDs podem mudar ao
+    // relogar e nunca devem ser reutilizados como identidade persistente.
+    const selectedSourceId = !replay && config.autoSource === false ? config.sourceId : null
     meter.setPaused(false, replay ? 0 : Date.now())
-    meter.selectSource(null, replay ? 0 : Date.now()); config.sourceId = null; config.autoSource = true
+    meter.selectSource(selectedSourceId, replay ? 0 : Date.now())
+    config.sourceId = selectedSourceId
+    config.autoSource = selectedSourceId === null
     deathLog.recorder.bind(null)
     status = 'starting'; message = replay ? 'Abrindo reprodução…' : 'Conectando ao Npcap…'
     mode = replay ? 'replay' : 'live'
