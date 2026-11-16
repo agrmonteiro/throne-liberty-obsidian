@@ -215,8 +215,12 @@ def build(folder, player_name=None):
                     remainingBytes=len(stream.buffer)) for key, stream in streams.items()]
     entity_rows = sorted(entities.values(), key=lambda row: row['outgoingDamage'], reverse=True)
     skill_rows = sorted(skills.values(), key=lambda row: row['damage'], reverse=True)
+    # Capturas recentes usam captureDurationSec; as referências mais antigas
+    # guardavam requestedDurationSec. O índice deve aceitar ambos sem alterar
+    # os PCAPs que está apenas lendo.
+    requested_duration = manifest.get('requestedDurationSec', manifest.get('captureDurationSec'))
     summary = dict(schemaVersion=1, captureFolder=str(folder), capturedAtUtc=manifest['startedAtUtc'],
-        requestedDurationSec=manifest['requestedDurationSec'], elapsedSec=manifest['elapsedSec'], firstPacketUtc=stamp(first_time) if first_time else None,
+        requestedDurationSec=requested_duration, elapsedSec=manifest['elapsedSec'], firstPacketUtc=stamp(first_time) if first_time else None,
         lastPacketUtc=stamp(last_time) if last_time else None, packetSpanSec=last_time-first_time if first_time else 0,
         packets=packet_count, tcpPayloadBytes=payload_bytes, duplicateOrRetransmittedSegments=retransmissions,
         decodedMessages=sum(row['messages'] for row in opcodes.values()), opcodes=len(opcodes), fields=len(fields),

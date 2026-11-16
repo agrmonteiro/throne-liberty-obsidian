@@ -11,6 +11,15 @@ misturar IDs de conexões diferentes.
 - A identidade de uma entidade é `connectionId + entityId + ciclo de vida`.
 - Perfil nominal confirma jogador; template confirma NPC; catálogo confirma
   habilidade. Sem evidência, o ID continua pendente.
+- A ficha de atributos é o gatilho natural de identidade da sessão: ao receber
+  seus status, o app associa apenas o perfil nominal único do mesmo burst ao
+  ID local. O vínculo é apagado em nova leitura, troca de conexão ou relogin;
+  dois perfis no mesmo burst são tratados como ambíguos.
+- Classificação provável não requer curadoria manual: um classificador
+  bayesiano local aprende somente das origens que o protocolo confirmou por
+  perfil/template e usa a distribuição de habilidades de arma e skills
+  exclusivas de NPC. Com poucas amostras, o fallback conservador mantém o ID
+  pendente em vez de inventar um rótulo.
 - A qualidade do NPC vem do campo explícito `CreatureRank` do template do
   cliente: Boss/BossWorld, PartyChampion, Solo/PartyElite ou sem qualidade
   especial. O identificador interno só é uma reserva para builds que não
@@ -55,6 +64,36 @@ misturar IDs de conexões diferentes.
 - Grupo de 12, trash, miniboss e chefe de duas fases.
 - Cura externa, vampirismo, reconexão e troca de mapa.
 - Relatório de cobertura: nomes confirmados, templates, skills pendentes e conflitos.
+
+### 6. Vanguarda e chefes com adds — próximo marco
+
+- A expedição de 08/11 confirmou que o medidor recebe o dano de membros fora
+  da party local, mas somente seis origens receberam perfil nominal. As demais
+  devem permanecer no ranking como **origens observadas sem nome**; não são
+  removidas nem recebem um nome inferido.
+- Exibir cobertura de identidade por segmento: jogadores confirmados,
+  atacantes sem nome, NPCs/template e conflitos.
+- Investigar somente pacotes de roster/spawn/aliança que apresentem vínculo
+  explícito entre ID e nome. Não usar OCR, chat, proximidade, ordem da lista
+  ou volume de dano para relacionar jogador e entidade.
+- Modelar chefe e add como alvos distintos dentro da mesma fase. O relatório
+  da coleta Porfos/Manticus/Daigon está em
+  [coletas/2026-11-08-vanguarda-manticus.md](coletas/2026-11-08-vanguarda-manticus.md).
+
+### 7. Rede cooperativa de combate — em preparação
+
+- A rede cobre qualquer combate (mundo aberto, party, guilda, Vanguarda e
+  chefes), mas não mistura telemetria apenas por nome de chefe ou horário.
+- Cada instalação compartilha exclusivamente o acumulado autoritativo do seu
+  próprio personagem; observações de outros jogadores servem para cobertura e
+  nomes, nunca para somar o mesmo acerto duas vezes.
+- O pareamento automático exige build, hash efêmero de instância, template de
+  alvo e janela de início compatíveis. Sem hash de instância o encontro fica
+  ambíguo e separado até a sala receber confirmação explícita.
+- O motor local e seus testes ficam descritos em
+  [REDE-COOPERATIVA-VANGUARDA.md](REDE-COOPERATIVA-VANGUARDA.md). Antes de
+  publicar o relay WSS, falta localizar e validar o sinal de zona/instância
+  no protocolo.
 
 ## Critério de aceite final
 

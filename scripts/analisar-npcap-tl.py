@@ -116,7 +116,10 @@ def lz4(data):
     return bytes(output)
 
 
-FRAME_LENGTH_KEYS = (0xb06c4908, 0xb06c484e)
+# A chave é definida pela versão/caminho local do protocolo. A variante
+# 0xb06c4a80 foi observada no túnel ExitLag em 14/11/2026: preserva os
+# mesmos opcodes e frames LZ4, mas troca a máscara usada no tamanho.
+FRAME_LENGTH_KEYS = (0xb06c4908, 0xb06c484e, 0xb06c4a80)
 
 
 def frame_key(data, offset=0):

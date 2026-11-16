@@ -42,6 +42,11 @@ def profile(name=b'AgrMonteiro',source=26790374,kind=b'tribe.Pc'):
 assert worker.player_identity(profile())==dict(name='AgrMonteiro',sourceId=26790374)
 for bad in (profile(name=b'bad\nname'),profile(name=b'\xff'),profile(source=0),profile(source=2**54),profile(kind=b'tribe.Npc')):
     assert worker.player_identity(bad) is None
+# Diagnóstico de roster não guarda corpo bruto: somente candidato explícito ID+nome curto.
+candidate = worker.roster_observation(0x12349999, field(1, 7654321)+field(2, b'RosterName'))
+assert candidate == dict(opcode='0x12349999', bytes=len(field(1, 7654321)+field(2, b'RosterName')), entityIds=[7654321], names=['RosterName'])
+assert worker.roster_observation(0x12349999, field(1, 7654321)+field(2, b'nome com frase')) is None
+assert worker.roster_observation(0x12349999, field(2, b'OnlyName')) is None
 # Retransmissões não podem duplicar eventos no caminho incremental.
 seen_before = len(observed)
 for packet in worker.decoder.packets(folder/'interface-4.pcap'):

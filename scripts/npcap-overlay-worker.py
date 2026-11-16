@@ -46,6 +46,39 @@ def emit(value):
     print(json.dumps(value, ensure_ascii=True), flush=True)
 
 
+def is_loopback(address):
+    """Reconhece os dois formatos que o Windows expõe para loopback.
+
+    O ExitLag normalmente usa 127.0.0.1, mas algumas instalações expõem ::1.
+    O decodificador atual é IPv4; ainda assim, reconhecer ::1 evita declarar a
+    captura como ausente e deixa o diagnóstico útil para o próximo fallback.
+    """
+    return str(address).split('%')[0] in ('127.0.0.1', '::1')
+
+
+def endpoint_layers(snapshot):
+    """Separa presença do jogo, túnel e rota direta sem inspecionar tráfego amplo."""
+    tcp = snapshot.get('tcp') or []
+    if isinstance(tcp, dict):
+        tcp = [tcp]
+    loopback = [row for row in tcp if is_loopback(row.get('LocalAddress')) and is_loopback(row.get('RemoteAddress'))]
+    ipv4_loopback = [row for row in loopback if row.get('LocalAddress') == row.get('RemoteAddress') == '127.0.0.1']
+    direct = [row for row in tcp if row not in loopback]
+    return loopback, ipv4_loopback, direct
+
+
+def readiness_message(pids, loopback, ipv4_loopback, direct):
+    if not pids:
+        return 'Aguardando o processo do Throne and Liberty.'
+    if ipv4_loopback:
+        return 'Túnel local detectado. Aguardando o primeiro pacote de dano.'
+    if loopback:
+        return 'Túnel local IPv6 detectado; aguardando o fallback compatível de captura.'
+    if direct:
+        return 'TL conectado, mas ainda fora do túnel local. Monitorando novas conexões automaticamente.'
+    return 'TL sem conexão de jogo ativa. Aguardando conexão.'
+
+
 def player_identity(body, opcode=0x1234787f):
     return decoder.player_identity(body, opcode)
 
@@ -73,6 +106,53 @@ def packet_details(opcode, body, server_to_client):
         return result
     return dict(opcode=hex(opcode), bytes=len(body), bodyHex=body[:16384].hex(), truncated=len(body)>16384,
                 direction='server-to-client' if server_to_client else 'client-to-server', fields=fields(body[:16384]))
+
+
+# O diagnóstico de roster é opt-in e propositalmente não conserva corpo bruto.
+# Ele serve apenas para encontrar um futuro decoder que una entidade e nome.
+KNOWN_PROTOCOL_OPCODES = {
+    0x12346e77, 0x12347e7d, 0x12347e7f, 0x123444dd, 0x12344437,
+    0x12344a7b, 0x12344a7c, 0x12344a7d, 0x12346f6d, 0x12346f18,
+    0x12346f69, 0x12346f6b, 0x12346f68, 0x1234446c, 0x1234444a,
+    0x1234787f, 0x1234787d, 0x12344a63, 0x12344a70, 0x12344a7f,
+    0x12344a62,
+}
+
+
+def roster_observation(opcode, body):
+    """Resumo limitado de pacote candidato a roster, sem bodyHex nem valores binários.
+
+    Um candidato exige pelo menos um inteiro no intervalo de entidade e um texto
+    curto tipo nome. Isto não confirma semântica de roster; somente orienta uma
+    coleta controlada e não deve rotular uma origem no medidor.
+    """
+    try:
+        ids, names = set(), set()
+        def walk(data, depth=0):
+            if depth > 3 or len(data) > 4096 or len(ids) >= 32 or len(names) >= 8:
+                return
+            for values in decoder.protobuf(data).values():
+                for value in values[:32]:
+                    if isinstance(value, int):
+                        if 0 < value < 2**53: ids.add(value)
+                    elif isinstance(value, bytes) and value:
+                        if len(value) <= 96:
+                            try:
+                                text = value.decode('utf-8')
+                            except UnicodeDecodeError:
+                                text = ''
+                            # Exclui controle, frases e blobs; ainda aceita nomes Unicode do jogo.
+                            if 2 <= len(text) <= 64 and text == text.strip() and text.isprintable() and ' ' not in text and any(char.isalpha() for char in text):
+                                names.add(text)
+                        if len(value) <= 4096:
+                            try: walk(value, depth+1)
+                            except (ValueError, TypeError, IndexError): pass
+        walk(body)
+        if not ids or not names:
+            return None
+        return dict(opcode=hex(opcode), bytes=len(body), entityIds=sorted(ids)[:32], names=sorted(names)[:8])
+    except (ValueError, TypeError, IndexError):
+        return None
 
 
 def entity_state(body):
@@ -174,7 +254,7 @@ def vampiric_healing(body):
 
 
 class Stream:
-    def __init__(self, connection_id=None, server_to_client=False):
+    def __init__(self, connection_id=None, server_to_client=False, roster_diagnostic=False):
         self.connection_id = connection_id
         self.server_to_client = server_to_client
         self.expected = None
@@ -183,6 +263,8 @@ class Stream:
         self.aligned = False
         self.length_key = None
         self.gap_since = None
+        self.roster_diagnostic = roster_diagnostic
+        self.roster_budget = 128
 
     def feed(self, sequence, payload, now):
         # TCP usa sequência de 32 bits; manter continuidade após o contador dar a volta.
@@ -229,6 +311,11 @@ class Stream:
                 break
             frame = bytes(self.buffer[:length]); del self.buffer[:length]
             for stamp,opcode,body in decoder.frames(frame,Counter(),lambda _:now, length_key=self.length_key):
+                if self.roster_diagnostic and self.server_to_client and self.roster_budget and opcode not in KNOWN_PROTOCOL_OPCODES:
+                    observation = roster_observation(opcode, body)
+                    if observation:
+                        self.roster_budget -= 1
+                        emit(dict(type='roster-observation', time=stamp, connectionId=self.connection_id, **observation))
                 if opcode in (0x12346e77, 0x12347e7d, 0x12347e7f, 0x123444dd, 0x12344437) and self.server_to_client:
                     stats = decoder.character_stats(opcode, body)
                     if stats:
@@ -299,20 +386,28 @@ class Stream:
                     continue
                 if opcode not in (0x12344a7f,0x12344a62):
                     continue
-                fields = decoder.protobuf(body)
-                if opcode == 0x12344a7f and all(k in fields for k in (2,3,5,15)):
-                    amount = decoder.protobuf(fields[5][0])
-                    if 1 not in amount:
+                # A mesma família de opcode contém variantes de estado que não
+                # obedecem ao payload protobuf de dano. Elas aparecem no meio
+                # do fluxo normal e não podem invalidar a conexão inteira.
+                # Só uma mensagem cuja estrutura de dano foi comprovada gera
+                # evento; as demais são descartadas individualmente.
+                try:
+                    fields = decoder.protobuf(body)
+                    if opcode == 0x12344a7f and all(k in fields for k in (2,3,5,15)):
+                        amount = decoder.protobuf(fields[5][0])
+                        if 1 not in amount:
+                            continue
+                        event = dict(time=stamp,damage=decoder.zigzag(amount[1][0]),
+                                     skillId=decoder.zigzag(fields[15][0]), sourceId=fields[3][0], targetId=fields[2][0],
+                                     criticalCandidate=fields.get(6,[None])[0] == 6,
+                                     heavyCandidate=fields.get(19,[0])[0])
+                    elif opcode == 0x12344a62 and all(k in fields for k in (2,3,4,7)):
+                        event = dict(time=stamp,damage=decoder.zigzag(fields[3][0]),
+                                     skillId=decoder.zigzag(fields[7][0]),sourceId=fields[4][0],targetId=fields[2][0],
+                                     criticalCandidate=False,heavyCandidate=0)
+                    else:
                         continue
-                    event = dict(time=stamp,damage=decoder.zigzag(amount[1][0]),
-                                 skillId=decoder.zigzag(fields[15][0]), sourceId=fields[3][0], targetId=fields[2][0],
-                                 criticalCandidate=fields.get(6,[None])[0] == 6,
-                                 heavyCandidate=fields.get(19,[0])[0])
-                elif opcode == 0x12344a62 and all(k in fields for k in (2,3,4,7)):
-                    event = dict(time=stamp,damage=decoder.zigzag(fields[3][0]),
-                                 skillId=decoder.zigzag(fields[7][0]),sourceId=fields[4][0],targetId=fields[2][0],
-                                 criticalCandidate=False,heavyCandidate=0)
-                else:
+                except (ValueError, IndexError, KeyError, TypeError):
                     continue
                 life = damage_life_signal(fields) if opcode == 0x12344a7f and self.server_to_client else {}
                 emit(dict(type='damage' if event['damage'] > 0 else 'combat-observation',event=event, connectionId=self.connection_id, **life,
@@ -345,15 +440,15 @@ class PendingConnections:
             if rows and at-rows[0][4] > 5: self.drain(pair)
 
 
-def live(reference_server_ports=(), follow=False):
+def live(reference_server_ports=(), follow=False, roster_diagnostic=False):
     api,directory = capture.load_api()
     api.pcap_datalink.restype = C.c_int
     api.pcap_datalink.argtypes = [C.c_void_p]
     data = capture.endpoints()
-    local = [e for e in data['tcp'] if e['RemoteAddress'] == '127.0.0.1']
-    if follow and not reference_server_ports and local:
-        reference_server_ports = tuple(sorted({int(e['RemotePort']) for e in local if e['LocalAddress'] == '127.0.0.1'}))
-    if not local and not reference_server_ports and not follow:
+    local, decodable_local, direct = endpoint_layers(data)
+    if follow and not reference_server_ports and decodable_local:
+        reference_server_ports = tuple(sorted({int(e['RemotePort']) for e in decodable_local}))
+    if not decodable_local and not reference_server_ports and not follow:
         raise ValueError('Conexão local do TL não encontrada. O caminho validado usa ExitLag.')
     if reference_server_ports and not all(isinstance(port, int) and 0 < port < 65536 for port in reference_server_ports):
         raise ValueError('Porta de referência inválida.')
@@ -381,15 +476,22 @@ def live(reference_server_ports=(), follow=False):
             raise ValueError(f'Formato de interface não validado: {link}')
         streams = {}
         pending_connections = PendingConnections(reference_server_ports)
-        connections = {(int(e['LocalPort']), int(e['RemotePort'])): uuid4().hex for e in local}
+        connections = {(int(e['LocalPort']), int(e['RemotePort'])): uuid4().hex for e in decodable_local}
+        # Nem toda conexão local pertencente ao processo é o fluxo de jogo.
+        # Um canal de autenticação/telemetria pode parecer um frame no meio da
+        # captura e não deve encerrar o leitor de dano inteiro.
+        stream_failures = {}
+        rejected_streams = set()
         game_pids = tuple(sorted(data['pids']))
+        last_packet_signal = 0.0
         updates = deque(maxlen=1)
         stop_watch = Event()
         def watch_connections():
             while not stop_watch.wait(2):
                 try:
                     snapshot = capture.endpoints()
-                    updates.append((tuple(sorted(snapshot['pids'])), [e for e in snapshot['tcp'] if e['LocalAddress'] == e['RemoteAddress'] == '127.0.0.1']))
+                    watched_local, watched_decodable, watched_direct = endpoint_layers(snapshot)
+                    updates.append((tuple(sorted(snapshot['pids'])), watched_local, watched_decodable, watched_direct))
                 except Exception:
                     # O encerramento real também é detectado por FIN/RST; repetir o inventário.
                     continue
@@ -397,18 +499,48 @@ def live(reference_server_ports=(), follow=False):
         def retire(pair):
             connection = connections.pop(pair, None)
             streams.pop(pair, None); streams.pop(pair[::-1], None)
+            for stream_key in (pair, pair[::-1]):
+                stream_failures.pop(stream_key, None)
+                rejected_streams.discard(stream_key)
             if connection:
                 emit(dict(type='connection-closed', connectionId=connection, time=time.time()))
         def consume(a, b, seq, payload, at):
+            nonlocal last_packet_signal
             server_to_client = (b,a) in connections
             pair = (b,a) if server_to_client else (a,b)
             connection = connections.get(pair)
-            if connection and payload:
-                streams.setdefault((a,b),Stream(connection, server_to_client)).feed(seq,payload,at)
-        emit(dict(type='status',state='live',message='Leitura experimental ativa.' if local else 'Aguardando conexão local do TL.'))
+            stream_key = (a,b)
+            if connection and payload and stream_key not in rejected_streams:
+                # O primeiro pacote do túnel é um gatilho de saúde, não uma
+                # prova de dano. Isso separa "túnel existe" de "protocolo
+                # decodificado" e permite que a interface tente as próximas
+                # estratégias de identidade sem depender de um botão manual.
+                if at - last_packet_signal >= 1:
+                    last_packet_signal = at
+                    emit(dict(type='capture-traffic', time=at, connectionId=connection,
+                              direction='server-to-client' if server_to_client else 'client-to-server', bytes=len(payload)))
+                try:
+                    streams.setdefault(stream_key,Stream(connection, server_to_client, roster_diagnostic)).feed(seq,payload,at)
+                except ValueError as error:
+                    failures = stream_failures.get(stream_key, 0) + 1
+                    stream_failures[stream_key] = failures
+                    # Uma única falha pode ser a captura ter iniciado no meio de
+                    # uma mensagem: reinicia só o parser daquela direção. Após
+                    # a segunda, o canal é ignorado até fechar/reconectar.
+                    streams.pop(stream_key, None)
+                    if failures >= 2:
+                        rejected_streams.add(stream_key)
+                    emit(dict(type='capture-channel-rejected', connectionId=connection, time=at,
+                              attempts=failures, message='Canal local ignorado: formato não reconhecido pelo protocolo do TL.'))
+        # Não declarar leitura ativa antes de o TL estar no túnel local. Após um
+        # reinício é comum o jogo abrir antes do ExitLag e manter TCP direto;
+        # esses bytes são cifrados e não podem ser interpretados pelo medidor.
+        tunnel_ready = bool(decodable_local)
+        emit(dict(type='status', state='live' if tunnel_ready else 'starting',
+                  message=readiness_message(game_pids, local, decodable_local, direct)))
         while True:
             if updates:
-                refreshed_pids, refreshed = updates.pop()
+                refreshed_pids, refreshed_local, refreshed, refreshed_direct = updates.pop()
                 refreshed_ports = tuple(sorted({int(e['RemotePort']) for e in refreshed}))
                 changed_process = refreshed_pids != game_pids
                 discovering = follow and not reference_server_ports
@@ -423,6 +555,15 @@ def live(reference_server_ports=(), follow=False):
                     if changed_tunnel and not discovering:
                         pending_connections = PendingConnections(reference_server_ports)
                 pairs = {(int(e['LocalPort']), int(e['RemotePort'])) for e in refreshed}
+                valid_streams = pairs | {pair[::-1] for pair in pairs}
+                rejected_streams.intersection_update(valid_streams)
+                for stream_key in list(stream_failures):
+                    if stream_key not in valid_streams: stream_failures.pop(stream_key, None)
+                now_tunnel_ready = bool(refreshed)
+                if now_tunnel_ready != tunnel_ready or changed_process:
+                    tunnel_ready = now_tunnel_ready
+                    emit(dict(type='status', state='live' if tunnel_ready else 'starting',
+                              message=readiness_message(refreshed_pids, refreshed_local, refreshed, refreshed_direct)))
                 if pairs != set(connections) or changed_process or changed_tunnel:
                     for pair in list(connections):
                         if pair not in pairs:
@@ -524,6 +665,7 @@ if __name__ == '__main__':
     parser.add_argument('--speed',type=float,default=1)
     parser.add_argument('--healing-reference', type=Path)
     parser.add_argument('--follow-loopback-server', action='store_true')
+    parser.add_argument('--roster-diagnostic', action='store_true')
     args = parser.parse_args()
     try:
         if args.healing_reference:
@@ -534,7 +676,7 @@ if __name__ == '__main__':
             replay(args.replay,args.speed)
         else:
             ports = tuple(sorted({int(e['RemotePort']) for e in capture.endpoints()['tcp'] if e['LocalAddress'] == e['RemoteAddress'] == '127.0.0.1'})) if args.follow_loopback_server else ()
-            live(ports, follow=args.follow_loopback_server)
+            live(ports, follow=args.follow_loopback_server, roster_diagnostic=args.roster_diagnostic)
     except KeyboardInterrupt:
         pass
     except Exception as error:

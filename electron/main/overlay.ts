@@ -3,12 +3,12 @@ import { spawn, type ChildProcess } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { is } from '@electron-toolkit/utils'
-import { OverlayIdentity, OverlayMeter, ObservedGroupDamage, type MeterEvent, type MeterHealingEvent, type OverlayCombatSegment, type OverlayConfig, type OverlayPanel, type OverlayState, type PanelBounds } from '../../src/engine/overlayMeter'
+import { OverlayIdentity, OverlayMeter, ObservedGroupDamage, StatusProfileRecognition, mergeGroupConnections, type MeterEvent, type MeterHealingEvent, type MeterSession, type OverlayCombatSegment, type OverlayConfig, type OverlayPanel, type OverlayState, type PanelBounds } from '../../src/engine/overlayMeter'
 import { clamp, defaultOverlayTheme, overlayAnchor, overlayBounds, overlaySceneActive, overlayHasFocus, overlayCombatVisible } from '../../src/engine/overlayLayout'
 import { randomUUID } from 'crypto'
 import { OverlayHistory } from './overlayHistory'
 import { clearMeterLogFiles } from './overlayCleanup'
-import { overlaySkillNames as names, overlaySkillFiles, overlayNpcNames, overlayNpcRankHints, overlayNpcRankSources } from '../../src/engine/overlaySkillReference'
+import { overlaySkillNames as names, overlaySkillFiles, overlaySkillWeaponHints, overlayNpcOnlySkillIds, overlayNpcNames, overlayNpcRankHints, overlayNpcRankSources } from '../../src/engine/overlaySkillReference'
 import { OverlayUnknownLog } from './overlayUnknownLog'
 import healingReference from '../../src/data/overlayHealingEffects.json'
 import { OverlayDeathLog } from './overlayDeathLog'
@@ -23,31 +23,36 @@ import { OverlaySegments } from '../../src/engine/overlaySegments'
 import { classifyEncounterTargets } from '../../src/engine/overlayEncounterClassification'
 import { GroupHealingMeter } from '../../src/engine/groupHealingMeter'
 import { GroupReceivedMeter } from '../../src/engine/groupReceivedMeter'
+import { OverlaySourceRegistry } from '../../src/engine/overlaySourceRegistry'
+import { groupCombatSegments, type OverlayCombatEncounter } from '../../src/engine/overlayCombatEncounters'
 
 // O perfil nominal pode chegar depois dos primeiros eventos de combate. Esse é o
 // único período que recuperamos sem misturar outra sessão/conexão.
 const IDENTITY_BACKFILL_MS = 30_000
-const identityNameKey = (value: string): string => value.normalize('NFKC').trim().toLocaleLowerCase('pt-BR')
 
 export function registerOverlay(owner: BrowserWindow): void {
   const file = path.join(app.getPath('userData'), 'data', 'overlay.json')
   let persisted: Partial<OverlayConfig> = {}
-  let config: OverlayConfig = { autoSource: true, groupSegmentId: null, singleWindow: true, locked: false, totalVisible: false, skillsVisible: true,
+  let config: OverlayConfig = { autoSource: true, groupSegmentId: null, groupEncounterId: null, singleWindow: true, locked: false, totalVisible: false, skillsVisible: true,
     controlsVisible: false, controlsExpanded: false, fontFamily: 'Inter', fontSize: 13, chartPadding: 12, chartPaddingVertical: 10, theme: { ...defaultOverlayTheme },
     opacity: .94, scale: 1, sourceId: null }
   try { persisted = JSON.parse(fs.readFileSync(file, 'utf8')); config = { ...config, ...persisted } } catch { /* primeiro uso */ }
-  // Migração única: o novo fluxo concentra grupo, detalhes e resumo numa janela.
-  if (persisted.singleWindow === undefined) {
-    config.singleWindow = true; config.totalVisible = false; config.skillsVisible = true; config.controlsVisible = false
-  }
+  // O layout consolidado é o único layout suportado: uma configuração antiga
+  // com janelas separadas não pode deixar o painel de combate invisível.
+  config.singleWindow = true; config.totalVisible = false; config.skillsVisible = true; config.controlsVisible = false
   // O fluxo padrão é abrir e medir: esconder o painel salvo em uma execução
   // anterior não pode exigir que um usuário novo descubra um atalho para começar.
   config.skillsVisible = true
   // Não transportar identidade de entidade entre execuções/conexões do jogo.
   config.sourceId = null
+  config.playerName = undefined
   config.reviewEncounterId = null
+  // Um corte pertence à captura anterior; uma nova leitura sempre abre no
+  // último combate observado, sem tentar reutilizar IDs efêmeros.
+  config.groupSegmentId = null
+  config.groupEncounterId = null
   const meter = new OverlayMeter(null, names, overlaySkillFiles)
-  const newGroupDamage = (): ObservedGroupDamage => new ObservedGroupDamage(names, overlaySkillFiles, overlayNpcNames, overlayNpcRankHints, overlayNpcRankSources)
+  const newGroupDamage = (): ObservedGroupDamage => new ObservedGroupDamage(names, overlaySkillFiles, overlayNpcNames, overlayNpcRankHints, overlayNpcRankSources, overlaySkillWeaponHints, overlayNpcOnlySkillIds)
   const groupDamage = newGroupDamage()
   const groupSegments = new OverlaySegments<{ targetId: number }>()
   const segmentDamage = new Map<number, ObservedGroupDamage>()
@@ -55,6 +60,8 @@ export function registerOverlay(owner: BrowserWindow): void {
   const segmentHealing = new Map<number, GroupHealingMeter>()
   const groupReceived = new GroupReceivedMeter()
   const identity = new OverlayIdentity()
+  const statusProfiles = new StatusProfileRecognition()
+  const sourceRegistry = new OverlaySourceRegistry()
   const history = new OverlayHistory(path.join(app.getPath('userData'), 'data', 'overlay-encounters.json'))
   const deathLog = new OverlayDeathLog(path.join(app.getPath('userData'), 'data', 'overlay-deaths.json'))
   const buffs = new OverlayBuffTracker()
@@ -67,25 +74,28 @@ export function registerOverlay(owner: BrowserWindow): void {
   let encounterClosed = false
   let clearedThrough: number | null = null
   const unknownLog = new OverlayUnknownLog(path.join(app.getPath('userData'), 'logs', 'dps-meter', 'unknown-skills'), names)
+  let rosterDiagnostic = { file: '', events: 0, error: null as string | null }
   let captureId = ''
   const windows: Partial<Record<OverlayPanel, BrowserWindow>> = {}
   const appliedBounds = new Map<OverlayPanel, PanelBounds>()
   const interactivePanels = new Set<OverlayPanel>()
   const sources = new Map<number, number>()
   const sourceLastSeen = new Map<number, number>()
+  // O túnel local pode expor o mesmo acerto nos dois sentidos, mas também há
+  // sessões onde só um dos sentidos chega ao Npcap. O grupo não pode depender
+  // de uma direção única. Mantemos uma janela curta para colapsar apenas o par
+  // espelhado, sem suprimir acertos repetidos legítimos.
+  const groupDirectionEvents = new Map<string, { direction: string; time: number }>()
   let recentDamage: Array<{ event: MeterEvent | MeterHealingEvent; connectionId: string }> = []
   let captureStartedAt = 0
+  // Nome e ID de personagem pertencem somente ao login atual. Nunca usamos a
+  // escolha de uma sessão anterior depois de trocar personagem ou relogar.
+  let sessionPlayerName: string | null = null
   let resumedAt = 0
   let lastCombatDamageAt: number | null = null
+  let firstDamageSeen = false
   let lastGameCombatStateAt = 0
   let combatPanelsVisible = true
-  // IDs de entidade são transitórios e só fazem sentido dentro da conexão.
-  const sourceNames = new Map<string, Map<number, string>>()
-  const conflictingNames = new Map<string, Set<number>>()
-  // Rótulos vistos em eventos (por exemplo, alvo de debuff). Não são perfil de jogador nem template de NPC.
-  const observedNames = new Map<string, Map<number, string>>()
-  // Templates não identificam o jogador. Entidades/UIDs só se relacionam na mesma conexão.
-  const npcTemplates = new Map<string, Map<number, number | null>>()
   let status: OverlayState['status'] = 'stopped'
   let mode: OverlayState['mode'] = null
   let replayClock: number | null = null
@@ -99,7 +109,11 @@ export function registerOverlay(owner: BrowserWindow): void {
   let revision = 0
   let reconnectTimer: ReturnType<typeof setTimeout> | undefined
   let saveTimer: ReturnType<typeof setTimeout> | undefined
+  let groupArchiveTimer: ReturnType<typeof setTimeout> | undefined
   let focusHideTimer: ReturnType<typeof setTimeout> | undefined
+  let statusProfileTimer: ReturnType<typeof setTimeout> | undefined
+  let soloDamageProbeTimer: ReturnType<typeof setTimeout> | undefined
+  let soloDamageProbe: { connectionId: string; firstAt: number; lastAt: number; sources: Map<number, number> } | null = null
   function checkpoint(reason = 'current', at = mode === 'replay' ? (replayClock ?? Date.now()) : Date.now()): void {
     characterState()
     if (encounterClosed || !mode) return
@@ -108,7 +122,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (clearedThrough !== null && (session.lastActivityAt === null || session.lastActivityAt! <= clearedThrough)) return
     history.upsert({ id: encounterId, captureId, connectionId: encounterConnectionId,
       sourceId: meter.sourceId, sourceName: entityName(meter.sourceId!).name, attributionVersion: 2, mode, reason,
-      savedAt: Date.now(), session, groupConnections: groupDamage.snapshot(at), combatSegments: combatSegments(at) })
+      savedAt: Date.now(), session, groupConnections: groupDamage.snapshot(at), combatSegments: combatSegments(at), combatEncounters: combatEncounters(at) })
   }
   function finishEncounter(reason: string, at?: number): void {
     checkpoint(reason, at); encounterClosed = true
@@ -116,10 +130,55 @@ export function registerOverlay(owner: BrowserWindow): void {
   function newEncounter(connectionId = identity.snapshot()?.connectionId ?? null): void {
     encounterId = randomUUID(); encounterConnectionId = connectionId; encounterClosed = false; clearedThrough = null
   }
+  function groupConnectionsForSegments(segmentIds: readonly number[], at: number) {
+    return mergeGroupConnections(segmentIds.flatMap(id => segmentDamage.get(id)?.snapshot(at) ?? []), at)
+  }
+  function combatEncounters(at: number): OverlayCombatEncounter[] {
+    return groupCombatSegments(combatSegments(at))
+  }
+  function groupEncounterSession(encounter: OverlayCombatEncounter): MeterSession {
+    const endedAt = encounter.endedAt ?? encounter.lastActivityAt
+    return {
+      total: 0, hits: 0, critical: 0, heavy: 0, damageByKind: { normal: 0, critical: 0, heavy: 0, criticalHeavy: 0 }, skills: [],
+      startedAt: encounter.startedAt, lastDamageAt: endedAt, lastActivityAt: endedAt,
+      elapsedSec: Math.max(0, (endedAt - encounter.startedAt) / 1000), dps: 0, idleSec: 0, waitingReset: false,
+    }
+  }
+  function archiveClosedGroupEncounters(at = Date.now()): void {
+    if (mode !== 'live') return
+    for (const encounter of combatEncounters(at)) {
+      if (encounter.endedAt === null) continue
+      const key = `${captureId}:${encounter.id}`
+      const groupConnections = groupConnectionsForSegments(encounter.segmentIds, at)
+      const hasDamage = groupConnections.some(connection => connection.sources.some(source => source.session.hits > 0))
+      if (!hasDamage) continue
+      // O ID estável do primeiro segmento permite atualizar o mesmo encontro
+      // se uma conexão paralela encerrar alguns instantes depois.
+      history.upsert({ id: `group:${key}`, captureId, connectionId: null, sourceId: null, attributionVersion: 2,
+        mode, reason: encounter.endReason === 'combat-exit' ? 'combat-exit' : 'inactivity', savedAt: Date.now(),
+        session: groupEncounterSession(encounter), groupConnections, combatSegments: combatSegments(at)
+          .filter(segment => encounter.segmentIds.includes(segment.id)), groupEncounter: encounter })
+    }
+  }
+  function scheduleGroupEncounterArchive(delay = 3_200): void {
+    clearTimeout(groupArchiveTimer)
+    groupArchiveTimer = setTimeout(() => {
+      groupArchiveTimer = undefined
+      archiveClosedGroupEncounters()
+      broadcast()
+    }, delay)
+  }
   function bindSource(sourceId: number | null, at: number, reason: string): void {
     lastGameCombatStateAt = 0
-    finishEncounter(reason, meter.snapshot(at).lastActivityAt ?? at)
-    newEncounter()
+    // Sinais automáticos de entidade podem ser reajustados durante uma mesma
+    // luta. Eles não representam um novo encontro e não podem inundar o
+    // histórico com pedaços de poucos segundos. Perfil/ficha, reset e fim de
+    // combate continuam sendo cortes explícitos.
+    const transientRecognition = ['local-player', 'entity-change', 'solo-damage', 'profile-name', 'status-profile'].includes(reason)
+    if (!transientRecognition) {
+      finishEncounter(reason, meter.snapshot(at).lastActivityAt ?? at)
+      newEncounter()
+    }
     config.sourceId = sourceId; config.reviewEncounterId = null
     lastCombatDamageAt = null
     meter.selectSource(sourceId, Math.max(captureStartedAt, at - IDENTITY_BACKFILL_MS))
@@ -140,6 +199,39 @@ export function registerOverlay(owner: BrowserWindow): void {
     recentDamage = []
     save(); broadcast()
   }
+  function clearSoloDamageProbe(): void {
+    clearTimeout(soloDamageProbeTimer); soloDamageProbeTimer = undefined; soloDamageProbe = null
+  }
+  function observeSoloDamageSource(connectionId: string, event: MeterEvent, direction: unknown): void {
+    // Perfil/estado continuam sendo a prova forte. Este é somente o fallback
+    // sem interação para o caso comum de treino solo: vários acertos de um
+    // único atacante na mesma conexão, durante uma janela curta. Em grupo,
+    // um segundo atacante cancela a inferência antes da seleção.
+    if (config.autoSource === false || meter.sourceId !== null || identity.snapshot() || direction !== 'server-to-client'
+      || event.sourceId === event.targetId || !Number.isFinite(event.time)) return
+    const at = event.time * 1000
+    if (!soloDamageProbe || soloDamageProbe.connectionId !== connectionId || at - soloDamageProbe.firstAt > 1_500) {
+      clearSoloDamageProbe()
+      soloDamageProbe = { connectionId, firstAt: at, lastAt: at, sources: new Map() }
+    }
+    soloDamageProbe.lastAt = at
+    soloDamageProbe.sources.set(event.sourceId, (soloDamageProbe.sources.get(event.sourceId) ?? 0) + 1)
+    if (soloDamageProbe.sources.size > 1) { clearSoloDamageProbe(); return }
+    if (soloDamageProbeTimer) return
+    soloDamageProbeTimer = setTimeout(() => {
+      const probe = soloDamageProbe
+      clearSoloDamageProbe()
+      if (!probe || config.autoSource === false || meter.sourceId !== null || identity.snapshot() || probe.sources.size !== 1) return
+      const [sourceId, hits] = [...probe.sources][0]
+      if (hits < 4 || probe.lastAt - probe.firstAt > 1_500) return
+      const change = identity.identify(sourceId, probe.connectionId, probe.lastAt, 'solo-damage')
+      if (change === 'changed') {
+        sessionPlayerName = null
+        bindSource(sourceId, probe.lastAt, 'solo-damage')
+        message = 'Origem local inferida por sequência solo de dano. O perfil do personagem a confirma quando chegar.'
+      }
+    }, 1_100)
+  }
   function save(): void {
     clearTimeout(saveTimer)
     saveTimer = setTimeout(() => {
@@ -152,31 +244,74 @@ export function registerOverlay(owner: BrowserWindow): void {
     const session = namedSession(mode === 'replay' ? (replayClock ?? Date.now()) : Date.now())
     const timed = meter.measurementWindow, now = Date.now()
     const segments = combatSegments(now)
-    const selectedGroupDamage = config.groupSegmentId === null || config.groupSegmentId === undefined
-      ? groupDamage : segmentDamage.get(config.groupSegmentId) ?? groupDamage
-    const selectedHealing = [...segmentHealing].filter(([id]) => config.groupSegmentId === null || config.groupSegmentId === undefined || id === config.groupSegmentId)
+    const encounters = groupCombatSegments(segments)
+    const selectedEncounter = config.groupEncounterId === '__all__' ? undefined : config.groupEncounterId
+      ? encounters.find(encounter => encounter.id === config.groupEncounterId)
+      // A visão padrão é o último combate, não toda a sessão acumulada.
+      : encounters.at(-1)
+    const selectedSegmentIds = config.groupSegmentId !== null && config.groupSegmentId !== undefined
+      ? [config.groupSegmentId]
+      : selectedEncounter?.segmentIds
+    const selectedGroupDamage = selectedSegmentIds?.length
+      ? groupConnectionsForSegments(selectedSegmentIds, now) : groupDamage.snapshot(now)
+    const selectedHealing = [...segmentHealing].filter(([id]) => !selectedSegmentIds || selectedSegmentIds.includes(id))
       .map(([segmentId, value]) => ({ connectionId: segments.find(row => row.id === segmentId)?.connectionId ?? '', segmentId, snapshot: value.snapshot() }))
-    const selectedReceived = config.groupSegmentId === null || config.groupSegmentId === undefined
-      ? groupReceived.snapshot() : groupReceived.snapshot(undefined, config.groupSegmentId)
-    return { config: { ...config }, groupConnections: selectedGroupDamage.snapshot(now), combatSegments: segments,
+    const selectedReceived = selectedSegmentIds?.length === 1
+      ? groupReceived.snapshot(undefined, selectedSegmentIds[0]) : groupReceived.snapshot()
+    return { config: { ...config }, identification: identificationState(), groupConnections: selectedGroupDamage, combatSegments: segments, combatEncounters: encounters,
       groupHealing: selectedHealing, groupReceived: selectedReceived,
       capture: { id: captureId, connectionId: player?.connectionId ?? encounterConnectionId, encounterId, player },
       combat: { lastDamageAt: lastCombatDamageAt, hidden: !combatVisible() },
       game: { attached: gameBounds !== null, active: gameForeground, bounds: gameBounds },
       session, ...(timed ? { timer: { ...timed, phase: timed.cancelled ? 'cancelled' : now < timed.startsAt ? 'countdown' : now < timed.endsAt ? 'running' : 'finished',
         remainingSec: Math.max(0, ((now < timed.startsAt ? timed.startsAt : timed.endsAt) - now) / 1000), elapsedSec: session.elapsedSec } } : {}),
-      status, mode, message, unknownSkillLog: unknownLog.status(),
+      status, mode, message, unknownSkillLog: unknownLog.status(), rosterDiagnostic: { ...rosterDiagnostic },
       sources: [...sources].map(([id, damage]) => ({ id, damage, name: entityName(id).name, lastDamageAt: sourceLastSeen.get(id),
         localPlayer: id === player?.sourceId })).sort((a, b) => b.damage - a.damage), deathLog: deathLog.status() }
   }
+  function identificationState(): NonNullable<OverlayState['identification']> {
+    const player = identity.snapshot()
+    const live = mode === 'live' && (status === 'starting' || status === 'live')
+    const traffic = firstDamageSeen || recentDamage.length > 0 || sources.size > 0
+    const bound = config.sourceId !== null
+    const profileDetail = player
+      ? player.method === 'status-profile' ? 'Ficha e perfil vinculados.'
+        : player.method === 'profile-name' ? 'Perfil nominal recebido.'
+          : player.method === 'local-state' ? 'Entidade local confirmada pelo jogo.' : 'Fallback solo aplicado; o perfil confirmará quando chegar.'
+      : traffic ? 'Aguardando a ficha, entidade local ou fallback solo.' : 'Aguardando tráfego do jogo.'
+    const steps = [
+      { id: 'capture' as const, label: 'Leitura ativa', detail: status === 'live' ? 'Túnel do jogo conectado.' : status === 'starting' ? 'Conectando ao túnel do jogo.' : 'Inicie a leitura para continuar.', state: status === 'live' ? 'complete' as const : live ? 'active' as const : 'pending' as const },
+      { id: 'traffic' as const, label: 'Tráfego recebido', detail: traffic ? 'Eventos de combate detectados.' : 'Aguardando os primeiros eventos.', state: traffic ? 'complete' as const : live ? 'active' as const : 'pending' as const },
+      { id: 'profile' as const, label: 'Personagem reconhecido', detail: profileDetail, state: player ? 'complete' as const : traffic ? 'active' as const : 'pending' as const },
+      { id: 'binding' as const, label: 'Origem vinculada', detail: bound ? 'O medidor já acompanha seu personagem.' : player ? 'Vinculando a origem identificada.' : 'Será vinculada automaticamente.', state: bound ? 'complete' as const : player ? 'active' as const : 'pending' as const },
+    ]
+    const completed = steps.filter(step => step.state === 'complete').length
+    const phase = status === 'error' ? 'error' : bound ? 'confirmed' : player ? 'binding' : traffic ? 'profile' : live ? 'traffic' : 'idle'
+    return { phase, progress: completed / steps.length * 100, steps }
+  }
+  function restartIdentification(): OverlayState {
+    if (mode !== 'live' || status === 'stopped') start()
+    const at = Date.now()
+    finishEncounter('identification-retry', meter.snapshot(at).lastActivityAt ?? at)
+    newEncounter(null)
+    identity.clear(); statusProfiles.clear(); clearTimeout(statusProfileTimer); clearSoloDamageProbe()
+    sessionPlayerName = null; encounterConnectionId = null; lastCombatDamageAt = null; firstDamageSeen = false
+    config.autoSource = true; config.sourceId = null; config.playerName = undefined
+    sources.clear(); sourceLastSeen.clear(); recentDamage = []
+    characterStats.reset(); meter.selectSource(null, at); bindDeathLog()
+    message = 'Reconhecimento reiniciado. Abra a ficha de atributos para priorizar o vínculo; entidade local e sequência solo continuam como fallback.'
+    save(); broadcast()
+    return state()
+  }
   function characterState(): ReturnType<CharacterStatsLog['get']> {
     const player = identity.snapshot()
-    return characterStats.get(captureId, mode === 'live' && player?.method === 'profile-name' && player.sourceId === config.sourceId ? player : null, config.playerName ?? '')
+    const fromStatus = player?.method === 'profile-name' || player?.method === 'status-profile'
+    return characterStats.get(captureId, mode === 'live' && fromStatus && player?.sourceId === config.sourceId ? player : null, sessionPlayerName ?? '')
   }
   function bindDeathLog(connectionId = encounterConnectionId ?? identity.snapshot()?.connectionId): void {
     buffs.bind(mode && connectionId && meter.sourceId !== null ? { captureId, connectionId, playerId: meter.sourceId } : null)
     deathLog.recorder.bind(mode && connectionId && meter.sourceId !== null ? {
-      captureId, connectionId, playerId: meter.sourceId, playerName: config.playerName ?? entityName(meter.sourceId).name ?? 'Personagem selecionado', mode,
+      captureId, connectionId, playerId: meter.sourceId, playerName: sessionPlayerName ?? entityName(meter.sourceId).name ?? 'Personagem selecionado', mode,
     } : null)
     buffContributions.bind(mode && connectionId && meter.sourceId !== null ? { connectionId, playerId: meter.sourceId } : null)
   }
@@ -204,38 +339,31 @@ export function registerOverlay(owner: BrowserWindow): void {
       if (deathLog.recorder.observeDamage(enriched, connectionId, candidate, aliveCandidate)) deathLog.save()
     } else deathLog.recorder.append(enriched, connectionId)
   }
-  function namesFor(connectionId: string, create = false): Map<number, string> | undefined {
-    let values = sourceNames.get(connectionId)
-    if (!values && create) { values = new Map(); sourceNames.set(connectionId, values) }
-    return values
-  }
-  function conflictsFor(connectionId: string, create = false): Set<number> | undefined {
-    let values = conflictingNames.get(connectionId)
-    if (!values && create) { values = new Set(); conflictingNames.set(connectionId, values) }
-    return values
-  }
-  function rememberProfile(connectionId: string, sourceId: number, name: string): boolean {
-    const conflicts = conflictsFor(connectionId, true)!
-    if (conflicts.has(sourceId)) return false
-    const profiles = namesFor(connectionId, true)!
-    const previous = profiles.get(sourceId)
-    if (previous && identityNameKey(previous) !== identityNameKey(name)) {
-      profiles.delete(sourceId); conflicts.add(sourceId)
-      return false
-    }
-    profiles.set(sourceId, name)
-    return true
-  }
   function configuredPlayerName(name: string): boolean {
-    return Boolean(config.playerName) && identityNameKey(name) === identityNameKey(config.playerName!)
+    return Boolean(sessionPlayerName) && name.normalize('NFKC').trim().toLocaleLowerCase('pt-BR') === sessionPlayerName!.normalize('NFKC').trim().toLocaleLowerCase('pt-BR')
+  }
+  function scheduleStatusProfileSettlement(): void {
+    clearTimeout(statusProfileTimer)
+    statusProfileTimer = setTimeout(() => {
+      if (mode !== 'live') return
+      for (const matched of statusProfiles.settle(Date.now())) {
+        if (config.autoSource === false || identity.isRetired(matched.connectionId)) continue
+        const previous = identity.snapshot()
+        sessionPlayerName = matched.name
+        const change = identity.identify(matched.sourceId, matched.connectionId, matched.observedAt, 'status-profile')
+        if (change !== 'changed') continue
+        if (previous && previous.connectionId !== matched.connectionId) {
+          finishEncounter('connection-change')
+          sources.clear(); sourceLastSeen.clear(); sourceRegistry.clear()
+        }
+        bindSource(matched.sourceId, matched.observedAt, 'status-profile')
+        message = `Personagem reconhecido pela ficha: ${matched.name}.`
+      }
+      broadcast()
+    }, 700)
   }
   function entityName(id: number, connectionId = encounterConnectionId ?? identity.snapshot()?.connectionId): { name?: string; npcId?: number } {
-    const profile = connectionId ? namesFor(connectionId)?.get(id) : undefined
-    if (profile) return { name: profile }
-    const npcId = connectionId ? npcTemplates.get(connectionId)?.get(id) : null
-    if (npcId && overlayNpcNames[String(npcId)]) return { name: overlayNpcNames[String(npcId)], npcId }
-    const observed = connectionId ? observedNames.get(connectionId)?.get(id) : undefined
-    return observed ? { name: observed } : {}
+    return sourceRegistry.entity(connectionId, id, overlayNpcNames)
   }
   function groupProfile(connectionId: string, actor: number, name: string): void {
     groupDamage.profile(connectionId, actor, name)
@@ -245,12 +373,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     for (const meter of segmentHealing.values()) meter.profile(profile)
   }
   function rememberObservedName(connectionId: string, actor: number, name?: string): void {
-    if (!Number.isSafeInteger(actor) || actor <= 0 || typeof name !== 'string' || !name.trim() || name.length > 96 || name.trim() !== name || /[\p{C}]/u.test(name)) return
-    let labels = observedNames.get(connectionId)
-    if (!labels) { labels = new Map(); observedNames.set(connectionId, labels) }
-    const previous = labels.get(actor)
-    if (previous && identityNameKey(previous) !== identityNameKey(name)) { labels.delete(actor); return }
-    labels.set(actor, name)
+    sourceRegistry.rememberObservedLabel(connectionId, actor, name)
     groupDamage.label(connectionId, actor, name)
     for (const meter of segmentDamage.values()) meter.label(connectionId, actor, name)
   }
@@ -277,7 +400,16 @@ export function registerOverlay(owner: BrowserWindow): void {
     }
     return meter ?? null
   }
-  function groupEvent(connectionId: string, event: MeterEvent): void {
+  function groupEvent(connectionId: string, event: MeterEvent, direction: string): void {
+    const bucket = Math.floor(event.time * 4)
+    const key = `${connectionId}:${bucket}:${event.sourceId}:${event.targetId ?? 0}:${event.skillId}:${event.damage}`
+    const previous = groupDirectionEvents.get(key)
+    if (previous && previous.direction !== direction && Math.abs(previous.time - event.time) <= .35) return
+    groupDirectionEvents.set(key, { direction, time: event.time })
+    if (groupDirectionEvents.size > 12_000) {
+      const expires = event.time - 3
+      for (const [candidate, seen] of groupDirectionEvents) if (seen.time < expires) groupDirectionEvents.delete(candidate)
+    }
     groupDamage.add(connectionId, event)
     const segment = groupSegments.addEvent({ connectionId, actorId: 'group', at: event.time * 1000, data: { targetId: event.targetId ?? 0 } })
     if (segment) {
@@ -285,6 +417,9 @@ export function registerOverlay(owner: BrowserWindow): void {
       groupReceived.add({ connectionId, segmentId: segment.id, time: event.time, sourceId: event.sourceId, targetId: event.targetId ?? 0,
         skillId: event.skillId, damage: event.damage, critical: event.criticalCandidate, heavy: Boolean(event.heavyCandidate) })
     }
+    // Sem sinal explícito de saída, a expiração fecha e arquiva a luta por
+    // inatividade. Um novo pacote reinicia este prazo naturalmente.
+    scheduleGroupEncounterArchive(16_000)
   }
   function groupHealEvent(connectionId: string, event: MeterHealingEvent): void {
     const segment = groupSegments.active(connectionId, 'group')
@@ -295,7 +430,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   function combatSegments(at: number): OverlayCombatSegment[] {
     groupSegments.expire(at)
     return groupSegments.snapshotAll().filter(segment => segmentDamage.has(segment.id)).map(segment => {
-      const templates = [...new Set(segment.events.map(event => npcTemplates.get(segment.connectionId)?.get(event.data.targetId))
+      const templates = [...new Set(segment.events.map(event => sourceRegistry.templateId(segment.connectionId, event.data.targetId))
         .filter((id): id is number => Number.isSafeInteger(id) && id > 0))]
       const dominant = classifyEncounterTargets(templates.map(templateId => ({ templateId }))).dominant
       return { id: segment.id, connectionId: segment.connectionId, startedAt: segment.startedAt, endedAt: segment.endedAt,
@@ -408,6 +543,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   function stop(): void {
     meter.cancelSchedule(Date.now())
     meter.setPaused(true, mode === 'replay' ? (replayClock ?? Date.now()) : Date.now())
+    clearSoloDamageProbe()
     finishEncounter('stop')
     unknownLog.flush()
     if (mode === 'live') buffLog.append({ type: 'capture-stop', captureId, time: Date.now()/1000 })
@@ -429,12 +565,14 @@ export function registerOverlay(owner: BrowserWindow): void {
     const token = revision
     newEncounter(null)
     captureId = `${Date.now()}-${token}`
+    rosterDiagnostic = { file: config.rosterDiagnostics ? path.join(app.getPath('userData'), 'logs', 'dps-meter', 'roster', `${captureId}.jsonl`) : '', events: 0, error: null }
     captureStartedAt = replay ? 0 : Date.now()
     lastCombatDamageAt = null
+    firstDamageSeen = false
     resumedAt = captureStartedAt
-    identity.clear(); sourceLastSeen.clear(); recentDamage = []
-    groupDamage.clear()
-    groupSegments.clear(); segmentDamage.clear(); groupHealing.clear(); segmentHealing.clear(); groupReceived.clear(); config.groupSegmentId = null
+    identity.clear(); statusProfiles.clear(); clearTimeout(statusProfileTimer); clearSoloDamageProbe(); sessionPlayerName = null; sourceLastSeen.clear(); recentDamage = []
+    groupDamage.clear(); groupDirectionEvents.clear()
+    groupSegments.clear(); segmentDamage.clear(); groupHealing.clear(); segmentHealing.clear(); groupReceived.clear(); config.groupSegmentId = null; config.groupEncounterId = null
     characterStats.reset()
     config.reviewEncounterId = null
     const scripts = app.isPackaged ? path.join(process.resourcesPath, 'npcap-overlay') : path.join(app.getAppPath(), 'scripts')
@@ -446,7 +584,7 @@ export function registerOverlay(owner: BrowserWindow): void {
       fs.writeFileSync(healingFile, JSON.stringify(healingReference))
     } catch { status = 'error'; message = 'Não foi possível preparar a referência de cura.'; return }
     sources.clear()
-    sourceNames.clear(); conflictingNames.clear(); observedNames.clear(); npcTemplates.clear()
+    sourceRegistry.clear()
     // Uma origem que o usuário informou manualmente vale para a sessão atual
     // inteira, inclusive se ele configurar o código antes de iniciar a leitura.
     // Ela continua sendo apagada ao reiniciar o app, pois IDs podem mudar ao
@@ -463,7 +601,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     if (!replay) buffLog.start(captureId)
     replayClock = null
     let pending = '', errors = ''
-    const proc = spawn(python(), ['-u', worker, '--healing-reference', healingFile, ...(replay ? ['--replay', replay, '--speed', String(speed)] : ['--follow-loopback-server'])],
+    const proc = spawn(python(), ['-u', worker, '--healing-reference', healingFile, ...(replay ? ['--replay', replay, '--speed', String(speed)] : ['--follow-loopback-server', ...(config.rosterDiagnostics ? ['--roster-diagnostic'] : [])])],
       { windowsHide: true, env: { ...process.env, PYTHONIOENCODING: 'utf-8' } })
     child = proc
     proc.stdout?.on('data', buffer => {
@@ -476,8 +614,31 @@ export function registerOverlay(owner: BrowserWindow): void {
         try {
           const data = JSON.parse(line)
           if (data.type === 'status') {
-            status = ['live', 'replay', 'stopped', 'error'].includes(data.state) ? data.state : 'error'
+            status = ['starting', 'live', 'replay', 'stopped', 'error'].includes(data.state) ? data.state : 'error'
             message = String(data.message).slice(0, 500)
+          } else if (data.type === 'capture-channel-rejected' && mode === 'live') {
+            // Um canal auxiliar pode usar outro formato local. O worker o
+            // isola, sem encerrar as outras tentativas de captura do TL.
+            if (status === 'live') message = 'Canal auxiliar ignorado; procurando o fluxo de dano do TL.'
+          } else if (data.type === 'capture-traffic' && mode === 'live') {
+            // O túnel pode transportar dados antes de uma habilidade causar
+            // dano. Este sinal não seleciona uma origem nem altera totais;
+            // apenas confirma que o gatilho físico chegou ao leitor.
+            if (Number.isFinite(data.time) && data.time * 1000 >= captureStartedAt) {
+              if (!firstDamageSeen && status === 'live') message = 'Tráfego do jogo detectado. Aguardando o primeiro pacote de dano.'
+            }
+          } else if (data.type === 'roster-observation' && mode === 'live' && config.rosterDiagnostics) {
+            const ids = Array.isArray(data.entityIds) ? data.entityIds.filter((value: unknown) => Number.isSafeInteger(value) && value > 0 && value < 2 ** 53).slice(0, 32) : []
+            const labels = Array.isArray(data.names) ? data.names.filter((value: unknown) => typeof value === 'string' && value.length >= 2 && value.length <= 64
+              && value.trim() === value && !/[\p{C}\s]/u.test(value)).slice(0, 8) : []
+            if (!ids.length || !labels.length || typeof data.connectionId !== 'string' || data.connectionId.length > 128 || !Number.isFinite(data.time)
+              || typeof data.opcode !== 'string' || !/^0x1234[0-9a-f]+$/i.test(data.opcode) || !Number.isSafeInteger(data.bytes) || data.bytes < 0 || data.bytes > 1048576) continue
+            try {
+              fs.mkdirSync(path.dirname(rosterDiagnostic.file), { recursive: true })
+              fs.appendFileSync(rosterDiagnostic.file, JSON.stringify({ schemaVersion: 1, type: 'roster-candidate', captureId, time: data.time,
+                connectionId: data.connectionId, opcode: data.opcode, bytes: data.bytes, entityIds: ids, names: labels }) + '\n')
+              rosterDiagnostic.events++
+            } catch (error) { rosterDiagnostic.error = `Falha ao gravar diagnóstico de Vanguarda: ${error instanceof Error ? error.message : String(error)}` }
           } else if (data.type === 'sources' && Array.isArray(data.ids)) {
             if (mode === 'replay' && Number.isFinite(data.time)) replayClock = data.time * 1000
             for (const id of data.ids) if (Number.isSafeInteger(id)) sources.set(id, 0)
@@ -488,6 +649,10 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (!Number.isFinite(data.time) || data.time*1000 < captureStartedAt || typeof data.connectionId!=='string'
               || identity.isRetired(data.connectionId) || data.raw?.direction!=='server-to-client') continue
             characterStats.observe(data.connectionId,data.time,data.values)
+            // A ficha de atributos é emitida para o personagem local. Esperamos
+            // o perfil nominal único do mesmo burst antes de selecionar a origem.
+            statusProfiles.observeStats(data.connectionId, Date.now())
+            scheduleStatusProfileSettlement()
           } else if (data.type === 'buff' && mode === 'live') {
             if (!validBuffEvent(data.event) || data.event.time * 1000 < captureStartedAt || identity.isRetired(data.event.connectionId)
               || data.raw?.direction !== 'server-to-client') continue
@@ -525,17 +690,21 @@ export function registerOverlay(owner: BrowserWindow): void {
             groupDamage.close(data.connectionId)
             for (const meter of segmentDamage.values()) meter.close(data.connectionId)
             groupSegments.exitCombat(data.connectionId, 'group', Number.isFinite(data.time) ? data.time * 1000 : Date.now())
+            scheduleGroupEncounterArchive()
             characterState(); characterStats.retire(data.connectionId)
             buffLog.append({ type: 'connection-closed', captureId, connectionId: data.connectionId, time: data.time ?? Date.now()/1000 })
             if (identity.accepts(data.connectionId) || encounterConnectionId === data.connectionId) {
-              finishEncounter('connection-end')
-              sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear(); observedNames.clear(); recentDamage = []
+              // O ExitLag pode renovar fluxos TCP durante a mesma atividade.
+              // O corte de grupo é guiado por combat-exit/inatividade; fechar
+              // esta conexão apenas reinicia a identificação individual.
+              sources.clear(); sourceLastSeen.clear(); recentDamage = []
               config.sourceId = null; config.reviewEncounterId = null
+              sessionPlayerName = null; statusProfiles.clear(); clearTimeout(statusProfileTimer)
               meter.selectSource(null, Date.now()); lastCombatDamageAt = null; newEncounter(null); save()
               deathLog.recorder.bind(null)
               buffs.bind(null)
             }
-            npcTemplates.delete(data.connectionId)
+            sourceRegistry.close(data.connectionId)
             identity.retire(data.connectionId); broadcast()
           } else if (data.type === 'npc' && mode === 'live') {
             if (typeof data.connectionId !== 'string' || !data.connectionId.length || data.connectionId.length > 128
@@ -543,18 +712,11 @@ export function registerOverlay(owner: BrowserWindow): void {
               || !Number.isSafeInteger(data.npcId) || !overlayNpcNames[String(data.npcId)]
               || !Number.isFinite(data.time) || data.time * 1000 < captureStartedAt) continue
             groupNpc(data.connectionId, data.sourceId, data.npcId)
-            let templates = npcTemplates.get(data.connectionId)
-            if (!templates) {
-              if (npcTemplates.size >= 16) continue
-              templates = new Map(); npcTemplates.set(data.connectionId, templates)
-            }
-            if (templates.size >= 50000 && !templates.has(data.sourceId)) continue
-            const previous = templates.get(data.sourceId)
-            templates.set(data.sourceId, previous === undefined || previous === data.npcId ? data.npcId : null)
+            if (!sourceRegistry.rememberNpc(data.connectionId, data.sourceId, data.npcId)) continue
             broadcast()
           } else if (data.type === 'combat-state' && mode === 'live') {
             const player = identity.snapshot(), at = data.time * 1000
-            if (!player || player.method !== 'profile-name' || player.sourceId !== meter.sourceId
+            if (!player || (player.method !== 'profile-name' && player.method !== 'status-profile') || player.sourceId !== meter.sourceId
               || player.sourceId !== data.sourceId || player.connectionId !== data.connectionId
               || data.raw?.direction !== 'server-to-client' || !Number.isFinite(at) || at < captureStartedAt || at < lastGameCombatStateAt
               || !['enter','exit'].includes(data.action) || meter.measurementWindow) continue
@@ -565,24 +727,33 @@ export function registerOverlay(owner: BrowserWindow): void {
               groupSegments.enterCombat(data.connectionId, 'group', at)
             } else {
               groupSegments.exitCombat(data.connectionId, 'group', at)
+              scheduleGroupEncounterArchive()
               if (meter.endCombat(at)) finishEncounter('game-combat-end', at)
             }
             broadcast()
           } else if (data.type === 'local-player' && mode === 'live') {
             const previous = identity.snapshot()
-            // 30/10: este sinal também apareceu para terceiros na mesma conexão.
-            // Com nome configurado, somente o perfil correspondente autoriza vincular/trocar entidade.
-            if (!config.playerName || previous?.sourceId !== data.sourceId || previous?.connectionId !== data.connectionId) continue
+            // O opcode é emitido pelo cliente para a entidade local. Não esperar
+            // a ficha: ela pode não ser reenviada numa dungeon já em andamento.
+            // Uma identidade forte nunca é trocada por este fallback; somente a
+            // primeira entidade da conexão (ou uma inferência solo anterior)
+            // pode ser corrigida por ele. Perfis/atributos posteriores continuam
+            // sendo a confirmação nominal e substituem o fallback normalmente.
+            if (entityName(data.sourceId, data.connectionId).npcId
+              || (previous && previous.connectionId === data.connectionId && previous.sourceId !== data.sourceId
+                && previous.method !== 'solo-damage')) continue
             observeDeathEvent({ type: 'state', time: data.time, targetId: data.sourceId, raw: data.raw }, data.connectionId)
-            const change = identity.identify(data.sourceId, data.connectionId, data.time * 1000, previous?.method ?? 'local-state')
+            const change = identity.identify(data.sourceId, data.connectionId, data.time * 1000, 'local-state')
             if (change === 'changed') {
               if (previous && previous.connectionId !== data.connectionId) {
-                // Finaliza com a identidade anterior antes de descartar as origens da conexão.
-                finishEncounter('connection-change')
-                sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear(); observedNames.clear()
+                // Uma renovação de fluxo não cria um encontro novo. Evidências
+                // de grupo são isoladas por conexão e precisam sobreviver para
+                // o agrupamento posterior do chefe.
+                sources.clear(); sourceLastSeen.clear()
               }
               if (config.autoSource !== false) bindSource(data.sourceId, data.time * 1000, previous ? 'entity-change' : 'local-player')
               else if (previous && previous.connectionId !== data.connectionId) bindSource(null, data.time * 1000, 'connection-change')
+              message = 'Origem local reconhecida pelo estado do cliente; perfil nominal será associado quando recebido.'
               broadcast()
             }
           } else if (data.type === 'identity') {
@@ -595,7 +766,9 @@ export function registerOverlay(owner: BrowserWindow): void {
             if (mode === 'live') groupProfile(data.connectionId, data.sourceId, data.name)
             if (mode === 'live') buffLog.append({ type: 'profile-observation', captureId, connectionId: data.connectionId,
               sourceId: data.sourceId, name: data.name, time: data.time })
-            if (!rememberProfile(data.connectionId, data.sourceId, data.name)) continue
+            if (!sourceRegistry.rememberProfile(data.connectionId, data.sourceId, data.name)) continue
+            statusProfiles.observeProfile(data.connectionId, data.sourceId, data.name, Date.now())
+            scheduleStatusProfileSettlement()
             if (mode === 'live' && configuredPlayerName(data.name)) {
                 const previousPlayer = identity.snapshot()
                 if (previousPlayer && previousPlayer.connectionId === data.connectionId && previousPlayer.sourceId !== data.sourceId) characterStats.retire(data.connectionId)
@@ -603,8 +776,7 @@ export function registerOverlay(owner: BrowserWindow): void {
                 const change = identity.identify(data.sourceId, data.connectionId, observedAt, 'profile-name')
                 if (change === 'changed' && previousPlayer && previousPlayer.connectionId !== data.connectionId) {
                   finishEncounter('connection-change')
-                  sources.clear(); sourceLastSeen.clear(); sourceNames.clear(); conflictingNames.clear(); observedNames.clear()
-                  namesFor(data.connectionId, true)!.set(data.sourceId, data.name)
+                  sources.clear(); sourceLastSeen.clear(); sourceRegistry.clear()
                 }
                 if (change === 'changed' && config.autoSource !== false) bindSource(data.sourceId, observedAt, 'profile-name')
                 if (change !== 'ignored') broadcast()
@@ -623,14 +795,27 @@ export function registerOverlay(owner: BrowserWindow): void {
             observeDeathEvent({ ...event, type: healing ? 'healing' : 'damage', raw: data.raw }, data.connectionId,
               data.deathCandidate === true, data.aliveCandidate === true)
             if (mode === 'replay') replayClock = event.time * 1000
+            // O grupo começa no primeiro dano decodificado, mesmo quando o
+            // medidor individual ainda não reconheceu o personagem, está
+            // pausado ou tem cronômetro. Isso evita perder a luta coletiva
+            // enquanto os fallbacks de identidade se resolvem.
+            if (!healing && mode === 'live' && typeof data.connectionId === 'string' && !identity.isRetired(data.connectionId)) {
+              const direction = data.raw?.direction
+              if (direction === 'server-to-client' || direction === 'client-to-server') groupEvent(data.connectionId, event, direction)
+              observeSoloDamageSource(data.connectionId, event, direction)
+              if (!firstDamageSeen) {
+                firstDamageSeen = true
+                message = identity.snapshot()
+                  ? 'Dano detectado. Medição individual e de grupo ativas.'
+                  : 'Dano detectado. Grupo ativo; identificando seu personagem automaticamente.'
+              }
+            }
             // Visibilidade acompanha o combate mesmo com a medição pausada ou fora da janela do teste.
             if (mode === 'live' && typeof data.connectionId === 'string' && data.connectionId.length > 0 && data.connectionId.length <= 128
               && !identity.isRetired(data.connectionId) && (!identity.snapshot() || identity.accepts(data.connectionId)) && !healing) observeCombatDamage(event)
             if (meter.paused || event.time * 1000 < resumedAt) continue
             const timed = meter.measurementWindow
             if (timed && (event.time * 1000 < timed.startsAt || event.time * 1000 >= timed.endsAt)) continue
-            if (!healing && mode === 'live' && typeof data.connectionId === 'string' && !identity.isRetired(data.connectionId)
-              && data.raw?.direction === 'server-to-client') groupEvent(data.connectionId, event)
             if (healing && mode === 'live' && typeof data.connectionId === 'string' && !identity.isRetired(data.connectionId)
               && data.raw?.direction === 'server-to-client') groupHealEvent(data.connectionId, event)
             if (mode === 'live') {
@@ -772,7 +957,12 @@ export function registerOverlay(owner: BrowserWindow): void {
     } catch (error) { return { ...history.list(), error: `Limpeza incompleta: ${String(error)}` } }
   })
   ipcMain.handle('overlay:configure', (_event, patch: Partial<OverlayConfig>) => {
-    if (typeof patch.playerName === 'string' && patch.playerName.trim().length <= 64 && !/[\p{C}]/u.test(patch.playerName)) config.playerName = patch.playerName.trim()
+    if (typeof patch.playerName === 'string' && patch.playerName.trim().length <= 64 && !/[\p{C}]/u.test(patch.playerName)) {
+      config.playerName = patch.playerName.trim()
+      // Campo manual é só uma contingência da leitura atual; o próximo login
+      // volta a exigir reconhecimento pela ficha, nunca reutiliza este nome.
+      sessionPlayerName = config.playerName || null
+    }
     if (patch.metricPage && ['damage', 'damageTargets', 'receivedSources', 'receivedSkills', 'healingDone', 'healingReceived'].includes(patch.metricPage)) config.metricPage = patch.metricPage
     if ('reviewEncounterId' in patch) {
       config.reviewEncounterId = typeof patch.reviewEncounterId === 'string'
@@ -781,8 +971,16 @@ export function registerOverlay(owner: BrowserWindow): void {
     if ('groupSegmentId' in patch) {
       config.groupSegmentId = patch.groupSegmentId === null ? null
         : Number.isSafeInteger(patch.groupSegmentId) && segmentDamage.has(patch.groupSegmentId) ? patch.groupSegmentId : null
+      if (config.groupSegmentId !== null) config.groupEncounterId = null
     }
-    for (const key of ['locked', 'singleWindow', 'totalVisible', 'skillsVisible', 'controlsVisible', 'controlsExpanded', 'hideOutOfCombat'] as const) {
+    if ('groupEncounterId' in patch) {
+      config.groupEncounterId = patch.groupEncounterId === null ? null
+        : patch.groupEncounterId === '__all__' ? '__all__'
+        : typeof patch.groupEncounterId === 'string' && combatEncounters(Date.now()).some(row => row.id === patch.groupEncounterId)
+          ? patch.groupEncounterId : null
+      if (config.groupEncounterId !== null) config.groupSegmentId = null
+    }
+    for (const key of ['locked', 'singleWindow', 'totalVisible', 'skillsVisible', 'controlsVisible', 'controlsExpanded', 'hideOutOfCombat', 'groupByName'] as const) {
       if (typeof patch[key] === 'boolean') config[key] = patch[key]!
     }
     if (Number.isFinite(patch.opacity)) config.opacity = Math.max(.25, Math.min(1, patch.opacity!))
@@ -832,6 +1030,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   })
   ipcMain.handle('overlay:start', () => { start(); broadcast(); return state() })
   ipcMain.handle('overlay:stop', () => { stop(); broadcast(); return state() })
+  ipcMain.handle('overlay:identify', () => restartIdentification())
   ipcMain.handle('overlay:pause', (_event, paused: boolean) => {
     if (typeof paused === 'boolean' && !meter.measurementWindow && (status === 'live' || status === 'replay')) {
       const at = mode === 'replay' ? (replayClock ?? Date.now()) : Date.now()
@@ -864,7 +1063,7 @@ export function registerOverlay(owner: BrowserWindow): void {
     windows[panel]?.setIgnoreMouseEvents(config.locked && !enabled, { forward: true })
   })
   ipcMain.handle('overlay:reset', () => { finishEncounter('reset'); newEncounter(); recentDamage = []; config.reviewEncounterId = null;
-    groupDamage.clearDamage(); groupSegments.clear(); segmentDamage.clear(); groupHealing.clear(); segmentHealing.clear(); groupReceived.clear(); config.groupSegmentId = null
+    groupDamage.clearDamage(); groupDirectionEvents.clear(); groupSegments.clear(); segmentDamage.clear(); groupHealing.clear(); segmentHealing.clear(); groupReceived.clear(); config.groupSegmentId = null; config.groupEncounterId = null
     meter.reset(mode === 'replay' ? (replayClock ?? 0) : Date.now()); save(); broadcast(); return state() })
   ipcMain.handle('overlay:bounds', (_event, panel: OverlayPanel, bounds: PanelBounds) => {
     if (!panels.includes(panel) || (panel !== 'controls' && config.locked) || !bounds || !gameBounds
@@ -915,6 +1114,6 @@ export function registerOverlay(owner: BrowserWindow): void {
     globalShortcut.unregister('CommandOrControl+Shift+F9'); globalShortcut.unregister('CommandOrControl+Shift+F10')
     globalShortcut.unregister('CommandOrControl+Shift+F8')
     globalShortcut.unregister('CommandOrControl+Shift+F11')
-    for (const name of ['get', 'character-stats', 'open-build-import', 'buffs', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
+    for (const name of ['get', 'character-stats', 'open-build-import', 'buffs', 'history', 'deaths', 'record-death', 'clear-records', 'configure', 'identify', 'start', 'stop', 'pause', 'timer', 'interactive', 'reset', 'bounds', 'replay']) ipcMain.removeHandler(`overlay:${name}`)
   })
 }

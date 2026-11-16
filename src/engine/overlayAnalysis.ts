@@ -17,6 +17,29 @@ export const normalizeSearch = (value: string): string => value.normalize('NFD')
 export const metricRate = (amount: number, seconds: number): number => Number.isFinite(seconds) && seconds >= 1 ? amount / seconds : 0
 export const hitAverage = (row: AnalysisRow): number => row.hits > 0 ? row.damage / row.hits : 0
 
+/** Consolida somente linhas de habilidade pelo nome exibido, preservando IDs e faixas de dano. */
+export function groupAnalysisRowsByName(rows: AnalysisRow[]): AnalysisRow[] {
+  const grouped = new Map<string, AnalysisRow>()
+  for (const row of rows) {
+    const normalized = normalizeSearch(row.name)
+    const key = `name:${normalized || row.key}`
+    const existing = grouped.get(key)
+    if (!existing) {
+      grouped.set(key, { ...row, key, skillIds: row.skillIds?.slice(),
+        ...(row.damageByKind ? { damageByKind: { ...row.damageByKind } } : {}) })
+      continue
+    }
+    existing.damage += row.damage; existing.hits += row.hits
+    existing.critical = (existing.critical ?? 0) + (row.critical ?? 0)
+    existing.heavy = (existing.heavy ?? 0) + (row.heavy ?? 0)
+    existing.skillIds = [...new Set([...(existing.skillIds ?? []), ...(row.skillIds ?? [])])]
+    if (existing.damageByKind && row.damageByKind) for (const kind of Object.keys(existing.damageByKind) as Array<keyof DamageBreakdown>) {
+      existing.damageByKind[kind] += row.damageByKind[kind]
+    }
+  }
+  return [...grouped.values()]
+}
+
 export function metricData(session: MeterSession, page: MetricPage): MetricData {
   const healing = page === 'healingDone' || page === 'healingReceived'
   if (page === 'damage') return { rows: session.skills, total: session.total, hits: session.hits, available: true, healing, rateLabel: 'DPS' }

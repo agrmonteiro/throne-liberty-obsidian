@@ -4,7 +4,10 @@ import { overlayBackground, overlayTheme } from '../engine/overlayLayout'
 
 export function overlayAppearance(config: OverlayConfig): CSSProperties {
   const theme = overlayTheme(config)
-  return { fontFamily: `${config.fontFamily ?? 'Inter'}, Arial, sans-serif`,
+  const fontFamily = config.fontFamily === 'Consolas' ? 'Consolas, "Cascadia Mono", monospace'
+    : config.fontFamily === 'Arial' ? 'Arial, "Segoe UI", sans-serif'
+      : '"Segoe UI Variable", "Segoe UI", Inter, Arial, sans-serif'
+  return { fontFamily,
     '--meter-chart-padding': `${Number.isFinite(config.chartPadding) ? Math.max(0, Math.min(32, config.chartPadding!)) : 12}px`,
     '--meter-chart-padding-vertical': `${Number.isFinite(config.chartPaddingVertical) ? Math.max(0, Math.min(32, config.chartPaddingVertical!)) : 10}px`,
     '--meter-text': theme.text, '--meter-accent': theme.accent,

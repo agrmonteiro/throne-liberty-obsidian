@@ -24,14 +24,16 @@ function DamageLegend({ values, total }: { values?: DamageBreakdown; total?: num
   </div>
 }
 
-export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, preview = false, historical = false }: {
+export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, preview = false, historical = false, showSearch = true, showReset = true, showTimeline = true }: {
   panel: 'total' | 'skills'; state: OverlayState; onReset: () => void; onHide?: () => void
-  onSelectSource?: (id: number | null) => void; preview?: boolean; historical?: boolean
+  onSelectSource?: (id: number | null) => void; preview?: boolean; historical?: boolean; showSearch?: boolean; showReset?: boolean; showTimeline?: boolean
 }): React.ReactElement {
   const { session, config } = state
   const editable = !historical && (!config.locked || preview)
   const sourceWarning = overlaySourceWarning(state)
-  const captureNotice = state.status === 'error' ? state.message : sourceWarning
+  const liveCaptureNotice = state.status === 'live' && session.lastDamageAt === null
+    && /túnel|tráfego|primeiro pacote/i.test(state.message) ? state.message : undefined
+  const captureNotice = state.status === 'error' || state.status === 'starting' ? state.message : sourceWarning ?? liveCaptureNotice
   return <section className={`meter-panel meter-${panel}`} style={overlayAppearance(config)}>
     <header className="meter-panel-header">
       <span className={`meter-dot ${state.status === 'live' && !sourceWarning ? 'on' : ''}`} />
@@ -40,7 +42,7 @@ export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, prev
       {editable && <div className="meter-panel-actions">
         {onSelectSource && <button className="meter-identify-button" title="Detectar origem novamente: reinicia o acumulado e usa a próxima origem com dano" aria-label="Detectar origem automaticamente"
           onClick={() => onSelectSource(null)}>Auto</button>}
-        <button onClick={onReset} title="Resetar os dois painéis" aria-label="Resetar os dois painéis">↺</button>
+        {showReset && <button onClick={onReset} title="Resetar os dois painéis" aria-label="Resetar os dois painéis">↺</button>}
         {onHide && <button onClick={onHide} title="Ocultar painel" aria-label="Ocultar painel">×</button>}
       </div>}
     </header>
@@ -54,9 +56,9 @@ export function MeterPanel({ panel, state, onReset, onHide, onSelectSource, prev
       </div>
       <div className="meter-damage-summary"><DamageStack values={session.damageByKind} total={session.total} />
         <DamageLegend values={session.damageByKind} total={session.total} /></div>
-    </div> : <><MeterSkillTable state={state} page="damage" emptyMessage={captureNotice ?? 'Aguardando dano do seu personagem…'} /><DamageLegend /></>}
+    </div> : <><MeterSkillTable state={state} page="damage" showSearch={showSearch} showTimeline={showTimeline} emptyMessage={captureNotice ?? 'Aguardando dano do seu personagem…'} /><DamageLegend /></>}
     <footer className="meter-session-status">
-      <span>{historical ? 'Registro salvo' : state.status === 'error' ? state.message : session.paused && ['live', 'replay'].includes(state.status) ? 'Medição pausada · tempo congelado' : captureNotice ?? (session.gameCombatEnded ? 'Combate encerrado · tempo congelado' : session.waitingReset ? 'Nova sessão no próximo dano' : session.lastDamageAt ? `Sem dano há ${duration(session.idleSec)}` : 'Aguardando primeiro dano')}</span>
+      <span>{historical ? 'Registro salvo' : state.status === 'error' ? state.message : session.paused && ['live', 'replay'].includes(state.status) ? 'Medição pausada · tempo congelado' : captureNotice ?? (session.gameCombatEnded ? 'Combate encerrado · tempo congelado' : session.waitingReset ? 'Combate inativo · DPS congelado' : session.lastDamageAt ? `Sem dano há ${duration(session.idleSec)}` : 'Aguardando primeiro dano')}</span>
       <span>{historical ? 'SOMENTE LEITURA' : editable ? 'Combate do jogo' : 'TRAVADO'}</span>
     </footer>
   </section>

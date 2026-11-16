@@ -54,8 +54,8 @@ export function OverlayControls(): React.ReactElement {
         {state.status === 'error' ? state.message : state.session.paused && busy ? 'Medição pausada · tempo e valores congelados' : config.reviewEncounterId ? 'Exibindo histórico · captura continua' : warning ?? (state.status === 'live' ? 'Leitura ao vivo' : state.status === 'starting' ? 'Conectando…' : 'Leitura parada')}
       </div>
       <section className="overlay-control-session" aria-label="Sessão e personagem">
-        <label>Nome do personagem<input key={config.playerName ?? ''} aria-label="Nome do personagem" defaultValue={config.playerName ?? ''} maxLength={64}
-          placeholder="Nome exato no jogo" onBlur={event => configure({ playerName: event.target.value })} /></label>
+        <label>Nome do personagem <small>(preenchido pela ficha nesta sessão)</small><input key={config.playerName ?? ''} aria-label="Nome do personagem" defaultValue={config.playerName ?? ''} maxLength={64}
+          placeholder="Não é necessário informar" onBlur={event => configure({ playerName: event.target.value })} /></label>
         <label>Origem do medidor<select aria-label="Origem do medidor" value={config.autoSource !== false ? 'auto' : config.sourceId ?? ''}
           onChange={event => configure({ sourceId: event.target.value === 'auto' ? null : Number(event.target.value) })}>
           <option value="auto">Meu personagem{player ? ` · ${player.sourceId}` : ' · aguardando identificação'}</option>

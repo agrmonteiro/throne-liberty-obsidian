@@ -1,7 +1,17 @@
 import type { GroupHealingSnapshot } from './groupHealingMeter'
 import type { GroupReceivedSegment } from './groupReceivedMeter'
+import type { OverlayPlayerIdentity } from './overlayIdentity'
+import type { OverlayCombatEncounter } from './overlayCombatEncounters'
 
-export const METER_IDLE_MS = 5 * 60 * 1000
+export { OverlayIdentity, StatusProfileRecognition } from './overlayIdentity'
+export type { OverlayPlayerIdentity } from './overlayIdentity'
+
+/**
+ * Limite de segurança quando o pacote de saída de combate não é observado.
+ * O jogo normalmente encerra a sessão antes disso; sem esse sinal, congelamos
+ * o relógio para que o DPS não continue caindo fora de combate.
+ */
+export const METER_IDLE_MS = 15 * 1000
 export type DamageKind = 'normal' | 'critical' | 'heavy' | 'criticalHeavy'
 export type DamageBreakdown = Record<DamageKind, number>
 export const emptyDamageBreakdown = (): DamageBreakdown => ({ normal: 0, critical: 0, heavy: 0, criticalHeavy: 0 })
@@ -43,58 +53,174 @@ export interface MeterSession {
   paused?: boolean
   gameCombatEnded?: boolean
   lastActivityAt?: number | null; received?: MeterReceived
-  targets?: Array<{ id: number; damage: number; hits: number; name?: string; npcId?: number; identity?: EntityIdentityEvidence; rank?: NpcRankHint; rankSource?: NpcRankSource; skills: MeterSkill[] }>
+  /** Alvos mantidos para filtros e análise posterior; `lastAt` permite priorizar o alvo mais recente. */
+  targets?: Array<{ id: number; damage: number; hits: number; lastAt?: number; name?: string; npcId?: number; identity?: EntityIdentityEvidence; rank?: NpcRankHint; rankSource?: NpcRankSource; skills: MeterSkill[] }>
   healing?: { done: MeterHealing; received: MeterHealing; coverage: 'self-observed' | 'observed' }
   timed?: TimedMeasurement
   /** Granularidade de um segundo; não representa cada pacote individual. */
   timeline?: MeterTimelineEvent[]
-}
-export interface OverlayPlayerIdentity {
-  sourceId: number; connectionId: string; observedAt: number; method: 'local-state' | 'profile-name'
 }
 export type EntityIdentityEvidence = 'profile' | 'npc-template' | 'unresolved' | 'conflict'
 /** Qualidade do NPC normalizada a partir do template local do cliente. */
 export type NpcRankHint = 'boss' | 'champion' | 'elite' | 'normal' | 'unique'
 /** `creature-rank` é o campo explícito do cliente; fallback só existe para builds incompletos. */
 export type NpcRankSource = 'creature-rank' | 'row-fallback'
+/** Família de arma extraída da linha do catálogo local da habilidade. */
+export interface SkillWeaponHint { code: string; label: string }
+export interface GroupSourceWeapon extends SkillWeaponHint {
+  damage: number; hits: number; skillIds: number[]
+}
+export type SourceInferenceKind = 'confirmed-player' | 'confirmed-npc' | 'likely-player' | 'likely-npc' | 'unresolved' | 'conflict'
+export interface SourceInference {
+  kind: SourceInferenceKind; confidence: number
+  votes: { player: number; npc: number; unresolved: number }
+  reasons: string[]
+}
+export interface SourceInferenceInput {
+  profileConfirmed: boolean; npcTemplateConfirmed: boolean; conflict: boolean
+  totalHits: number; weaponHits: number; weaponDamage: number; npcSkillHits: number
+  /** Modelo local treinado só com fontes que o próprio protocolo já confirmou. */
+  model?: SourceEvidenceModel
+}
+export interface SourceEvidenceSample {
+  kind: 'player' | 'npc'; totalHits: number; weaponHits: number; npcSkillHits: number
+}
+export interface SourceEvidenceClassModel {
+  samples: number; totalHits: number; weaponHits: number; npcSkillHits: number
+}
+export interface SourceEvidenceModel {
+  player: SourceEvidenceClassModel; npc: SourceEvidenceClassModel
+}
+
+const emptySourceEvidenceClass = (): SourceEvidenceClassModel => ({ samples: 0, totalHits: 0, weaponHits: 0, npcSkillHits: 0 })
+
+/**
+ * Aprende somente com rótulos fortes recebidos no protocolo nesta conexão.
+ * Nenhum nome, ID ou decisão manual entra no modelo: guardamos apenas contagens
+ * agregadas usadas pelo classificador bayesiano.
+ */
+export function buildSourceEvidenceModel(samples: Iterable<SourceEvidenceSample>): SourceEvidenceModel | undefined {
+  const model: SourceEvidenceModel = { player: emptySourceEvidenceClass(), npc: emptySourceEvidenceClass() }
+  for (const sample of samples) {
+    const row = model[sample.kind]
+    const totalHits = Math.max(0, Math.floor(sample.totalHits))
+    row.samples++
+    row.totalHits += totalHits
+    row.weaponHits += Math.min(totalHits, Math.max(0, Math.floor(sample.weaponHits)))
+    row.npcSkillHits += Math.min(totalHits, Math.max(0, Math.floor(sample.npcSkillHits)))
+  }
+  // Menos de duas observações de cada classe é pouco para alterar o fallback conservador.
+  return model.player.samples >= 2 && model.npc.samples >= 2 ? model : undefined
+}
+
+const clampProbability = (value: number): number => Math.min(1 - 1e-6, Math.max(1e-6, value))
+const logBernoulliEvidence = (hits: number, total: number, probability: number): number => {
+  const safeHits = Math.min(total, Math.max(0, hits))
+  const p = clampProbability(probability)
+  return safeHits * Math.log(p) + (total - safeHits) * Math.log(1 - p)
+}
+
+/** Naive Bayes com suavização de Laplace, treinado de forma automática. */
+function bayesianSourceInference(input: SourceInferenceInput, model: SourceEvidenceModel): SourceInference | undefined {
+  const total = Math.max(1, input.totalHits)
+  const likelihood = (row: SourceEvidenceClassModel): number => {
+    const weaponRate = (row.weaponHits + 1) / (row.totalHits + 2)
+    const npcRate = (row.npcSkillHits + 1) / (row.totalHits + 2)
+    const prior = Math.log((row.samples + 1) / (model.player.samples + model.npc.samples + 2))
+    return prior
+      + logBernoulliEvidence(input.weaponHits, total, weaponRate)
+      + logBernoulliEvidence(input.npcSkillHits, total, npcRate)
+  }
+  const playerScore = likelihood(model.player), npcScore = likelihood(model.npc)
+  const playerProbability = 1 / (1 + Math.exp(npcScore - playerScore))
+  const bestPlayer = playerProbability >= 0.5
+  const confidence = bestPlayer ? playerProbability : 1 - playerProbability
+  // Uma previsão de baixa confiança não é exibida como identidade: continua pendente.
+  if (confidence < 0.78) return undefined
+  const playerVotes = Math.round(playerProbability * 5)
+  const npcVotes = Math.round((1 - playerProbability) * 5)
+  return {
+    kind: bestPlayer ? 'likely-player' : 'likely-npc', confidence,
+    votes: { player: playerVotes, npc: npcVotes, unresolved: 0 },
+    reasons: [`Classificador bayesiano local com ${model.player.samples} jogadores e ${model.npc.samples} NPCs confirmados`],
+  }
+}
+/**
+ * Floresta de decisão explícita: cinco árvores independentes votam usando
+ * perfil/template (rótulo forte) e distribuição de skills (rótulo inferido).
+ * Não substitui uma confirmação do protocolo.
+ */
+export function classifySourceEvidence(input: SourceInferenceInput): SourceInference {
+  if (input.conflict) return { kind: 'conflict', confidence: 1, votes: { player: 0, npc: 0, unresolved: 0 }, reasons: ['Perfil e template conflitam na mesma entidade'] }
+  if (input.profileConfirmed) return { kind: 'confirmed-player', confidence: 1, votes: { player: 5, npc: 0, unresolved: 0 }, reasons: ['Perfil nominal do protocolo'] }
+  if (input.npcTemplateConfirmed) return { kind: 'confirmed-npc', confidence: 1, votes: { player: 0, npc: 5, unresolved: 0 }, reasons: ['Template de NPC do protocolo'] }
+  const learned = input.model && bayesianSourceInference(input, input.model)
+  if (learned) return learned
+  const player = [
+    input.weaponHits >= 1,
+    input.weaponHits >= 3,
+    input.weaponHits > input.npcSkillHits,
+    input.weaponDamage > 0 && input.weaponHits * 2 >= Math.max(1, input.totalHits),
+    input.weaponHits >= 2 && input.npcSkillHits === 0,
+  ].filter(Boolean).length
+  const npc = [
+    input.npcSkillHits >= 1,
+    input.npcSkillHits >= 3,
+    input.npcSkillHits > input.weaponHits,
+    input.npcSkillHits * 2 >= Math.max(1, input.totalHits),
+    input.npcSkillHits >= 2 && input.weaponHits === 0,
+  ].filter(Boolean).length
+  const unresolved = 5 - Math.max(player, npc)
+  const votes = { player, npc, unresolved }
+  if (player >= 3 && player > npc) return { kind: 'likely-player', confidence: player / 5, votes,
+    reasons: [`${input.weaponHits} acertos com habilidades de arma do catálogo`] }
+  if (npc >= 3 && npc > player) return { kind: 'likely-npc', confidence: npc / 5, votes,
+    reasons: [`${input.npcSkillHits} acertos com habilidades exclusivas de NPC`] }
+  return { kind: 'unresolved', confidence: unresolved / 5, votes, reasons: ['Evidência insuficiente ou mista'] }
+}
 export interface GroupSource {
   id: number; name?: string; npcId?: number; rank?: NpcRankHint; rankSource?: NpcRankSource
-  kind: 'player' | 'npc' | 'unknown' | 'conflict'; evidence: EntityIdentityEvidence; session: MeterSession
+  kind: 'player' | 'npc' | 'unknown' | 'conflict'; evidence: EntityIdentityEvidence
+  /** Armas observadas por habilidades cujo catálogo declara uma família. Não confirma que a origem seja jogador. */
+  weapons: GroupSourceWeapon[]; classification: SourceInference; session: MeterSession
 }
 export interface GroupConnection { id: string; closed: boolean; lastAt: number; sources: GroupSource[] }
+export interface GroupIdentityCoverageBucket { count: number; damage: number; hits: number }
+export interface GroupIdentityCoverage {
+  total: GroupIdentityCoverageBucket
+  confirmedPlayers: GroupIdentityCoverageBucket
+  unresolvedAttackers: GroupIdentityCoverageBucket
+  confirmedNpcs: GroupIdentityCoverageBucket
+  conflicts: GroupIdentityCoverageBucket
+}
+const emptyGroupIdentityCoverageBucket = (): GroupIdentityCoverageBucket => ({ count: 0, damage: 0, hits: 0 })
+
+/** Resume a evidência observada sem transformar dano em identidade confirmada. */
+export function groupIdentityCoverage(sources: readonly GroupSource[]): GroupIdentityCoverage {
+  const coverage: GroupIdentityCoverage = {
+    total: emptyGroupIdentityCoverageBucket(),
+    confirmedPlayers: emptyGroupIdentityCoverageBucket(),
+    unresolvedAttackers: emptyGroupIdentityCoverageBucket(),
+    confirmedNpcs: emptyGroupIdentityCoverageBucket(),
+    conflicts: emptyGroupIdentityCoverageBucket(),
+  }
+  for (const source of sources) {
+    if (!source.session.hits && !source.session.total) continue
+    const add = (bucket: GroupIdentityCoverageBucket): void => {
+      bucket.count++; bucket.damage += source.session.total; bucket.hits += source.session.hits
+    }
+    add(coverage.total)
+    if (source.kind === 'player' && source.evidence === 'profile') add(coverage.confirmedPlayers)
+    else if (source.kind === 'npc' && source.evidence === 'npc-template') add(coverage.confirmedNpcs)
+    else if (source.kind === 'conflict' || source.evidence === 'conflict') add(coverage.conflicts)
+    else add(coverage.unresolvedAttackers)
+  }
+  return coverage
+}
 export interface OverlayCombatSegment {
   id: number; connectionId: string; startedAt: number; endedAt: number | null; lastActivityAt: number
   endReason: 'combat-exit' | 'inactivity' | null; events: number
   dominantTarget?: { templateId: string; name?: string; rank: 'boss' | 'champion' | 'elite' | 'normal'; level?: number }
-}
-/** Identidade local só muda com evidência do protocolo, nunca por dano/inatividade. */
-export class OverlayIdentity {
-  private player: OverlayPlayerIdentity | null = null
-  private retiredConnections = new Set<string>()
-  clear(): void { this.player = null; this.retiredConnections.clear() }
-  snapshot(): OverlayPlayerIdentity | null { return this.player ? { ...this.player } : null }
-  identify(sourceId: number, connectionId: string, at: number, method: OverlayPlayerIdentity['method'] = 'local-state'): 'changed' | 'same' | 'ignored' {
-    if (!Number.isSafeInteger(sourceId) || sourceId <= 0 || typeof connectionId !== 'string'
-      || !connectionId.length || connectionId.length > 128 || !Number.isFinite(at)
-      || this.retiredConnections.has(connectionId)) return 'ignored'
-    const previous = this.player
-    if (previous && at < previous.observedAt) return 'ignored'
-    if (previous && previous.connectionId !== connectionId) {
-      this.retiredConnections.add(previous.connectionId)
-    }
-    const changed = !previous || previous.sourceId !== sourceId || previous.connectionId !== connectionId
-    this.player = { sourceId, connectionId, observedAt: at, method }
-    return changed ? 'changed' : 'same'
-  }
-  accepts(connectionId: string): boolean { return this.player?.connectionId === connectionId }
-  isRetired(connectionId: string): boolean { return this.retiredConnections.has(connectionId) }
-  retire(connectionId: string): boolean {
-    if (typeof connectionId !== 'string' || !connectionId.length) return false
-    this.retiredConnections.add(connectionId)
-    if (!this.accepts(connectionId)) return false
-    this.player = null
-    return true
-  }
 }
 export class OverlayMeter {
   private combatEndedAt: number | null = null
@@ -111,13 +237,15 @@ export class OverlayMeter {
   private receivedRows = new Map<string, MeterSkill>()
   private receivedSources = new Map<number, { id: number; damage: number; hits: number }>()
   private receivedSourceSkills = new Map<number, Map<string, MeterSkill>>()
-  private targets = new Map<number, { id: number; damage: number; hits: number; skills: Map<string, MeterSkill> }>()
+  private targets = new Map<number, { id: number; damage: number; hits: number; lastAt: number; skills: Map<string, MeterSkill> }>()
   private healingDoneRows = new Map<string, MeterSkill>()
   private healingReceivedRows = new Map<string, MeterSkill>()
   private timeline = new Map<string, MeterTimelineEvent>()
   private timed: TimedMeasurement | null = null
   constructor(public sourceId: number | null = null, private names: Record<string, string> = {},
-    private icons: Record<string, string> = {}) {}
+    private icons: Record<string, string> = {},
+    /** Acumulados de grupo são segmentados externamente e não devem expirar entre eventos distantes. */
+    private freezeOnIdle = true) {}
   reset(at = 0): void {
     this.combatEndedAt = null
     this.gameCombatActive = false
@@ -148,7 +276,10 @@ export class OverlayMeter {
       && (!this.timed || (at >= this.timed.startsAt && at < this.timed.endsAt))
   }
   private beginActivity(at: number): void {
-    if (!this.timed && !this.gameCombatActive && this.lastActivityAt !== null && at - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs >= METER_IDLE_MS) this.reset()
+    // Alguns fluxos não trazem o marcador explícito de saída de combate. A
+    // inatividade também delimita a luta nesse caso, inclusive se o último
+    // marcador de entrada ficou preso como ativo.
+    if (this.freezeOnIdle && !this.timed && this.lastActivityAt !== null && at - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs >= METER_IDLE_MS) this.reset()
     if (this.startedAt === null) this.startedPauseMs = this.pausedMs
     this.startedAt ??= at
     this.lastActivityAt = at
@@ -163,7 +294,10 @@ export class OverlayMeter {
   endCombat(at: number): boolean {
     if (this.timed || !Number.isFinite(at) || this.combatEndedAt !== null || this.startedAt === null || at < this.startedAt
       || (this.lastActivityAt !== null && at < this.lastActivityAt)) return false
-    this.combatEndedAt = at
+    // Não deixe um marcador de saída recebido muito tarde desfazer o
+    // congelamento que protege o DPS quando o marcador de saída falhou.
+    const fallbackAt = !this.freezeOnIdle || this.lastActivityAt === null ? at : this.lastActivityAt + METER_IDLE_MS + this.pausedMs - this.lastDamagePauseMs
+    this.combatEndedAt = Math.min(at, fallbackAt)
     this.gameCombatActive = false
     return true
   }
@@ -201,8 +335,9 @@ export class OverlayMeter {
     this.recordSkill(this.rows, event)
     const id = Number.isSafeInteger(event.targetId) && event.targetId! > 0 ? event.targetId! : 0
     let target = this.targets.get(id)
-    if (!target) { target = { id, damage: 0, hits: 0, skills: new Map() }; this.targets.set(id, target) }
+    if (!target) { target = { id, damage: 0, hits: 0, lastAt: at, skills: new Map() }; this.targets.set(id, target) }
     target.damage += event.damage; target.hits++
+    target.lastAt = Math.max(target.lastAt, at)
     this.recordSkill(target.skills, event)
     this.recordTimeline('damage', event)
     return true
@@ -260,7 +395,16 @@ export class OverlayMeter {
     const damageByKind = emptyDamageBreakdown()
     for (const row of skills) for (const kind of Object.keys(damageByKind) as DamageKind[]) damageByKind[kind] += row.damageByKind[kind]
     const total = skills.reduce((sum, row) => sum + row.damage, 0)
-    const clock = this.timed ? Math.max(this.timed.startsAt, Math.min(now, this.timed.endsAt)) : Math.min(this.pausedAt ?? now, this.combatEndedAt ?? now)
+    const rawClock = this.pausedAt ?? now
+    const idleWithoutPauseMs = this.lastActivityAt === null ? 0 : Math.max(0, rawClock - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs)
+    // Quando o jogo não envia o fim do combate, mantém uma curta janela para
+    // ticks atrasados e então fixa o relógio no último evento + tolerância.
+    const fallbackCombatEnd = this.freezeOnIdle && !this.timed && this.combatEndedAt === null && this.lastActivityAt !== null && idleWithoutPauseMs >= METER_IDLE_MS
+      ? this.lastActivityAt + METER_IDLE_MS + this.pausedMs - this.lastDamagePauseMs
+      : null
+    const clock = this.timed
+      ? Math.max(this.timed.startsAt, Math.min(now, this.timed.endsAt))
+      : Math.min(rawClock, this.combatEndedAt ?? fallbackCombatEnd ?? rawClock)
     const elapsedSec = this.startedAt === null ? 0 : Math.max(0, (clock - this.startedAt - this.pausedMs + this.startedPauseMs) / 1000)
     const idleSec = this.lastActivityAt === null ? 0 : Math.max(0, (clock - this.lastActivityAt - this.pausedMs + this.lastDamagePauseMs) / 1000)
     return {
@@ -271,22 +415,24 @@ export class OverlayMeter {
       ...(this.timed ? { timed: { ...this.timed } } : {}),
       received: { total: receivedSources.reduce((sum, row) => sum + row.damage, 0),
         hits: receivedSources.reduce((sum, row) => sum + row.hits, 0), skills: receivedSkills, sources: receivedSources },
-      targets: [...this.targets.values()].map(row => ({ id: row.id, damage: row.damage, hits: row.hits,
+      targets: [...this.targets.values()].map(row => ({ id: row.id, damage: row.damage, hits: row.hits, lastAt: row.lastAt,
         skills: snapshotSkills(row.skills.values()) })).sort((a,b) => b.damage-a.damage),
       hits: skills.reduce((sum, row) => sum + row.hits, 0),
       critical: skills.reduce((sum, row) => sum + row.critical, 0),
       heavy: skills.reduce((sum, row) => sum + row.heavy, 0),
       timeline: [...this.timeline.values()].map(row => ({ ...row })).sort((a, b) => a.time - b.time || a.skillId - b.skillId),
-      waitingReset: !this.timed && !this.gameCombatActive && this.combatEndedAt === null && this.lastActivityAt !== null && idleSec >= METER_IDLE_MS / 1000,
+      waitingReset: this.freezeOnIdle && !this.timed && this.combatEndedAt === null && this.lastActivityAt !== null && idleWithoutPauseMs >= METER_IDLE_MS,
     }
   }
 }
 /** Fontes observadas são isoladas por conexão; perfil nominal não comprova participação no grupo. */
 export class ObservedGroupDamage {
   private connections = new Map<string, { closed: boolean; lastAt: number; names: Map<number, Set<string>>;
-    labels: Map<number, Set<string>>; npcs: Map<number, Set<number>>; actors: Map<number, OverlayMeter> }>()
+    labels: Map<number, Set<string>>; npcs: Map<number, Set<number>>;
+    actors: Map<number, { meter: OverlayMeter; weapons: Map<string, GroupSourceWeapon>; npcSkillHits: number }> }>()
   constructor(private names: Record<string, string> = {}, private icons: Record<string, string> = {}, private npcNames: Record<string, string> = {},
-    private npcRanks: Record<string, NpcRankHint> = {}, private npcRankSources: Record<string, NpcRankSource> = {}) {}
+    private npcRanks: Record<string, NpcRankHint> = {}, private npcRankSources: Record<string, NpcRankSource> = {},
+    private skillWeapons: Record<string, SkillWeaponHint> = {}, private npcSkillIds: ReadonlySet<number> = new Set<number>()) {}
   private connection(id: string) {
     if (!id || id.length > 128) return undefined
     let value = this.connections.get(id)
@@ -327,13 +473,23 @@ export class ObservedGroupDamage {
   add(id: string, event: MeterEvent): void {
     const conn = this.connection(id)
     if (!conn || conn.closed || !Number.isSafeInteger(event.sourceId) || event.sourceId <= 0 || !Number.isFinite(event.time)) return
-    let meter = conn.actors.get(event.sourceId)
-    if (!meter) {
+    let actor = conn.actors.get(event.sourceId)
+    if (!actor) {
       if (conn.actors.size >= 512) return
-      meter = new OverlayMeter(event.sourceId, this.names, this.icons)
-      meter.beginCombat(event.time * 1000); conn.actors.set(event.sourceId, meter)
+      const meter = new OverlayMeter(event.sourceId, this.names, this.icons, false)
+      meter.beginCombat(event.time * 1000)
+      actor = { meter, weapons: new Map(), npcSkillHits: 0 }; conn.actors.set(event.sourceId, actor)
     }
-    if (meter.add(event)) conn.lastAt = Math.max(conn.lastAt, event.time)
+    if (!actor.meter.add(event)) return
+    const hint = this.skillWeapons[String(event.skillId)]
+    if (hint) {
+      const weapon = actor.weapons.get(hint.code) ?? { ...hint, damage: 0, hits: 0, skillIds: [] }
+      weapon.damage += event.damage; weapon.hits++
+      if (!weapon.skillIds.includes(event.skillId)) weapon.skillIds.push(event.skillId)
+      actor.weapons.set(hint.code, weapon)
+    }
+    if (this.npcSkillIds.has(event.skillId)) actor.npcSkillHits++
+    conn.lastAt = Math.max(conn.lastAt, event.time)
   }
   snapshot(at: number): GroupConnection[] {
     const result: GroupConnection[] = []
@@ -348,19 +504,142 @@ export class ObservedGroupDamage {
         const label = labels?.size === 1 ? [...labels][0] : undefined
         return { name: label, kind: (profiles?.size || npcs?.size) ? 'conflict' : 'unknown', evidence: (profiles?.size || npcs?.size) ? 'conflict' : 'unresolved' }
       }
-      const sources = [...conn.actors].map(([actor, meter]) => {
-        const session = meter.snapshot(at)
+      // Rótulos de treino são exclusivamente perfil/template já confirmados.
+      // O modelo é reconstruído do acumulado local, sem persistir identidade alguma.
+      const evidenceModel = buildSourceEvidenceModel([...conn.actors].flatMap(([actor, observed]) => {
+        const identified = identify(actor)
+        if (identified.kind !== 'player' && identified.kind !== 'npc') return []
+        const session = observed.meter.snapshot(at)
+        const weapons = [...observed.weapons.values()]
+        return [{
+          kind: identified.kind,
+          totalHits: session.hits,
+          weaponHits: weapons.reduce((sum, row) => sum + row.hits, 0),
+          npcSkillHits: observed.npcSkillHits,
+        }]
+      }))
+      const sources = [...conn.actors].map(([actor, observed]) => {
+        const session = observed.meter.snapshot(at)
         if (session.targets) session.targets = session.targets.map(target => {
           const identified = identify(target.id)
           return { ...target, name: identified.name, npcId: identified.npcId, identity: identified.evidence, rank: identified.rank, rankSource: identified.rankSource }
         })
-        return { id: actor, ...identify(actor), session }
+        const weapons = [...observed.weapons.values()].map(row => ({ ...row, skillIds: row.skillIds.slice().sort((a, b) => a - b) }))
+          .sort((a, b) => b.damage - a.damage || a.code.localeCompare(b.code))
+        const identified = identify(actor)
+        const classification = classifySourceEvidence({
+          profileConfirmed: identified.kind === 'player', npcTemplateConfirmed: identified.kind === 'npc', conflict: identified.kind === 'conflict',
+          totalHits: session.hits, weaponHits: weapons.reduce((sum, row) => sum + row.hits, 0),
+          weaponDamage: weapons.reduce((sum, row) => sum + row.damage, 0), npcSkillHits: observed.npcSkillHits, model: evidenceModel,
+        })
+        return { id: actor, ...identified, weapons, classification, session }
       }).filter(row => row.session.hits > 0).sort((a,b) => b.session.total-a.session.total)
       if (sources.length) result.push({ id, closed: conn.closed, lastAt: conn.lastAt, sources })
     }
     return result.sort((a,b) => Number(a.closed)-Number(b.closed) || b.lastAt-a.lastAt)
   }
 }
+
+function mergeSkills(rows: Iterable<readonly MeterSkill[]>): MeterSkill[] {
+  const merged = new Map<string, MeterSkill>()
+  for (const skills of rows) for (const skill of skills) {
+    const current = merged.get(skill.key)
+    if (!current) {
+      merged.set(skill.key, { ...skill, skillIds: skill.skillIds?.slice(), damageByKind: { ...skill.damageByKind } })
+      continue
+    }
+    current.damage += skill.damage; current.hits += skill.hits
+    current.critical += skill.critical; current.heavy += skill.heavy
+    current.skillIds = [...new Set([...(current.skillIds ?? []), ...(skill.skillIds ?? [])])]
+    for (const kind of Object.keys(current.damageByKind) as DamageKind[]) current.damageByKind[kind] += skill.damageByKind[kind]
+  }
+  return snapshotSkills(merged.values())
+}
+
+/** Junta leituras de segmentos que pertencem ao mesmo encontro de grupo. */
+export function mergeGroupConnections(connections: readonly GroupConnection[], at: number): GroupConnection[] {
+  const byConnection = new Map<string, GroupConnection[]>()
+  for (const row of connections) {
+    const rows = byConnection.get(row.id) ?? []
+    rows.push(row); byConnection.set(row.id, rows)
+  }
+  return [...byConnection].map(([id, rows]) => {
+    const bySource = new Map<number, GroupSource[]>()
+    for (const row of rows) for (const source of row.sources) {
+      const sources = bySource.get(source.id) ?? []
+      sources.push(source); bySource.set(source.id, sources)
+    }
+    const sources = [...bySource].map(([sourceId, sources]) => {
+      const base = sources[0]
+      const targets = new Map<number, NonNullable<MeterSession['targets']>[number][]>()
+      for (const source of sources) for (const target of source.session.targets ?? []) {
+        const values = targets.get(target.id) ?? []
+        values.push(target); targets.set(target.id, values)
+      }
+      const mergedTargets = [...targets].map(([targetId, values]) => ({
+        ...values[0], id: targetId,
+        damage: values.reduce((sum, target) => sum + target.damage, 0),
+        hits: values.reduce((sum, target) => sum + target.hits, 0),
+        lastAt: Math.max(...values.map(target => target.lastAt ?? 0)),
+        skills: mergeSkills(values.map(target => target.skills)),
+      })).sort((a, b) => b.damage - a.damage || b.lastAt - a.lastAt)
+      const allSkills = mergeSkills(sources.map(source => source.session.skills))
+      const startedAt = Math.min(...sources.map(source => source.session.startedAt ?? Number.POSITIVE_INFINITY))
+      const lastDamageAt = Math.max(...sources.map(source => source.session.lastDamageAt ?? 0)) || null
+      const elapsedSec = startedAt === Number.POSITIVE_INFINITY || !lastDamageAt ? 0 : Math.max(0, (lastDamageAt - startedAt) / 1000)
+      const damageByKind = emptyDamageBreakdown()
+      for (const skill of allSkills) for (const kind of Object.keys(damageByKind) as DamageKind[]) damageByKind[kind] += skill.damageByKind[kind]
+      const weapons = new Map<string, GroupSourceWeapon>()
+      for (const source of sources) for (const weapon of source.weapons) {
+        const current = weapons.get(weapon.code) ?? { ...weapon, damage: 0, hits: 0, skillIds: [] }
+        current.damage += weapon.damage; current.hits += weapon.hits
+        current.skillIds = [...new Set([...current.skillIds, ...weapon.skillIds])]
+        weapons.set(weapon.code, current)
+      }
+      const total = allSkills.reduce((sum, skill) => sum + skill.damage, 0)
+      const hits = allSkills.reduce((sum, skill) => sum + skill.hits, 0)
+      const session: MeterSession = {
+        total, hits, skills: allSkills, targets: mergedTargets, damageByKind,
+        critical: allSkills.reduce((sum, skill) => sum + skill.critical, 0),
+        heavy: allSkills.reduce((sum, skill) => sum + skill.heavy, 0),
+        startedAt: startedAt === Number.POSITIVE_INFINITY ? null : startedAt,
+        lastDamageAt, lastActivityAt: lastDamageAt, elapsedSec,
+        dps: elapsedSec >= 1 ? total / elapsedSec : 0, idleSec: Math.max(0, (at - (lastDamageAt ?? at)) / 1000), waitingReset: false,
+      }
+      return { ...base, id: sourceId, weapons: [...weapons.values()].sort((a, b) => b.damage - a.damage), session }
+    }).sort((a, b) => b.session.total - a.session.total || a.id - b.id)
+    return { id, closed: rows.every(row => row.closed), lastAt: Math.max(...rows.map(row => row.lastAt)), sources }
+  }).sort((a, b) => Number(a.closed) - Number(b.closed) || b.lastAt - a.lastAt)
+}
+/**
+ * Projeta uma sessão para um alvo sem descartar o acumulado original. A UI usa
+ * esta visão para alternar entre Total e qualquer alvo anterior durante a luta;
+ * o snapshot continua contendo todos os alvos para que filtros futuros possam
+ * reutilizar os mesmos dados.
+ */
+export function sessionForTarget(session: MeterSession, targetId: number): MeterSession {
+  const target = session.targets?.find(row => row.id === targetId)
+  if (!target) return session
+  const skills = snapshotSkills(target.skills)
+  const damageByKind = emptyDamageBreakdown()
+  for (const skill of skills) for (const kind of Object.keys(damageByKind) as DamageKind[]) damageByKind[kind] += skill.damageByKind[kind]
+  const total = skills.reduce((sum, skill) => sum + skill.damage, 0)
+  const hits = skills.reduce((sum, skill) => sum + skill.hits, 0)
+  const timeline = session.timeline?.filter(event => event.kind === 'damage' && event.targetId === targetId)
+  return {
+    ...session,
+    total,
+    hits,
+    skills,
+    damageByKind,
+    critical: skills.reduce((sum, skill) => sum + skill.critical, 0),
+    heavy: skills.reduce((sum, skill) => sum + skill.heavy, 0),
+    dps: session.elapsedSec >= 1 ? total / session.elapsedSec : 0,
+    lastDamageAt: target.lastAt ?? session.lastDamageAt,
+    ...(timeline ? { timeline } : {}),
+  }
+}
+
 export interface PanelBounds { x: number; y: number; width: number; height: number }
 export type OverlayPanel = 'total' | 'skills' | 'controls'
 export interface PanelAnchor { x: number; y: number }
@@ -372,9 +651,15 @@ export interface OverlayConfig {
   reviewEncounterId?: string | null
   /** `null` mantém toda a leitura; um ID mostra apenas o acumulado daquele segmento. */
   groupSegmentId?: number | null
+  /** Corte lógico de combate; agrupa conexões paralelas da mesma luta. */
+  groupEncounterId?: string | null
   metricPage?: 'damage' | 'damageTargets' | 'receivedSources' | 'receivedSkills' | 'healingDone' | 'healingReceived'
   countdownSec?: number; durationSec?: number
   hideOutOfCombat?: boolean; combatHideDelaySec?: number
+  /** Coleta temporária e limitada de candidatos ID/nome para investigar roster. */
+  rosterDiagnostics?: boolean
+  /** Consolida variantes que compartilham o mesmo nome exibido nas tabelas de habilidade. */
+  groupByName?: boolean
   autoSource?: boolean
   playerName?: string
   /** Layout atual: uma única janela de combate; legado mantém painéis separados. */
@@ -385,9 +670,16 @@ export interface OverlayConfig {
   anchors?: Partial<Record<OverlayPanel, PanelAnchor>>
   fontFamily?: 'Inter' | 'Arial' | 'Consolas'; fontSize?: number; chartPadding?: number; chartPaddingVertical?: number; theme?: OverlayTheme
 }
+export type IdentificationStepState = 'pending' | 'active' | 'complete'
+export interface OverlayIdentification {
+  phase: 'idle' | 'traffic' | 'profile' | 'binding' | 'confirmed' | 'error'
+  progress: number
+  steps: Array<{ id: 'capture' | 'traffic' | 'profile' | 'binding'; label: string; detail: string; state: IdentificationStepState }>
+}
 export interface OverlayState {
   groupConnections?: GroupConnection[]
   combatSegments?: OverlayCombatSegment[]
+  combatEncounters?: OverlayCombatEncounter[]
   /** Dados de grupo observados por segmento; a UI ainda decide como exibi-los. */
   groupHealing?: Array<{ connectionId: string; segmentId: number; snapshot: GroupHealingSnapshot }>
   groupReceived?: GroupReceivedSegment[]
@@ -397,6 +689,8 @@ export interface OverlayState {
   capture?: { id: string; connectionId: string | null; encounterId: string; player: OverlayPlayerIdentity | null }
   game?: { attached: boolean; active: boolean; bounds: PanelBounds | null }
   unknownSkillLog?: { directory: string; events: number; ids: number; error: string | null }
+  rosterDiagnostic?: { file: string; events: number; error: string | null }
+  identification?: OverlayIdentification
   config: OverlayConfig; session: MeterSession
   mode: 'live' | 'replay' | null
   status: 'stopped' | 'starting' | 'live' | 'replay' | 'error'
@@ -409,6 +703,10 @@ export interface OverlayEncounter {
   groupConnections?: GroupConnection[]
   /** Fases observadas pelo estado de combate; usadas na visão temporal do histórico. */
   combatSegments?: OverlayCombatSegment[]
+  /** Encontros deduzidos ao reunir as conexões paralelas de cada luta. */
+  combatEncounters?: OverlayCombatEncounter[]
+  /** Corte de grupo salvo independentemente da origem individual. */
+  groupEncounter?: OverlayCombatEncounter
   id: string; sourceId: number | null; mode: 'live' | 'replay'; reason: string
   savedAt: number; session: MeterSession
 }
@@ -460,6 +758,8 @@ export interface OverlayAPI {
   history: () => Promise<OverlayHistoryResult>
   get: () => Promise<OverlayState>
   configure: (patch: Partial<OverlayConfig>) => Promise<OverlayState>
+  /** Reinicia a identificação desta sessão e reativa todos os caminhos automáticos. */
+  identify: () => Promise<OverlayState>
   start: () => Promise<OverlayState>
   stop: () => Promise<OverlayState>
   pause: (paused: boolean) => Promise<OverlayState>
@@ -474,8 +774,7 @@ export interface OverlayAPI {
 export function overlaySourceWarning(state: OverlayState): string | null {
   if (state.status !== 'live' && state.status !== 'replay') return null
   if (state.config.sourceId === null && state.config.autoSource !== false) return state.mode === 'live'
-    ? state.config.playerName ? `Aguardando o perfil de ${state.config.playerName}. Abra a ficha no jogo ou selecione a origem confirmada em Ajustes.`
-      : 'Aguardando identificar seu personagem. Preencha o nome em Ajustes e abra a ficha no jogo, ou selecione uma origem confirmada.'
+    ? 'Aguardando reconhecer seu personagem. Abra a ficha de atributos uma vez nesta sessão; o perfil e o ID serão vinculados automaticamente.'
     : 'Aguardando identificar a origem da reprodução.'
   if (state.config.sourceId === null) return state.sources.length
     ? 'Dano recebido. Selecione sua origem no app para medir.'

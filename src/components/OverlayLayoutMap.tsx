@@ -9,8 +9,8 @@ type Props = {
 }
 
 const panels: Array<{ id: OverlayPanel; label: string; short: string; width: number; height: number }> = [
-  { id: 'total', label: 'Total geral', short: 'Total', width: 340, height: 300 },
-  { id: 'skills', label: 'Combate', short: 'Combate', width: 650, height: 340 },
+  { id: 'total', label: 'Total geral', short: 'Total', width: 320, height: 270 },
+  { id: 'skills', label: 'Combate', short: 'Combate', width: 560, height: 310 },
   { id: 'controls', label: 'Ajustes rápidos', short: 'Ajustes', width: 310, height: 568 },
 ]
 

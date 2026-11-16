@@ -7,10 +7,18 @@ export function ImportCharacterBuild({ onImported, readRequest = 0 }: { onImport
   const { builds,createEmpty,saveBuild,setActive } = useBuilds()
   const [data,setData] = useState<CharacterStatsResult | null>(null), [error,setError] = useState(''), [busy,setBusy] = useState(false)
   const [selected,setSelected] = useState(''), [target,setTarget] = useState(''), [attack,setAttack] = useState<''|'melee'|'ranged'|'magic'>('')
+  const [preserveCriticalHeavy,setPreserveCriticalHeavy] = useState(false)
   const sectionRef = useRef<HTMLElement>(null)
   const snapshots = data ? [data.live,...data.saved.filter(row=>row.id!==data.live?.id)].filter((row): row is NonNullable<typeof row> => Boolean(row)) : []
   const snapshot = snapshots.find(row=>row.id===selected) ?? snapshots[0]
   const rows = snapshot ? characterStatRows(snapshot) : []
+  const targetBuild = target ? builds[target] : undefined
+  useEffect(() => {
+    if (!targetBuild) { setPreserveCriticalHeavy(false); return }
+    if (targetBuild.calculatorAttackType) setAttack(targetBuild.calculatorAttackType)
+    // Complementar uma build não deve zerar campos que podem faltar no pacote.
+    setPreserveCriticalHeavy(true)
+  }, [target])
   async function read(): Promise<void> {
     setBusy(true);setError('')
     try {
@@ -33,7 +41,7 @@ export function ImportCharacterBuild({ onImported, readRequest = 0 }: { onImport
     try {
       const base = target ? builds[target] : createEmpty(`${snapshot.playerName} · ficha ${new Date(snapshot.observedAt*1000).toLocaleDateString('pt-BR')}`)
       if (!base) throw Error('Build de destino não encontrada.')
-      const build = importCharacterSnapshot(base,snapshot,attack)
+      const build = importCharacterSnapshot(base,snapshot,preserveCriticalHeavy ? '' : attack)
       await saveBuild(build);setActive(build.id);onImported(build)
     } catch(error) { setError(String(error)) }
     finally { setBusy(false) }
@@ -51,11 +59,18 @@ export function ImportCharacterBuild({ onImported, readRequest = 0 }: { onImport
     {snapshot && <div style={{borderTop:'1px solid var(--border)',paddingTop:12}}>
       <div style={{display:'flex',gap:10,flexWrap:'wrap'}}><label style={{flex:1,minWidth:220}}>Leitura<select className="tl-input" aria-label="Leitura da ficha" value={snapshot.id} onChange={event=>setSelected(event.target.value)}>
         {snapshots.map(row=><option key={row.id} value={row.id}>{row.id===data?.live?.id ? 'Atual' : 'Captura salva'} · {row.playerName} · {new Date(row.observedAt*1000).toLocaleString('pt-BR')}</option>)}</select></label>
-        <label>Destino<select className="tl-input" aria-label="Destino da ficha" value={target} onChange={event=>setTarget(event.target.value)}><option value="">Criar nova build</option>{Object.values(builds).map(build=><option key={build.id} value={build.id}>{build.name}</option>)}</select></label>
-        <label>Tipo de dano para a calculadora<select className="tl-input" aria-label="Tipo de dano da ficha" value={attack} onChange={event=>setAttack(event.target.value as typeof attack)}><option value="">Preservar crítico/pesado atuais</option><option value="melee">Corpo a corpo</option><option value="ranged">À distância</option><option value="magic">Mágico</option></select></label></div>
-      <p style={{fontSize:12,color:'var(--text-muted)'}}>{rows.length} status observados · {rows.filter(row=>row.mapped).length} com rótulos do catálogo. Campos ausentes não serão preenchidos. Nomes/escalas são experimentais; a leitura não garante toda a ficha.</p>
+        <label>Destino<select className="tl-input" aria-label="Destino da ficha" value={target} onChange={event=>setTarget(event.target.value)}><option value="">Criar nova build</option>{Object.values(builds).map(build=><option key={build.id} value={build.id}>{build.name}</option>)}</select></label></div>
+      <div style={{display:'flex',alignItems:'end',gap:12,flexWrap:'wrap',marginTop:10}}>
+        <label style={{minWidth:220}}>Família ofensiva da calculadora<select className="tl-input" aria-label="Família ofensiva da calculadora" value={attack} disabled={Boolean(target && preserveCriticalHeavy)} onChange={event=>setAttack(event.target.value as typeof attack)}>
+          <option value="" disabled>Escolha a família</option><option value="melee">Corpo a corpo</option><option value="ranged">À distância</option><option value="magic">Mágico</option></select></label>
+        {targetBuild && <label style={{display:'flex',flexDirection:'column',gap:5,maxWidth:330,fontSize:12,color:'var(--text-soft)'}}>
+          <span><input type="checkbox" checked={preserveCriticalHeavy} onChange={event=>setPreserveCriticalHeavy(event.target.checked)} /> Manter crítico e pesado atuais</span>
+          <small style={{color:'var(--text-muted)'}}>Não substitui os campos de crítico, pesado e boss já salvos nesta build.</small>
+        </label>}
+      </div>
+      <p style={{fontSize:12,color:'var(--text-muted)'}}>{rows.length} status observados · {rows.filter(row=>row.mapped).length} com rótulos do catálogo. Campos ausentes não serão preenchidos. {targetBuild && preserveCriticalHeavy ? 'Crítico, pesado e campos de boss existentes serão mantidos.' : 'A família escolhida preenche crítico e pesado da calculadora.'} Nomes/escalas são experimentais; a leitura não garante toda a ficha.</p>
       <details><summary>Conferir valores recebidos</summary><div style={{maxHeight:280,overflow:'auto'}}><table style={{width:'100%',fontSize:12}}><thead><tr><th style={{textAlign:'left'}}>Status</th><th>Valor</th><th>ID</th></tr></thead><tbody>{rows.map(row=><tr key={row.id}><td>{row.name}</td><td style={{textAlign:'center'}}>{row.display}</td><td style={{textAlign:'center'}}>{row.id}</td></tr>)}</tbody></table></div></details>
-      <button className="tl-btn" disabled={busy} onClick={()=>void save()} style={{marginTop:12}}>{target ? 'Complementar build com a ficha' : 'Criar build com a ficha'}</button>
+      <button className="tl-btn" disabled={busy || (!target && !attack)} onClick={()=>void save()} style={{marginTop:12}}>{target ? 'Complementar build com a ficha' : 'Criar build com a ficha'}</button>
     </div>}
   </section>
 }

@@ -110,8 +110,9 @@ def utc():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--capture', action='store_true', help='Sem esta opção, somente prepara: não captura pacotes.')
-    parser.add_argument('--duration', type=int, default=180, choices=range(110,301), metavar='110..300', help='Janela de captura; a macro Razer dura 110 s após o botão.')
+    parser.add_argument('--duration', type=int, default=180, choices=range(110,601), metavar='110..600', help='Janela de captura filtrada, em segundos.')
     parser.add_argument('--device', action='append', help='Nome exato retornado no pré-voo; repetir para várias interfaces.')
+    parser.add_argument('--follow-endpoints', action='store_true', help='Atualiza a cada 2 s o filtro com novas conexões do processo TL; útil ao relogar.')
     args = parser.parse_args()
     api, directory = load_api()
     devices = interfaces(api)
@@ -133,7 +134,8 @@ def main():
     manifest = dict(status='preparado_sem_captura', preparedAtUtc=utc(),
                     npcapVersion=api.pcap_lib_version().decode(), endpoints=data,
                     filter=expression, interfaces=devices, manualScheduleReference=SCHEDULE,
-                    captureDurationSec=args.duration, macroTriggerUtc=None,
+                    captureDurationSec=args.duration, requestedDurationSec=args.duration, macroTriggerUtc=None,
+                    followEndpoints=bool(args.follow_endpoints), endpointFilterRefreshes=[],
                     limitations=['Filtro por endpoints, não atribuição perfeita de pacotes por processo.',
                                  'Conexões novas após o pré-voo podem ficar fora do filtro.',
                                  'ExitLag pode encapsular tráfego e impedir sua visibilidade na interface física.',
@@ -179,10 +181,43 @@ def main():
         if not opened:
             raise RuntimeError('Nenhuma interface disponível. Não haverá captura sem filtro.')
         manifest['status'] = 'capturando'
+        snapshot_path = out / 'endpoint-snapshots.jsonl'
+        snapshot_path.write_text(json.dumps(dict(timeUtc=utc(), elapsedSec=0, endpoints=data), ensure_ascii=False)+'\n', encoding='utf-8')
+        active_filter = expression
+
+        def update_filter(next_expression):
+            for item in opened:
+                program = Program()
+                if api.pcap_compile(item['handle'], C.byref(program), next_expression.encode(), 1, 0xffffffff):
+                    raise RuntimeError(api.pcap_geterr(item['handle']).decode(errors='replace'))
+                try:
+                    if api.pcap_setfilter(item['handle'], C.byref(program)):
+                        raise RuntimeError(api.pcap_geterr(item['handle']).decode(errors='replace'))
+                finally:
+                    api.pcap_freecode(C.byref(program))
+
         start = time.monotonic()
+        next_endpoint_refresh = start + 2
         markers = []
         print('Captura ativa. Acione a macro Razer uma vez; alinhar o disparo real pelo video.', flush=True)
         while time.monotonic()-start < args.duration:
+            now = time.monotonic()
+            if args.follow_endpoints and now >= next_endpoint_refresh:
+                next_endpoint_refresh = now + 2
+                try:
+                    next_data = endpoints()
+                    if next_data['tcp'] or next_data['udp']:
+                        next_expression = filter_expression(next_data)
+                        if next_expression != active_filter:
+                            update_filter(next_expression)
+                            active_filter = next_expression
+                            manifest['filter'] = active_filter
+                            refresh = dict(timeUtc=utc(), elapsedSec=now-start, endpoints=next_data)
+                            manifest['endpointFilterRefreshes'].append(dict(timeUtc=refresh['timeUtc'], elapsedSec=refresh['elapsedSec'], tcp=len(next_data['tcp']), udp=len(next_data['udp'])))
+                            with snapshot_path.open('a', encoding='utf-8') as snapshot_file:
+                                snapshot_file.write(json.dumps(refresh, ensure_ascii=False)+'\n')
+                except Exception as refresh_error:
+                    manifest.setdefault('endpointRefreshErrors', []).append(dict(timeUtc=utc(), error=str(refresh_error)))
             for item in opened:
                 for _ in range(100):
                     header, payload = C.c_void_p(), C.c_void_p()

@@ -2,9 +2,12 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import ts from 'typescript'
 
-const input = fs.readFileSync(new URL('../src/engine/overlayMeter.ts', import.meta.url), 'utf8')
+const identityInput = fs.readFileSync(new URL('../src/engine/overlayIdentity.ts', import.meta.url), 'utf8')
+const identityCode = ts.transpileModule(identityInput, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
+const identityUrl = `data:text/javascript;base64,${Buffer.from(identityCode).toString('base64')}`
+const input = fs.readFileSync(new URL('../src/engine/overlayMeter.ts', import.meta.url), 'utf8').replaceAll('./overlayIdentity', identityUrl)
 const code = ts.transpileModule(input, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-const { OverlayMeter, ObservedGroupDamage, METER_IDLE_MS, overlaySourceWarning, resolveOverlayNames } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`)
+const { OverlayMeter, ObservedGroupDamage, METER_IDLE_MS, overlaySourceWarning, resolveOverlayNames, groupIdentityCoverage, classifySourceEvidence, buildSourceEvidenceModel, StatusProfileRecognition, sessionForTarget } = await import(`data:text/javascript;base64,${Buffer.from(code).toString('base64')}`)
 const meter = new OverlayMeter(7, { 10: 'Garra', 11: 'Garra' })
 const event = (ms, damage = 100, sourceId = 7, skillId = 10) => ({ time: ms / 1000, damage, sourceId, skillId, criticalCandidate: true, heavyCandidate: 1 })
 assert.equal(meter.add(event(1000, 999, 8)), false, 'Outro personagem deve ser ignorado')
@@ -20,6 +23,10 @@ assert.equal(state.skills[0].critical, 2)
 assert.equal(state.skills[0].heavy, 2)
 assert.equal(meter.snapshot(2000 + METER_IDLE_MS).waitingReset, true)
 assert.equal(meter.snapshot(2000 + METER_IDLE_MS).total, 300, 'O acumulado fica visível até o próximo dano')
+const frozenSession = meter.snapshot(2000 + METER_IDLE_MS)
+const laterSession = meter.snapshot(2000 + METER_IDLE_MS + 60000)
+assert.equal(laterSession.elapsedSec, frozenSession.elapsedSec, 'Sem saída explícita de combate, o relógio deve congelar após a tolerância')
+assert.equal(laterSession.dps, frozenSession.dps, 'O DPS não pode cair durante inatividade fora de combate')
 assert.equal(meter.add(event(2000 + METER_IDLE_MS, 500, 8)), false)
 assert.equal(meter.snapshot(2000 + METER_IDLE_MS).total, 300, 'Dano de outro não reinicia sessão')
 meter.add(event(2000 + METER_IDLE_MS, 500))
@@ -37,7 +44,21 @@ meter.selectSource(8)
 assert.equal(meter.snapshot().total, 0)
 assert.equal(meter.add(event(900000)), false)
 assert.equal(meter.add(event(900000, 100, 8)), true)
-console.log('OK: origem, agrupamento, DPS com pausas, limite de 5 min, reset conjunto e eventos atrasados.')
+console.log('OK: origem, agrupamento, DPS com pausas, congelamento por inatividade, reset conjunto e eventos atrasados.')
+
+const targets = new OverlayMeter(7, { 10: 'Garra', 11: 'Investida' })
+targets.add({ ...event(1000, 100, 7, 10), targetId: 81 })
+targets.add({ ...event(2000, 40, 7, 11), targetId: 82 })
+targets.add({ ...event(3000, 60, 7, 10), targetId: 81 })
+const targetSession = targets.snapshot(5000)
+assert.equal(targetSession.targets.find(row => row.id === 81).lastAt, 3000, 'Cada alvo preserva a última atividade para o filtro recente')
+const onlyLastTarget = sessionForTarget(targetSession, 81)
+assert.equal(onlyLastTarget.total, 160)
+assert.equal(onlyLastTarget.hits, 2)
+assert.equal(onlyLastTarget.skills[0].name, 'Garra')
+assert.equal(onlyLastTarget.timeline.every(row => row.targetId === 81), true)
+assert.equal(targetSession.total, 200, 'Filtro por alvo não pode alterar o total da sessão')
+console.log('OK: filtro de alvo preserva totais, skills e a ordem temporal sem descartar a luta.')
 
 const paused = new OverlayMeter(7)
 paused.add(event(1000))
@@ -162,10 +183,11 @@ stacked.reset()
 assert.deepEqual(stacked.snapshot().damageByKind, { normal: 0, critical: 0, heavy: 0, criticalHeavy: 0 })
 console.log('OK: quatro faixas exclusivas somam o total, sem duplicar crítico pesado; reset limpa as faixas.')
 
-const sourceState = { status: 'live', config: { sourceId: 7, autoSource: false }, sources: [{ id: 8, damage: 500 }] }
+const sourceState = { status: 'live', mode: 'live', config: { sourceId: 7, autoSource: false }, sources: [{ id: 8, damage: 500 }] }
 assert.match(overlaySourceWarning(sourceState), /outras origens/)
 sourceState.config.sourceId = null
-assert.match(overlaySourceWarning(sourceState), /Selecione sua origem/)
+sourceState.config.autoSource = true
+assert.match(overlaySourceWarning(sourceState), /Abra a ficha de atributos/)
 sourceState.config.sourceId = 8
 assert.equal(overlaySourceWarning(sourceState), null)
 sourceState.status = 'error'
@@ -195,6 +217,17 @@ assert.equal(automatic.add(event(1400, 200, 30)), true)
 assert.equal(automatic.sourceId, 30, 'Redetectar deve aceitar a próxima origem válida')
 assert.equal(automatic.snapshot(1400).total, 200)
 console.log('OK: identificação explícita, eventos inválidos e rejeição de primeiro atacante sem identidade.')
+
+const statusRecognition = new StatusProfileRecognition()
+statusRecognition.observeStats('sessao-a', 1_000)
+statusRecognition.observeProfile('sessao-a', 42, 'Personagem da ficha', 1_100)
+assert.deepEqual(statusRecognition.settle(1_800), [{ connectionId: 'sessao-a', sourceId: 42, name: 'Personagem da ficha', observedAt: 1_100 }],
+  'Abrir a ficha associa automaticamente o perfil único recebido no mesmo burst')
+statusRecognition.observeStats('sessao-b', 2_000)
+statusRecognition.observeProfile('sessao-b', 43, 'Jogador A', 2_050)
+statusRecognition.observeProfile('sessao-b', 44, 'Jogador B', 2_100)
+assert.deepEqual(statusRecognition.settle(2_800), [], 'Dois perfis no mesmo burst de ficha são ambíguos e não escolhem personagem')
+console.log('OK: ficha reconhece perfil único por sessão e rejeita associação ambígua.')
 
 const rescan = new OverlayMeter(20)
 rescan.add(event(1000, 100, 20))
@@ -288,7 +321,9 @@ assert.equal(namedNpc.session.received.total, 123)
 assert.equal(originalNpc.session.received.sources[0].name, undefined, 'Resolver nomes históricos não altera o arquivo original nem usa fontes ao vivo')
 console.log('OK: nomes de habilidades/NPCs em snapshots antigos com UID de template, sem alterar totais ou cruzar a sessão atual.')
 
-const group = new ObservedGroupDamage({ 10: 'Golpe', 11: 'Chuva' }, {}, { 200: 'Chefe de teste' }, { 200: 'elite' }, { 200: 'creature-rank' })
+const group = new ObservedGroupDamage({ 10: 'Golpe', 11: 'Chuva' }, {}, { 200: 'Chefe de teste' }, { 200: 'elite' }, { 200: 'creature-rank' }, {
+  10: { code: 'ST', label: 'Cajado' }, 11: { code: 'DA', label: 'Adaga' },
+}, new Set([99]))
 group.profile('A', 7, 'Jogador A')
 group.label('A', 88, 'Êxodo')
 group.npc('A', 9, 200)
@@ -303,6 +338,10 @@ const groupA = groupSnapshot.find(row => row.id === 'A').sources.find(row => row
 const groupB = groupSnapshot.find(row => row.id === 'B').sources.find(row => row.id === 7)
 assert.equal(groupA.name, 'Jogador A'); assert.equal(groupB.name, 'Jogador B')
 assert.equal(groupA.evidence, 'profile'); assert.equal(groupA.session.skills[0].identity, 'catalog')
+assert.equal(groupA.classification.kind, 'confirmed-player')
+assert.deepEqual(groupA.weapons.map(row => [row.code, row.label, row.damage, row.hits, row.skillIds]), [
+  ['ST', 'Cajado', 100, 1, [10]], ['DA', 'Adaga', 50, 1, [11]],
+], 'Arma vem da linha do catálogo e não transforma origem pendente em jogador')
 assert.equal(groupA.session.total, 150, 'Medidor de grupo não reseta sozinho após cinco minutos')
 assert.deepEqual(groupA.session.skills.map(row => [row.name, row.damage]), [['Golpe', 100], ['Chuva', 50]])
 assert.equal(groupA.session.targets[0].name, 'Chefe de teste')
@@ -315,6 +354,25 @@ const observedBoss = groupSnapshot.find(row => row.id === 'A').sources.find(row 
 assert.equal(observedBoss?.name, 'Êxodo', 'Nome observado em buff/debuff rotula a entidade sem fingir template confirmado')
 assert.equal(observedBoss?.kind, 'unknown')
 assert.equal(observedBoss?.evidence, 'unresolved')
+assert.equal(observedBoss?.classification.kind, 'likely-player')
+assert.equal(classifySourceEvidence({ profileConfirmed: false, npcTemplateConfirmed: false, conflict: false, totalHits: 4, weaponHits: 4, weaponDamage: 400, npcSkillHits: 0 }).kind, 'likely-player')
+assert.equal(classifySourceEvidence({ profileConfirmed: false, npcTemplateConfirmed: false, conflict: false, totalHits: 4, weaponHits: 0, weaponDamage: 0, npcSkillHits: 4 }).kind, 'likely-npc')
+const learnedModel = buildSourceEvidenceModel([
+  { kind: 'player', totalHits: 10, weaponHits: 10, npcSkillHits: 0 },
+  { kind: 'player', totalHits: 8, weaponHits: 7, npcSkillHits: 0 },
+  { kind: 'npc', totalHits: 10, weaponHits: 0, npcSkillHits: 10 },
+  { kind: 'npc', totalHits: 8, weaponHits: 0, npcSkillHits: 7 },
+])
+assert.equal(classifySourceEvidence({ profileConfirmed: false, npcTemplateConfirmed: false, conflict: false, totalHits: 4, weaponHits: 4, weaponDamage: 400, npcSkillHits: 0, model: learnedModel }).kind, 'likely-player')
+assert.equal(classifySourceEvidence({ profileConfirmed: false, npcTemplateConfirmed: false, conflict: false, totalHits: 4, weaponHits: 0, weaponDamage: 0, npcSkillHits: 4, model: learnedModel }).kind, 'likely-npc')
+const coverage = groupIdentityCoverage(groupSnapshot.find(row => row.id === 'A').sources)
+assert.deepEqual(coverage, {
+  total: { count: 2, damage: 225, hits: 3 },
+  confirmedPlayers: { count: 1, damage: 150, hits: 2 },
+  unresolvedAttackers: { count: 1, damage: 75, hits: 1 },
+  confirmedNpcs: { count: 0, damage: 0, hits: 0 },
+  conflicts: { count: 0, damage: 0, hits: 0 },
+}, 'Cobertura separa perfil confirmado de atacante observado sem inferir identidade')
 groupSnapshot[0].sources[0].session.skills[0].damage = 999
 assert.notEqual(group.snapshot(360002000)[0].sources[0].session.skills[0].damage, 999, 'Snapshot de grupo é isolado do acumulado')
 group.close('A'); group.profile('A', 8, 'Tardio')

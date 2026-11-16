@@ -8,6 +8,7 @@ import { OverlayEncounterComparison } from './OverlayEncounterComparison'
 import { MeterExportButton } from './MeterExportButton'
 import { OverlaySourcesView } from './OverlaySourcesView'
 import { OverlaySessionTimeline } from './OverlaySessionTimeline'
+import { groupCombatSegments } from '../engine/overlayCombatEncounters'
 
 export function OverlayHistoryView({ state }: { state: OverlayState }): React.ReactElement {
   const [history, setHistory] = useState<OverlayHistoryResult>({ encounters: [], error: null })
@@ -26,7 +27,11 @@ export function OverlayHistoryView({ state }: { state: OverlayState }): React.Re
     return () => clearInterval(timer)
   }, [refresh])
   const selected = history.encounters.find(row => row.id === selectedId) ?? history.encounters[0]
+  const encounterName = (row: NonNullable<typeof selected>): string => row.groupEncounter
+    ? `${row.groupEncounter.dominantTarget?.rank === 'boss' ? 'Chefe' : 'Combate'} · ${row.groupEncounter.dominantTarget?.name ?? 'alvo sem nome'}`
+    : row.sourceName ?? `Origem ${row.sourceId ?? 'pendente'}`
   const historical = selected ? resolveOverlayNames({ ...state, session: selected.session, groupConnections: selected.groupConnections, combatSegments: selected.combatSegments,
+    combatEncounters: selected.combatEncounters ?? (selected.groupEncounter ? [selected.groupEncounter] : groupCombatSegments(selected.combatSegments ?? [])),
     mode: selected.mode, status: 'stopped', config: { ...state.config, locked: true, sourceId: selected.sourceId } }, names, overlaySkillFiles, overlayNpcNames) : null
   const candidates = selected ? history.encounters.filter(row => comparableEncounters(selected, row)) : []
   const reference = candidates.find(row => row.id === referenceId)
@@ -50,10 +55,10 @@ export function OverlayHistoryView({ state }: { state: OverlayState }): React.Re
     {!selected ? <p>Nenhum encontro salvo ainda. Os próximos danos iniciarão o histórico.</p> : <>
       <label>Encontro salvo<select aria-label="Encontro salvo" value={selected.id} onChange={event => setSelectedId(event.target.value)}>
         {history.encounters.map(row => <option key={row.id} value={row.id}>
-          {new Date(row.session.startedAt!).toLocaleString('pt-BR')} · Origem {row.sourceId} · {number(row.session.total)} dano · {row.mode === 'replay' ? 'REPRODUÇÃO' : 'Captura'}{row.reason === 'current' ? ' · Parcial' : ''}
+          {new Date(row.session.startedAt!).toLocaleString('pt-BR')} · {encounterName(row)} · {row.groupEncounter ? 'GRUPO' : `${number(row.session.total)} dano`}{row.reason === 'current' ? ' · Parcial' : ''}
         </option>)}
       </select></label>
-      <p>{selected.sourceName ?? 'Origem'} · {selected.sourceId} · {duration(selected.session.elapsedSec)} · {number(selected.session.hits)} acertos</p>
+      <p>{selected.groupEncounter ? `${encounterName(selected)} · ${duration(selected.session.elapsedSec)} · ${selected.groupEncounter.connections} conexões observadas · corte ${selected.groupEncounter.endReason === 'combat-exit' ? 'por saída de combate' : 'por inatividade'}` : `${selected.sourceName ?? 'Origem'} · ${selected.sourceId} · ${duration(selected.session.elapsedSec)} · ${number(selected.session.hits)} acertos`}</p>
       {selected.attributionVersion !== 2 && <p role="alert">Registro anterior à correção de atacante/alvo. A atribuição deste acumulado pode estar incorreta.</p>}
       <div className="overlay-history-analysis-controls">
         <label>Página do histórico<select aria-label="Página do histórico" value={page} onChange={event => setPage(event.target.value as MetricPage)}>
@@ -65,7 +70,7 @@ export function OverlayHistoryView({ state }: { state: OverlayState }): React.Re
         {historical && <MeterExportButton session={historical.session} page={page} />}
       </div>
       {!candidates.length && <p>Sem outro registro compatível do mesmo personagem para comparar. Capturas e reproduções são comparadas separadamente.</p>}
-      {historical && <div className="overlay-history-panels">
+      {historical && !selected.groupEncounter && <div className="overlay-history-panels">
         <div><MeterPanel panel="total" state={historical} historical onReset={() => {}} /></div>
         <div>{page === 'damage' ? <MeterPanel key={selected.id} panel="skills" state={historical} historical onReset={() => {}} />
           : <OverlayMetricView key={selected.id} state={historical} historical page={page} />}</div>

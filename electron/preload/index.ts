@@ -18,6 +18,7 @@ const overlayAPI: OverlayAPI = {
   history: () => ipcRenderer.invoke('overlay:history'),
   get: () => ipcRenderer.invoke('overlay:get'),
   configure: patch => ipcRenderer.invoke('overlay:configure', patch),
+  identify: () => ipcRenderer.invoke('overlay:identify'),
   start: () => ipcRenderer.invoke('overlay:start'),
   stop: () => ipcRenderer.invoke('overlay:stop'),
   pause: paused => ipcRenderer.invoke('overlay:pause', paused),

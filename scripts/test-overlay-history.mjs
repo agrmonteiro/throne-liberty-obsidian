@@ -15,6 +15,7 @@ for (let index = 1; index <= 25; index++) history.upsert(encounter(index))
 assert.equal(history.list().encounters.length, 20)
 assert.equal(history.list().encounters[0].id, '25')
 assert.equal(history.list().encounters.at(-1).id, '6')
+assert.equal(fs.existsSync(`${file}.tmp`), false, 'A gravação não deixa o tmp legado bloqueando o histórico')
 history.upsert({ ...encounter(25), reason: 'stop' })
 assert.equal(history.list().encounters.length, 20, 'Finalizar não duplica registro')
 const restored = new OverlayHistory(file)
@@ -34,6 +35,13 @@ assert.equal(restored.list().encounters[0].id, '27', 'Sessão vazia não ocupa h
 restored.upsert({ ...encounter(31), session: { ...encounter(31).session, total: 0, hits: 0,
   received: { total: 100, hits: 2, sources: [{ id: 8, damage: 100, hits: 2 }], skills: [] } } })
 assert.equal(new OverlayHistory(file).list().encounters[0].session.received.total, 100, 'Encontro só de dano recebido precisa persistir')
+const fragmentedFile = path.join(root, 'fragmented.json')
+const fragmented = new OverlayHistory(fragmentedFile)
+fragmented.upsert({ ...encounter(40), captureId: 'same-capture', reason: 'entity-change', combatSegments: [{ id: 1 }] })
+fragmented.upsert({ ...encounter(41), captureId: 'same-capture', reason: 'connection-end', combatSegments: [{ id: 1 }, { id: 2 }, { id: 3 }] })
+fragmented.upsert({ ...encounter(42), captureId: 'same-capture', reason: 'connection-end', combatSegments: [{ id: 1 }, { id: 2 }] })
+assert.equal(fragmented.list().encounters.length, 1, 'Trocas de conexão da mesma captura não poluem a lista')
+assert.equal(fragmented.list().encounters[0].id, '41', 'A lista preserva o snapshot mais completo da captura')
 const lateNpcName = restored.list().encounters[0]
 lateNpcName.session.received.sources[0].name = 'Guarda do Apóstolo'
 lateNpcName.session.received.sources[0].npcId = 10212035

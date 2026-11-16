@@ -17,6 +17,12 @@ import '../styles/overlay.css'
 const tabs = [{ id: 'live', label: 'Ao vivo' }, { id: 'sources', label: 'Origens' },
   { id: 'history', label: 'Histórico' }, { id: 'buffs', label: 'Buffs' }, { id: 'deaths', label: 'Causa mortis' }, { id: 'settings', label: 'Ajustes' }] as const
 
+const overlayFonts = [
+  { value: 'Inter', label: 'Inter · equilibrada' },
+  { value: 'Arial', label: 'Arial · leitura simples' },
+  { value: 'Consolas', label: 'Consolas · números alinhados' },
+] as const
+
 export function Overlays(): React.ReactElement {
   const { state, act } = useOverlay()
   const [tab, setTab] = useState<string>('live')
@@ -67,10 +73,12 @@ export function Overlays(): React.ReactElement {
       <div className="overlay-live-skills">{!config.metricPage || config.metricPage === 'damage'
         ? <MeterPanel panel="skills" state={state} preview onReset={() => act(() => window.overlayAPI.reset())} />
         : <OverlayMetricView state={state} page={config.metricPage} />}</div>
-      <p className="overlay-note">DPS inclui intervalos sem atacar e o tempo é congelado ao receber a saída de combate do jogo. Quando o estado não for observado, cinco minutos sem atividade separam a próxima sessão. A pausa manual descarta ataques durante a pausa.</p>
+      <p className="overlay-note">O DPS considera toda a luta e congela ao sair de combate. Se o sinal não chegar, ele congela após 15 s sem atividade; o próximo dano inicia outra sessão.</p>
     </section>
     <section className="overlay-tab-panel" id="meter-view-sources" role="tabpanel" aria-labelledby="meter-tab-sources" hidden={tab !== 'sources'}>
-      <OverlaySourcesView state={state} />
+      <OverlaySourcesView state={state}
+        onSelectSegment={groupSegmentId => configure({ groupSegmentId })}
+        onSelectEncounter={groupEncounterId => configure({ groupEncounterId })} />
     </section>
     <section className="overlay-tab-panel" id="meter-view-history" role="tabpanel" aria-labelledby="meter-tab-history" hidden={tab !== 'history'}>
       <OverlayHistoryView state={state} />
@@ -83,27 +91,17 @@ export function Overlays(): React.ReactElement {
     </section>
     <section className="overlay-tab-panel" id="meter-view-settings" role="tabpanel" aria-labelledby="meter-tab-settings" hidden={tab !== 'settings'}>
       <div className="overlay-settings-grid overlay-inspector">
-        <section><h2>Origem do dano</h2>
-          <label>Nome do personagem<input key={config.playerName ?? ''} aria-label="Nome do personagem" defaultValue={config.playerName ?? ''} maxLength={64}
-            placeholder="Nome exato no jogo" onBlur={event => configure({ playerName: event.target.value })} /></label>
-          <label>Código da minha origem<input key={config.autoSource === false ? config.sourceId ?? '' : 'auto'} aria-label="Código da minha origem" type="number" min="1" step="1"
-            defaultValue={config.autoSource === false ? config.sourceId ?? '' : ''} placeholder="Ex.: 8864474" onBlur={event => {
-              const value = event.target.value.trim()
-              const sourceId = Number(value)
-              if (!value) configure({ sourceId: null })
-              else if (Number.isSafeInteger(sourceId) && sourceId > 0) configure({ sourceId })
-            }} /></label>
-          <label>Origem do dano<select aria-label="Origem do dano" value={config.autoSource !== false ? 'auto' : config.sourceId ?? ''}
-            onChange={event => configure({ sourceId: event.target.value === 'auto' ? null : Number(event.target.value) })}>
-            <option value="auto">Meu personagem · automático</option>
-            {config.autoSource === false && config.sourceId === null && <option value="" disabled>Selecione uma origem manual</option>}
-            {config.sourceId !== null && !state.sources.some(source => source.id === config.sourceId) &&
-              <option value={config.sourceId}>Origem {config.sourceId} · sem eventos</option>}
-            {state.sources.map(source => <option key={source.id} value={source.id}>{source.localPlayer ? 'Entidade local (manual)' : source.name ?? 'Origem manual'} · {source.id} · {number(source.damage)}</option>)}
-          </select></label>
-          <button onClick={() => configure({ sourceId: null })}>Seguir meu personagem</button>
-          <p>Informe o código exibido em Origens para fixar sua leitura sem aguardar o perfil. Ele vale nesta execução do app e é descartado ao reiniciar, pois o ID pode mudar ao relogar. Trocar de origem inicia outra medição.</p>
-          <p title={state.capture?.encounterId}>Medição: {state.capture?.encounterId.slice(0, 8) ?? '—'} · Entidade local: {state.capture?.player?.sourceId ?? 'aguardando identificação'}</p>
+        <section><h2>Reconhecimento do personagem</h2>
+          <div className="overlay-identification" data-phase={state.identification?.phase ?? 'idle'}>
+            <div className="overlay-identification-heading"><div><strong>{state.identification?.phase === 'confirmed' ? 'Personagem vinculado' : 'Reconhecimento automático'}</strong>
+              <span>{Math.round(state.identification?.progress ?? 0)}% concluído</span></div>
+              <button className="overlay-primary" onClick={() => act(() => window.overlayAPI.identify())}>Forçar reconhecimento</button></div>
+            <div className="overlay-identification-progress" role="progressbar" aria-label="Progresso do reconhecimento" aria-valuemin={0} aria-valuemax={100} aria-valuenow={state.identification?.progress ?? 0}>
+              <span style={{ width: `${state.identification?.progress ?? 0}%` }} /></div>
+            <ol>{state.identification?.steps.map(step => <li key={step.id} data-state={step.state}><i aria-hidden="true" />
+              <div><strong>{step.label}</strong><span>{step.detail}</span></div></li>)}</ol>
+          </div>
+          <p>Você não precisa digitar nome ou código. Abra a ficha de atributos uma vez após entrar no personagem; se ela não chegar, o app tenta entidade local e sequência solo de dano.</p>
           <h2 className="overlay-subheading">Atalhos</h2>
           <dl><dt>Voltar ao atual</dt><dd>Ctrl + Shift + F8</dd><dt>Travar / editar</dt><dd>Ctrl + Shift + F9</dd><dt>Mostrar / ocultar</dt><dd>Ctrl + Shift + F10</dd><dt>Painel de ajustes</dt><dd>Ctrl + Shift + F11</dd></dl>
         </section>
@@ -113,6 +111,12 @@ export function Overlays(): React.ReactElement {
           <label className="overlay-switch"><input type="checkbox" checked={config.singleWindow !== false} onChange={event => configure({ singleWindow: event.target.checked })} />Janela única de combate</label>
           <p>O resumo, ranking do grupo e detalhe por habilidade/alvo ficam na mesma janela. Ajustes continuam nesta tela do app.</p>
           <label className="overlay-switch"><input type="checkbox" checked={config.locked} onChange={event => configure({ locked: event.target.checked })} />Travar e passar cliques ao jogo</label>
+          <label className="overlay-switch"><input type="checkbox" checked={Boolean(config.groupByName)} onChange={event => configure({ groupByName: event.target.checked })} />Agrupar habilidades de mesmo nome</label>
+          <p>Consolida no gráfico as variações e IDs que têm o mesmo nome de habilidade.</p>
+          <label>Fonte do texto <select aria-label="Fonte do texto do overlay" value={config.fontFamily ?? 'Inter'}
+            onChange={event => configure({ fontFamily: event.target.value as NonNullable<typeof config.fontFamily> })}>
+            {overlayFonts.map(font => <option key={font.value} value={font.value}>{font.label}</option>)}
+          </select></label>
           <label>Opacidade <span>{Math.round(config.opacity * 100)}%</span><input aria-label="Opacidade" type="range" min="25" max="100" value={config.opacity * 100} onChange={event => configure({ opacity: Number(event.target.value) / 100 })} /></label>
           <label>Escala <span>{Math.round(config.scale * 100)}%</span><input aria-label="Escala" type="range" min="75" max="150" value={config.scale * 100} onChange={event => configure({ scale: Number(event.target.value) / 100 })} /></label>
           <label>Margem horizontal do gráfico <span>{config.chartPadding ?? 12} px</span><input aria-label="Margem horizontal do gráfico" type="range" min="0" max="32" step="1" value={config.chartPadding ?? 12} onChange={event => configure({ chartPadding: Number(event.target.value) })} /></label>
@@ -139,6 +143,12 @@ export function Overlays(): React.ReactElement {
           <p>{number(state.unknownSkillLog?.events ?? 0)} eventos gravados nesta execução para mapeamento.</p>
           {state.unknownSkillLog?.directory && <p className="overlay-log-path">{state.unknownSkillLog.directory}</p>}
           {state.unknownSkillLog?.error && <p role="alert">{state.unknownSkillLog.error}</p>}
+        </details>
+        <details><summary>Diagnóstico de Vanguarda <span>experimental</span></summary>
+          <label className="overlay-switch"><input type="checkbox" checked={Boolean(config.rosterDiagnostics)} onChange={event => configure({ rosterDiagnostics: event.target.checked })} />Capturar candidatos de roster na próxima leitura</label>
+          <p>Opt-in e limitado: salva apenas opcode, IDs de entidade e nomes curtos candidatos; não salva PCAP nem corpo dos pacotes. Ative antes de iniciar a leitura e desligue após a coleta.</p>
+          {state.rosterDiagnostic?.file && <p>{number(state.rosterDiagnostic.events)} candidatos em <span className="overlay-log-path">{state.rosterDiagnostic.file}</span></p>}
+          {state.rosterDiagnostic?.error && <p role="alert">{state.rosterDiagnostic.error}</p>}
         </details>
       </div>
     </section>

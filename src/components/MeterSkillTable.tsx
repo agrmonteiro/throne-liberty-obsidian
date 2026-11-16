@@ -1,5 +1,5 @@
 import React, { useId, useState } from 'react'
-import { analyzeRows, hitAverage, metricData, metricRate, type AnalysisRow, type MeterSort, type MetricPage } from '../engine/overlayAnalysis'
+import { analyzeRows, groupAnalysisRowsByName, hitAverage, metricData, metricRate, type AnalysisRow, type MeterSort, type MetricPage } from '../engine/overlayAnalysis'
 import type { OverlayState } from '../engine/overlayMeter'
 import { healingDescriptionTitle } from '../engine/overlayHealingClassification'
 import { MeterSkillIcon } from './MeterSkillIcon'
@@ -19,8 +19,8 @@ function rowBar(row: AnalysisRow, maximum: number, healing: boolean): React.CSSP
   backgroundSize: `${maximum ? row.damage / maximum * 100 : 0}% 100%` }
 }
 
-function SkillDetails({ row, state, page, onClose }: {
-  row: AnalysisRow; state: OverlayState; page: MetricPage; onClose: () => void
+function SkillDetails({ row, state, page, onClose, showTimeline }: {
+  row: AnalysisRow; state: OverlayState; page: MetricPage; onClose: () => void; showTimeline: boolean
 }): React.ReactElement {
   const data = metricData(state.session, page)
   const healing = data.healing
@@ -38,39 +38,39 @@ function SkillDetails({ row, state, page, onClose }: {
     <header><button type="button" onClick={onClose} aria-label="Voltar à lista">← Voltar</button>
       <span>{duration(state.session.elapsedSec)} de medição</span></header>
     <h3>{page !== 'receivedSources' && <MeterSkillIcon name={row.name} iconFile={row.iconFile} />}{row.name}</h3>
-    <dl className="meter-detail-stats">
-      <div><dt>{healing ? 'Cura bruta' : 'Dano'}</dt><dd>{number(row.damage)}</dd></div>
-      <div><dt>{data.rateLabel} médio</dt><dd>{number(metricRate(row.damage, state.session.elapsedSec))}</dd></div>
-      <div><dt>Participação</dt><dd>{percentage(row.damage, data.total)}</dd></div>
-      <div><dt>{healing ? 'Aplicações' : 'Acertos'}</dt><dd>{number(row.hits)}</dd></div>
-      <div><dt>{healing ? 'Média por aplicação' : 'Média por acerto'}</dt><dd>{number(hitAverage(row))}</dd></div>
-      {!healing && row.critical !== undefined && <>
-        <div><dt>Críticos</dt><dd>{number(critical)} <small>({percentage(critical, row.hits)})</small></dd></div>
-        <div><dt>Pesados</dt><dd>{number(heavy)} <small>({percentage(heavy, row.hits)})</small></dd></div>
-      </>}
-    </dl>
-    {!healing && row.damageByKind && <div className="meter-detail-breakdown" aria-label="Distribuição do dano">
-      {damageKinds.map(kind => <div key={kind.key}>
-        <span><i style={{ background: kind.color }} />{kind.label}</span>
-        <strong>{number(row.damageByKind![kind.key])}</strong><small>{percentage(row.damageByKind![kind.key], row.damage)}</small>
-      </div>)}
-      <p>Crítico pesado participa dos dois contadores; o dano acima é separado em quatro parcelas.</p>
-    </div>}
+    <div className={`meter-detail-summary ${healing ? 'is-healing' : ''}`}>
+      <dl className="meter-detail-stats">
+        <div><dt>{healing ? 'Cura' : 'Dano'}</dt><dd>{number(row.damage)}</dd></div>
+        <div><dt>{data.rateLabel}</dt><dd>{number(metricRate(row.damage, state.session.elapsedSec))}</dd></div>
+        <div><dt>Participação</dt><dd>{percentage(row.damage, data.total)}</dd></div>
+        <div><dt>{healing ? 'Aplicações' : 'Acertos'}</dt><dd>{number(row.hits)}</dd></div>
+        <div><dt>Média</dt><dd>{number(hitAverage(row))}</dd></div>
+        {!healing && row.critical !== undefined && <>
+          <div><dt>Críticos</dt><dd>{number(critical)} <small>({percentage(critical, row.hits)})</small></dd></div>
+          <div><dt>Pesados</dt><dd>{number(heavy)} <small>({percentage(heavy, row.hits)})</small></dd></div>
+        </>}
+      </dl>
+      {!healing && row.damageByKind && <div className="meter-detail-breakdown" aria-label="Distribuição do dano">
+        {damageKinds.map(kind => <div key={kind.key}>
+          <span><i style={{ background: kind.color }} />{kind.label}</span>
+          <strong>{number(row.damageByKind![kind.key])}</strong><small>{percentage(row.damageByKind![kind.key], row.damage)}</small>
+        </div>)}
+      </div>}
+    </div>
     {healing && <p className="meter-detail-description">{healingDescriptionTitle(row.skillIds)}
       <br />Cura bruta experimental. Cura efetiva e excesso de cura ainda não medidos.</p>}
     {row.skillIds?.some(id => overlayDescriptiveSkillIds.has(id)) && <p className="meter-detail-description">
-      Nome descritivo do ataque: esta habilidade de NPC não possui um nome de exibição traduzido no catálogo do jogo.</p>}
-    <div className="meter-detail-timeline"><TimelineToggle active={timeline} onClick={() => setTimeline(value => !value)} />
+      Habilidade de criatura com nome descritivo do jogo.</p>}
+    {showTimeline && <div className="meter-detail-timeline"><TimelineToggle active={timeline} onClick={() => setTimeline(value => !value)} />
       {timeline && <EventTimeline ariaLabel={`Linha do tempo de ${row.name}`} events={relatedTimeline.map((event, index) => ({
         id: `${event.time}-${event.kind}-${event.skillId}-${event.sourceId}-${event.targetId ?? ''}-${index}`, time: event.time,
         tone: event.kind.startsWith('healing') ? 'healing' as const : 'damage' as const,
         label: row.name, detail: `${number(event.amount)} · ${event.hits} ${event.hits === 1 ? 'aplicação' : 'aplicações'} · agregado por segundo`,
-      }))} />}</div>
-    <p className="meter-detail-ids">{page === 'receivedSources' ? 'Fonte' : 'IDs'}: {row.skillIds?.join(', ') ?? row.key}</p>
+      }))} />}</div>}
   </section>
 }
 
-function SourceSkills({ row, state, target }: { row: AnalysisRow; state: OverlayState; target: boolean }): React.ReactElement {
+function SourceSkills({ row, state, target, showTimeline }: { row: AnalysisRow; state: OverlayState; target: boolean; showTimeline: boolean }): React.ReactElement {
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const skills = row.sourceSkills
   if (!skills) return <p className="meter-source-legacy" role="status">
@@ -83,7 +83,7 @@ function SourceSkills({ row, state, target }: { row: AnalysisRow; state: Overlay
     : { ...state, session: { ...state.session, timeline: scopedTimeline,
       received: { total: row.damage, hits: row.hits, skills, sources: [] } } }
   const selected = skills.find(skill => skill.key === selectedKey)
-  if (selected) return <SkillDetails row={selected} state={sourceState} page={target ? 'damage' : 'receivedSkills'} onClose={() => setSelectedKey(null)} />
+  if (selected) return <SkillDetails row={selected} state={sourceState} page={target ? 'damage' : 'receivedSkills'} showTimeline={showTimeline} onClose={() => setSelectedKey(null)} />
   let accumulated = 0
   return <div className="meter-source-skills" role="region" aria-label={`Habilidades de ${row.name}`}>
     <header><strong>Habilidades {target ? 'neste alvo' : 'desta fonte'}</strong><span>{number(row.damage)} de dano · {skills.length} {skills.length === 1 ? 'habilidade' : 'habilidades'}</span></header>
@@ -110,15 +110,39 @@ function SourceSkills({ row, state, target }: { row: AnalysisRow; state: Overlay
   </div>
 }
 
-export function MeterSkillTable({ state, page, emptyMessage }: {
-  state: OverlayState; page: MetricPage; emptyMessage: string
+/** Projeção inversa do detalhe por alvo: uma habilidade aberta mostra em quais alvos acertou. */
+function SkillTargets({ row, state }: { row: AnalysisRow; state: OverlayState }): React.ReactElement {
+  const ids = new Set(row.skillIds ?? [])
+  const targets = (state.session.targets ?? []).map(target => {
+    const skills = target.skills.filter(skill => skill.key === row.key || skill.skillIds?.some(id => ids.has(id)))
+    const damage = skills.reduce((sum, skill) => sum + skill.damage, 0)
+    const hits = skills.reduce((sum, skill) => sum + skill.hits, 0)
+    return { ...target, damage, hits }
+  }).filter(target => target.damage > 0).sort((a, b) => b.damage - a.damage || b.hits - a.hits)
+  const total = targets.reduce((sum, target) => sum + target.damage, 0)
+  return <div className="meter-source-skills meter-skill-targets" role="region" aria-label={`Alvos de ${row.name}`}>
+    <header><strong>Alvos atingidos</strong><span>{number(total)} de dano · {targets.length} {targets.length === 1 ? 'alvo' : 'alvos'}</span></header>
+    <div className="meter-source-skills-scroll"><table className="meter-table meter-analysis-table meter-source-skills-table" aria-label={`Alvos atingidos por ${row.name}`}><tbody>
+      {targets.map(target => <tr key={target.id} title={`${target.name ?? `Alvo ${target.id}`} · ${number(target.damage)} de dano por ${row.name}`}>
+        <td><span className="meter-skill-name">{target.name ?? (target.id ? `Alvo ${target.id}` : 'Alvo desconhecido')}</span></td>
+        <td>{number(target.damage)}</td><td>{percentage(target.damage, total)}</td>
+        <td>{number(metricRate(target.damage, state.session.elapsedSec))}</td><td>{number(target.hits)}</td><td>{number(target.hits ? target.damage / target.hits : 0)}</td>
+      </tr>)}</tbody></table></div>
+    {!targets.length && <p className="meter-source-legacy">Nenhum alvo foi associado a esta habilidade nesta medição.</p>}
+  </div>
+}
+
+export function MeterSkillTable({ state, page, emptyMessage, showSearch = true, showTimeline = true }: {
+  state: OverlayState; page: MetricPage; emptyMessage: string; showSearch?: boolean; showTimeline?: boolean
 }): React.ReactElement {
   const [query, setQuery] = useState('')
   const [sort, setSort] = useState<{ key: MeterSort; ascending: boolean }>({ key: 'damage', ascending: false })
   const [selection, setSelection] = useState<{ scope: string; key: string } | null>(null)
   const [expanded, setExpanded] = useState<{ scope: string; keys: Set<string> }>({ scope: '', keys: new Set() })
   const searchId = useId()
-  const data = metricData(state.session, page)
+  const baseData = metricData(state.session, page)
+  const canGroupByName = page === 'damage' || page === 'receivedSkills' || page === 'healingDone' || page === 'healingReceived'
+  const data = state.config.groupByName && canGroupByName ? { ...baseData, rows: groupAnalysisRowsByName(baseData.rows) } : baseData
   const rows = analyzeRows(data.rows, query, sort.key, sort.ascending)
   const scope = `${page}:${state.config.sourceId}:${state.session.startedAt}`
   const selected = selection?.scope === scope ? data.rows.find(row => row.key === selection.key) : undefined
@@ -134,33 +158,34 @@ export function MeterSkillTable({ state, page, emptyMessage }: {
   const header = (key: MeterSort, label: string): React.ReactElement => <th aria-sort={sort.key === key ? sort.ascending ? 'ascending' : 'descending' : 'none'}>
     <button type="button" data-overlay-interactive onClick={() => changeSort(key)} aria-label={`Ordenar por ${label}`}>
       {label}{sort.key === key && <span aria-hidden="true">{sort.ascending ? ' ↑' : ' ↓'}</span>}</button></th>
-  return selected ? <SkillDetails row={selected} state={state} page={page} onClose={() => setSelection(null)} /> : <>
-    <div className="meter-analysis-tools">
+  return selected ? <SkillDetails row={selected} state={state} page={page} showTimeline={showTimeline} onClose={() => setSelection(null)} /> : <>
+    {showSearch && <div className="meter-analysis-tools">
       <label htmlFor={searchId} className="meter-search-label">Buscar</label>
       <input data-overlay-interactive id={searchId} type="search" aria-label="Buscar habilidade ou fonte" placeholder="Nome ou ID"
         value={query} onChange={event => setQuery(event.target.value)} />
       <span aria-live="polite">{rows.length}/{data.rows.length}</span>
-    </div>
+    </div>}
     <div className="meter-skills-scroll"><table className="meter-table meter-analysis-table">
       <thead><tr>{header('name', page === 'receivedSources' ? 'Fonte' : page === 'damageTargets' ? 'Alvo' : 'Habilidade')}
         {header('damage', data.healing ? 'Cura' : 'Dano')}<th>%</th><th title="Contribuição por segundo usando a duração completa da medição">{data.rateLabel}</th>
         {header('hits', data.healing ? 'Aplic.' : 'Acertos')}{header('average', 'Média')}</tr></thead>
       <tbody>{rows.map(row => {
-        const source = page === 'receivedSources' || page === 'damageTargets'
-        const open = source && expanded.scope === scope && expanded.keys.has(row.key)
+        const expandable = page === 'damage' || page === 'receivedSources' || page === 'damageTargets'
+        const open = expandable && expanded.scope === scope && expanded.keys.has(row.key)
         const detailId = `${searchId}-source-${row.key}`
         return <React.Fragment key={row.key}><tr className={open ? 'meter-source-expanded' : undefined} style={rowBar(row, maximum, data.healing)}>
         <td><button type="button" data-overlay-interactive className="meter-row-button"
-          aria-label={source ? `${open ? 'Recolher' : 'Expandir'} habilidades de ${row.name}` : `Ver detalhes de ${row.name}`}
-          aria-expanded={source ? open : undefined} aria-controls={open ? detailId : undefined}
-          title={`${row.name} · ${row.skillIds?.join(', ') ?? row.key} · ${source ? 'Expandir ou recolher habilidades' : 'Clique para detalhar'}`}
-          onClick={() => source ? toggleSource(row.key) : setSelection({ scope, key: row.key })}>
-          {!source && <MeterSkillIcon name={row.name} iconFile={row.iconFile} />}
-          <span className="meter-skill-name">{row.name}</span><span className="meter-row-chevron" aria-hidden="true">{source ? open ? '▾' : '▸' : '›'}</span></button></td>
+          aria-label={expandable ? `${open ? 'Recolher' : 'Expandir'} ${page === 'damage' ? 'alvos' : 'habilidades'} de ${row.name}` : `Ver detalhes de ${row.name}`}
+          aria-expanded={expandable ? open : undefined} aria-controls={open ? detailId : undefined}
+          title={`${row.name} · ${row.skillIds?.join(', ') ?? row.key} · ${expandable ? page === 'damage' ? 'Expandir ou recolher alvos' : 'Expandir ou recolher habilidades' : 'Clique para detalhar'}`}
+          onClick={() => expandable ? toggleSource(row.key) : setSelection({ scope, key: row.key })}>
+          {page !== 'receivedSources' && page !== 'damageTargets' && <MeterSkillIcon name={row.name} iconFile={row.iconFile} />}
+          <span className="meter-skill-name">{row.name}</span><span className="meter-row-chevron" aria-hidden="true">{expandable ? open ? '▾' : '▸' : '›'}</span></button></td>
         <td>{number(row.damage)}</td><td>{percentage(row.damage, data.total)}</td>
         <td>{number(metricRate(row.damage, state.session.elapsedSec))}</td><td>{number(row.hits)}</td><td>{number(hitAverage(row))}</td>
       </tr>{open && <tr className="meter-source-detail" id={detailId}><td colSpan={6}>
-        <SourceSkills row={row} state={state} target={page === 'damageTargets'} />
+        {page === 'damage' ? <SkillTargets row={row} state={state} />
+          : <SourceSkills row={row} state={state} target={page === 'damageTargets'} showTimeline={showTimeline} />}
       </td></tr>}</React.Fragment>})}</tbody>
     </table>
     {!rows.length && <div className="meter-empty" role="status">{data.rows.length ? 'Nenhum resultado. Tente outro nome ou ID.' : emptyMessage}</div>}

@@ -18,8 +18,8 @@ export const metricPages = [
 /** Páginas leves, disponíveis durante a luta na janela sobre o jogo. */
 export const overlayGraphPages = [...metricPages, { id: 'deaths', label: 'Causa mortis' }] as const
 
-export function OverlayMetricView({ state, page, historical = false }: {
-  state: OverlayState; page: Exclude<MetricPage, 'damage'>; historical?: boolean
+export function OverlayMetricView({ state, page, historical = false, showSearch = true, showTimeline = true }: {
+  state: OverlayState; page: Exclude<MetricPage, 'damage'>; historical?: boolean; showSearch?: boolean; showTimeline?: boolean
 }): React.ReactElement {
   const data = metricData(state.session, page)
   const { healing, total } = data
@@ -34,7 +34,7 @@ export function OverlayMetricView({ state, page, historical = false }: {
       <div className="overlay-metric-summary"><strong data-testid="received-total">{number(total)}</strong>
         <span>{healing ? 'de cura bruta' : page === 'damageTargets' ? 'de dano causado' : 'de dano recebido'} · {number(data.hits)} {healing ? 'aplicações' : 'acertos'}</span>
         <span className="meter-metric-rate">{number(metricRate(total, state.session.elapsedSec))} {data.rateLabel}</span></div>
-      <MeterSkillTable key={page} state={state} page={page} emptyMessage={state.config.sourceId === null ? 'Aguardando identificação do personagem.'
+      <MeterSkillTable key={page} state={state} page={page} showSearch={showSearch} showTimeline={showTimeline} emptyMessage={state.config.sourceId === null ? 'Aguardando identificação do personagem.'
         : healing ? 'Aguardando uma cura identificada na captura.' : page === 'damageTargets' ? 'Aguardando dano causado pelo personagem.' : 'Aguardando dano contra o personagem selecionado.'} />
       <footer className="meter-session-status">{healing ? state.session.healing?.coverage === 'self-observed'
         ? 'Registro antigo: inclui somente autocuras. Curas externas não coletadas não podem ser reconstruídas neste encontro.'
