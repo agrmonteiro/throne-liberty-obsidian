@@ -495,8 +495,15 @@ export function registerOverlay(owner: BrowserWindow): void {
     config[`${panel}Bounds`] = saved
     config.anchors = { ...config.anchors, [panel]: overlayAnchor(saved, gameBounds) }
     const constrained = overlayBounds(panel, config, gameBounds)
-    config[`${panel}Bounds`] = constrained
-    config.anchors[panel] = overlayAnchor(constrained, gameBounds)
+    if (minimized && panel !== 'controls') {
+      // A âncora acompanha a posição compacta, mas a caixa persistida continua
+      // sendo a expandida para que o botão de restaurar retorne ao tamanho certo.
+      config[`${panel}Bounds`] = { ...saved, x: constrained.x, y: constrained.y }
+      config.anchors[panel] = overlayAnchor(config[`${panel}Bounds`]!, gameBounds)
+    } else {
+      config[`${panel}Bounds`] = constrained
+      config.anchors[panel] = overlayAnchor(constrained, gameBounds)
+    }
     save()
   }
   function showPanels(): void {
