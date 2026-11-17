@@ -502,13 +502,17 @@ export function registerOverlay(owner: BrowserWindow): void {
         window = new BrowserWindow({ ...initial, title: `Overlay · ${panel === 'controls' ? 'Ajustes' : panel === 'total' ? 'Total geral' : 'Habilidades'}`,
           transparent: true, frame: false,
           show: false, resizable: false, maximizable: false, minimizable: false, skipTaskbar: true,
-          // Busca e consulta de detalhes também precisam receber teclado no gráfico.
-          focusable: true,
+          // O jogo conserva o foco: o overlay aceita ponteiro, mas nunca atalhos
+          // ou texto. Assim, uma tecla pressionada sobre ele continua no Throne.
+          focusable: false,
           alwaysOnTop: true, backgroundColor: '#00000000',
           webPreferences: { preload: path.join(__dirname, '../preload/index.cjs'),
             sandbox: false, contextIsolation: true, nodeIntegration: false } })
         windows[panel] = window
         window.on('page-title-updated', event => event.preventDefault())
+        window.webContents.on('before-input-event', (event, input) => {
+          if (input.type === 'keyDown' || input.type === 'keyUp' || input.type === 'char') event.preventDefault()
+        })
         window.on('focus', () => {
           clearTimeout(focusHideTimer); focusHideTimer = undefined
           if (gameBounds && requested(panel)) { gameForeground = true; showPanels() }
