@@ -664,7 +664,10 @@ export interface OverlayConfig {
   playerName?: string
   /** Layout atual: uma única janela de combate; legado mantém painéis separados. */
   singleWindow?: boolean
-  locked: boolean; totalVisible: boolean; skillsVisible: boolean; opacity: number; scale: number
+  locked: boolean; totalVisible: boolean; skillsVisible: boolean
+  /** Recolhe o painel e preserva a faixa de contexto/medição ao vivo. */
+  totalMinimized?: boolean; skillsMinimized?: boolean
+  opacity: number; scale: number
   sourceId: number | null; totalBounds?: PanelBounds; skillsBounds?: PanelBounds
   controlsVisible?: boolean; controlsExpanded?: boolean; controlsBounds?: PanelBounds
   anchors?: Partial<Record<OverlayPanel, PanelAnchor>>

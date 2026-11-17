@@ -155,6 +155,12 @@
 .overlay-record-toolbar .overlay-target-filter { flex:1 1 112px; width:auto; max-width:250px; color:var(--meter-accent,#ead08d); font-variant-numeric:tabular-nums; }
 .overlay-record-toolbar button { min-width:25px; height:25px; background:transparent; color:var(--meter-muted,#aaa397); border:1px solid transparent; border-radius:4px; padding:3px 6px; cursor:pointer; font-size:.78em; transition:background .14s ease,color .14s ease,border-color .14s ease; }
 .overlay-record-toolbar button:hover:not(:disabled) { color:var(--meter-text,#eee9dd); background:#ffffff0a; border-color:#ffffff16; }.overlay-record-toolbar :disabled { opacity:.38; cursor:default; }
+.overlay-window-actions { display:flex; align-items:center; gap:1px; margin-left:auto; flex-shrink:0; -webkit-app-region:no-drag; }
+.overlay-record-toolbar .overlay-window-action { min-width:22px; width:22px; padding:0; color:var(--meter-muted,#aaa397); font-size:1em; line-height:1; }
+.overlay-record-toolbar .overlay-window-action.is-close { font-size:1.18em; }
+.overlay-record-toolbar .overlay-window-action.is-close:hover { color:#ffb6ae; border-color:#e26d624d; background:#e26d6217; }
+.overlay-window.is-minimized .overlay-panel-content { display:none; }
+.overlay-window.is-minimized .overlay-resize { display:none; }
 .overlay-view-switch { display:flex; flex-shrink:0; gap:1px; padding:2px; border:1px solid #ffffff12; border-radius:5px; background:#00000020; -webkit-app-region:no-drag; }.overlay-view-switch button { min-width:0; height:21px; padding:2px 6px; border-radius:3px; font-size:.74em; }.overlay-view-switch button[aria-pressed=true] { color:var(--meter-background,#11141c); border-color:var(--meter-accent,#ead08d); background:var(--meter-accent,#ead08d); }
 .overlay-clear-confirm { padding:12px; margin:12px 0; border:1px solid #c89b584d; border-radius:5px; background:#c89b580a; }
 .overlay-clear-confirm button { margin-right:8px; }

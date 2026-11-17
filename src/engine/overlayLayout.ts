@@ -31,10 +31,14 @@ export function overlayAnchor(bounds: PanelBounds, area: PanelBounds): PanelAnch
 export function overlayBounds(panel: OverlayPanel, config: OverlayConfig, area: PanelBounds): PanelBounds {
   const saved = config[`${panel}Bounds`]
   const scale = config.scale
+  const minimized = panel === 'total' ? Boolean(config.totalMinimized)
+    : panel === 'skills' ? Boolean(config.skillsMinimized) : false
   const defaults = panel === 'controls' ? { width: 310, height: config.controlsExpanded === false ? 48 : 568 }
     : panel === 'total' ? { width: 320, height: 270 } : { width: 560, height: 310 }
   const fontScale = (config.fontSize ?? 13) / 13
-  const minimum = panel === 'controls' ? defaults : panel === 'total'
+  const minimum = panel === 'controls' ? defaults : minimized
+    ? { width: 280 * scale, height: (panel === 'skills' ? 136 : 96) * scale }
+    : panel === 'total'
     ? { width: 280 * scale, height: 32 + 260 * scale * fontScale } : { width: 480 * scale, height: 32 + 240 * scale }
   // Em telas menores, um tamanho salvo de um monitor grande não pode ocupar a cena.
   // O teto é deliberadamente proporcional; em monitores grandes a preferência do usuário
@@ -44,7 +48,8 @@ export function overlayBounds(panel: OverlayPanel, config: OverlayConfig, area: 
       : { width: area.width, height: area.height }
   const maximum = panel === 'controls' ? area : { width: Math.min(area.width, Math.max(minimum.width, cap.width)), height: Math.min(area.height, Math.max(minimum.height, cap.height)) }
   const width = Math.round(clamp(panel === 'controls' ? defaults.width : saved?.width ?? defaults.width, Math.min(minimum.width, area.width), maximum.width))
-  const height = Math.round(clamp(panel === 'controls' ? defaults.height : saved?.height ?? defaults.height, Math.min(minimum.height, area.height), maximum.height))
+  const requestedHeight = panel === 'controls' ? defaults.height : minimized ? minimum.height : saved?.height ?? defaults.height
+  const height = Math.round(clamp(requestedHeight, Math.min(minimum.height, area.height), maximum.height))
   const fallback = panel === 'controls' ? { x: .99, y: .05 } : panel === 'total' ? { x: .02, y: .08 } : { x: .02, y: .58 }
   // Migra posições absolutas antigas somente quando a janela do jogo é conhecida.
   const anchor = config.anchors?.[panel] ?? (saved ? overlayAnchor({ ...saved, width, height }, area) : fallback)

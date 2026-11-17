@@ -34,6 +34,7 @@ export function registerOverlay(owner: BrowserWindow): void {
   const file = path.join(app.getPath('userData'), 'data', 'overlay.json')
   let persisted: Partial<OverlayConfig> = {}
   let config: OverlayConfig = { autoSource: true, groupSegmentId: null, groupEncounterId: null, singleWindow: true, locked: false, totalVisible: false, skillsVisible: true,
+    totalMinimized: false, skillsMinimized: false,
     controlsVisible: false, controlsExpanded: false, fontFamily: 'Inter', fontSize: 13, chartPadding: 12, chartPaddingVertical: 10, theme: { ...defaultOverlayTheme },
     opacity: .94, scale: 1, sourceId: null }
   try { persisted = JSON.parse(fs.readFileSync(file, 'utf8')); config = { ...config, ...persisted } } catch { /* primeiro uso */ }
@@ -484,8 +485,15 @@ export function registerOverlay(owner: BrowserWindow): void {
   }
   function storeBounds(panel: OverlayPanel, value: PanelBounds): void {
     if (!gameBounds) return
-    config[`${panel}Bounds`] = value
-    config.anchors = { ...config.anchors, [panel]: overlayAnchor(value, gameBounds) }
+    const minimized = panel === 'total' ? Boolean(config.totalMinimized)
+      : panel === 'skills' ? Boolean(config.skillsMinimized) : false
+    // Enquanto recolhido, a altura na tela é deliberadamente pequena. Guardar
+    // essa altura destruiria o tamanho escolhido para restaurar o painel.
+    const saved = minimized && panel !== 'controls'
+      ? { ...(config[`${panel}Bounds`] ?? value), x: value.x, y: value.y }
+      : value
+    config[`${panel}Bounds`] = saved
+    config.anchors = { ...config.anchors, [panel]: overlayAnchor(saved, gameBounds) }
     const constrained = overlayBounds(panel, config, gameBounds)
     config[`${panel}Bounds`] = constrained
     config.anchors[panel] = overlayAnchor(constrained, gameBounds)
@@ -984,7 +992,7 @@ export function registerOverlay(owner: BrowserWindow): void {
           ? patch.groupEncounterId : null
       if (config.groupEncounterId !== null) config.groupSegmentId = null
     }
-    for (const key of ['locked', 'singleWindow', 'totalVisible', 'skillsVisible', 'controlsVisible', 'controlsExpanded', 'hideOutOfCombat', 'groupByName'] as const) {
+    for (const key of ['locked', 'singleWindow', 'totalVisible', 'skillsVisible', 'totalMinimized', 'skillsMinimized', 'controlsVisible', 'controlsExpanded', 'hideOutOfCombat', 'groupByName'] as const) {
       if (typeof patch[key] === 'boolean') config[key] = patch[key]!
     }
     if (Number.isFinite(patch.opacity)) config.opacity = Math.max(.25, Math.min(1, patch.opacity!))
